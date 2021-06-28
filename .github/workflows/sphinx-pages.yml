@@ -1,10 +1,10 @@
 name: github pages
 
-on:
-  push:
-    branches:
-      - main
-  pull_request:
+on: [push]
+#  push:
+#    branches:
+#      - main
+#  pull_request:
 
 jobs:
   build:
