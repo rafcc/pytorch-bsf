@@ -1,0 +1,39 @@
+name: pytorch-bsf
+conda_env: conda.yaml
+entry_points:
+  main:
+    parameters:
+      data: {type: path}
+      label: {type: path}
+      degree: {type: int}
+      header: {type: int, default: 0}
+      delimiter: {type: string, default: " "}
+      normalize: {type: string, default: none}
+      split_ratio: {type: float, default: 0.5}
+      batch_size: {type: int, default: 0}
+      max_epochs: {type: int, default: 1000}
+      gpus: {type: str, default: -1}
+      num_nodes: {type: int, default: 1}
+      accelerator: {type: str, default: ddp}
+      loglevel: {type: int, default: 2}
+    command: >
+      python -m torch_bsf
+      --data={data}
+      --label={label}
+      --degree={degree}
+      --header={header}
+      --delimiter={delimiter}
+      --normalize={normalize}
+      --split_ratio={split_ratio}
+      --batch_size={batch_size}
+      --max_epochs={max_epochs}
+      --gpus={gpus}
+      --num_nodes={num_nodes}
+      --accelerator={accelerator}
+      --loglevel={loglevel}
+  document:
+    parameters:
+      format: {type: string, default: html}
+      dest: {type: path, default: public}
+    command: >
+      cd doc && sphinx-build -M {format} . _build && mv -T _build/{format} {dest}
