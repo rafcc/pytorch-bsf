@@ -1,0 +1,21 @@
+name: github pages
+
+on:
+ push:
+   branches:
+     - main
+ pull_request:
+
+jobs:
+  build:
+    runs-on: ubuntu-18.04
+    steps:
+      - name: Sphinx Pages
+        # You may pin to the exact commit or the version.
+        # uses: seanzhengw/sphinx-pages@70dd0557fc226cfcd41c617aec5e9ee4fce4afe2
+        uses: seanzhengw/sphinx-pages@master
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          create_readme: true
+          source_dir: doc
+          install_extensions: false
