@@ -1,0 +1,22 @@
+name: github pages
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+
+jobs:
+  build:
+    runs-on: ubuntu-18.04
+    steps:
+      - name: Sphinx Pages
+        # You may pin to the exact commit or the version.
+        # uses: seanzhengw/sphinx-pages@70dd0557fc226cfcd41c617aec5e9ee4fce4afe2
+        uses: seanzhengw/sphinx-pages@v1
+        with:
+          # Token for the repo. Can be passed in using $\{{ secrets.GITHUB_TOKEN }}
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          # Auto create a README.md file at branch gh-pages root with repo/branch/commit links
+          create_readme: true # optional
+          source_dir: ./doc
