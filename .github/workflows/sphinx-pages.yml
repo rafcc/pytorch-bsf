@@ -18,5 +18,6 @@ jobs:
           # Token for the repo. Can be passed in using $\{{ secrets.GITHUB_TOKEN }}
           github_token: ${{ secrets.GITHUB_TOKEN }}
           # Auto create a README.md file at branch gh-pages root with repo/branch/commit links
-          create_readme: false # optional
+          create_readme: true # optional
           source_dir: doc
+          install_extensions: false
