@@ -6,6 +6,9 @@ The Bezier simplex is a high-dimensional generalization of the Bezier curve.
 Mathematically, it is a polynomial map from a simplex to a Euclidean space determined by a set of vectors called the control points.
 This package provides an algorithm to fit a Bezier simplex to given data points.
 
+See the following papers for technical details.
+- Kobayashi, K., Hamada, N., Sannai, A., Tanaka, A., Bannai, K., & Sugiyama, M. (2019). Bézier Simplex Fitting: Describing Pareto Fronts of´ Simplicial Problems with Small Samples in Multi-Objective Optimization. Proceedings of the AAAI Conference on Artificial Intelligence, 33(01), 2304-2313. https://doi.org/10.1609/aaai.v33i01.33012304
+- Tanaka, A., Sannai, A., Kobayashi, K., & Hamada, N. (2020). Asymptotic Risk of Bézier Simplex Fitting. Proceedings of the AAAI Conference on Artificial Intelligence, 34(03), 2416-2424. https://doi.org/10.1609/aaai.v34i03.5622
 
 ## Requirements
 
@@ -16,7 +19,7 @@ Python 3.8 or above.
 
 Install the package:
 ```
-$ pip install git+https://gitlab.com/hmkz/pytorch-bsf
+$ pip install git+https://github.com/rafcc/pytorch-bsf
 ```
 
 Train a model by `fit()`, and call the model to predict.
@@ -87,8 +90,8 @@ $ python -m torch_bsf \
 |split_ratio|float (0.0 < x < 1.0)|`0.5`|The ratio of training data against validation data.|
 |batch_size|int (x >= 0)|`0`|The size of minibatch. The default uses all records in a single batch.|
 |max_epochs|int (x >= 1)|`1000`|The number of epochs to stop training.|
-|gpus|int (x >= -1)|`-1`|Which GPU to use. By default, use all available GPUs. See [PyTorch Lightning documentation](https://pytorch-lightning.readthedocs.io/en/stable/advanced/multi_gpu.html#select-gpu-devices).|
-|num_nodes|int (x >= 1)|`1`|The number of compute nodes. See [PyTorch Lightning documentation](https://pytorch-lightning.readthedocs.io/en/stable/advanced/multi_gpu.html#distributed-modes).|
+|gpus|int (x >= -1)|`-1`|The number of GPUs to use. By default, use all available GPUs. See [PyTorch Lightning documentation](https://pytorch-lightning.readthedocs.io/en/stable/advanced/multi_gpu.html#select-gpu-devices).|
+|num_nodes|int (x >= 1)|`1`|The number of compute nodes to use. See [PyTorch Lightning documentation](https://pytorch-lightning.readthedocs.io/en/stable/advanced/multi_gpu.html#distributed-modes).|
 |accelerator|`dp`, `ddp`, `ddp_spawn`, `ddp2`, or `horovod`|`ddp`|Distributed mode. See [PyTorch Lightning documentation](https://pytorch-lightning.readthedocs.io/en/stable/advanced/multi_gpu.html#distributed-modes).|
 |loglevel|int (0 <= x <= 2)|`2`|What objects to be logged. `0`: nothing; `1`: metrics; `2`: metrics and models.|
 
@@ -103,7 +106,7 @@ $ conda install mlflow
 
 Run the following command:
 ```
-$ mlflow run git@gitlab.com:hmkz/pytorch-bsf \
+$ mlflow run https://github.com/rafcc/pytorch-bsf \
   -P data=data.tsv \
   -P label=label.tsv \
   -P degree=3 \
@@ -122,3 +125,13 @@ which automatically sets up the environment and runs an experiment:
 1. Download the latest pytorch-bsf into a temporary directory.
 2. Create a new conda environment and install dependencies in it.
 3. Run an experiment on the temporary directory and environment.
+
+
+## Author
+
+RIKEN AIP-FUJITSU Collaboration Center (RAFCC)
+
+
+## License
+
+MIT
