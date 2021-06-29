@@ -6,8 +6,8 @@ channels:
 dependencies:
 - python=3.9
 - pytorch=1.8.1=py3.9_cuda10.1_cudnn7.6.3_0
-- pytorch-lightning=1.3.0
-- torchvision #=0.9.1
+- pytorch-lightning=1.3.7=pyhd8ed1ab_0
+- torchvision=0.9.1=py39_cu101
 - tensorboard=2.1.1
 - mlflow=1.18.0
 - sphinx=4.0.2
