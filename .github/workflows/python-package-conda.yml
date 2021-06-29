@@ -6,7 +6,7 @@ jobs:
   build-linux:
     runs-on: ubuntu-latest
     strategy:
-      max-parallel: 1
+      max-parallel: 5
 
     steps:
     - uses: actions/checkout@v2
@@ -18,10 +18,13 @@ jobs:
       run: |
         # $CONDA is an environment variable pointing to the root of the miniconda directory
         echo $CONDA/bin >> $GITHUB_PATH
-    - name: Install dependencies
+    - name: MLflow Run
       run: |
-        conda update conda
-        conda env update --file conda.yaml --name base
+        conda install -c conda-forge mlflow
+        mlflow run .
+#    - name: Install dependencies
+#      run: |
+#        conda env update --file conda.yaml --name base
     - name: Lint with flake8
       run: |
         conda install flake8
