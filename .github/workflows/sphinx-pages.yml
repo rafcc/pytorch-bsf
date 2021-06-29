@@ -19,12 +19,12 @@ jobs:
       run: |
         python -m pip install --upgrade pip
         python -m pip install -e .
-      - name: Sphinx Pages
-        # You may pin to the exact commit or the version.
-        # uses: seanzhengw/sphinx-pages@70dd0557fc226cfcd41c617aec5e9ee4fce4afe2
-        uses: seanzhengw/sphinx-pages@master
-        with:
-          github_token: ${{ secrets.GITHUB_TOKEN }}
-          create_readme: true
-          source_dir: docs
-          install_extensions: false
+    - name: Sphinx Pages
+      # You may pin to the exact commit or the version.
+      # uses: seanzhengw/sphinx-pages@70dd0557fc226cfcd41c617aec5e9ee4fce4afe2
+      uses: seanzhengw/sphinx-pages@master
+      with:
+        github_token: ${{ secrets.GITHUB_TOKEN }}
+        create_readme: true
+        source_dir: docs
+        install_extensions: false
