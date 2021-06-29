@@ -22,7 +22,7 @@ jobs:
     - name: Install dependencies
       run: |
         conda env update --file conda.yaml --name base
-    - name: MLflow run
+    - name: E2E test
       run: |
         cat << EOS > data.tsv
         1 2
@@ -34,7 +34,7 @@ jobs:
         2
         3
         EOS
-        mlflow run . -P data=data.tsv -P label=label.tsv -P degree=3
+        python -m torch_bsf --data=data.tsv --label=label.tsv --degree=3 --gpus=0
     - name: Lint with flake8
       run: |
         conda install flake8
