@@ -19,7 +19,7 @@ Python 3.8 or above.
 
 Install the package:
 ```
-$ pip install git+https://gitlab.com/hmkz/pytorch-bsf
+$ pip install git+https://github.com/rafcc/pytorch-bsf
 ```
 
 Train a model by `fit()`, and call the model to predict.
@@ -90,8 +90,8 @@ $ python -m torch_bsf \
 |split_ratio|float (0.0 < x < 1.0)|`0.5`|The ratio of training data against validation data.|
 |batch_size|int (x >= 0)|`0`|The size of minibatch. The default uses all records in a single batch.|
 |max_epochs|int (x >= 1)|`1000`|The number of epochs to stop training.|
-|gpus|int (x >= -1)|`-1`|Which GPU to use. By default, use all available GPUs. See [PyTorch Lightning documentation](https://pytorch-lightning.readthedocs.io/en/stable/advanced/multi_gpu.html#select-gpu-devices).|
-|num_nodes|int (x >= 1)|`1`|The number of compute nodes. See [PyTorch Lightning documentation](https://pytorch-lightning.readthedocs.io/en/stable/advanced/multi_gpu.html#distributed-modes).|
+|gpus|int (x >= -1)|`-1`|The number of GPUs to use. By default, use all available GPUs. See [PyTorch Lightning documentation](https://pytorch-lightning.readthedocs.io/en/stable/advanced/multi_gpu.html#select-gpu-devices).|
+|num_nodes|int (x >= 1)|`1`|The number of compute nodes to use. See [PyTorch Lightning documentation](https://pytorch-lightning.readthedocs.io/en/stable/advanced/multi_gpu.html#distributed-modes).|
 |accelerator|`dp`, `ddp`, `ddp_spawn`, `ddp2`, or `horovod`|`ddp`|Distributed mode. See [PyTorch Lightning documentation](https://pytorch-lightning.readthedocs.io/en/stable/advanced/multi_gpu.html#distributed-modes).|
 |loglevel|int (0 <= x <= 2)|`2`|What objects to be logged. `0`: nothing; `1`: metrics; `2`: metrics and models.|
 
@@ -106,7 +106,7 @@ $ conda install mlflow
 
 Run the following command:
 ```
-$ mlflow run git@gitlab.com:hmkz/pytorch-bsf \
+$ mlflow run https://github.com/rafcc/pytorch-bsf \
   -P data=data.tsv \
   -P label=label.tsv \
   -P degree=3 \
