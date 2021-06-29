@@ -6,3 +6,4 @@ channels:
 dependencies:
 - python=3.9
 - pytorch=1.8.1=py3.9_cuda10.1_cudnn7.6.3_0
+- mlflow=1.18.0
