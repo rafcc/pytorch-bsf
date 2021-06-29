@@ -31,9 +31,3 @@ entry_points:
       --num_nodes={num_nodes}
       --accelerator={accelerator}
       --loglevel={loglevel}
-  docs:
-    parameters:
-      format: {type: string, default: html}
-      dest: {type: path, default: public}
-    command: >
-      cd docs && sphinx-build -M {format} . _build && mv -T _build/{format} {dest}
