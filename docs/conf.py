@@ -43,11 +43,8 @@ extensions = [
 
 # https://www.sphinx-doc.org/ja/master/usage/extensions/doctest.html#confval-doctest_global_setup
 doctest_global_setup = '''
-try:
-    import torch
-    import torch_bsf
-except ImportError:
-    pd = None
+import torch
+import torch_bsf
 '''
 doctest_test_doctest_blocks = 'default'
 
