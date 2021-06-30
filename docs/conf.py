@@ -41,6 +41,15 @@ extensions = [
     'numpydoc',
 ]
 
+# https://www.sphinx-doc.org/ja/master/usage/extensions/doctest.html#confval-doctest_global_setup
+doctest_global_setup = '''
+try:
+    import torch
+    import torch_bsf
+except ImportError:
+    pd = None
+'''
+
 # Add any paths that contain templates here, relative to this directory.
 templates_path = ['_templates']
 
