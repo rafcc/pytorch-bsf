@@ -206,9 +206,9 @@ class BezierSimplex(pl.LightningModule):
         Returns
         ----------
         ts : torch.Tensor
-            Array of mesh grid
+            A parameter matrix of the mesh grid.
         xs : torch.Tensor
-            The concatenated array
+            A value matrix of the mesh grid.
         """
         ts = torch.Tensor(list(indices(dim=self.n_params, deg=num))) / num
         xs = self.forward(ts)
