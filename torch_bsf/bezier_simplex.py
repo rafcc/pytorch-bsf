@@ -30,6 +30,7 @@ class BezierSimplexDataModule(pl.LightningDataModule):
     normalize
         The data normalization method.
         Either `"max"`, `"std"`, `"quantile"`, or `"none"`.
+
     """
     def __init__(
         self,
@@ -123,6 +124,7 @@ def indices(dim: int, deg: int) -> Iterable[Index]:
     -------
     indices
         The indices.
+
     """
     def iterate(c, r):
         if len(c) == dim - 1:
@@ -149,6 +151,7 @@ def polynom(degree: int, index: Iterable[int]) -> float:
     -------
     polynom
         The polynomial coefficient.
+
     """
     r = factorial(degree)
     for i in index:
@@ -170,6 +173,7 @@ def monomial(var: Iterable[float], deg: Iterable[int]) -> torch.Tensor:
     -------
     monomial
         The monomial.
+
     """
     var = torch.as_tensor(var)
     deg = torch.as_tensor(deg, device=var.device)
@@ -199,7 +203,7 @@ class BezierSimplex(pl.LightningModule):
     ...         [1/3, 1/3, 1/3],
     ...         [1/3, 0/3, 2/3],
     ...         [0/3, 3/3, 0/3],
-...             [0/3, 2/3, 1/3],
+    ...         [0/3, 2/3, 1/3],
     ...         [0/3, 1/3, 2/3],
     ...         [0/3, 0/3, 3/3],
     ...     ]
@@ -247,6 +251,7 @@ class BezierSimplex(pl.LightningModule):
         -------
         x
             A minibatch of value vectors. 
+
         """
         # REQUIRED
         x = 0
@@ -305,10 +310,11 @@ class BezierSimplex(pl.LightningModule):
 
         Returns
         ----------
-        ts : torch.Tensor
+        ts
             A parameter matrix of the mesh grid.
-        xs : torch.Tensor
+        xs
             A value matrix of the mesh grid.
+
         """
         ts = torch.Tensor(list(indices(dim=self.n_params, deg=num))) / num
         xs = self.forward(ts)
