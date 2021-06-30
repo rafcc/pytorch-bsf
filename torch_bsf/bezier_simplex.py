@@ -128,8 +128,34 @@ class BezierSimplex(pl.LightningModule):
     
     Examples
     --------
-    >>> bs = BezierSimplex(2, 3, 2)
-    >>> bs.
+    >>> ts = torch.tensor(  # parameters on a simplex
+    ... [
+    ...     [3/3, 0/3, 0/3],
+    ...     [2/3, 1/3, 0/3],
+    ...     [2/3, 0/3, 1/3],
+    ...     [1/3, 2/3, 0/3],
+    ...     [1/3, 1/3, 1/3],
+    ...     [1/3, 0/3, 2/3],
+    ...     [0/3, 3/3, 0/3],
+    ...     [0/3, 2/3, 1/3],
+    ...     [0/3, 1/3, 2/3],
+    ...     [0/3, 0/3, 3/3],
+    ... ]
+    ... )
+    >>> xs = 1 - ts * ts  # values corresponding to the parameters
+    >>> dl = DataLoader(TensorDataset(ts, xs))
+    >>> bs = BezierSimplex(
+    ...     n_params=int(ts.shape[1]),
+    ...     n_values=int(xs.shape[1]),
+    ...     degree=3,
+    ... )
+    >>> trainer = pl.Trainer(
+    ...     gpus=0,
+    ...     max_epochs=10,
+    ...     callbacks=[EarlyStopping(monitor="val_mse")],
+    ... )
+    >>> trainer.fit(bs, dl)
+    >>> ts, xs = bs.meshgrid()
 
     """
     def __init__(
