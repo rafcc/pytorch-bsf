@@ -39,6 +39,7 @@ extensions = [
     'sphinx.ext.doctest',
     'sphinx.ext.githubpages',
     'sphinx.ext.linkcode',
+    'sphinx.ext.mathjax',
     'sphinx.ext.napoleon',
 ]
 
