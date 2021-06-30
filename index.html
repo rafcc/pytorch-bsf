@@ -175,14 +175,14 @@ The project is on <a class="reference external" href="https://github.com/rafcc/p
 <p>Let <span class="math notranslate nohighlight">\(D, M, N\)</span> nonnegative integers, <span class="math notranslate nohighlight">\(\mathbb N\)</span> be the set of nonnegative integers, and <span class="math notranslate nohighlight">\(\mathbb R^N\)</span> the <span class="math notranslate nohighlight">\(N\)</span>-dimensional Euclidean space.
 We define the <em>index set</em> by</p>
 <div class="math notranslate nohighlight">
-\[\mathbb N_D^M = \left\{(d_1,\ldots,d_M)\in\mathbb N^M | \sum_{m=1}^M d_m=D\right\},\]</div>
+\[\mathbb N_D^M = \left\{(d_1,\ldots,d_M)\in\mathbb N^M \Big| \sum_{m=1}^M d_m=D\right\},\]</div>
 <p>and the <em>simplex</em> by</p>
 <div class="math notranslate nohighlight">
-\[\Delta^{M-1} = \left\{(t_1,\ldots,t_M)\in\mathbb R^M | \sum_{m=1}^M t_m=1\right\}.\]</div>
+\[\Delta^{M-1} = \left\{(t_1,\ldots,t_M)\in\mathbb R^M \Big| \sum_{m=1}^M t_m=1\right\}.\]</div>
 <p>An <span class="math notranslate nohighlight">\((M-1)\)</span>-dimensional <em>Bezier simplex</em> of degree <span class="math notranslate nohighlight">\(D\)</span> in <span class="math notranslate nohighlight">\(\mathbb R^N\)</span> is a polynomial map <span class="math notranslate nohighlight">\(b: \Delta^{M-1}\to\mathbb R^N\)</span> defined by</p>
 <div class="math notranslate nohighlight">
 \[b(t|p) = \sum_{d\in\mathbb N_D^M} \binom{D}{d} t^d p_d,\]</div>
-<p>where <span class="math notranslate nohighlight">\(p_d\in\mathbb R^N\ (d\in\mathbb N_D^M)\)</span> are parameters called the <em>control points</em>.</p>
+<p>where <span class="math notranslate nohighlight">\(t^d=t_1^{d_1} t_2^{d_2}\cdots t_M^{d_M}\)</span>, <span class="math notranslate nohighlight">\(\binom{D}{d}=D! / (d_1!d_2!\cdots d_M!)\)</span>, and <span class="math notranslate nohighlight">\(p_d\in\mathbb R^N\ (d\in\mathbb N_D^M)\)</span> are parameters called the <em>control points</em>.</p>
 </div>
 <div class="section" id="fitting-a-bezier-simplex-to-a-dataset">
 <h2>Fitting a Bezier simplex to a dataset<a class="headerlink" href="#fitting-a-bezier-simplex-to-a-dataset" title="Permalink to this headline">¶</a></h2>
@@ -195,7 +195,7 @@ What we are trying can be formulated as a problem of finding the best vector of 
 <div class="section" id="why-does-bezier-simplex-fitting-matter">
 <h2>Why does Bezier simplex fitting matter?<a class="headerlink" href="#why-does-bezier-simplex-fitting-matter" title="Permalink to this headline">¶</a></h2>
 <p>The Bezier simplex can approximate the solution set of “good” multiobjective optimization problems.
-More precisely, for the weighted sum scalarization problem of any multiobjective strongly convex problem, the map form a simplex of weight vectors to the solution set of weighted sum problems can be approximated by a Bezier simplex.
+More precisely, for the weighted sum scalarization problem of any multiobjective strongly convex problem, the map from a simplex of weight vectors to the solution set of weighted sum problems can be approximated by a Bezier simplex.
 If we find few solutions to such a problem, the entire solution set can be approximated by Bezier simplex fitting.
 An important application is hyperparameter search of the elastic net.</p>
 <div class="toctree-wrapper compound">
