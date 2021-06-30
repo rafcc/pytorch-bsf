@@ -148,6 +148,18 @@ class BezierSimplex(pl.LightningModule):
         })
 
     def forward(self, t: torch.Tensor) -> torch.Tensor:
+        """Process a forwarding step of training.
+
+        Parameters
+        ----------
+        t
+            A minibatch of parameter vectors.
+
+        Returns
+        -------
+        x
+            A minibatch of value vectors. 
+        """
         # REQUIRED
         x = 0
         for i in indices(self.n_params, self.degree):
