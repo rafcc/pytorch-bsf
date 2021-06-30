@@ -39,7 +39,7 @@ extensions = [
     'sphinx.ext.doctest',
     'sphinx.ext.githubpages',
     'sphinx.ext.linkcode',
-    'numpydoc',
+    'sphinx.ext.napoleon',
 ]
 
 # https://www.sphinx-doc.org/ja/master/usage/extensions/doctest.html#confval-doctest_global_setup
