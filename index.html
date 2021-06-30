@@ -165,12 +165,10 @@ The project is on <a class="reference external" href="https://github.com/rafcc/p
 </div>
 <div class="section" id="bezier-simplex">
 <h1>Bezier simplex<a class="headerlink" href="#bezier-simplex" title="Permalink to this headline">¶</a></h1>
-<p>Let <span class="math notranslate nohighlight">\(\mathbb N\)</span> be the set of nonnegative integers.
-An <span class="math notranslate nohighlight">\((M-1)\)</span>-dimensional Bezier simplex of degree <span class="math notranslate nohighlight">\(D\)</span> in <span class="math notranslate nohighlight">\(\mathbb R^N\)</span> is a map <span class="math notranslate nohighlight">\(b: \Delta^{M-1}\to\mathbb R^N\)</span> defined by
-.. math:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">b</span><span class="p">(</span><span class="n">t</span><span class="p">)</span> <span class="o">=</span> \<span class="n">sum_</span><span class="p">{</span><span class="n">d</span>\<span class="ow">in</span>\<span class="n">mathbb</span> <span class="n">N_D</span><span class="o">^</span><span class="n">M</span><span class="p">}</span> \<span class="n">binom</span><span class="p">{</span><span class="n">D</span><span class="p">}{</span><span class="n">d</span><span class="p">}</span> <span class="n">t</span><span class="o">^</span><span class="n">d</span> <span class="n">p_d</span><span class="p">,</span>
-</pre></div>
-</div>
+<p>Let $mathbb N$ be the set of nonnegative integers.
+An <span class="math notranslate nohighlight">\((M-1)\)</span>-dimensional Bezier simplex of degree <span class="math notranslate nohighlight">\(D\)</span> in <span class="math notranslate nohighlight">\(\mathbb R^N\)</span> is a map <span class="math notranslate nohighlight">\(b: \Delta^{M-1}\to\mathbb R^N\)</span> defined by</p>
+<div class="math notranslate nohighlight">
+\[b(t) = \sum_{d\in\mathbb N_D^M} \binom{D}{d} t^d p_d,\]</div>
 <p>where <span class="math notranslate nohighlight">\(p_d\in\mathbb R^N\ (d\in\mathbb N_D^M)\)</span> are parameters called the <em>control points</em>.</p>
 <div class="toctree-wrapper compound">
 </div>
