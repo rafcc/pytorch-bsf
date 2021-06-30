@@ -174,14 +174,11 @@
 <p>A Bezier simplex model.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><dl class="simple">
-<dt><strong>n_params</strong></dt><dd><p>The number of parameters.</p>
-</dd>
-<dt><strong>n_values</strong></dt><dd><p>The number of values.</p>
-</dd>
-<dt><strong>degree</strong></dt><dd><p>The degree of the Bezier simplex.</p>
-</dd>
-</dl>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>n_params</strong> – The number of parameters.</p></li>
+<li><p><strong>n_values</strong> – The number of values.</p></li>
+<li><p><strong>degree</strong> – The degree of the Bezier simplex.</p></li>
+</ul>
 </dd>
 </dl>
 <p class="rubric">Examples</p>
@@ -215,465 +212,14 @@
 <span class="gp">&gt;&gt;&gt; </span><span class="n">ts</span><span class="p">,</span> <span class="n">xs</span> <span class="o">=</span> <span class="n">bs</span><span class="o">.</span><span class="n">meshgrid</span><span class="p">()</span>
 </pre></div>
 </div>
-<dl class="field-list simple">
-<dt class="field-odd">Attributes</dt>
-<dd class="field-odd"><dl class="simple">
-<dt><code class="xref py py-obj docutils literal notranslate"><span class="pre">automatic_optimization</span></code></dt><dd><p>If False you are responsible for calling .backward, .step, zero_grad.</p>
-</dd>
-<dt><code class="xref py py-obj docutils literal notranslate"><span class="pre">current_epoch</span></code></dt><dd><p>The current epoch</p>
-</dd>
-<dt><strong>datamodule</strong></dt><dd></dd>
-<dt><strong>device</strong></dt><dd></dd>
-<dt><strong>dtype</strong></dt><dd></dd>
-<dt><strong>example_input_array</strong></dt><dd></dd>
-<dt><code class="xref py py-obj docutils literal notranslate"><span class="pre">global_rank</span></code></dt><dd><p>The index of the current process across all nodes and devices.</p>
-</dd>
-<dt><code class="xref py py-obj docutils literal notranslate"><span class="pre">global_step</span></code></dt><dd><p>Total training batches seen across all epochs</p>
-</dd>
-<dt><strong>hparams</strong></dt><dd></dd>
-<dt><strong>hparams_initial</strong></dt><dd></dd>
-<dt><code class="xref py py-obj docutils literal notranslate"><span class="pre">local_rank</span></code></dt><dd><p>The index of the current process within a single node.</p>
-</dd>
-<dt><code class="xref py py-obj docutils literal notranslate"><span class="pre">logger</span></code></dt><dd><p>Reference to the logger object in the Trainer.</p>
-</dd>
-<dt><strong>model_size</strong></dt><dd></dd>
-<dt><code class="xref py py-obj docutils literal notranslate"><span class="pre">on_gpu</span></code></dt><dd><p>True if your model is currently running on GPUs.</p>
-</dd>
-<dt><code class="xref py py-obj docutils literal notranslate"><span class="pre">truncated_bptt_steps</span></code></dt><dd><p>truncated_bptt_steps: Truncated back prop breaks performs backprop every k steps of much a longer sequence.</p>
-</dd>
-</dl>
-</dd>
-</dl>
-<p class="rubric">Methods</p>
-<table class="longtable docutils align-default">
-<colgroup>
-<col style="width: 10%" />
-<col style="width: 90%" />
-</colgroup>
-<tbody>
-<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">add_module</span></code>(name, module)</p></td>
-<td><p>Adds a child module to the current module.</p></td>
-</tr>
-<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">all_gather</span></code>(data[, group, sync_grads])</p></td>
-<td><p>Allows users to call <code class="docutils literal notranslate"><span class="pre">self.all_gather()</span></code> from the LightningModule, thus making the <code class="docutils literal notranslate"><span class="pre">`all_gather`</span></code> operation accelerator agnostic.</p></td>
-</tr>
-<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">apply</span></code>(fn)</p></td>
-<td><p>Applies <code class="docutils literal notranslate"><span class="pre">fn</span></code> recursively to every submodule (as returned by <code class="docutils literal notranslate"><span class="pre">.children()</span></code>) as well as self.</p></td>
-</tr>
-<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">backward</span></code>(loss, optimizer, optimizer_idx, …)</p></td>
-<td><p>Override backward with your own implementation if you need to.</p></td>
-</tr>
-<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">bfloat16</span></code>()</p></td>
-<td><p>Casts all floating point parameters and buffers to <code class="docutils literal notranslate"><span class="pre">bfloat16</span></code> datatype.</p></td>
-</tr>
-<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">buffers</span></code>([recurse])</p></td>
-<td><p>Returns an iterator over module buffers.</p></td>
-</tr>
-<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">children</span></code>()</p></td>
-<td><p>Returns an iterator over immediate children modules.</p></td>
-</tr>
-<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">configure_callbacks</span></code>()</p></td>
-<td><p>Configure model-specific callbacks.</p></td>
-</tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#torch_bsf.bezier_simplex.BezierSimplex.configure_optimizers" title="torch_bsf.bezier_simplex.BezierSimplex.configure_optimizers"><code class="xref py py-obj docutils literal notranslate"><span class="pre">configure_optimizers</span></code></a>()</p></td>
-<td><p>Choose what optimizers and learning-rate schedulers to use in your optimization.</p></td>
-</tr>
-<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">configure_sharded_model</span></code>()</p></td>
-<td><p>Hook to create modules in a distributed aware context.</p></td>
-</tr>
-<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">cpu</span></code>()</p></td>
-<td><p>Moves all model parameters and buffers to the CPU.</p></td>
-</tr>
-<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">cuda</span></code>([device])</p></td>
-<td><p>Moves all model parameters and buffers to the GPU.</p></td>
-</tr>
-<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">double</span></code>()</p></td>
-<td><p>Casts all floating point parameters and buffers to <code class="docutils literal notranslate"><span class="pre">double</span></code> datatype.</p></td>
-</tr>
-<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">eval</span></code>()</p></td>
-<td><p>Sets the module in evaluation mode.</p></td>
-</tr>
-<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">extra_repr</span></code>()</p></td>
-<td><p>Set the extra representation of the module</p></td>
-</tr>
-<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">float</span></code>()</p></td>
-<td><p>Casts all floating point parameters and buffers to float datatype.</p></td>
-</tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#torch_bsf.bezier_simplex.BezierSimplex.forward" title="torch_bsf.bezier_simplex.BezierSimplex.forward"><code class="xref py py-obj docutils literal notranslate"><span class="pre">forward</span></code></a>(t)</p></td>
-<td><p>Process a forwarding step of training.</p></td>
-</tr>
-<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">freeze</span></code>()</p></td>
-<td><p>Freeze all params for inference.</p></td>
-</tr>
-<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_buffer</span></code>(target)</p></td>
-<td><p>Returns the buffer given by <code class="docutils literal notranslate"><span class="pre">target</span></code> if it exists, otherwise throws an error.</p></td>
-</tr>
-<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_parameter</span></code>(target)</p></td>
-<td><p>Returns the parameter given by <code class="docutils literal notranslate"><span class="pre">target</span></code> if it exists, otherwise throws an error.</p></td>
-</tr>
-<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_progress_bar_dict</span></code>()</p></td>
-<td><p>Implement this to override the default items displayed in the progress bar.</p></td>
-</tr>
-<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_submodule</span></code>(target)</p></td>
-<td><p>Returns the submodule given by <code class="docutils literal notranslate"><span class="pre">target</span></code> if it exists, otherwise throws an error.</p></td>
-</tr>
-<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">grad_norm</span></code>(norm_type)</p></td>
-<td><p>Compute each parameter’s gradient’s norm and their overall norm.</p></td>
-</tr>
-<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">half</span></code>()</p></td>
-<td><p>Casts all floating point parameters and buffers to <code class="docutils literal notranslate"><span class="pre">half</span></code> datatype.</p></td>
-</tr>
-<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">load_from_checkpoint</span></code>(checkpoint_path[, …])</p></td>
-<td><p>Primary way of loading a model from a checkpoint.</p></td>
-</tr>
-<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">load_state_dict</span></code>(state_dict[, strict])</p></td>
-<td><p>Copies parameters and buffers from <code class="xref py py-attr docutils literal notranslate"><span class="pre">state_dict</span></code> into this module and its descendants.</p></td>
-</tr>
-<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">log</span></code>(name, value[, prog_bar, logger, …])</p></td>
-<td><p>Log a key, value</p></td>
-</tr>
-<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">log_dict</span></code>(dictionary[, prog_bar, logger, …])</p></td>
-<td><p>Log a dictonary of values at once</p></td>
-</tr>
-<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">manual_backward</span></code>(loss[, optimizer])</p></td>
-<td><p>Call this directly from your training_step when doing optimizations manually.</p></td>
-</tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#torch_bsf.bezier_simplex.BezierSimplex.meshgrid" title="torch_bsf.bezier_simplex.BezierSimplex.meshgrid"><code class="xref py py-obj docutils literal notranslate"><span class="pre">meshgrid</span></code></a>([num])</p></td>
-<td><p>Computes a meshgrid of the Bezier simplex.</p></td>
-</tr>
-<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">modules</span></code>()</p></td>
-<td><p>Returns an iterator over all modules in the network.</p></td>
-</tr>
-<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">named_buffers</span></code>([prefix, recurse])</p></td>
-<td><p>Returns an iterator over module buffers, yielding both the name of the buffer as well as the buffer itself.</p></td>
-</tr>
-<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">named_children</span></code>()</p></td>
-<td><p>Returns an iterator over immediate children modules, yielding both the name of the module as well as the module itself.</p></td>
-</tr>
-<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">named_modules</span></code>([memo, prefix, remove_duplicate])</p></td>
-<td><p>Returns an iterator over all modules in the network, yielding both the name of the module as well as the module itself.</p></td>
-</tr>
-<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">named_parameters</span></code>([prefix, recurse])</p></td>
-<td><p>Returns an iterator over module parameters, yielding both the name of the parameter as well as the parameter itself.</p></td>
-</tr>
-<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">on_after_backward</span></code>()</p></td>
-<td><p>Called in the training loop after loss.backward() and before optimizers do anything.</p></td>
-</tr>
-<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">on_after_batch_transfer</span></code>(batch, dataloader_idx)</p></td>
-<td><p>Override to alter or apply batch augmentations to your batch after it is transferred to the device.</p></td>
-</tr>
-<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">on_before_batch_transfer</span></code>(batch, dataloader_idx)</p></td>
-<td><p>Override to alter or apply batch augmentations to your batch before it is transferred to the device.</p></td>
-</tr>
-<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">on_before_zero_grad</span></code>(optimizer)</p></td>
-<td><p>Called after <code class="docutils literal notranslate"><span class="pre">training_step()</span></code> and before <code class="docutils literal notranslate"><span class="pre">optimizer.zero_grad()</span></code>.</p></td>
-</tr>
-<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">on_epoch_end</span></code>()</p></td>
-<td><p>Called when either of train/val/test epoch ends.</p></td>
-</tr>
-<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">on_epoch_start</span></code>()</p></td>
-<td><p>Called when either of train/val/test epoch begins.</p></td>
-</tr>
-<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">on_fit_end</span></code>()</p></td>
-<td><p>Called at the very end of fit.</p></td>
-</tr>
-<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">on_fit_start</span></code>()</p></td>
-<td><p>Called at the very beginning of fit.</p></td>
-</tr>
-<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">on_hpc_load</span></code>(checkpoint)</p></td>
-<td><p>Hook to do whatever you need right before Slurm manager loads the model.</p></td>
-</tr>
-<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">on_hpc_save</span></code>(checkpoint)</p></td>
-<td><p>Hook to do whatever you need right before Slurm manager saves the model.</p></td>
-</tr>
-<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">on_load_checkpoint</span></code>(checkpoint)</p></td>
-<td><p>Do something with the checkpoint.</p></td>
-</tr>
-<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">on_post_move_to_device</span></code>()</p></td>
-<td><p>Called in the <code class="docutils literal notranslate"><span class="pre">parameter_validation</span></code> decorator after <code class="xref py py-meth docutils literal notranslate"><span class="pre">to()</span></code> is called.</p></td>
-</tr>
-<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">on_predict_batch_end</span></code>(outputs, batch, …)</p></td>
-<td><p>Called in the predict loop after the batch.</p></td>
-</tr>
-<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">on_predict_batch_start</span></code>(batch, batch_idx, …)</p></td>
-<td><p>Called in the predict loop before anything happens for that batch.</p></td>
-</tr>
-<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">on_predict_dataloader</span></code>()</p></td>
-<td><p>Called before requesting the predict dataloader.</p></td>
-</tr>
-<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">on_predict_end</span></code>()</p></td>
-<td><p>Called at the end of predicting.</p></td>
-</tr>
-<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">on_predict_epoch_end</span></code>(results)</p></td>
-<td><p>Called at the end of predicting.</p></td>
-</tr>
-<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">on_predict_epoch_start</span></code>()</p></td>
-<td><p>Called at the beginning of predicting.</p></td>
-</tr>
-<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">on_predict_model_eval</span></code>()</p></td>
-<td><p>Sets the model to eval during the predict loop</p></td>
-</tr>
-<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">on_predict_start</span></code>()</p></td>
-<td><p>Called at the beginning of predicting.</p></td>
-</tr>
-<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">on_pretrain_routine_end</span></code>()</p></td>
-<td><p>Called at the end of the pretrain routine (between fit and train start).</p></td>
-</tr>
-<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">on_pretrain_routine_start</span></code>()</p></td>
-<td><p>Called at the beginning of the pretrain routine (between fit and train start).</p></td>
-</tr>
-<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">on_save_checkpoint</span></code>(checkpoint)</p></td>
-<td><p>Give the model a chance to add something to the checkpoint.</p></td>
-</tr>
-<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">on_test_batch_end</span></code>(outputs, batch, batch_idx, …)</p></td>
-<td><p>Called in the test loop after the batch.</p></td>
-</tr>
-<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">on_test_batch_start</span></code>(batch, batch_idx, …)</p></td>
-<td><p>Called in the test loop before anything happens for that batch.</p></td>
-</tr>
-<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">on_test_dataloader</span></code>()</p></td>
-<td><p>Called before requesting the test dataloader.</p></td>
-</tr>
-<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">on_test_end</span></code>()</p></td>
-<td><p>Called at the end of testing.</p></td>
-</tr>
-<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">on_test_epoch_end</span></code>()</p></td>
-<td><p>Called in the test loop at the very end of the epoch.</p></td>
-</tr>
-<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">on_test_epoch_start</span></code>()</p></td>
-<td><p>Called in the test loop at the very beginning of the epoch.</p></td>
-</tr>
-<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">on_test_model_eval</span></code>()</p></td>
-<td><p>Sets the model to eval during the test loop</p></td>
-</tr>
-<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">on_test_model_train</span></code>()</p></td>
-<td><p>Sets the model to train during the test loop</p></td>
-</tr>
-<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">on_test_start</span></code>()</p></td>
-<td><p>Called at the beginning of testing.</p></td>
-</tr>
-<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">on_train_batch_end</span></code>(outputs, batch, …)</p></td>
-<td><p>Called in the training loop after the batch.</p></td>
-</tr>
-<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">on_train_batch_start</span></code>(batch, batch_idx, …)</p></td>
-<td><p>Called in the training loop before anything happens for that batch.</p></td>
-</tr>
-<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">on_train_dataloader</span></code>()</p></td>
-<td><p>Called before requesting the train dataloader.</p></td>
-</tr>
-<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">on_train_end</span></code>()</p></td>
-<td><p>Called at the end of training before logger experiment is closed.</p></td>
-</tr>
-<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">on_train_epoch_end</span></code>([unused])</p></td>
-<td><p>Called in the training loop at the very end of the epoch.</p></td>
-</tr>
-<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">on_train_epoch_start</span></code>()</p></td>
-<td><p>Called in the training loop at the very beginning of the epoch.</p></td>
-</tr>
-<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">on_train_start</span></code>()</p></td>
-<td><p>Called at the beginning of training after sanity check.</p></td>
-</tr>
-<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">on_val_dataloader</span></code>()</p></td>
-<td><p>Called before requesting the val dataloader.</p></td>
-</tr>
-<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">on_validation_batch_end</span></code>(outputs, batch, …)</p></td>
-<td><p>Called in the validation loop after the batch.</p></td>
-</tr>
-<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">on_validation_batch_start</span></code>(batch, batch_idx, …)</p></td>
-<td><p>Called in the validation loop before anything happens for that batch.</p></td>
-</tr>
-<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">on_validation_end</span></code>()</p></td>
-<td><p>Called at the end of validation.</p></td>
-</tr>
-<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">on_validation_epoch_end</span></code>()</p></td>
-<td><p>Called in the validation loop at the very end of the epoch.</p></td>
-</tr>
-<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">on_validation_epoch_start</span></code>()</p></td>
-<td><p>Called in the validation loop at the very beginning of the epoch.</p></td>
-</tr>
-<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">on_validation_model_eval</span></code>()</p></td>
-<td><p>Sets the model to eval during the val loop</p></td>
-</tr>
-<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">on_validation_model_train</span></code>()</p></td>
-<td><p>Sets the model to train during the val loop</p></td>
-</tr>
-<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">on_validation_start</span></code>()</p></td>
-<td><p>Called at the beginning of validation.</p></td>
-</tr>
-<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">optimizer_step</span></code>([epoch, batch_idx, …])</p></td>
-<td><p>Override this method to adjust the default way the <code class="xref py py-class docutils literal notranslate"><span class="pre">Trainer</span></code> calls each optimizer.</p></td>
-</tr>
-<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">optimizer_zero_grad</span></code>(epoch, batch_idx, …)</p></td>
-<td><p>Override this method to change the default behaviour of <code class="docutils literal notranslate"><span class="pre">optimizer.zero_grad()</span></code>.</p></td>
-</tr>
-<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">parameters</span></code>([recurse])</p></td>
-<td><p>Returns an iterator over module parameters.</p></td>
-</tr>
-<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">predict_dataloader</span></code>()</p></td>
-<td><p>Implement one or multiple PyTorch DataLoaders for prediction.</p></td>
-</tr>
-<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">predict_step</span></code>(batch, batch_idx[, dataloader_idx])</p></td>
-<td><p>Step function called during <code class="xref py py-meth docutils literal notranslate"><span class="pre">predict()</span></code>.</p></td>
-</tr>
-<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">prepare_data</span></code>()</p></td>
-<td><p>Use this to download and prepare data.</p></td>
-</tr>
-<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">print</span></code>(*args, **kwargs)</p></td>
-<td><p>Prints only from process 0.</p></td>
-</tr>
-<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">register_backward_hook</span></code>(hook)</p></td>
-<td><p>Registers a backward hook on the module.</p></td>
-</tr>
-<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">register_buffer</span></code>(name, tensor[, persistent])</p></td>
-<td><p>Adds a buffer to the module.</p></td>
-</tr>
-<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">register_forward_hook</span></code>(hook)</p></td>
-<td><p>Registers a forward hook on the module.</p></td>
-</tr>
-<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">register_forward_pre_hook</span></code>(hook)</p></td>
-<td><p>Registers a forward pre-hook on the module.</p></td>
-</tr>
-<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">register_full_backward_hook</span></code>(hook)</p></td>
-<td><p>Registers a backward hook on the module.</p></td>
-</tr>
-<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">register_parameter</span></code>(name, param)</p></td>
-<td><p>Adds a parameter to the module.</p></td>
-</tr>
-<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">requires_grad_</span></code>([requires_grad])</p></td>
-<td><p>Change if autograd should record operations on parameters in this module.</p></td>
-</tr>
-<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">save_hyperparameters</span></code>(*args[, ignore, frame])</p></td>
-<td><p>Save model arguments to <code class="docutils literal notranslate"><span class="pre">hparams</span></code> attribute.</p></td>
-</tr>
-<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">setup</span></code>([stage])</p></td>
-<td><p>Called at the beginning of fit (train + validate), validate, test, and predict.</p></td>
-</tr>
-<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">share_memory</span></code>()</p></td>
-<td><p>See <code class="xref py py-meth docutils literal notranslate"><span class="pre">torch.Tensor.share_memory_()</span></code></p></td>
-</tr>
-<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">state_dict</span></code>([destination, prefix, keep_vars])</p></td>
-<td><p>Returns a dictionary containing a whole state of the module.</p></td>
-</tr>
-<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">tbptt_split_batch</span></code>(batch, split_size)</p></td>
-<td><p>When using truncated backpropagation through time, each batch must be split along the time dimension.</p></td>
-</tr>
-<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">teardown</span></code>([stage])</p></td>
-<td><p>Called at the end of fit (train + validate), validate, test, predict, or tune.</p></td>
-</tr>
-<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">test_dataloader</span></code>()</p></td>
-<td><p>Implement one or multiple PyTorch DataLoaders for testing.</p></td>
-</tr>
-<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">test_epoch_end</span></code>(outputs)</p></td>
-<td><p>Called at the end of a test epoch with the output of all test steps.</p></td>
-</tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#torch_bsf.bezier_simplex.BezierSimplex.test_step" title="torch_bsf.bezier_simplex.BezierSimplex.test_step"><code class="xref py py-obj docutils literal notranslate"><span class="pre">test_step</span></code></a>(batch, batch_idx)</p></td>
-<td><p>Operates on a single batch of data from the test set.</p></td>
-</tr>
-<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">test_step_end</span></code>(*args, **kwargs)</p></td>
-<td><p>Use this when testing with dp or ddp2 because <a class="reference internal" href="#torch_bsf.bezier_simplex.BezierSimplex.test_step" title="torch_bsf.bezier_simplex.BezierSimplex.test_step"><code class="xref py py-meth docutils literal notranslate"><span class="pre">test_step()</span></code></a> will operate on only part of the batch.</p></td>
-</tr>
-<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">to</span></code>(*args, **kwargs)</p></td>
-<td><p>Moves and/or casts the parameters and buffers.</p></td>
-</tr>
-<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">to_empty</span></code>(*, device)</p></td>
-<td><p>Moves the parameters and buffers to the specified device without copying storage.</p></td>
-</tr>
-<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">to_onnx</span></code>(file_path[, input_sample])</p></td>
-<td><p>Saves the model in ONNX format</p></td>
-</tr>
-<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">to_torchscript</span></code>([file_path, method, …])</p></td>
-<td><p>By default compiles the whole model to a <code class="xref py py-class docutils literal notranslate"><span class="pre">ScriptModule</span></code>.</p></td>
-</tr>
-<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">toggle_optimizer</span></code>(optimizer, optimizer_idx)</p></td>
-<td><p>Makes sure only the gradients of the current optimizer’s parameters are calculated in the training step to prevent dangling gradients in multiple-optimizer setup.</p></td>
-</tr>
-<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">train</span></code>([mode])</p></td>
-<td><p>Sets the module in training mode.</p></td>
-</tr>
-<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">train_dataloader</span></code>()</p></td>
-<td><p>Implement one or more PyTorch DataLoaders for training.</p></td>
-</tr>
-<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">training_epoch_end</span></code>(outputs)</p></td>
-<td><p>Called at the end of the training epoch with the outputs of all training steps.</p></td>
-</tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#torch_bsf.bezier_simplex.BezierSimplex.training_step" title="torch_bsf.bezier_simplex.BezierSimplex.training_step"><code class="xref py py-obj docutils literal notranslate"><span class="pre">training_step</span></code></a>(batch, batch_idx)</p></td>
-<td><p>Here you compute and return the training loss and some additional metrics for e.g.</p></td>
-</tr>
-<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">training_step_end</span></code>(*args, **kwargs)</p></td>
-<td><p>Use this when training with dp or ddp2 because <a class="reference internal" href="#torch_bsf.bezier_simplex.BezierSimplex.training_step" title="torch_bsf.bezier_simplex.BezierSimplex.training_step"><code class="xref py py-meth docutils literal notranslate"><span class="pre">training_step()</span></code></a> will operate on only part of the batch.</p></td>
-</tr>
-<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">transfer_batch_to_device</span></code>(batch[, device])</p></td>
-<td><p>Override this hook if your <code class="xref py py-class docutils literal notranslate"><span class="pre">DataLoader</span></code> returns tensors wrapped in a custom data structure.</p></td>
-</tr>
-<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">type</span></code>(dst_type)</p></td>
-<td><p>Casts all parameters and buffers to <code class="xref py py-attr docutils literal notranslate"><span class="pre">dst_type</span></code>.</p></td>
-</tr>
-<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">unfreeze</span></code>()</p></td>
-<td><p>Unfreeze all parameters for training.</p></td>
-</tr>
-<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">untoggle_optimizer</span></code>(optimizer_idx)</p></td>
-<td><p><div class="admonition note">
-<p class="admonition-title">Note</p>
-<p>Only called when using multiple optimizers</p>
-</div>
-</p></td>
-</tr>
-<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">val_dataloader</span></code>()</p></td>
-<td><p>Implement one or multiple PyTorch DataLoaders for validation.</p></td>
-</tr>
-<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">validation_epoch_end</span></code>(outputs)</p></td>
-<td><p>Called at the end of the validation epoch with the outputs of all validation steps.</p></td>
-</tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#torch_bsf.bezier_simplex.BezierSimplex.validation_step" title="torch_bsf.bezier_simplex.BezierSimplex.validation_step"><code class="xref py py-obj docutils literal notranslate"><span class="pre">validation_step</span></code></a>(batch, batch_idx)</p></td>
-<td><p>Operates on a single batch of data from the validation set.</p></td>
-</tr>
-<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">validation_step_end</span></code>(*args, **kwargs)</p></td>
-<td><p>Use this when validating with dp or ddp2 because <a class="reference internal" href="#torch_bsf.bezier_simplex.BezierSimplex.validation_step" title="torch_bsf.bezier_simplex.BezierSimplex.validation_step"><code class="xref py py-meth docutils literal notranslate"><span class="pre">validation_step()</span></code></a> will operate on only part of the batch.</p></td>
-</tr>
-<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">write_prediction</span></code>(name, value[, filename])</p></td>
-<td><p>Write predictions to disk using <code class="docutils literal notranslate"><span class="pre">torch.save</span></code></p></td>
-</tr>
-<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">write_prediction_dict</span></code>(predictions_dict[, …])</p></td>
-<td><p>Write a dictonary of predictions to disk at once using <code class="docutils literal notranslate"><span class="pre">torch.save</span></code></p></td>
-</tr>
-<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">xpu</span></code>([device])</p></td>
-<td><p>Moves all model parameters and buffers to the XPU.</p></td>
-</tr>
-<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">zero_grad</span></code>([set_to_none])</p></td>
-<td><p>Sets gradients of all model parameters to zero.</p></td>
-</tr>
-</tbody>
-</table>
-<table class="docutils align-default">
-<colgroup>
-<col style="width: 64%" />
-<col style="width: 36%" />
-</colgroup>
-<tbody>
-<tr class="row-odd"><td><p><strong>__call__</strong></p></td>
-<td></td>
-</tr>
-<tr class="row-even"><td><p><strong>lr_schedulers</strong></p></td>
-<td></td>
-</tr>
-<tr class="row-odd"><td><p><strong>optimizers</strong></p></td>
-<td></td>
-</tr>
-<tr class="row-even"><td><p><strong>summarize</strong></p></td>
-<td></td>
-</tr>
-<tr class="row-odd"><td><p><strong>validation_end</strong></p></td>
-<td></td>
-</tr>
-</tbody>
-</table>
 <dl class="py method">
 <dt class="sig sig-object py" id="torch_bsf.bezier_simplex.BezierSimplex.configure_optimizers">
 <span class="sig-name descname"><span class="pre">configure_optimizers</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; <span class="pre">torch.optim.optimizer.Optimizer</span><a class="reference external" href="https://github.com/rafcc/pytorch-bsf/blob/master/torch_bsf/bezier_simplex.py#L298-L301"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#torch_bsf.bezier_simplex.BezierSimplex.configure_optimizers" title="Permalink to this definition">¶</a></dt>
 <dd><p>Choose what optimizers and learning-rate schedulers to use in your optimization.
 Normally you’d need one. But in the case of GANs or similar you might have multiple.</p>
-<dl>
-<dt>Return:</dt><dd><p>Any of these 6 options.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p><p>Any of these 6 options.</p>
 <ul class="simple">
 <li><p><strong>Single optimizer</strong>.</p></li>
 <li><p><strong>List or Tuple</strong> of optimizers.</p></li>
@@ -684,8 +230,12 @@ key whose value is a single LR scheduler or lr_dict.</p></li>
 <li><p><strong>Tuple of dictionaries</strong> as described above, with an optional <code class="docutils literal notranslate"><span class="pre">&quot;frequency&quot;</span></code> key.</p></li>
 <li><p><strong>None</strong> - Fit will run without any optimizer.</p></li>
 </ul>
+</p>
 </dd>
-<dt>Note:</dt><dd><p>The lr_dict is a dictionary which contains the scheduler and its associated configuration.
+</dl>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>The lr_dict is a dictionary which contains the scheduler and its associated configuration.
 The default configuration is shown below.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">lr_dict</span> <span class="o">=</span> <span class="p">{</span>
     <span class="s1">&#39;scheduler&#39;</span><span class="p">:</span> <span class="n">lr_scheduler</span><span class="p">,</span> <span class="c1"># The LR scheduler instance (required)</span>
@@ -699,8 +249,10 @@ The default configuration is shown below.</p>
 </pre></div>
 </div>
 <p>Only the <code class="docutils literal notranslate"><span class="pre">&quot;scheduler&quot;</span></code> key is required, the rest will be set to the defaults above.</p>
-</dd>
-<dt>Note:</dt><dd><p>The <code class="docutils literal notranslate"><span class="pre">frequency</span></code> value specified in a dict along with the <code class="docutils literal notranslate"><span class="pre">optimizer</span></code> key is an int corresponding
+</div>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>The <code class="docutils literal notranslate"><span class="pre">frequency</span></code> value specified in a dict along with the <code class="docutils literal notranslate"><span class="pre">optimizer</span></code> key is an int corresponding
 to the number of sequential batches optimized with the specific optimizer.
 It should be given to none or to all of the optimizers.
 There is a difference between passing multiple optimizers in a list,
@@ -721,8 +273,7 @@ This is different from the <code class="docutils literal notranslate"><span clas
 the second optimizer for the next 10 steps and that cycle will continue.
 If an LR scheduler is specified for an optimizer using the <code class="docutils literal notranslate"><span class="pre">lr_scheduler</span></code> key in the above dict,
 the scheduler will only be updated when its optimizer is being used.</p>
-</dd>
-</dl>
+</div>
 <p>Examples:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="c1"># most cases</span>
 <span class="k">def</span> <span class="nf">configure_optimizers</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
@@ -763,8 +314,9 @@ the scheduler will only be updated when its optimizer is being used.</p>
     <span class="p">)</span>
 </pre></div>
 </div>
-<dl class="simple">
-<dt>Note:</dt><dd><p>Some things to know:</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>Some things to know:</p>
 <ul class="simple">
 <li><p>Lightning calls <code class="docutils literal notranslate"><span class="pre">.backward()</span></code> and <code class="docutils literal notranslate"><span class="pre">.step()</span></code> on each optimizer and learning rate scheduler as needed.</p></li>
 <li><p>If you use 16-bit precision (<code class="docutils literal notranslate"><span class="pre">precision=16</span></code>), Lightning will automatically handle the optimizers.</p></li>
@@ -775,8 +327,7 @@ at each training step.</p></li>
 <li><p>If you need to control how often those optimizers step or override the default <code class="docutils literal notranslate"><span class="pre">.step()</span></code> schedule,
 override the <code class="xref py py-meth docutils literal notranslate"><span class="pre">optimizer_step()</span></code> hook.</p></li>
 </ul>
-</dd>
-</dl>
+</div>
 </dd></dl>
 
 <dl class="py method">
@@ -785,16 +336,13 @@ override the <code class="xref py py-meth docutils literal notranslate"><span cl
 <dd><p>Process a forwarding step of training.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><dl class="simple">
-<dt><strong>t</strong></dt><dd><p>A minibatch of parameter vectors.</p>
-</dd>
-</dl>
+<dd class="field-odd"><p><strong>t</strong> – A minibatch of parameter vectors.</p>
 </dd>
 <dt class="field-even">Returns</dt>
-<dd class="field-even"><dl class="simple">
-<dt>x</dt><dd><p>A minibatch of value vectors.</p>
+<dd class="field-even"><p>A minibatch of value vectors.</p>
 </dd>
-</dl>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>x</p>
 </dd>
 </dl>
 </dd></dl>
@@ -805,18 +353,14 @@ override the <code class="xref py py-meth docutils literal notranslate"><span cl
 <dd><p>Computes a meshgrid of the Bezier simplex.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><dl class="simple">
-<dt><strong>num</strong></dt><dd><p>The number of grid points on each edge.</p>
-</dd>
-</dl>
+<dd class="field-odd"><p><strong>num</strong> – The number of grid points on each edge.</p>
 </dd>
 <dt class="field-even">Returns</dt>
-<dd class="field-even"><dl class="simple">
-<dt>ts</dt><dd><p>A parameter matrix of the mesh grid.</p>
-</dd>
-<dt>xs</dt><dd><p>A value matrix of the mesh grid.</p>
-</dd>
-</dl>
+<dd class="field-even"><p><ul class="simple">
+<li><p><em>ts</em> – A parameter matrix of the mesh grid.</p></li>
+<li><p><em>xs</em> – A value matrix of the mesh grid.</p></li>
+</ul>
+</p>
 </dd>
 </dl>
 </dd></dl>
@@ -835,24 +379,24 @@ such as accuracy.</p>
 <span class="n">test_epoch_end</span><span class="p">(</span><span class="n">test_outs</span><span class="p">)</span>
 </pre></div>
 </div>
-<dl>
-<dt>Args:</dt><dd><dl class="simple">
-<dt>batch (<code class="xref py py-class docutils literal notranslate"><span class="pre">Tensor</span></code> | (<code class="xref py py-class docutils literal notranslate"><span class="pre">Tensor</span></code>, …) | [<code class="xref py py-class docutils literal notranslate"><span class="pre">Tensor</span></code>, …]):</dt><dd><p>The output of your <code class="xref py py-class docutils literal notranslate"><span class="pre">DataLoader</span></code>. A tensor, tuple or list.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>batch</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">Tensor</span></code> | (<code class="xref py py-class docutils literal notranslate"><span class="pre">Tensor</span></code>, …) | [<code class="xref py py-class docutils literal notranslate"><span class="pre">Tensor</span></code>, …]) – The output of your <code class="xref py py-class docutils literal notranslate"><span class="pre">DataLoader</span></code>. A tensor, tuple or list.</p></li>
+<li><p><strong>batch_idx</strong> (<em>int</em>) – The index of this batch.</p></li>
+<li><p><strong>dataloader_idx</strong> (<em>int</em>) – The index of the dataloader that produced this batch
+(only if multiple test dataloaders used).</p></li>
+</ul>
 </dd>
-</dl>
-<p>batch_idx (int): The index of this batch.
-dataloader_idx (int): The index of the dataloader that produced this batch</p>
-<blockquote>
-<div><p>(only if multiple test dataloaders used).</p>
-</div></blockquote>
-</dd>
-<dt>Return:</dt><dd><p>Any of.</p>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><p>Any of.</p>
 <blockquote>
 <div><ul class="simple">
 <li><p>Any object or value</p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">None</span></code> - Testing will skip to the next batch</p></li>
 </ul>
 </div></blockquote>
+</p>
 </dd>
 </dl>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># if you have one test dataloader:</span>
@@ -891,14 +435,16 @@ dataloader_idx (int): The index of the dataloader that produced this batch</p>
     <span class="c1"># dataloader_idx tells you which dataset this is.</span>
 </pre></div>
 </div>
-<dl class="simple">
-<dt>Note:</dt><dd><p>If you don’t need to test you don’t need to implement this method.</p>
-</dd>
-<dt>Note:</dt><dd><p>When the <a class="reference internal" href="#torch_bsf.bezier_simplex.BezierSimplex.test_step" title="torch_bsf.bezier_simplex.BezierSimplex.test_step"><code class="xref py py-meth docutils literal notranslate"><span class="pre">test_step()</span></code></a> is called, the model has been put in eval mode and
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>If you don’t need to test you don’t need to implement this method.</p>
+</div>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>When the <a class="reference internal" href="#torch_bsf.bezier_simplex.BezierSimplex.test_step" title="torch_bsf.bezier_simplex.BezierSimplex.test_step"><code class="xref py py-meth docutils literal notranslate"><span class="pre">test_step()</span></code></a> is called, the model has been put in eval mode and
 PyTorch gradients have been disabled. At the end of the test epoch, the model goes back
 to training mode and gradients are enabled.</p>
-</dd>
-</dl>
+</div>
 </dd></dl>
 
 <dl class="py attribute">
@@ -911,28 +457,30 @@ to training mode and gradients are enabled.</p>
 <span class="sig-name descname"><span class="pre">training_step</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">batch</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">batch_idx</span></span></em><span class="sig-paren">)</span> &#x2192; <span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span> </span><span class="pre">Any</span><span class="p"><span class="pre">]</span></span><a class="reference external" href="https://github.com/rafcc/pytorch-bsf/blob/master/torch_bsf/bezier_simplex.py#L262-L269"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#torch_bsf.bezier_simplex.BezierSimplex.training_step" title="Permalink to this definition">¶</a></dt>
 <dd><p>Here you compute and return the training loss and some additional metrics for e.g.
 the progress bar or logger.</p>
-<dl>
-<dt>Args:</dt><dd><dl class="simple">
-<dt>batch (<code class="xref py py-class docutils literal notranslate"><span class="pre">Tensor</span></code> | (<code class="xref py py-class docutils literal notranslate"><span class="pre">Tensor</span></code>, …) | [<code class="xref py py-class docutils literal notranslate"><span class="pre">Tensor</span></code>, …]):</dt><dd><p>The output of your <code class="xref py py-class docutils literal notranslate"><span class="pre">DataLoader</span></code>. A tensor, tuple or list.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>batch</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">Tensor</span></code> | (<code class="xref py py-class docutils literal notranslate"><span class="pre">Tensor</span></code>, …) | [<code class="xref py py-class docutils literal notranslate"><span class="pre">Tensor</span></code>, …]) – The output of your <code class="xref py py-class docutils literal notranslate"><span class="pre">DataLoader</span></code>. A tensor, tuple or list.</p></li>
+<li><p><strong>batch_idx</strong> (<em>int</em>) – Integer displaying index of this batch</p></li>
+<li><p><strong>optimizer_idx</strong> (<em>int</em>) – When using multiple optimizers, this argument will also be present.</p></li>
+<li><p><strong>hiddens</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">Tensor</span></code>) – Passed in if
+<a href="#id1"><span class="problematic" id="id2">:paramref:`~pytorch_lightning.core.lightning.LightningModule.truncated_bptt_steps`</span></a> &gt; 0.</p></li>
+</ul>
 </dd>
-</dl>
-<p>batch_idx (int): Integer displaying index of this batch
-optimizer_idx (int): When using multiple optimizers, this argument will also be present.
-hiddens(<code class="xref py py-class docutils literal notranslate"><span class="pre">Tensor</span></code>): Passed in if</p>
-<blockquote>
-<div><p><a href="#id1"><span class="problematic" id="id2">:paramref:`~pytorch_lightning.core.lightning.LightningModule.truncated_bptt_steps`</span></a> &gt; 0.</p>
-</div></blockquote>
-</dd>
-<dt>Return:</dt><dd><p>Any of.</p>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><p>Any of.</p>
 <ul class="simple">
 <li><p><code class="xref py py-class docutils literal notranslate"><span class="pre">Tensor</span></code> - The loss tensor</p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">dict</span></code> - A dictionary. Can include any keys, but must include the key <code class="docutils literal notranslate"><span class="pre">'loss'</span></code></p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">None</span></code> - Training will skip to the next batch</p></li>
 </ul>
-</dd>
-<dt>Note:</dt><dd><p>Returning <code class="docutils literal notranslate"><span class="pre">None</span></code> is currently not supported for multi-GPU or TPU, or with 16-bit precision enabled.</p>
+</p>
 </dd>
 </dl>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>Returning <code class="docutils literal notranslate"><span class="pre">None</span></code> is currently not supported for multi-GPU or TPU, or with 16-bit precision enabled.</p>
+</div>
 <p>In this step you’d normally do the forward pass and calculate the loss for a batch.
 You can also do fancier things like multiple forward passes or something model specific.</p>
 <p>Example:</p>
@@ -964,11 +512,11 @@ argument with the hidden states of the previous step.</p>
     <span class="k">return</span> <span class="p">{</span><span class="s1">&#39;loss&#39;</span><span class="p">:</span> <span class="n">loss</span><span class="p">,</span> <span class="s1">&#39;hiddens&#39;</span><span class="p">:</span> <span class="n">hiddens</span><span class="p">}</span>
 </pre></div>
 </div>
-<dl class="simple">
-<dt>Note:</dt><dd><p>The loss value shown in the progress bar is smoothed (averaged) over the last values,
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>The loss value shown in the progress bar is smoothed (averaged) over the last values,
 so it differs from the actual loss returned in train/validation step.</p>
-</dd>
-</dl>
+</div>
 </dd></dl>
 
 <dl class="py method">
@@ -989,24 +537,24 @@ In this step you’d might generate examples or calculate anything of interest l
 <span class="n">validation_epoch_end</span><span class="p">(</span><span class="n">val_outs</span><span class="p">)</span>
 </pre></div>
 </div>
-<dl>
-<dt>Args:</dt><dd><dl class="simple">
-<dt>batch (<code class="xref py py-class docutils literal notranslate"><span class="pre">Tensor</span></code> | (<code class="xref py py-class docutils literal notranslate"><span class="pre">Tensor</span></code>, …) | [<code class="xref py py-class docutils literal notranslate"><span class="pre">Tensor</span></code>, …]):</dt><dd><p>The output of your <code class="xref py py-class docutils literal notranslate"><span class="pre">DataLoader</span></code>. A tensor, tuple or list.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>batch</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">Tensor</span></code> | (<code class="xref py py-class docutils literal notranslate"><span class="pre">Tensor</span></code>, …) | [<code class="xref py py-class docutils literal notranslate"><span class="pre">Tensor</span></code>, …]) – The output of your <code class="xref py py-class docutils literal notranslate"><span class="pre">DataLoader</span></code>. A tensor, tuple or list.</p></li>
+<li><p><strong>batch_idx</strong> (<em>int</em>) – The index of this batch</p></li>
+<li><p><strong>dataloader_idx</strong> (<em>int</em>) – The index of the dataloader that produced this batch
+(only if multiple val dataloaders used)</p></li>
+</ul>
 </dd>
-</dl>
-<p>batch_idx (int): The index of this batch
-dataloader_idx (int): The index of the dataloader that produced this batch</p>
-<blockquote>
-<div><p>(only if multiple val dataloaders used)</p>
-</div></blockquote>
-</dd>
-<dt>Return:</dt><dd><p>Any of.</p>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><p>Any of.</p>
 <blockquote>
 <div><ul class="simple">
 <li><p>Any object or value</p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">None</span></code> - Validation will skip to the next batch</p></li>
 </ul>
 </div></blockquote>
+</p>
 </dd>
 </dl>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># pseudocode of order</span>
@@ -1055,14 +603,16 @@ dataloader_idx (int): The index of the dataloader that produced this batch</p>
     <span class="c1"># dataloader_idx tells you which dataset this is.</span>
 </pre></div>
 </div>
-<dl class="simple">
-<dt>Note:</dt><dd><p>If you don’t need to validate you don’t need to implement this method.</p>
-</dd>
-<dt>Note:</dt><dd><p>When the <a class="reference internal" href="#torch_bsf.bezier_simplex.BezierSimplex.validation_step" title="torch_bsf.bezier_simplex.BezierSimplex.validation_step"><code class="xref py py-meth docutils literal notranslate"><span class="pre">validation_step()</span></code></a> is called, the model has been put in eval mode
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>If you don’t need to validate you don’t need to implement this method.</p>
+</div>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>When the <a class="reference internal" href="#torch_bsf.bezier_simplex.BezierSimplex.validation_step" title="torch_bsf.bezier_simplex.BezierSimplex.validation_step"><code class="xref py py-meth docutils literal notranslate"><span class="pre">validation_step()</span></code></a> is called, the model has been put in eval mode
 and PyTorch gradients have been disabled. At the end of validation,
 the model goes back to training mode and gradients are enabled.</p>
-</dd>
-</dl>
+</div>
 </dd></dl>
 
 </dd></dl>
@@ -1074,135 +624,27 @@ the model goes back to training mode and gradients are enabled.</p>
 <p>A data module for training a Bezier simplex.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><dl class="simple">
-<dt><strong>data</strong></dt><dd><p>The path to a data file.</p>
-</dd>
-<dt><strong>label</strong></dt><dd><p>The path to a label file.</p>
-</dd>
-<dt><strong>header</strong></dt><dd><p>The number of headers in data files.</p>
-</dd>
-<dt><strong>delimiter</strong></dt><dd><p>The delimiter of data files.</p>
-</dd>
-<dt><strong>batch_size</strong></dt><dd><p>The size of minibatch.</p>
-</dd>
-<dt><strong>split_ratio</strong></dt><dd><p>The ratio of train-val split.</p>
-</dd>
-<dt><strong>normalize</strong></dt><dd><p>The data normalization method.
-Either <cite>“max”</cite>, <cite>“std”</cite>, <cite>“quantile”</cite>, or <cite>“none”</cite>.</p>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>data</strong> – The path to a data file.</p></li>
+<li><p><strong>label</strong> – The path to a label file.</p></li>
+<li><p><strong>header</strong> – The number of headers in data files.</p></li>
+<li><p><strong>delimiter</strong> – The delimiter of data files.</p></li>
+<li><p><strong>batch_size</strong> – The size of minibatch.</p></li>
+<li><p><strong>split_ratio</strong> – The ratio of train-val split.</p></li>
+<li><p><strong>normalize</strong> – The data normalization method.
+Either <cite>“max”</cite>, <cite>“std”</cite>, <cite>“quantile”</cite>, or <cite>“none”</cite>.</p></li>
+</ul>
 </dd>
 </dl>
-</dd>
-<dt class="field-even">Attributes</dt>
-<dd class="field-even"><dl class="simple">
-<dt><code class="xref py py-obj docutils literal notranslate"><span class="pre">dims</span></code></dt><dd><p>A tuple describing the shape of your data.</p>
-</dd>
-<dt><code class="xref py py-obj docutils literal notranslate"><span class="pre">has_prepared_data</span></code></dt><dd><p>Return bool letting you know if <code class="docutils literal notranslate"><span class="pre">datamodule.prepare_data()</span></code> has been called or not.</p>
-</dd>
-<dt><code class="xref py py-obj docutils literal notranslate"><span class="pre">has_setup_fit</span></code></dt><dd><p>Return bool letting you know if <code class="docutils literal notranslate"><span class="pre">datamodule.setup(stage='fit')</span></code> has been called or not.</p>
-</dd>
-<dt><code class="xref py py-obj docutils literal notranslate"><span class="pre">has_setup_predict</span></code></dt><dd><p>Return bool letting you know if <code class="docutils literal notranslate"><span class="pre">datamodule.setup(stage='predict')</span></code> has been called or not.</p>
-</dd>
-<dt><code class="xref py py-obj docutils literal notranslate"><span class="pre">has_setup_test</span></code></dt><dd><p>Return bool letting you know if <code class="docutils literal notranslate"><span class="pre">datamodule.setup(stage='test')</span></code> has been called or not.</p>
-</dd>
-<dt><code class="xref py py-obj docutils literal notranslate"><span class="pre">has_setup_validate</span></code></dt><dd><p>Return bool letting you know if <code class="docutils literal notranslate"><span class="pre">datamodule.setup(stage='validate')</span></code> has been called or not.</p>
-</dd>
-<dt><code class="xref py py-obj docutils literal notranslate"><span class="pre">has_teardown_fit</span></code></dt><dd><p>Return bool letting you know if <code class="docutils literal notranslate"><span class="pre">datamodule.teardown(stage='fit')</span></code> has been called or not.</p>
-</dd>
-<dt><code class="xref py py-obj docutils literal notranslate"><span class="pre">has_teardown_predict</span></code></dt><dd><p>Return bool letting you know if <code class="docutils literal notranslate"><span class="pre">datamodule.teardown(stage='predict')</span></code> has been called or not.</p>
-</dd>
-<dt><code class="xref py py-obj docutils literal notranslate"><span class="pre">has_teardown_test</span></code></dt><dd><p>Return bool letting you know if <code class="docutils literal notranslate"><span class="pre">datamodule.teardown(stage='test')</span></code> has been called or not.</p>
-</dd>
-<dt><code class="xref py py-obj docutils literal notranslate"><span class="pre">has_teardown_validate</span></code></dt><dd><p>Return bool letting you know if <code class="docutils literal notranslate"><span class="pre">datamodule.teardown(stage='validate')</span></code> has been called or not.</p>
-</dd>
-<dt><code class="xref py py-obj docutils literal notranslate"><span class="pre">test_transforms</span></code></dt><dd><p>Optional transforms (or collection of transforms) you can apply to test dataset</p>
-</dd>
-<dt><code class="xref py py-obj docutils literal notranslate"><span class="pre">train_transforms</span></code></dt><dd><p>Optional transforms (or collection of transforms) you can apply to train dataset</p>
-</dd>
-<dt><code class="xref py py-obj docutils literal notranslate"><span class="pre">val_transforms</span></code></dt><dd><p>Optional transforms (or collection of transforms) you can apply to validation dataset</p>
-</dd>
-</dl>
-</dd>
-</dl>
-<p class="rubric">Methods</p>
-<table class="longtable docutils align-default">
-<colgroup>
-<col style="width: 10%" />
-<col style="width: 90%" />
-</colgroup>
-<tbody>
-<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">add_argparse_args</span></code>(parent_parser, **kwargs)</p></td>
-<td><p>Extends existing argparse by default <cite>LightningDataModule</cite> attributes.</p></td>
-</tr>
-<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">from_argparse_args</span></code>(args, **kwargs)</p></td>
-<td><p>Create an instance from CLI arguments.</p></td>
-</tr>
-<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">from_datasets</span></code>([train_dataset, val_dataset, …])</p></td>
-<td><p>Create an instance from torch.utils.data.Dataset.</p></td>
-</tr>
-<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_init_arguments_and_types</span></code>()</p></td>
-<td><p>Scans the DataModule signature and returns argument names, types and default values.</p></td>
-</tr>
-<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">on_after_batch_transfer</span></code>(batch, dataloader_idx)</p></td>
-<td><p>Override to alter or apply batch augmentations to your batch after it is transferred to the device.</p></td>
-</tr>
-<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">on_before_batch_transfer</span></code>(batch, dataloader_idx)</p></td>
-<td><p>Override to alter or apply batch augmentations to your batch before it is transferred to the device.</p></td>
-</tr>
-<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">on_load_checkpoint</span></code>(checkpoint)</p></td>
-<td><p>Called by Lightning to restore your model.</p></td>
-</tr>
-<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">on_predict_dataloader</span></code>()</p></td>
-<td><p>Called before requesting the predict dataloader.</p></td>
-</tr>
-<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">on_save_checkpoint</span></code>(checkpoint)</p></td>
-<td><p>Called by Lightning when saving a checkpoint to give you a chance to store anything else you might want to save.</p></td>
-</tr>
-<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">on_test_dataloader</span></code>()</p></td>
-<td><p>Called before requesting the test dataloader.</p></td>
-</tr>
-<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">on_train_dataloader</span></code>()</p></td>
-<td><p>Called before requesting the train dataloader.</p></td>
-</tr>
-<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">on_val_dataloader</span></code>()</p></td>
-<td><p>Called before requesting the val dataloader.</p></td>
-</tr>
-<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">predict_dataloader</span></code>()</p></td>
-<td><p>Implement one or multiple PyTorch DataLoaders for prediction.</p></td>
-</tr>
-<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">prepare_data</span></code>()</p></td>
-<td><p>Use this to download and prepare data.</p></td>
-</tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#torch_bsf.bezier_simplex.BezierSimplexDataModule.setup" title="torch_bsf.bezier_simplex.BezierSimplexDataModule.setup"><code class="xref py py-obj docutils literal notranslate"><span class="pre">setup</span></code></a>([stage])</p></td>
-<td><p>Called at the beginning of fit (train + validate), validate, test, and predict.</p></td>
-</tr>
-<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">size</span></code>([dim])</p></td>
-<td><p>Return the dimension of each input either as a tuple or list of tuples.</p></td>
-</tr>
-<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">teardown</span></code>([stage])</p></td>
-<td><p>Called at the end of fit (train + validate), validate, test, predict, or tune.</p></td>
-</tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#torch_bsf.bezier_simplex.BezierSimplexDataModule.test_dataloader" title="torch_bsf.bezier_simplex.BezierSimplexDataModule.test_dataloader"><code class="xref py py-obj docutils literal notranslate"><span class="pre">test_dataloader</span></code></a>()</p></td>
-<td><p>Implement one or multiple PyTorch DataLoaders for testing.</p></td>
-</tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#torch_bsf.bezier_simplex.BezierSimplexDataModule.train_dataloader" title="torch_bsf.bezier_simplex.BezierSimplexDataModule.train_dataloader"><code class="xref py py-obj docutils literal notranslate"><span class="pre">train_dataloader</span></code></a>()</p></td>
-<td><p>Implement one or more PyTorch DataLoaders for training.</p></td>
-</tr>
-<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">transfer_batch_to_device</span></code>(batch[, device])</p></td>
-<td><p>Override this hook if your <code class="xref py py-class docutils literal notranslate"><span class="pre">DataLoader</span></code> returns tensors wrapped in a custom data structure.</p></td>
-</tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#torch_bsf.bezier_simplex.BezierSimplexDataModule.val_dataloader" title="torch_bsf.bezier_simplex.BezierSimplexDataModule.val_dataloader"><code class="xref py py-obj docutils literal notranslate"><span class="pre">val_dataloader</span></code></a>()</p></td>
-<td><p>Implement one or multiple PyTorch DataLoaders for validation.</p></td>
-</tr>
-</tbody>
-</table>
 <dl class="py method">
 <dt class="sig sig-object py" id="torch_bsf.bezier_simplex.BezierSimplexDataModule.setup">
 <span class="sig-name descname"><span class="pre">setup</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">stage</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference external" href="https://github.com/rafcc/pytorch-bsf/blob/master/torch_bsf/bezier_simplex.py#L59-L87"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#torch_bsf.bezier_simplex.BezierSimplexDataModule.setup" title="Permalink to this definition">¶</a></dt>
 <dd><p>Called at the beginning of fit (train + validate), validate, test, and predict.
 This is a good hook when you need to build models dynamically or adjust something about them.
 This hook is called on every process when using DDP.</p>
-<dl class="simple">
-<dt>Args:</dt><dd><p>stage: either <code class="docutils literal notranslate"><span class="pre">'fit'</span></code>, <code class="docutils literal notranslate"><span class="pre">'validate'</span></code>, <code class="docutils literal notranslate"><span class="pre">'test'</span></code>, or <code class="docutils literal notranslate"><span class="pre">'predict'</span></code></p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>stage</strong> – either <code class="docutils literal notranslate"><span class="pre">'fit'</span></code>, <code class="docutils literal notranslate"><span class="pre">'validate'</span></code>, <code class="docutils literal notranslate"><span class="pre">'test'</span></code>, or <code class="docutils literal notranslate"><span class="pre">'predict'</span></code></p>
 </dd>
 </dl>
 <p>Example:</p>
@@ -1251,11 +693,14 @@ This hook is called on every process when using DDP.</p>
 <li><p><a class="reference internal" href="#torch_bsf.bezier_simplex.BezierSimplexDataModule.val_dataloader" title="torch_bsf.bezier_simplex.BezierSimplexDataModule.val_dataloader"><code class="xref py py-meth docutils literal notranslate"><span class="pre">val_dataloader()</span></code></a></p></li>
 <li><p><a class="reference internal" href="#torch_bsf.bezier_simplex.BezierSimplexDataModule.test_dataloader" title="torch_bsf.bezier_simplex.BezierSimplexDataModule.test_dataloader"><code class="xref py py-meth docutils literal notranslate"><span class="pre">test_dataloader()</span></code></a></p></li>
 </ul>
-<dl class="simple">
-<dt>Note:</dt><dd><p>Lightning adds the correct sampler for distributed and arbitrary hardware.
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>Lightning adds the correct sampler for distributed and arbitrary hardware.
 There is no need to set it yourself.</p>
-</dd>
-<dt>Return:</dt><dd><p>Single or multiple PyTorch DataLoaders.</p>
+</div>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>Single or multiple PyTorch DataLoaders.</p>
 </dd>
 </dl>
 <p>Example:</p>
@@ -1277,22 +722,25 @@ There is no need to set it yourself.</p>
     <span class="k">return</span> <span class="p">[</span><span class="n">loader_a</span><span class="p">,</span> <span class="n">loader_b</span><span class="p">,</span> <span class="o">...</span><span class="p">,</span> <span class="n">loader_n</span><span class="p">]</span>
 </pre></div>
 </div>
-<dl class="simple">
-<dt>Note:</dt><dd><p>If you don’t need a test dataset and a <code class="xref py py-meth docutils literal notranslate"><span class="pre">test_step()</span></code>, you don’t need to implement
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>If you don’t need a test dataset and a <code class="xref py py-meth docutils literal notranslate"><span class="pre">test_step()</span></code>, you don’t need to implement
 this method.</p>
-</dd>
-<dt>Note:</dt><dd><p>In the case where you return multiple test dataloaders, the <code class="xref py py-meth docutils literal notranslate"><span class="pre">test_step()</span></code>
+</div>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>In the case where you return multiple test dataloaders, the <code class="xref py py-meth docutils literal notranslate"><span class="pre">test_step()</span></code>
 will have an argument <code class="docutils literal notranslate"><span class="pre">dataloader_idx</span></code> which matches the order here.</p>
-</dd>
-</dl>
+</div>
 </dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="torch_bsf.bezier_simplex.BezierSimplexDataModule.train_dataloader">
 <span class="sig-name descname"><span class="pre">train_dataloader</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; <span class="pre">torch.utils.data.dataloader.DataLoader</span><a class="reference external" href="https://github.com/rafcc/pytorch-bsf/blob/master/torch_bsf/bezier_simplex.py#L89-L96"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#torch_bsf.bezier_simplex.BezierSimplexDataModule.train_dataloader" title="Permalink to this definition">¶</a></dt>
 <dd><p>Implement one or more PyTorch DataLoaders for training.</p>
-<dl class="simple">
-<dt>Return:</dt><dd><p>Either a single PyTorch <code class="xref py py-class docutils literal notranslate"><span class="pre">DataLoader</span></code> or a collection of these
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>Either a single PyTorch <code class="xref py py-class docutils literal notranslate"><span class="pre">DataLoader</span></code> or a collection of these
 (list, dict, nested lists and dicts). In the case of multiple dataloaders, please see
 this <span class="xref std std-ref">page</span></p>
 </dd>
@@ -1318,11 +766,11 @@ this <span class="xref std std-ref">page</span></p>
 <li><p><a class="reference internal" href="#torch_bsf.bezier_simplex.BezierSimplexDataModule.setup" title="torch_bsf.bezier_simplex.BezierSimplexDataModule.setup"><code class="xref py py-meth docutils literal notranslate"><span class="pre">setup()</span></code></a></p></li>
 <li><p><a class="reference internal" href="#torch_bsf.bezier_simplex.BezierSimplexDataModule.train_dataloader" title="torch_bsf.bezier_simplex.BezierSimplexDataModule.train_dataloader"><code class="xref py py-meth docutils literal notranslate"><span class="pre">train_dataloader()</span></code></a></p></li>
 </ul>
-<dl class="simple">
-<dt>Note:</dt><dd><p>Lightning adds the correct sampler for distributed and arbitrary hardware.
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>Lightning adds the correct sampler for distributed and arbitrary hardware.
 There is no need to set it yourself.</p>
-</dd>
-</dl>
+</div>
 <p>Example:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="c1"># single dataloader</span>
 <span class="k">def</span> <span class="nf">train_dataloader</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
@@ -1381,11 +829,14 @@ There is no need to set it yourself.</p>
 <li><p><a class="reference internal" href="#torch_bsf.bezier_simplex.BezierSimplexDataModule.val_dataloader" title="torch_bsf.bezier_simplex.BezierSimplexDataModule.val_dataloader"><code class="xref py py-meth docutils literal notranslate"><span class="pre">val_dataloader()</span></code></a></p></li>
 <li><p><a class="reference internal" href="#torch_bsf.bezier_simplex.BezierSimplexDataModule.test_dataloader" title="torch_bsf.bezier_simplex.BezierSimplexDataModule.test_dataloader"><code class="xref py py-meth docutils literal notranslate"><span class="pre">test_dataloader()</span></code></a></p></li>
 </ul>
-<dl class="simple">
-<dt>Note:</dt><dd><p>Lightning adds the correct sampler for distributed and arbitrary hardware
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>Lightning adds the correct sampler for distributed and arbitrary hardware
 There is no need to set it yourself.</p>
-</dd>
-<dt>Return:</dt><dd><p>Single or multiple PyTorch DataLoaders.</p>
+</div>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>Single or multiple PyTorch DataLoaders.</p>
 </dd>
 </dl>
 <p>Examples:</p>
@@ -1407,14 +858,16 @@ There is no need to set it yourself.</p>
     <span class="k">return</span> <span class="p">[</span><span class="n">loader_a</span><span class="p">,</span> <span class="n">loader_b</span><span class="p">,</span> <span class="o">...</span><span class="p">,</span> <span class="n">loader_n</span><span class="p">]</span>
 </pre></div>
 </div>
-<dl class="simple">
-<dt>Note:</dt><dd><p>If you don’t need a validation dataset and a <code class="xref py py-meth docutils literal notranslate"><span class="pre">validation_step()</span></code>, you don’t need to
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>If you don’t need a validation dataset and a <code class="xref py py-meth docutils literal notranslate"><span class="pre">validation_step()</span></code>, you don’t need to
 implement this method.</p>
-</dd>
-<dt>Note:</dt><dd><p>In the case where you return multiple validation dataloaders, the <code class="xref py py-meth docutils literal notranslate"><span class="pre">validation_step()</span></code>
+</div>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>In the case where you return multiple validation dataloaders, the <code class="xref py py-meth docutils literal notranslate"><span class="pre">validation_step()</span></code>
 will have an argument <code class="docutils literal notranslate"><span class="pre">dataloader_idx</span></code> which matches the order here.</p>
-</dd>
-</dl>
+</div>
 </dd></dl>
 
 </dd></dl>
@@ -1425,30 +878,22 @@ will have an argument <code class="docutils literal notranslate"><span class="pr
 <dd><p>Fits a Bezier simplex.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><dl class="simple">
-<dt><strong>params</strong></dt><dd><p>The data.</p>
-</dd>
-<dt><strong>values</strong></dt><dd><p>The label data.</p>
-</dd>
-<dt><strong>degree</strong></dt><dd><p>The degree of the Bezier simplex.</p>
-</dd>
-<dt><strong>batch_size</strong></dt><dd><p>The size of minibatch.</p>
-</dd>
-<dt><strong>max_epochs</strong></dt><dd><p>The number of epochs to stop training.</p>
-</dd>
-<dt><strong>gpus</strong></dt><dd><p>The number of gpus.</p>
-</dd>
-<dt><strong>num_nodes</strong></dt><dd><p>The number of compute nodes.</p>
-</dd>
-<dt><strong>accelerator</strong></dt><dd><p>Distributed mode.</p>
-</dd>
-</dl>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>params</strong> – The data.</p></li>
+<li><p><strong>values</strong> – The label data.</p></li>
+<li><p><strong>degree</strong> – The degree of the Bezier simplex.</p></li>
+<li><p><strong>batch_size</strong> – The size of minibatch.</p></li>
+<li><p><strong>max_epochs</strong> – The number of epochs to stop training.</p></li>
+<li><p><strong>gpus</strong> – The number of gpus.</p></li>
+<li><p><strong>num_nodes</strong> – The number of compute nodes.</p></li>
+<li><p><strong>accelerator</strong> – Distributed mode.</p></li>
+</ul>
 </dd>
 <dt class="field-even">Returns</dt>
-<dd class="field-even"><dl class="simple">
-<dt>bs</dt><dd><p>A trained Bezier simplex.</p>
+<dd class="field-even"><p>A trained Bezier simplex.</p>
 </dd>
-</dl>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>bs</p>
 </dd>
 </dl>
 <p class="rubric">Examples</p>
@@ -1492,18 +937,16 @@ will have an argument <code class="docutils literal notranslate"><span class="pr
 <dd><p>Iterates the index of control points of the Bezier simplex.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><dl class="simple">
-<dt><strong>dim</strong></dt><dd><p>The array length of indices.</p>
-</dd>
-<dt><strong>deg</strong></dt><dd><p>The degree of the Bezier simplex.</p>
-</dd>
-</dl>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>dim</strong> – The array length of indices.</p></li>
+<li><p><strong>deg</strong> – The degree of the Bezier simplex.</p></li>
+</ul>
 </dd>
 <dt class="field-even">Returns</dt>
-<dd class="field-even"><dl class="simple">
-<dt>indices</dt><dd><p>The indices.</p>
+<dd class="field-even"><p>The indices.</p>
 </dd>
-</dl>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>indices</p>
 </dd>
 </dl>
 </dd></dl>
@@ -1514,18 +957,16 @@ will have an argument <code class="docutils literal notranslate"><span class="pr
 <dd><p>Computes a monomial <cite>var**deg = v[0]**d[0] * v[1]**d[1] * … * v[n]**d[n]</cite>.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><dl class="simple">
-<dt><strong>var</strong></dt><dd><p>The bases.</p>
-</dd>
-<dt><strong>deg</strong></dt><dd><p>The powers.</p>
-</dd>
-</dl>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>var</strong> – The bases.</p></li>
+<li><p><strong>deg</strong> – The powers.</p></li>
+</ul>
 </dd>
 <dt class="field-even">Returns</dt>
-<dd class="field-even"><dl class="simple">
-<dt>monomial</dt><dd><p>The monomial.</p>
+<dd class="field-even"><p>The monomial.</p>
 </dd>
-</dl>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>monomial</p>
 </dd>
 </dl>
 </dd></dl>
@@ -1536,18 +977,16 @@ will have an argument <code class="docutils literal notranslate"><span class="pr
 <dd><p>Computes a polynomial coefficient.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><dl class="simple">
-<dt><strong>degree</strong></dt><dd><p>The degree.</p>
-</dd>
-<dt><strong>index</strong></dt><dd><p>The index.</p>
-</dd>
-</dl>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>degree</strong> – The degree.</p></li>
+<li><p><strong>index</strong> – The index.</p></li>
+</ul>
 </dd>
 <dt class="field-even">Returns</dt>
-<dd class="field-even"><dl class="simple">
-<dt>polynom</dt><dd><p>The polynomial coefficient.</p>
+<dd class="field-even"><p>The polynomial coefficient.</p>
 </dd>
-</dl>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>polynom</p>
 </dd>
 </dl>
 </dd></dl>
@@ -1562,14 +1001,11 @@ will have an argument <code class="docutils literal notranslate"><span class="pr
 <p>A Bezier simplex model.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><dl class="simple">
-<dt><strong>n_params</strong></dt><dd><p>The number of parameters.</p>
-</dd>
-<dt><strong>n_values</strong></dt><dd><p>The number of values.</p>
-</dd>
-<dt><strong>degree</strong></dt><dd><p>The degree of the Bezier simplex.</p>
-</dd>
-</dl>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>n_params</strong> – The number of parameters.</p></li>
+<li><p><strong>n_values</strong> – The number of values.</p></li>
+<li><p><strong>degree</strong> – The degree of the Bezier simplex.</p></li>
+</ul>
 </dd>
 </dl>
 <p class="rubric">Examples</p>
@@ -1603,465 +1039,14 @@ will have an argument <code class="docutils literal notranslate"><span class="pr
 <span class="gp">&gt;&gt;&gt; </span><span class="n">ts</span><span class="p">,</span> <span class="n">xs</span> <span class="o">=</span> <span class="n">bs</span><span class="o">.</span><span class="n">meshgrid</span><span class="p">()</span>
 </pre></div>
 </div>
-<dl class="field-list simple">
-<dt class="field-odd">Attributes</dt>
-<dd class="field-odd"><dl class="simple">
-<dt><code class="xref py py-obj docutils literal notranslate"><span class="pre">automatic_optimization</span></code></dt><dd><p>If False you are responsible for calling .backward, .step, zero_grad.</p>
-</dd>
-<dt><code class="xref py py-obj docutils literal notranslate"><span class="pre">current_epoch</span></code></dt><dd><p>The current epoch</p>
-</dd>
-<dt><strong>datamodule</strong></dt><dd></dd>
-<dt><strong>device</strong></dt><dd></dd>
-<dt><strong>dtype</strong></dt><dd></dd>
-<dt><strong>example_input_array</strong></dt><dd></dd>
-<dt><code class="xref py py-obj docutils literal notranslate"><span class="pre">global_rank</span></code></dt><dd><p>The index of the current process across all nodes and devices.</p>
-</dd>
-<dt><code class="xref py py-obj docutils literal notranslate"><span class="pre">global_step</span></code></dt><dd><p>Total training batches seen across all epochs</p>
-</dd>
-<dt><strong>hparams</strong></dt><dd></dd>
-<dt><strong>hparams_initial</strong></dt><dd></dd>
-<dt><code class="xref py py-obj docutils literal notranslate"><span class="pre">local_rank</span></code></dt><dd><p>The index of the current process within a single node.</p>
-</dd>
-<dt><code class="xref py py-obj docutils literal notranslate"><span class="pre">logger</span></code></dt><dd><p>Reference to the logger object in the Trainer.</p>
-</dd>
-<dt><strong>model_size</strong></dt><dd></dd>
-<dt><code class="xref py py-obj docutils literal notranslate"><span class="pre">on_gpu</span></code></dt><dd><p>True if your model is currently running on GPUs.</p>
-</dd>
-<dt><code class="xref py py-obj docutils literal notranslate"><span class="pre">truncated_bptt_steps</span></code></dt><dd><p>truncated_bptt_steps: Truncated back prop breaks performs backprop every k steps of much a longer sequence.</p>
-</dd>
-</dl>
-</dd>
-</dl>
-<p class="rubric">Methods</p>
-<table class="longtable docutils align-default">
-<colgroup>
-<col style="width: 10%" />
-<col style="width: 90%" />
-</colgroup>
-<tbody>
-<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">add_module</span></code>(name, module)</p></td>
-<td><p>Adds a child module to the current module.</p></td>
-</tr>
-<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">all_gather</span></code>(data[, group, sync_grads])</p></td>
-<td><p>Allows users to call <code class="docutils literal notranslate"><span class="pre">self.all_gather()</span></code> from the LightningModule, thus making the <code class="docutils literal notranslate"><span class="pre">`all_gather`</span></code> operation accelerator agnostic.</p></td>
-</tr>
-<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">apply</span></code>(fn)</p></td>
-<td><p>Applies <code class="docutils literal notranslate"><span class="pre">fn</span></code> recursively to every submodule (as returned by <code class="docutils literal notranslate"><span class="pre">.children()</span></code>) as well as self.</p></td>
-</tr>
-<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">backward</span></code>(loss, optimizer, optimizer_idx, …)</p></td>
-<td><p>Override backward with your own implementation if you need to.</p></td>
-</tr>
-<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">bfloat16</span></code>()</p></td>
-<td><p>Casts all floating point parameters and buffers to <code class="docutils literal notranslate"><span class="pre">bfloat16</span></code> datatype.</p></td>
-</tr>
-<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">buffers</span></code>([recurse])</p></td>
-<td><p>Returns an iterator over module buffers.</p></td>
-</tr>
-<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">children</span></code>()</p></td>
-<td><p>Returns an iterator over immediate children modules.</p></td>
-</tr>
-<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">configure_callbacks</span></code>()</p></td>
-<td><p>Configure model-specific callbacks.</p></td>
-</tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#torch_bsf.BezierSimplex.configure_optimizers" title="torch_bsf.BezierSimplex.configure_optimizers"><code class="xref py py-obj docutils literal notranslate"><span class="pre">configure_optimizers</span></code></a>()</p></td>
-<td><p>Choose what optimizers and learning-rate schedulers to use in your optimization.</p></td>
-</tr>
-<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">configure_sharded_model</span></code>()</p></td>
-<td><p>Hook to create modules in a distributed aware context.</p></td>
-</tr>
-<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">cpu</span></code>()</p></td>
-<td><p>Moves all model parameters and buffers to the CPU.</p></td>
-</tr>
-<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">cuda</span></code>([device])</p></td>
-<td><p>Moves all model parameters and buffers to the GPU.</p></td>
-</tr>
-<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">double</span></code>()</p></td>
-<td><p>Casts all floating point parameters and buffers to <code class="docutils literal notranslate"><span class="pre">double</span></code> datatype.</p></td>
-</tr>
-<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">eval</span></code>()</p></td>
-<td><p>Sets the module in evaluation mode.</p></td>
-</tr>
-<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">extra_repr</span></code>()</p></td>
-<td><p>Set the extra representation of the module</p></td>
-</tr>
-<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">float</span></code>()</p></td>
-<td><p>Casts all floating point parameters and buffers to float datatype.</p></td>
-</tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#torch_bsf.BezierSimplex.forward" title="torch_bsf.BezierSimplex.forward"><code class="xref py py-obj docutils literal notranslate"><span class="pre">forward</span></code></a>(t)</p></td>
-<td><p>Process a forwarding step of training.</p></td>
-</tr>
-<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">freeze</span></code>()</p></td>
-<td><p>Freeze all params for inference.</p></td>
-</tr>
-<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_buffer</span></code>(target)</p></td>
-<td><p>Returns the buffer given by <code class="docutils literal notranslate"><span class="pre">target</span></code> if it exists, otherwise throws an error.</p></td>
-</tr>
-<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_parameter</span></code>(target)</p></td>
-<td><p>Returns the parameter given by <code class="docutils literal notranslate"><span class="pre">target</span></code> if it exists, otherwise throws an error.</p></td>
-</tr>
-<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_progress_bar_dict</span></code>()</p></td>
-<td><p>Implement this to override the default items displayed in the progress bar.</p></td>
-</tr>
-<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_submodule</span></code>(target)</p></td>
-<td><p>Returns the submodule given by <code class="docutils literal notranslate"><span class="pre">target</span></code> if it exists, otherwise throws an error.</p></td>
-</tr>
-<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">grad_norm</span></code>(norm_type)</p></td>
-<td><p>Compute each parameter’s gradient’s norm and their overall norm.</p></td>
-</tr>
-<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">half</span></code>()</p></td>
-<td><p>Casts all floating point parameters and buffers to <code class="docutils literal notranslate"><span class="pre">half</span></code> datatype.</p></td>
-</tr>
-<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">load_from_checkpoint</span></code>(checkpoint_path[, …])</p></td>
-<td><p>Primary way of loading a model from a checkpoint.</p></td>
-</tr>
-<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">load_state_dict</span></code>(state_dict[, strict])</p></td>
-<td><p>Copies parameters and buffers from <code class="xref py py-attr docutils literal notranslate"><span class="pre">state_dict</span></code> into this module and its descendants.</p></td>
-</tr>
-<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">log</span></code>(name, value[, prog_bar, logger, …])</p></td>
-<td><p>Log a key, value</p></td>
-</tr>
-<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">log_dict</span></code>(dictionary[, prog_bar, logger, …])</p></td>
-<td><p>Log a dictonary of values at once</p></td>
-</tr>
-<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">manual_backward</span></code>(loss[, optimizer])</p></td>
-<td><p>Call this directly from your training_step when doing optimizations manually.</p></td>
-</tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#torch_bsf.BezierSimplex.meshgrid" title="torch_bsf.BezierSimplex.meshgrid"><code class="xref py py-obj docutils literal notranslate"><span class="pre">meshgrid</span></code></a>([num])</p></td>
-<td><p>Computes a meshgrid of the Bezier simplex.</p></td>
-</tr>
-<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">modules</span></code>()</p></td>
-<td><p>Returns an iterator over all modules in the network.</p></td>
-</tr>
-<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">named_buffers</span></code>([prefix, recurse])</p></td>
-<td><p>Returns an iterator over module buffers, yielding both the name of the buffer as well as the buffer itself.</p></td>
-</tr>
-<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">named_children</span></code>()</p></td>
-<td><p>Returns an iterator over immediate children modules, yielding both the name of the module as well as the module itself.</p></td>
-</tr>
-<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">named_modules</span></code>([memo, prefix, remove_duplicate])</p></td>
-<td><p>Returns an iterator over all modules in the network, yielding both the name of the module as well as the module itself.</p></td>
-</tr>
-<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">named_parameters</span></code>([prefix, recurse])</p></td>
-<td><p>Returns an iterator over module parameters, yielding both the name of the parameter as well as the parameter itself.</p></td>
-</tr>
-<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">on_after_backward</span></code>()</p></td>
-<td><p>Called in the training loop after loss.backward() and before optimizers do anything.</p></td>
-</tr>
-<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">on_after_batch_transfer</span></code>(batch, dataloader_idx)</p></td>
-<td><p>Override to alter or apply batch augmentations to your batch after it is transferred to the device.</p></td>
-</tr>
-<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">on_before_batch_transfer</span></code>(batch, dataloader_idx)</p></td>
-<td><p>Override to alter or apply batch augmentations to your batch before it is transferred to the device.</p></td>
-</tr>
-<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">on_before_zero_grad</span></code>(optimizer)</p></td>
-<td><p>Called after <code class="docutils literal notranslate"><span class="pre">training_step()</span></code> and before <code class="docutils literal notranslate"><span class="pre">optimizer.zero_grad()</span></code>.</p></td>
-</tr>
-<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">on_epoch_end</span></code>()</p></td>
-<td><p>Called when either of train/val/test epoch ends.</p></td>
-</tr>
-<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">on_epoch_start</span></code>()</p></td>
-<td><p>Called when either of train/val/test epoch begins.</p></td>
-</tr>
-<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">on_fit_end</span></code>()</p></td>
-<td><p>Called at the very end of fit.</p></td>
-</tr>
-<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">on_fit_start</span></code>()</p></td>
-<td><p>Called at the very beginning of fit.</p></td>
-</tr>
-<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">on_hpc_load</span></code>(checkpoint)</p></td>
-<td><p>Hook to do whatever you need right before Slurm manager loads the model.</p></td>
-</tr>
-<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">on_hpc_save</span></code>(checkpoint)</p></td>
-<td><p>Hook to do whatever you need right before Slurm manager saves the model.</p></td>
-</tr>
-<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">on_load_checkpoint</span></code>(checkpoint)</p></td>
-<td><p>Do something with the checkpoint.</p></td>
-</tr>
-<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">on_post_move_to_device</span></code>()</p></td>
-<td><p>Called in the <code class="docutils literal notranslate"><span class="pre">parameter_validation</span></code> decorator after <code class="xref py py-meth docutils literal notranslate"><span class="pre">to()</span></code> is called.</p></td>
-</tr>
-<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">on_predict_batch_end</span></code>(outputs, batch, …)</p></td>
-<td><p>Called in the predict loop after the batch.</p></td>
-</tr>
-<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">on_predict_batch_start</span></code>(batch, batch_idx, …)</p></td>
-<td><p>Called in the predict loop before anything happens for that batch.</p></td>
-</tr>
-<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">on_predict_dataloader</span></code>()</p></td>
-<td><p>Called before requesting the predict dataloader.</p></td>
-</tr>
-<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">on_predict_end</span></code>()</p></td>
-<td><p>Called at the end of predicting.</p></td>
-</tr>
-<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">on_predict_epoch_end</span></code>(results)</p></td>
-<td><p>Called at the end of predicting.</p></td>
-</tr>
-<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">on_predict_epoch_start</span></code>()</p></td>
-<td><p>Called at the beginning of predicting.</p></td>
-</tr>
-<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">on_predict_model_eval</span></code>()</p></td>
-<td><p>Sets the model to eval during the predict loop</p></td>
-</tr>
-<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">on_predict_start</span></code>()</p></td>
-<td><p>Called at the beginning of predicting.</p></td>
-</tr>
-<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">on_pretrain_routine_end</span></code>()</p></td>
-<td><p>Called at the end of the pretrain routine (between fit and train start).</p></td>
-</tr>
-<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">on_pretrain_routine_start</span></code>()</p></td>
-<td><p>Called at the beginning of the pretrain routine (between fit and train start).</p></td>
-</tr>
-<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">on_save_checkpoint</span></code>(checkpoint)</p></td>
-<td><p>Give the model a chance to add something to the checkpoint.</p></td>
-</tr>
-<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">on_test_batch_end</span></code>(outputs, batch, batch_idx, …)</p></td>
-<td><p>Called in the test loop after the batch.</p></td>
-</tr>
-<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">on_test_batch_start</span></code>(batch, batch_idx, …)</p></td>
-<td><p>Called in the test loop before anything happens for that batch.</p></td>
-</tr>
-<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">on_test_dataloader</span></code>()</p></td>
-<td><p>Called before requesting the test dataloader.</p></td>
-</tr>
-<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">on_test_end</span></code>()</p></td>
-<td><p>Called at the end of testing.</p></td>
-</tr>
-<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">on_test_epoch_end</span></code>()</p></td>
-<td><p>Called in the test loop at the very end of the epoch.</p></td>
-</tr>
-<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">on_test_epoch_start</span></code>()</p></td>
-<td><p>Called in the test loop at the very beginning of the epoch.</p></td>
-</tr>
-<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">on_test_model_eval</span></code>()</p></td>
-<td><p>Sets the model to eval during the test loop</p></td>
-</tr>
-<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">on_test_model_train</span></code>()</p></td>
-<td><p>Sets the model to train during the test loop</p></td>
-</tr>
-<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">on_test_start</span></code>()</p></td>
-<td><p>Called at the beginning of testing.</p></td>
-</tr>
-<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">on_train_batch_end</span></code>(outputs, batch, …)</p></td>
-<td><p>Called in the training loop after the batch.</p></td>
-</tr>
-<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">on_train_batch_start</span></code>(batch, batch_idx, …)</p></td>
-<td><p>Called in the training loop before anything happens for that batch.</p></td>
-</tr>
-<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">on_train_dataloader</span></code>()</p></td>
-<td><p>Called before requesting the train dataloader.</p></td>
-</tr>
-<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">on_train_end</span></code>()</p></td>
-<td><p>Called at the end of training before logger experiment is closed.</p></td>
-</tr>
-<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">on_train_epoch_end</span></code>([unused])</p></td>
-<td><p>Called in the training loop at the very end of the epoch.</p></td>
-</tr>
-<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">on_train_epoch_start</span></code>()</p></td>
-<td><p>Called in the training loop at the very beginning of the epoch.</p></td>
-</tr>
-<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">on_train_start</span></code>()</p></td>
-<td><p>Called at the beginning of training after sanity check.</p></td>
-</tr>
-<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">on_val_dataloader</span></code>()</p></td>
-<td><p>Called before requesting the val dataloader.</p></td>
-</tr>
-<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">on_validation_batch_end</span></code>(outputs, batch, …)</p></td>
-<td><p>Called in the validation loop after the batch.</p></td>
-</tr>
-<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">on_validation_batch_start</span></code>(batch, batch_idx, …)</p></td>
-<td><p>Called in the validation loop before anything happens for that batch.</p></td>
-</tr>
-<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">on_validation_end</span></code>()</p></td>
-<td><p>Called at the end of validation.</p></td>
-</tr>
-<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">on_validation_epoch_end</span></code>()</p></td>
-<td><p>Called in the validation loop at the very end of the epoch.</p></td>
-</tr>
-<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">on_validation_epoch_start</span></code>()</p></td>
-<td><p>Called in the validation loop at the very beginning of the epoch.</p></td>
-</tr>
-<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">on_validation_model_eval</span></code>()</p></td>
-<td><p>Sets the model to eval during the val loop</p></td>
-</tr>
-<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">on_validation_model_train</span></code>()</p></td>
-<td><p>Sets the model to train during the val loop</p></td>
-</tr>
-<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">on_validation_start</span></code>()</p></td>
-<td><p>Called at the beginning of validation.</p></td>
-</tr>
-<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">optimizer_step</span></code>([epoch, batch_idx, …])</p></td>
-<td><p>Override this method to adjust the default way the <code class="xref py py-class docutils literal notranslate"><span class="pre">Trainer</span></code> calls each optimizer.</p></td>
-</tr>
-<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">optimizer_zero_grad</span></code>(epoch, batch_idx, …)</p></td>
-<td><p>Override this method to change the default behaviour of <code class="docutils literal notranslate"><span class="pre">optimizer.zero_grad()</span></code>.</p></td>
-</tr>
-<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">parameters</span></code>([recurse])</p></td>
-<td><p>Returns an iterator over module parameters.</p></td>
-</tr>
-<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">predict_dataloader</span></code>()</p></td>
-<td><p>Implement one or multiple PyTorch DataLoaders for prediction.</p></td>
-</tr>
-<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">predict_step</span></code>(batch, batch_idx[, dataloader_idx])</p></td>
-<td><p>Step function called during <code class="xref py py-meth docutils literal notranslate"><span class="pre">predict()</span></code>.</p></td>
-</tr>
-<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">prepare_data</span></code>()</p></td>
-<td><p>Use this to download and prepare data.</p></td>
-</tr>
-<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">print</span></code>(*args, **kwargs)</p></td>
-<td><p>Prints only from process 0.</p></td>
-</tr>
-<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">register_backward_hook</span></code>(hook)</p></td>
-<td><p>Registers a backward hook on the module.</p></td>
-</tr>
-<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">register_buffer</span></code>(name, tensor[, persistent])</p></td>
-<td><p>Adds a buffer to the module.</p></td>
-</tr>
-<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">register_forward_hook</span></code>(hook)</p></td>
-<td><p>Registers a forward hook on the module.</p></td>
-</tr>
-<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">register_forward_pre_hook</span></code>(hook)</p></td>
-<td><p>Registers a forward pre-hook on the module.</p></td>
-</tr>
-<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">register_full_backward_hook</span></code>(hook)</p></td>
-<td><p>Registers a backward hook on the module.</p></td>
-</tr>
-<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">register_parameter</span></code>(name, param)</p></td>
-<td><p>Adds a parameter to the module.</p></td>
-</tr>
-<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">requires_grad_</span></code>([requires_grad])</p></td>
-<td><p>Change if autograd should record operations on parameters in this module.</p></td>
-</tr>
-<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">save_hyperparameters</span></code>(*args[, ignore, frame])</p></td>
-<td><p>Save model arguments to <code class="docutils literal notranslate"><span class="pre">hparams</span></code> attribute.</p></td>
-</tr>
-<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">setup</span></code>([stage])</p></td>
-<td><p>Called at the beginning of fit (train + validate), validate, test, and predict.</p></td>
-</tr>
-<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">share_memory</span></code>()</p></td>
-<td><p>See <code class="xref py py-meth docutils literal notranslate"><span class="pre">torch.Tensor.share_memory_()</span></code></p></td>
-</tr>
-<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">state_dict</span></code>([destination, prefix, keep_vars])</p></td>
-<td><p>Returns a dictionary containing a whole state of the module.</p></td>
-</tr>
-<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">tbptt_split_batch</span></code>(batch, split_size)</p></td>
-<td><p>When using truncated backpropagation through time, each batch must be split along the time dimension.</p></td>
-</tr>
-<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">teardown</span></code>([stage])</p></td>
-<td><p>Called at the end of fit (train + validate), validate, test, predict, or tune.</p></td>
-</tr>
-<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">test_dataloader</span></code>()</p></td>
-<td><p>Implement one or multiple PyTorch DataLoaders for testing.</p></td>
-</tr>
-<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">test_epoch_end</span></code>(outputs)</p></td>
-<td><p>Called at the end of a test epoch with the output of all test steps.</p></td>
-</tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#torch_bsf.BezierSimplex.test_step" title="torch_bsf.BezierSimplex.test_step"><code class="xref py py-obj docutils literal notranslate"><span class="pre">test_step</span></code></a>(batch, batch_idx)</p></td>
-<td><p>Operates on a single batch of data from the test set.</p></td>
-</tr>
-<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">test_step_end</span></code>(*args, **kwargs)</p></td>
-<td><p>Use this when testing with dp or ddp2 because <a class="reference internal" href="#torch_bsf.BezierSimplex.test_step" title="torch_bsf.BezierSimplex.test_step"><code class="xref py py-meth docutils literal notranslate"><span class="pre">test_step()</span></code></a> will operate on only part of the batch.</p></td>
-</tr>
-<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">to</span></code>(*args, **kwargs)</p></td>
-<td><p>Moves and/or casts the parameters and buffers.</p></td>
-</tr>
-<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">to_empty</span></code>(*, device)</p></td>
-<td><p>Moves the parameters and buffers to the specified device without copying storage.</p></td>
-</tr>
-<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">to_onnx</span></code>(file_path[, input_sample])</p></td>
-<td><p>Saves the model in ONNX format</p></td>
-</tr>
-<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">to_torchscript</span></code>([file_path, method, …])</p></td>
-<td><p>By default compiles the whole model to a <code class="xref py py-class docutils literal notranslate"><span class="pre">ScriptModule</span></code>.</p></td>
-</tr>
-<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">toggle_optimizer</span></code>(optimizer, optimizer_idx)</p></td>
-<td><p>Makes sure only the gradients of the current optimizer’s parameters are calculated in the training step to prevent dangling gradients in multiple-optimizer setup.</p></td>
-</tr>
-<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">train</span></code>([mode])</p></td>
-<td><p>Sets the module in training mode.</p></td>
-</tr>
-<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">train_dataloader</span></code>()</p></td>
-<td><p>Implement one or more PyTorch DataLoaders for training.</p></td>
-</tr>
-<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">training_epoch_end</span></code>(outputs)</p></td>
-<td><p>Called at the end of the training epoch with the outputs of all training steps.</p></td>
-</tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#torch_bsf.BezierSimplex.training_step" title="torch_bsf.BezierSimplex.training_step"><code class="xref py py-obj docutils literal notranslate"><span class="pre">training_step</span></code></a>(batch, batch_idx)</p></td>
-<td><p>Here you compute and return the training loss and some additional metrics for e.g.</p></td>
-</tr>
-<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">training_step_end</span></code>(*args, **kwargs)</p></td>
-<td><p>Use this when training with dp or ddp2 because <a class="reference internal" href="#torch_bsf.BezierSimplex.training_step" title="torch_bsf.BezierSimplex.training_step"><code class="xref py py-meth docutils literal notranslate"><span class="pre">training_step()</span></code></a> will operate on only part of the batch.</p></td>
-</tr>
-<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">transfer_batch_to_device</span></code>(batch[, device])</p></td>
-<td><p>Override this hook if your <code class="xref py py-class docutils literal notranslate"><span class="pre">DataLoader</span></code> returns tensors wrapped in a custom data structure.</p></td>
-</tr>
-<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">type</span></code>(dst_type)</p></td>
-<td><p>Casts all parameters and buffers to <code class="xref py py-attr docutils literal notranslate"><span class="pre">dst_type</span></code>.</p></td>
-</tr>
-<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">unfreeze</span></code>()</p></td>
-<td><p>Unfreeze all parameters for training.</p></td>
-</tr>
-<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">untoggle_optimizer</span></code>(optimizer_idx)</p></td>
-<td><p><div class="admonition note">
-<p class="admonition-title">Note</p>
-<p>Only called when using multiple optimizers</p>
-</div>
-</p></td>
-</tr>
-<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">val_dataloader</span></code>()</p></td>
-<td><p>Implement one or multiple PyTorch DataLoaders for validation.</p></td>
-</tr>
-<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">validation_epoch_end</span></code>(outputs)</p></td>
-<td><p>Called at the end of the validation epoch with the outputs of all validation steps.</p></td>
-</tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#torch_bsf.BezierSimplex.validation_step" title="torch_bsf.BezierSimplex.validation_step"><code class="xref py py-obj docutils literal notranslate"><span class="pre">validation_step</span></code></a>(batch, batch_idx)</p></td>
-<td><p>Operates on a single batch of data from the validation set.</p></td>
-</tr>
-<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">validation_step_end</span></code>(*args, **kwargs)</p></td>
-<td><p>Use this when validating with dp or ddp2 because <a class="reference internal" href="#torch_bsf.BezierSimplex.validation_step" title="torch_bsf.BezierSimplex.validation_step"><code class="xref py py-meth docutils literal notranslate"><span class="pre">validation_step()</span></code></a> will operate on only part of the batch.</p></td>
-</tr>
-<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">write_prediction</span></code>(name, value[, filename])</p></td>
-<td><p>Write predictions to disk using <code class="docutils literal notranslate"><span class="pre">torch.save</span></code></p></td>
-</tr>
-<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">write_prediction_dict</span></code>(predictions_dict[, …])</p></td>
-<td><p>Write a dictonary of predictions to disk at once using <code class="docutils literal notranslate"><span class="pre">torch.save</span></code></p></td>
-</tr>
-<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">xpu</span></code>([device])</p></td>
-<td><p>Moves all model parameters and buffers to the XPU.</p></td>
-</tr>
-<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">zero_grad</span></code>([set_to_none])</p></td>
-<td><p>Sets gradients of all model parameters to zero.</p></td>
-</tr>
-</tbody>
-</table>
-<table class="docutils align-default">
-<colgroup>
-<col style="width: 64%" />
-<col style="width: 36%" />
-</colgroup>
-<tbody>
-<tr class="row-odd"><td><p><strong>__call__</strong></p></td>
-<td></td>
-</tr>
-<tr class="row-even"><td><p><strong>lr_schedulers</strong></p></td>
-<td></td>
-</tr>
-<tr class="row-odd"><td><p><strong>optimizers</strong></p></td>
-<td></td>
-</tr>
-<tr class="row-even"><td><p><strong>summarize</strong></p></td>
-<td></td>
-</tr>
-<tr class="row-odd"><td><p><strong>validation_end</strong></p></td>
-<td></td>
-</tr>
-</tbody>
-</table>
 <dl class="py method">
 <dt class="sig sig-object py" id="torch_bsf.BezierSimplex.configure_optimizers">
 <span class="sig-name descname"><span class="pre">configure_optimizers</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; <span class="pre">torch.optim.optimizer.Optimizer</span><a class="reference external" href="https://github.com/rafcc/pytorch-bsf/blob/master/torch_bsf/bezier_simplex.py#L298-L301"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#torch_bsf.BezierSimplex.configure_optimizers" title="Permalink to this definition">¶</a></dt>
 <dd><p>Choose what optimizers and learning-rate schedulers to use in your optimization.
 Normally you’d need one. But in the case of GANs or similar you might have multiple.</p>
-<dl>
-<dt>Return:</dt><dd><p>Any of these 6 options.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p><p>Any of these 6 options.</p>
 <ul class="simple">
 <li><p><strong>Single optimizer</strong>.</p></li>
 <li><p><strong>List or Tuple</strong> of optimizers.</p></li>
@@ -2072,8 +1057,12 @@ key whose value is a single LR scheduler or lr_dict.</p></li>
 <li><p><strong>Tuple of dictionaries</strong> as described above, with an optional <code class="docutils literal notranslate"><span class="pre">&quot;frequency&quot;</span></code> key.</p></li>
 <li><p><strong>None</strong> - Fit will run without any optimizer.</p></li>
 </ul>
+</p>
 </dd>
-<dt>Note:</dt><dd><p>The lr_dict is a dictionary which contains the scheduler and its associated configuration.
+</dl>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>The lr_dict is a dictionary which contains the scheduler and its associated configuration.
 The default configuration is shown below.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">lr_dict</span> <span class="o">=</span> <span class="p">{</span>
     <span class="s1">&#39;scheduler&#39;</span><span class="p">:</span> <span class="n">lr_scheduler</span><span class="p">,</span> <span class="c1"># The LR scheduler instance (required)</span>
@@ -2087,8 +1076,10 @@ The default configuration is shown below.</p>
 </pre></div>
 </div>
 <p>Only the <code class="docutils literal notranslate"><span class="pre">&quot;scheduler&quot;</span></code> key is required, the rest will be set to the defaults above.</p>
-</dd>
-<dt>Note:</dt><dd><p>The <code class="docutils literal notranslate"><span class="pre">frequency</span></code> value specified in a dict along with the <code class="docutils literal notranslate"><span class="pre">optimizer</span></code> key is an int corresponding
+</div>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>The <code class="docutils literal notranslate"><span class="pre">frequency</span></code> value specified in a dict along with the <code class="docutils literal notranslate"><span class="pre">optimizer</span></code> key is an int corresponding
 to the number of sequential batches optimized with the specific optimizer.
 It should be given to none or to all of the optimizers.
 There is a difference between passing multiple optimizers in a list,
@@ -2109,8 +1100,7 @@ This is different from the <code class="docutils literal notranslate"><span clas
 the second optimizer for the next 10 steps and that cycle will continue.
 If an LR scheduler is specified for an optimizer using the <code class="docutils literal notranslate"><span class="pre">lr_scheduler</span></code> key in the above dict,
 the scheduler will only be updated when its optimizer is being used.</p>
-</dd>
-</dl>
+</div>
 <p>Examples:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="c1"># most cases</span>
 <span class="k">def</span> <span class="nf">configure_optimizers</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
@@ -2151,8 +1141,9 @@ the scheduler will only be updated when its optimizer is being used.</p>
     <span class="p">)</span>
 </pre></div>
 </div>
-<dl class="simple">
-<dt>Note:</dt><dd><p>Some things to know:</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>Some things to know:</p>
 <ul class="simple">
 <li><p>Lightning calls <code class="docutils literal notranslate"><span class="pre">.backward()</span></code> and <code class="docutils literal notranslate"><span class="pre">.step()</span></code> on each optimizer and learning rate scheduler as needed.</p></li>
 <li><p>If you use 16-bit precision (<code class="docutils literal notranslate"><span class="pre">precision=16</span></code>), Lightning will automatically handle the optimizers.</p></li>
@@ -2163,8 +1154,7 @@ at each training step.</p></li>
 <li><p>If you need to control how often those optimizers step or override the default <code class="docutils literal notranslate"><span class="pre">.step()</span></code> schedule,
 override the <code class="xref py py-meth docutils literal notranslate"><span class="pre">optimizer_step()</span></code> hook.</p></li>
 </ul>
-</dd>
-</dl>
+</div>
 </dd></dl>
 
 <dl class="py method">
@@ -2173,16 +1163,13 @@ override the <code class="xref py py-meth docutils literal notranslate"><span cl
 <dd><p>Process a forwarding step of training.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><dl class="simple">
-<dt><strong>t</strong></dt><dd><p>A minibatch of parameter vectors.</p>
-</dd>
-</dl>
+<dd class="field-odd"><p><strong>t</strong> – A minibatch of parameter vectors.</p>
 </dd>
 <dt class="field-even">Returns</dt>
-<dd class="field-even"><dl class="simple">
-<dt>x</dt><dd><p>A minibatch of value vectors.</p>
+<dd class="field-even"><p>A minibatch of value vectors.</p>
 </dd>
-</dl>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>x</p>
 </dd>
 </dl>
 </dd></dl>
@@ -2193,18 +1180,14 @@ override the <code class="xref py py-meth docutils literal notranslate"><span cl
 <dd><p>Computes a meshgrid of the Bezier simplex.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><dl class="simple">
-<dt><strong>num</strong></dt><dd><p>The number of grid points on each edge.</p>
-</dd>
-</dl>
+<dd class="field-odd"><p><strong>num</strong> – The number of grid points on each edge.</p>
 </dd>
 <dt class="field-even">Returns</dt>
-<dd class="field-even"><dl class="simple">
-<dt>ts</dt><dd><p>A parameter matrix of the mesh grid.</p>
-</dd>
-<dt>xs</dt><dd><p>A value matrix of the mesh grid.</p>
-</dd>
-</dl>
+<dd class="field-even"><p><ul class="simple">
+<li><p><em>ts</em> – A parameter matrix of the mesh grid.</p></li>
+<li><p><em>xs</em> – A value matrix of the mesh grid.</p></li>
+</ul>
+</p>
 </dd>
 </dl>
 </dd></dl>
@@ -2229,24 +1212,24 @@ such as accuracy.</p>
 <span class="n">test_epoch_end</span><span class="p">(</span><span class="n">test_outs</span><span class="p">)</span>
 </pre></div>
 </div>
-<dl>
-<dt>Args:</dt><dd><dl class="simple">
-<dt>batch (<code class="xref py py-class docutils literal notranslate"><span class="pre">Tensor</span></code> | (<code class="xref py py-class docutils literal notranslate"><span class="pre">Tensor</span></code>, …) | [<code class="xref py py-class docutils literal notranslate"><span class="pre">Tensor</span></code>, …]):</dt><dd><p>The output of your <code class="xref py py-class docutils literal notranslate"><span class="pre">DataLoader</span></code>. A tensor, tuple or list.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>batch</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">Tensor</span></code> | (<code class="xref py py-class docutils literal notranslate"><span class="pre">Tensor</span></code>, …) | [<code class="xref py py-class docutils literal notranslate"><span class="pre">Tensor</span></code>, …]) – The output of your <code class="xref py py-class docutils literal notranslate"><span class="pre">DataLoader</span></code>. A tensor, tuple or list.</p></li>
+<li><p><strong>batch_idx</strong> (<em>int</em>) – The index of this batch.</p></li>
+<li><p><strong>dataloader_idx</strong> (<em>int</em>) – The index of the dataloader that produced this batch
+(only if multiple test dataloaders used).</p></li>
+</ul>
 </dd>
-</dl>
-<p>batch_idx (int): The index of this batch.
-dataloader_idx (int): The index of the dataloader that produced this batch</p>
-<blockquote>
-<div><p>(only if multiple test dataloaders used).</p>
-</div></blockquote>
-</dd>
-<dt>Return:</dt><dd><p>Any of.</p>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><p>Any of.</p>
 <blockquote>
 <div><ul class="simple">
 <li><p>Any object or value</p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">None</span></code> - Testing will skip to the next batch</p></li>
 </ul>
 </div></blockquote>
+</p>
 </dd>
 </dl>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># if you have one test dataloader:</span>
@@ -2285,14 +1268,16 @@ dataloader_idx (int): The index of the dataloader that produced this batch</p>
     <span class="c1"># dataloader_idx tells you which dataset this is.</span>
 </pre></div>
 </div>
-<dl class="simple">
-<dt>Note:</dt><dd><p>If you don’t need to test you don’t need to implement this method.</p>
-</dd>
-<dt>Note:</dt><dd><p>When the <a class="reference internal" href="#torch_bsf.BezierSimplex.test_step" title="torch_bsf.BezierSimplex.test_step"><code class="xref py py-meth docutils literal notranslate"><span class="pre">test_step()</span></code></a> is called, the model has been put in eval mode and
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>If you don’t need to test you don’t need to implement this method.</p>
+</div>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>When the <a class="reference internal" href="#torch_bsf.BezierSimplex.test_step" title="torch_bsf.BezierSimplex.test_step"><code class="xref py py-meth docutils literal notranslate"><span class="pre">test_step()</span></code></a> is called, the model has been put in eval mode and
 PyTorch gradients have been disabled. At the end of the test epoch, the model goes back
 to training mode and gradients are enabled.</p>
-</dd>
-</dl>
+</div>
 </dd></dl>
 
 <dl class="py attribute">
@@ -2305,28 +1290,30 @@ to training mode and gradients are enabled.</p>
 <span class="sig-name descname"><span class="pre">training_step</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">batch</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">batch_idx</span></span></em><span class="sig-paren">)</span> &#x2192; <span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span> </span><span class="pre">Any</span><span class="p"><span class="pre">]</span></span><a class="reference external" href="https://github.com/rafcc/pytorch-bsf/blob/master/torch_bsf/bezier_simplex.py#L262-L269"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#torch_bsf.BezierSimplex.training_step" title="Permalink to this definition">¶</a></dt>
 <dd><p>Here you compute and return the training loss and some additional metrics for e.g.
 the progress bar or logger.</p>
-<dl>
-<dt>Args:</dt><dd><dl class="simple">
-<dt>batch (<code class="xref py py-class docutils literal notranslate"><span class="pre">Tensor</span></code> | (<code class="xref py py-class docutils literal notranslate"><span class="pre">Tensor</span></code>, …) | [<code class="xref py py-class docutils literal notranslate"><span class="pre">Tensor</span></code>, …]):</dt><dd><p>The output of your <code class="xref py py-class docutils literal notranslate"><span class="pre">DataLoader</span></code>. A tensor, tuple or list.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>batch</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">Tensor</span></code> | (<code class="xref py py-class docutils literal notranslate"><span class="pre">Tensor</span></code>, …) | [<code class="xref py py-class docutils literal notranslate"><span class="pre">Tensor</span></code>, …]) – The output of your <code class="xref py py-class docutils literal notranslate"><span class="pre">DataLoader</span></code>. A tensor, tuple or list.</p></li>
+<li><p><strong>batch_idx</strong> (<em>int</em>) – Integer displaying index of this batch</p></li>
+<li><p><strong>optimizer_idx</strong> (<em>int</em>) – When using multiple optimizers, this argument will also be present.</p></li>
+<li><p><strong>hiddens</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">Tensor</span></code>) – Passed in if
+<a href="#id9"><span class="problematic" id="id10">:paramref:`~pytorch_lightning.core.lightning.LightningModule.truncated_bptt_steps`</span></a> &gt; 0.</p></li>
+</ul>
 </dd>
-</dl>
-<p>batch_idx (int): Integer displaying index of this batch
-optimizer_idx (int): When using multiple optimizers, this argument will also be present.
-hiddens(<code class="xref py py-class docutils literal notranslate"><span class="pre">Tensor</span></code>): Passed in if</p>
-<blockquote>
-<div><p><a href="#id9"><span class="problematic" id="id10">:paramref:`~pytorch_lightning.core.lightning.LightningModule.truncated_bptt_steps`</span></a> &gt; 0.</p>
-</div></blockquote>
-</dd>
-<dt>Return:</dt><dd><p>Any of.</p>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><p>Any of.</p>
 <ul class="simple">
 <li><p><code class="xref py py-class docutils literal notranslate"><span class="pre">Tensor</span></code> - The loss tensor</p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">dict</span></code> - A dictionary. Can include any keys, but must include the key <code class="docutils literal notranslate"><span class="pre">'loss'</span></code></p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">None</span></code> - Training will skip to the next batch</p></li>
 </ul>
-</dd>
-<dt>Note:</dt><dd><p>Returning <code class="docutils literal notranslate"><span class="pre">None</span></code> is currently not supported for multi-GPU or TPU, or with 16-bit precision enabled.</p>
+</p>
 </dd>
 </dl>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>Returning <code class="docutils literal notranslate"><span class="pre">None</span></code> is currently not supported for multi-GPU or TPU, or with 16-bit precision enabled.</p>
+</div>
 <p>In this step you’d normally do the forward pass and calculate the loss for a batch.
 You can also do fancier things like multiple forward passes or something model specific.</p>
 <p>Example:</p>
@@ -2358,11 +1345,11 @@ argument with the hidden states of the previous step.</p>
     <span class="k">return</span> <span class="p">{</span><span class="s1">&#39;loss&#39;</span><span class="p">:</span> <span class="n">loss</span><span class="p">,</span> <span class="s1">&#39;hiddens&#39;</span><span class="p">:</span> <span class="n">hiddens</span><span class="p">}</span>
 </pre></div>
 </div>
-<dl class="simple">
-<dt>Note:</dt><dd><p>The loss value shown in the progress bar is smoothed (averaged) over the last values,
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>The loss value shown in the progress bar is smoothed (averaged) over the last values,
 so it differs from the actual loss returned in train/validation step.</p>
-</dd>
-</dl>
+</div>
 </dd></dl>
 
 <dl class="py attribute">
@@ -2389,24 +1376,24 @@ In this step you’d might generate examples or calculate anything of interest l
 <span class="n">validation_epoch_end</span><span class="p">(</span><span class="n">val_outs</span><span class="p">)</span>
 </pre></div>
 </div>
-<dl>
-<dt>Args:</dt><dd><dl class="simple">
-<dt>batch (<code class="xref py py-class docutils literal notranslate"><span class="pre">Tensor</span></code> | (<code class="xref py py-class docutils literal notranslate"><span class="pre">Tensor</span></code>, …) | [<code class="xref py py-class docutils literal notranslate"><span class="pre">Tensor</span></code>, …]):</dt><dd><p>The output of your <code class="xref py py-class docutils literal notranslate"><span class="pre">DataLoader</span></code>. A tensor, tuple or list.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>batch</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">Tensor</span></code> | (<code class="xref py py-class docutils literal notranslate"><span class="pre">Tensor</span></code>, …) | [<code class="xref py py-class docutils literal notranslate"><span class="pre">Tensor</span></code>, …]) – The output of your <code class="xref py py-class docutils literal notranslate"><span class="pre">DataLoader</span></code>. A tensor, tuple or list.</p></li>
+<li><p><strong>batch_idx</strong> (<em>int</em>) – The index of this batch</p></li>
+<li><p><strong>dataloader_idx</strong> (<em>int</em>) – The index of the dataloader that produced this batch
+(only if multiple val dataloaders used)</p></li>
+</ul>
 </dd>
-</dl>
-<p>batch_idx (int): The index of this batch
-dataloader_idx (int): The index of the dataloader that produced this batch</p>
-<blockquote>
-<div><p>(only if multiple val dataloaders used)</p>
-</div></blockquote>
-</dd>
-<dt>Return:</dt><dd><p>Any of.</p>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><p>Any of.</p>
 <blockquote>
 <div><ul class="simple">
 <li><p>Any object or value</p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">None</span></code> - Validation will skip to the next batch</p></li>
 </ul>
 </div></blockquote>
+</p>
 </dd>
 </dl>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># pseudocode of order</span>
@@ -2455,14 +1442,16 @@ dataloader_idx (int): The index of the dataloader that produced this batch</p>
     <span class="c1"># dataloader_idx tells you which dataset this is.</span>
 </pre></div>
 </div>
-<dl class="simple">
-<dt>Note:</dt><dd><p>If you don’t need to validate you don’t need to implement this method.</p>
-</dd>
-<dt>Note:</dt><dd><p>When the <a class="reference internal" href="#torch_bsf.BezierSimplex.validation_step" title="torch_bsf.BezierSimplex.validation_step"><code class="xref py py-meth docutils literal notranslate"><span class="pre">validation_step()</span></code></a> is called, the model has been put in eval mode
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>If you don’t need to validate you don’t need to implement this method.</p>
+</div>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>When the <a class="reference internal" href="#torch_bsf.BezierSimplex.validation_step" title="torch_bsf.BezierSimplex.validation_step"><code class="xref py py-meth docutils literal notranslate"><span class="pre">validation_step()</span></code></a> is called, the model has been put in eval mode
 and PyTorch gradients have been disabled. At the end of validation,
 the model goes back to training mode and gradients are enabled.</p>
-</dd>
-</dl>
+</div>
 </dd></dl>
 
 </dd></dl>
@@ -2474,135 +1463,27 @@ the model goes back to training mode and gradients are enabled.</p>
 <p>A data module for training a Bezier simplex.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><dl class="simple">
-<dt><strong>data</strong></dt><dd><p>The path to a data file.</p>
-</dd>
-<dt><strong>label</strong></dt><dd><p>The path to a label file.</p>
-</dd>
-<dt><strong>header</strong></dt><dd><p>The number of headers in data files.</p>
-</dd>
-<dt><strong>delimiter</strong></dt><dd><p>The delimiter of data files.</p>
-</dd>
-<dt><strong>batch_size</strong></dt><dd><p>The size of minibatch.</p>
-</dd>
-<dt><strong>split_ratio</strong></dt><dd><p>The ratio of train-val split.</p>
-</dd>
-<dt><strong>normalize</strong></dt><dd><p>The data normalization method.
-Either <cite>“max”</cite>, <cite>“std”</cite>, <cite>“quantile”</cite>, or <cite>“none”</cite>.</p>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>data</strong> – The path to a data file.</p></li>
+<li><p><strong>label</strong> – The path to a label file.</p></li>
+<li><p><strong>header</strong> – The number of headers in data files.</p></li>
+<li><p><strong>delimiter</strong> – The delimiter of data files.</p></li>
+<li><p><strong>batch_size</strong> – The size of minibatch.</p></li>
+<li><p><strong>split_ratio</strong> – The ratio of train-val split.</p></li>
+<li><p><strong>normalize</strong> – The data normalization method.
+Either <cite>“max”</cite>, <cite>“std”</cite>, <cite>“quantile”</cite>, or <cite>“none”</cite>.</p></li>
+</ul>
 </dd>
 </dl>
-</dd>
-<dt class="field-even">Attributes</dt>
-<dd class="field-even"><dl class="simple">
-<dt><code class="xref py py-obj docutils literal notranslate"><span class="pre">dims</span></code></dt><dd><p>A tuple describing the shape of your data.</p>
-</dd>
-<dt><code class="xref py py-obj docutils literal notranslate"><span class="pre">has_prepared_data</span></code></dt><dd><p>Return bool letting you know if <code class="docutils literal notranslate"><span class="pre">datamodule.prepare_data()</span></code> has been called or not.</p>
-</dd>
-<dt><code class="xref py py-obj docutils literal notranslate"><span class="pre">has_setup_fit</span></code></dt><dd><p>Return bool letting you know if <code class="docutils literal notranslate"><span class="pre">datamodule.setup(stage='fit')</span></code> has been called or not.</p>
-</dd>
-<dt><code class="xref py py-obj docutils literal notranslate"><span class="pre">has_setup_predict</span></code></dt><dd><p>Return bool letting you know if <code class="docutils literal notranslate"><span class="pre">datamodule.setup(stage='predict')</span></code> has been called or not.</p>
-</dd>
-<dt><code class="xref py py-obj docutils literal notranslate"><span class="pre">has_setup_test</span></code></dt><dd><p>Return bool letting you know if <code class="docutils literal notranslate"><span class="pre">datamodule.setup(stage='test')</span></code> has been called or not.</p>
-</dd>
-<dt><code class="xref py py-obj docutils literal notranslate"><span class="pre">has_setup_validate</span></code></dt><dd><p>Return bool letting you know if <code class="docutils literal notranslate"><span class="pre">datamodule.setup(stage='validate')</span></code> has been called or not.</p>
-</dd>
-<dt><code class="xref py py-obj docutils literal notranslate"><span class="pre">has_teardown_fit</span></code></dt><dd><p>Return bool letting you know if <code class="docutils literal notranslate"><span class="pre">datamodule.teardown(stage='fit')</span></code> has been called or not.</p>
-</dd>
-<dt><code class="xref py py-obj docutils literal notranslate"><span class="pre">has_teardown_predict</span></code></dt><dd><p>Return bool letting you know if <code class="docutils literal notranslate"><span class="pre">datamodule.teardown(stage='predict')</span></code> has been called or not.</p>
-</dd>
-<dt><code class="xref py py-obj docutils literal notranslate"><span class="pre">has_teardown_test</span></code></dt><dd><p>Return bool letting you know if <code class="docutils literal notranslate"><span class="pre">datamodule.teardown(stage='test')</span></code> has been called or not.</p>
-</dd>
-<dt><code class="xref py py-obj docutils literal notranslate"><span class="pre">has_teardown_validate</span></code></dt><dd><p>Return bool letting you know if <code class="docutils literal notranslate"><span class="pre">datamodule.teardown(stage='validate')</span></code> has been called or not.</p>
-</dd>
-<dt><code class="xref py py-obj docutils literal notranslate"><span class="pre">test_transforms</span></code></dt><dd><p>Optional transforms (or collection of transforms) you can apply to test dataset</p>
-</dd>
-<dt><code class="xref py py-obj docutils literal notranslate"><span class="pre">train_transforms</span></code></dt><dd><p>Optional transforms (or collection of transforms) you can apply to train dataset</p>
-</dd>
-<dt><code class="xref py py-obj docutils literal notranslate"><span class="pre">val_transforms</span></code></dt><dd><p>Optional transforms (or collection of transforms) you can apply to validation dataset</p>
-</dd>
-</dl>
-</dd>
-</dl>
-<p class="rubric">Methods</p>
-<table class="longtable docutils align-default">
-<colgroup>
-<col style="width: 10%" />
-<col style="width: 90%" />
-</colgroup>
-<tbody>
-<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">add_argparse_args</span></code>(parent_parser, **kwargs)</p></td>
-<td><p>Extends existing argparse by default <cite>LightningDataModule</cite> attributes.</p></td>
-</tr>
-<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">from_argparse_args</span></code>(args, **kwargs)</p></td>
-<td><p>Create an instance from CLI arguments.</p></td>
-</tr>
-<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">from_datasets</span></code>([train_dataset, val_dataset, …])</p></td>
-<td><p>Create an instance from torch.utils.data.Dataset.</p></td>
-</tr>
-<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_init_arguments_and_types</span></code>()</p></td>
-<td><p>Scans the DataModule signature and returns argument names, types and default values.</p></td>
-</tr>
-<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">on_after_batch_transfer</span></code>(batch, dataloader_idx)</p></td>
-<td><p>Override to alter or apply batch augmentations to your batch after it is transferred to the device.</p></td>
-</tr>
-<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">on_before_batch_transfer</span></code>(batch, dataloader_idx)</p></td>
-<td><p>Override to alter or apply batch augmentations to your batch before it is transferred to the device.</p></td>
-</tr>
-<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">on_load_checkpoint</span></code>(checkpoint)</p></td>
-<td><p>Called by Lightning to restore your model.</p></td>
-</tr>
-<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">on_predict_dataloader</span></code>()</p></td>
-<td><p>Called before requesting the predict dataloader.</p></td>
-</tr>
-<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">on_save_checkpoint</span></code>(checkpoint)</p></td>
-<td><p>Called by Lightning when saving a checkpoint to give you a chance to store anything else you might want to save.</p></td>
-</tr>
-<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">on_test_dataloader</span></code>()</p></td>
-<td><p>Called before requesting the test dataloader.</p></td>
-</tr>
-<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">on_train_dataloader</span></code>()</p></td>
-<td><p>Called before requesting the train dataloader.</p></td>
-</tr>
-<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">on_val_dataloader</span></code>()</p></td>
-<td><p>Called before requesting the val dataloader.</p></td>
-</tr>
-<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">predict_dataloader</span></code>()</p></td>
-<td><p>Implement one or multiple PyTorch DataLoaders for prediction.</p></td>
-</tr>
-<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">prepare_data</span></code>()</p></td>
-<td><p>Use this to download and prepare data.</p></td>
-</tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#torch_bsf.BezierSimplexDataModule.setup" title="torch_bsf.BezierSimplexDataModule.setup"><code class="xref py py-obj docutils literal notranslate"><span class="pre">setup</span></code></a>([stage])</p></td>
-<td><p>Called at the beginning of fit (train + validate), validate, test, and predict.</p></td>
-</tr>
-<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">size</span></code>([dim])</p></td>
-<td><p>Return the dimension of each input either as a tuple or list of tuples.</p></td>
-</tr>
-<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">teardown</span></code>([stage])</p></td>
-<td><p>Called at the end of fit (train + validate), validate, test, predict, or tune.</p></td>
-</tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#torch_bsf.BezierSimplexDataModule.test_dataloader" title="torch_bsf.BezierSimplexDataModule.test_dataloader"><code class="xref py py-obj docutils literal notranslate"><span class="pre">test_dataloader</span></code></a>()</p></td>
-<td><p>Implement one or multiple PyTorch DataLoaders for testing.</p></td>
-</tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#torch_bsf.BezierSimplexDataModule.train_dataloader" title="torch_bsf.BezierSimplexDataModule.train_dataloader"><code class="xref py py-obj docutils literal notranslate"><span class="pre">train_dataloader</span></code></a>()</p></td>
-<td><p>Implement one or more PyTorch DataLoaders for training.</p></td>
-</tr>
-<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">transfer_batch_to_device</span></code>(batch[, device])</p></td>
-<td><p>Override this hook if your <code class="xref py py-class docutils literal notranslate"><span class="pre">DataLoader</span></code> returns tensors wrapped in a custom data structure.</p></td>
-</tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#torch_bsf.BezierSimplexDataModule.val_dataloader" title="torch_bsf.BezierSimplexDataModule.val_dataloader"><code class="xref py py-obj docutils literal notranslate"><span class="pre">val_dataloader</span></code></a>()</p></td>
-<td><p>Implement one or multiple PyTorch DataLoaders for validation.</p></td>
-</tr>
-</tbody>
-</table>
 <dl class="py method">
 <dt class="sig sig-object py" id="torch_bsf.BezierSimplexDataModule.setup">
 <span class="sig-name descname"><span class="pre">setup</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">stage</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span> <span class="o"><span class="pre">=</span></span> <span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference external" href="https://github.com/rafcc/pytorch-bsf/blob/master/torch_bsf/bezier_simplex.py#L59-L87"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#torch_bsf.BezierSimplexDataModule.setup" title="Permalink to this definition">¶</a></dt>
 <dd><p>Called at the beginning of fit (train + validate), validate, test, and predict.
 This is a good hook when you need to build models dynamically or adjust something about them.
 This hook is called on every process when using DDP.</p>
-<dl class="simple">
-<dt>Args:</dt><dd><p>stage: either <code class="docutils literal notranslate"><span class="pre">'fit'</span></code>, <code class="docutils literal notranslate"><span class="pre">'validate'</span></code>, <code class="docutils literal notranslate"><span class="pre">'test'</span></code>, or <code class="docutils literal notranslate"><span class="pre">'predict'</span></code></p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>stage</strong> – either <code class="docutils literal notranslate"><span class="pre">'fit'</span></code>, <code class="docutils literal notranslate"><span class="pre">'validate'</span></code>, <code class="docutils literal notranslate"><span class="pre">'test'</span></code>, or <code class="docutils literal notranslate"><span class="pre">'predict'</span></code></p>
 </dd>
 </dl>
 <p>Example:</p>
@@ -2651,11 +1532,14 @@ This hook is called on every process when using DDP.</p>
 <li><p><a class="reference internal" href="#torch_bsf.BezierSimplexDataModule.val_dataloader" title="torch_bsf.BezierSimplexDataModule.val_dataloader"><code class="xref py py-meth docutils literal notranslate"><span class="pre">val_dataloader()</span></code></a></p></li>
 <li><p><a class="reference internal" href="#torch_bsf.BezierSimplexDataModule.test_dataloader" title="torch_bsf.BezierSimplexDataModule.test_dataloader"><code class="xref py py-meth docutils literal notranslate"><span class="pre">test_dataloader()</span></code></a></p></li>
 </ul>
-<dl class="simple">
-<dt>Note:</dt><dd><p>Lightning adds the correct sampler for distributed and arbitrary hardware.
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>Lightning adds the correct sampler for distributed and arbitrary hardware.
 There is no need to set it yourself.</p>
-</dd>
-<dt>Return:</dt><dd><p>Single or multiple PyTorch DataLoaders.</p>
+</div>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>Single or multiple PyTorch DataLoaders.</p>
 </dd>
 </dl>
 <p>Example:</p>
@@ -2677,22 +1561,25 @@ There is no need to set it yourself.</p>
     <span class="k">return</span> <span class="p">[</span><span class="n">loader_a</span><span class="p">,</span> <span class="n">loader_b</span><span class="p">,</span> <span class="o">...</span><span class="p">,</span> <span class="n">loader_n</span><span class="p">]</span>
 </pre></div>
 </div>
-<dl class="simple">
-<dt>Note:</dt><dd><p>If you don’t need a test dataset and a <code class="xref py py-meth docutils literal notranslate"><span class="pre">test_step()</span></code>, you don’t need to implement
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>If you don’t need a test dataset and a <code class="xref py py-meth docutils literal notranslate"><span class="pre">test_step()</span></code>, you don’t need to implement
 this method.</p>
-</dd>
-<dt>Note:</dt><dd><p>In the case where you return multiple test dataloaders, the <code class="xref py py-meth docutils literal notranslate"><span class="pre">test_step()</span></code>
+</div>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>In the case where you return multiple test dataloaders, the <code class="xref py py-meth docutils literal notranslate"><span class="pre">test_step()</span></code>
 will have an argument <code class="docutils literal notranslate"><span class="pre">dataloader_idx</span></code> which matches the order here.</p>
-</dd>
-</dl>
+</div>
 </dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="torch_bsf.BezierSimplexDataModule.train_dataloader">
 <span class="sig-name descname"><span class="pre">train_dataloader</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; <span class="pre">torch.utils.data.dataloader.DataLoader</span><a class="reference external" href="https://github.com/rafcc/pytorch-bsf/blob/master/torch_bsf/bezier_simplex.py#L89-L96"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#torch_bsf.BezierSimplexDataModule.train_dataloader" title="Permalink to this definition">¶</a></dt>
 <dd><p>Implement one or more PyTorch DataLoaders for training.</p>
-<dl class="simple">
-<dt>Return:</dt><dd><p>Either a single PyTorch <code class="xref py py-class docutils literal notranslate"><span class="pre">DataLoader</span></code> or a collection of these
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>Either a single PyTorch <code class="xref py py-class docutils literal notranslate"><span class="pre">DataLoader</span></code> or a collection of these
 (list, dict, nested lists and dicts). In the case of multiple dataloaders, please see
 this <span class="xref std std-ref">page</span></p>
 </dd>
@@ -2718,11 +1605,11 @@ this <span class="xref std std-ref">page</span></p>
 <li><p><a class="reference internal" href="#torch_bsf.BezierSimplexDataModule.setup" title="torch_bsf.BezierSimplexDataModule.setup"><code class="xref py py-meth docutils literal notranslate"><span class="pre">setup()</span></code></a></p></li>
 <li><p><a class="reference internal" href="#torch_bsf.BezierSimplexDataModule.train_dataloader" title="torch_bsf.BezierSimplexDataModule.train_dataloader"><code class="xref py py-meth docutils literal notranslate"><span class="pre">train_dataloader()</span></code></a></p></li>
 </ul>
-<dl class="simple">
-<dt>Note:</dt><dd><p>Lightning adds the correct sampler for distributed and arbitrary hardware.
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>Lightning adds the correct sampler for distributed and arbitrary hardware.
 There is no need to set it yourself.</p>
-</dd>
-</dl>
+</div>
 <p>Example:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="c1"># single dataloader</span>
 <span class="k">def</span> <span class="nf">train_dataloader</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
@@ -2781,11 +1668,14 @@ There is no need to set it yourself.</p>
 <li><p><a class="reference internal" href="#torch_bsf.BezierSimplexDataModule.val_dataloader" title="torch_bsf.BezierSimplexDataModule.val_dataloader"><code class="xref py py-meth docutils literal notranslate"><span class="pre">val_dataloader()</span></code></a></p></li>
 <li><p><a class="reference internal" href="#torch_bsf.BezierSimplexDataModule.test_dataloader" title="torch_bsf.BezierSimplexDataModule.test_dataloader"><code class="xref py py-meth docutils literal notranslate"><span class="pre">test_dataloader()</span></code></a></p></li>
 </ul>
-<dl class="simple">
-<dt>Note:</dt><dd><p>Lightning adds the correct sampler for distributed and arbitrary hardware
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>Lightning adds the correct sampler for distributed and arbitrary hardware
 There is no need to set it yourself.</p>
-</dd>
-<dt>Return:</dt><dd><p>Single or multiple PyTorch DataLoaders.</p>
+</div>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>Single or multiple PyTorch DataLoaders.</p>
 </dd>
 </dl>
 <p>Examples:</p>
@@ -2807,14 +1697,16 @@ There is no need to set it yourself.</p>
     <span class="k">return</span> <span class="p">[</span><span class="n">loader_a</span><span class="p">,</span> <span class="n">loader_b</span><span class="p">,</span> <span class="o">...</span><span class="p">,</span> <span class="n">loader_n</span><span class="p">]</span>
 </pre></div>
 </div>
-<dl class="simple">
-<dt>Note:</dt><dd><p>If you don’t need a validation dataset and a <code class="xref py py-meth docutils literal notranslate"><span class="pre">validation_step()</span></code>, you don’t need to
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>If you don’t need a validation dataset and a <code class="xref py py-meth docutils literal notranslate"><span class="pre">validation_step()</span></code>, you don’t need to
 implement this method.</p>
-</dd>
-<dt>Note:</dt><dd><p>In the case where you return multiple validation dataloaders, the <code class="xref py py-meth docutils literal notranslate"><span class="pre">validation_step()</span></code>
+</div>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>In the case where you return multiple validation dataloaders, the <code class="xref py py-meth docutils literal notranslate"><span class="pre">validation_step()</span></code>
 will have an argument <code class="docutils literal notranslate"><span class="pre">dataloader_idx</span></code> which matches the order here.</p>
-</dd>
-</dl>
+</div>
 </dd></dl>
 
 </dd></dl>
@@ -2825,30 +1717,22 @@ will have an argument <code class="docutils literal notranslate"><span class="pr
 <dd><p>Fits a Bezier simplex.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><dl class="simple">
-<dt><strong>params</strong></dt><dd><p>The data.</p>
-</dd>
-<dt><strong>values</strong></dt><dd><p>The label data.</p>
-</dd>
-<dt><strong>degree</strong></dt><dd><p>The degree of the Bezier simplex.</p>
-</dd>
-<dt><strong>batch_size</strong></dt><dd><p>The size of minibatch.</p>
-</dd>
-<dt><strong>max_epochs</strong></dt><dd><p>The number of epochs to stop training.</p>
-</dd>
-<dt><strong>gpus</strong></dt><dd><p>The number of gpus.</p>
-</dd>
-<dt><strong>num_nodes</strong></dt><dd><p>The number of compute nodes.</p>
-</dd>
-<dt><strong>accelerator</strong></dt><dd><p>Distributed mode.</p>
-</dd>
-</dl>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>params</strong> – The data.</p></li>
+<li><p><strong>values</strong> – The label data.</p></li>
+<li><p><strong>degree</strong> – The degree of the Bezier simplex.</p></li>
+<li><p><strong>batch_size</strong> – The size of minibatch.</p></li>
+<li><p><strong>max_epochs</strong> – The number of epochs to stop training.</p></li>
+<li><p><strong>gpus</strong> – The number of gpus.</p></li>
+<li><p><strong>num_nodes</strong> – The number of compute nodes.</p></li>
+<li><p><strong>accelerator</strong> – Distributed mode.</p></li>
+</ul>
 </dd>
 <dt class="field-even">Returns</dt>
-<dd class="field-even"><dl class="simple">
-<dt>bs</dt><dd><p>A trained Bezier simplex.</p>
+<dd class="field-even"><p>A trained Bezier simplex.</p>
 </dd>
-</dl>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>bs</p>
 </dd>
 </dl>
 <p class="rubric">Examples</p>
