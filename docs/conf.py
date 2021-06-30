@@ -66,4 +66,4 @@ def linkcode_resolve(domain, info):
     if not info['module']:
         return None
     filename = info['module'].replace('.', '/')
-    return "https://github.com/rafcc/pytorch-bsf/%s.py" % filename
+    return "https://github.com/rafcc/pytorch-bsf/blob/master/%s.py" % filename
