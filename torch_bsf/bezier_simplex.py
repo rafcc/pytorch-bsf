@@ -363,6 +363,7 @@ def fit(
     >>> import torch_bsf
 
     Prepare training data
+
     >>> ts = torch.tensor(  # parameters on a simplex
     ...     [
     ...         [3/3, 0/3, 0/3],
@@ -380,9 +381,11 @@ def fit(
     >>> xs = 1 - ts * ts  # values corresponding to the parameters
 
     Train a model
+
     >>> bs = torch_bsf.fit(params=ts, values=xs, degree=3, max_epochs=100)
 
     Predict by the trained model
+
     >>> t = [[0.2, 0.3, 0.5]]
     >>> x = bs(t)
     >>> print(f"{t} -> {x}")
