@@ -92,6 +92,7 @@
 <li><a class="reference internal" href="#what-is-bezier-simplex-fitting">What is Bezier simplex fitting?</a><ul>
 <li><a class="reference internal" href="#bezier-simplex">Bezier simplex</a></li>
 <li><a class="reference internal" href="#fitting-a-bezier-simplex-to-a-dataset">Fitting a Bezier simplex to a dataset</a></li>
+<li><a class="reference internal" href="#why-does-bezier-simplex-fitting-matter">Why does Bezier simplex fitting matter?</a></li>
 </ul>
 </li>
 <li><a class="reference internal" href="#indices-and-tables">Indices and tables</a></li>
@@ -165,7 +166,7 @@
   <div class="section" id="welcome-to-pytorch-bsf-s-documentation">
 <h1>Welcome to PyTorch-BSF’s documentation!<a class="headerlink" href="#welcome-to-pytorch-bsf-s-documentation" title="Permalink to this headline">¶</a></h1>
 <p>PyTorch-BSF is a PyTorch implementation of Bezier simplex ftting.
-The project is on <a class="reference external" href="https://github.com/rafcc/pytorch-bst">GitHub</a>.</p>
+The project is on <a class="reference external" href="https://github.com/rafcc/pytorch-bsf">GitHub</a>.</p>
 </div>
 <div class="section" id="what-is-bezier-simplex-fitting">
 <h1>What is Bezier simplex fitting?<a class="headerlink" href="#what-is-bezier-simplex-fitting" title="Permalink to this headline">¶</a></h1>
@@ -190,6 +191,13 @@ What we are trying can be formulated as a problem of finding the best vector of 
 <div class="math notranslate nohighlight">
 \[\min_{p} \sum_{(t,x)\in B}\|b(t|p)-x\|^2.\]</div>
 <p>PyTorch-BSF provides an algorithm for solving this optimization problem with the L-BFGS algorithm.</p>
+</div>
+<div class="section" id="why-does-bezier-simplex-fitting-matter">
+<h2>Why does Bezier simplex fitting matter?<a class="headerlink" href="#why-does-bezier-simplex-fitting-matter" title="Permalink to this headline">¶</a></h2>
+<p>The Bezier simplex can approximate the solution set of “good” multiobjective optimization problems.
+More precisely, for the weighted sum scalarization problem of any multiobjective strongly convex problem, the map form a simplex of weight vectors to the solution set of weighted sum problems can be approximated by a Bezier simplex.
+If we find few solutions to such a problem, the entire solution set can be approximated by Bezier simplex fitting.
+An important application is hyperparameter search of the elastic net.</p>
 <div class="toctree-wrapper compound">
 </div>
 </div>
