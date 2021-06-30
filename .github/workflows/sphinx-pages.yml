@@ -10,14 +10,6 @@ jobs:
   build:
     runs-on: ubuntu-18.04
     steps:
-    - name: Set up Python 3.9
-      uses: actions/setup-python@v2
-      with:
-        python-version: 3.9
-    - name: Install dependencies
-      run: |
-        python -m pip install --upgrade pip
-        python -m pip install git+$GITHUB_SERVER_URL/$GITHUB_REPOSITORY
     - name: Sphinx Pages
       # You may pin to the exact commit or the version.
       # uses: seanzhengw/sphinx-pages@70dd0557fc226cfcd41c617aec5e9ee4fce4afe2
@@ -26,4 +18,4 @@ jobs:
         github_token: ${{ secrets.GITHUB_TOKEN }}
         create_readme: true
         source_dir: docs
-        install_extensions: false
+        install_extensions: true
