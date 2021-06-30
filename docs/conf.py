@@ -12,6 +12,9 @@
 #
 import os
 import sys
+
+import torch_bsf
+
 sys.path.insert(0, os.path.abspath('../'))
 
 
@@ -60,10 +63,26 @@ html_static_path = ['_static']
 
 
 # https://www.sphinx-doc.org/ja/master/usage/extensions/linkcode.html
+# Resolve function for the linkcode extension.
 def linkcode_resolve(domain, info):
-    if domain != 'py':
+    def find_source():
+        # try to find the file and line number, based on code from numpy:
+        # https://github.com/numpy/numpy/blob/master/doc/source/conf.py#L286
+        obj = sys.modules[info['module']]
+        for part in info['fullname'].split('.'):
+            obj = getattr(obj, part)
+        import inspect
+        import os
+        fn = inspect.getsourcefile(obj)
+        fn = os.path.relpath(fn, start=os.path.dirname(torch_bsf.__file__))
+        source, lineno = inspect.getsourcelines(obj)
+        return fn, lineno, lineno + len(source) - 1
+
+    if domain != 'py' or not info['module']:
         return None
-    if not info['module']:
-        return None
-    filename = info['module'].replace('.', '/')
-    return "https://github.com/rafcc/pytorch-bsf/blob/master/%s.py" % filename
+    try:
+        filename = 'torch_bsf/%s#L%d-L%d' % find_source()
+    except Exception:
+        filename = info['module'].replace('.', '/') + '.py'
+    tag = 'master'  # if 'dev' in release else ('v' + release)
+    return "https://github.com/rafcc/pytorch-bsf/blob/%s/%s" % (tag, filename)
