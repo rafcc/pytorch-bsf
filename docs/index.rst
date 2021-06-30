@@ -25,7 +25,7 @@ An :math:`(M-1)`-dimensional *Bezier simplex* of degree :math:`D` in :math:`\mat
 
 .. math:: b(t|p) = \sum_{d\in\mathbb N_D^M} \binom{D}{d} t^d p_d,
 
-where :math:`p_d\in\mathbb R^N\ (d\in\mathbb N_D^M)` are parameters called the *control points*.
+where :math:`t^d=t_1^{d_1} t_2^{d_2}\cdots t_M^{d_M}`, :math:`\binom{D}{d}=D! / (d_1!d_2!\cdots d_M!)`, and :math:`p_d\in\mathbb R^N\ (d\in\mathbb N_D^M)` are parameters called the *control points*.
 
 
 Fitting a Bezier simplex to a dataset
@@ -41,7 +41,7 @@ PyTorch-BSF provides an algorithm for solving this optimization problem with the
 Why does Bezier simplex fitting matter?
 ---------------------------------------
 The Bezier simplex can approximate the solution set of "good" multiobjective optimization problems.
-More precisely, for the weighted sum scalarization problem of any multiobjective strongly convex problem, the map form a simplex of weight vectors to the solution set of weighted sum problems can be approximated by a Bezier simplex.
+More precisely, for the weighted sum scalarization problem of any multiobjective strongly convex problem, the map from a simplex of weight vectors to the solution set of weighted sum problems can be approximated by a Bezier simplex.
 If we find few solutions to such a problem, the entire solution set can be approximated by Bezier simplex fitting.
 An important application is hyperparameter search of the elastic net.
 
