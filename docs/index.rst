@@ -6,9 +6,16 @@
 Welcome to PyTorch-BSF's documentation!
 =======================================
 PyTorch-BSF is a PyTorch implementation of Bezier simplex ftting.
+The project is on `GitHub`_.
 
-See repository:
-https://github.com/rafcc/pytorch-bst
+Bezier simplex
+==============
+Let :math:`\mathbb N` be the set of nonnegative integers.
+An :math:`(M-1)`-dimensional Bezier simplex of degree :math:`D` in :math:`\mathbb R^N` is a map :math:`b: \Delta^{M-1}\to\mathbb R^N` defined by
+.. math::
+   b(t) = \sum_{d\in\mathbb N_D^M} \binom{D}{d} t^d p_d,
+
+where :math:`p_d\in\mathbb R^N\ (d\in\mathbb N_D^M)` are parameters called the *control points*.
 
 .. toctree::
    :maxdepth: 2
@@ -22,3 +29,5 @@ Indices and tables
 * :ref:`genindex`
 * :ref:`modindex`
 * :ref:`search`
+
+.. _GitHub: https://github.com/rafcc/pytorch-bst
