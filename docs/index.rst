@@ -10,16 +10,16 @@ The project is on `GitHub`_.
 
 Bezier simplex
 ==============
-Let :math:`\mathbb N` be the set of nonnegative integers, :math:`D` a positive integer and :math:`M, N` nonnegative integers.
-We define
+Let :math:`\mathbb N` be the set of nonnegative integers, :math:`D` a positive integer, and :math:`M, N` nonnegative integers.
+We define the *index set* by
 
-.. math::
-   \begin{array}{rcl}
-   \\mathbb N_D^M &=& \left\{(d_1,\ldots,d_M)\in\mathbb N^M | \sum_{m=1}^M d_m=D\right\},\\
-   \Delta^{M-1} &=& \left\{(t_1,\ldots,t_M)\in\mathbb R^M | \sum_{m=1}^M t_m=1\right\}.
-   \end{array}
+.. math::\mathbb N_D^M = \left\{(d_1,\ldots,d_M)\in\mathbb N^M | \sum_{m=1}^M d_m=D\right\},
 
-An :math:`(M-1)`-dimensional Bezier simplex of degree :math:`D` in :math:`\mathbb R^N` is a map :math:`b: \Delta^{M-1}\to\mathbb R^N` defined by
+and the :math:`(M-1)`*-simplex* by
+
+.. math::\Delta^{M-1} = \left\{(t_1,\ldots,t_M)\in\mathbb R^M | \sum_{m=1}^M t_m=1\right\}.
+
+An :math:`(M-1)`-dimensional *Bezier simplex* of degree :math:`D` in :math:`\mathbb R^N` is a polynomial map :math:`b: \Delta^{M-1}\to\mathbb R^N` defined by
 
 .. math::
    b(t) = \sum_{d\in\mathbb N_D^M} \binom{D}{d} t^d p_d,
