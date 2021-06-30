@@ -38,6 +38,14 @@ What we are trying can be formulated as a problem of finding the best vector of 
 PyTorch-BSF provides an algorithm for solving this optimization problem with the L-BFGS algorithm.
 
 
+Why does Bezier simplex fitting matter?
+---------------------------------------
+The Bezier simplex can approximate the solution set of "good" multiobjective optimization problems.
+More precisely, for the weighted sum scalarization problem of any multiobjective strongly convex problem, the map form a simplex of weight vectors to the solution set of weighted sum problems can be approximated by a Bezier simplex.
+If we find few solutions to such a problem, the entire solution set can be approximated by Bezier simplex fitting.
+An important application is hyperparameter search of the elastic net.
+
+
 .. toctree::
    :maxdepth: 2
    :caption: Contents:
@@ -51,4 +59,4 @@ Indices and tables
 * :ref:`modindex`
 * :ref:`search`
 
-.. _GitHub: https://github.com/rafcc/pytorch-bst
+.. _GitHub: https://github.com/rafcc/pytorch-bsf
