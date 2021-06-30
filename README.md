@@ -1,3 +1,3 @@
 GitHub Pages of [rafcc/pytorch-bsf](https://github.com/rafcc/pytorch-bsf.git)
 ===
-Sphinx html documentation of [0a714305](https://github.com/rafcc/pytorch-bsf/tree/0a7143059f781088d6759d019f8c6233077d8153)
+Sphinx html documentation of [03c23dd9](https://github.com/rafcc/pytorch-bsf/tree/03c23dd9c568abb032091277ead8dbab8697e594)
