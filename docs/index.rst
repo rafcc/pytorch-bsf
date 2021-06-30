@@ -10,8 +10,9 @@ The project is on `GitHub`_.
 
 Bezier simplex
 ==============
-Let :math:`\mathbb N` be the set of nonnegative integers.
+Let $\mathbb N$ be the set of nonnegative integers.
 An :math:`(M-1)`-dimensional Bezier simplex of degree :math:`D` in :math:`\mathbb R^N` is a map :math:`b: \Delta^{M-1}\to\mathbb R^N` defined by
+
 .. math::
    b(t) = \sum_{d\in\mathbb N_D^M} \binom{D}{d} t^d p_d,
 
