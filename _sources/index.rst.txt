@@ -5,6 +5,10 @@
 
 Welcome to PyTorch-BSF's documentation!
 =======================================
+PyTorch-BSF is a PyTorch implementation of Bezier simplex ftting.
+
+See repository:
+https://github.com/rafcc/pytorch-bst
 
 .. toctree::
    :maxdepth: 2
