@@ -12,12 +12,12 @@ What is Bezier simplex fitting?
 ===============================
 Bezier simplex
 --------------
-Let :math:`\mathbb N` be the set of nonnegative integers and :math:`D, M, N` nonnegative integers.
+Let :math:`D, M, N` nonnegative integers, :math:`\mathbb N` be the set of nonnegative integers, and :math:`\mathbb R^N` the :math:`N`-dimensional Euclidean space.
 We define the *index set* by
 
 .. math:: \mathbb N_D^M = \left\{(d_1,\ldots,d_M)\in\mathbb N^M | \sum_{m=1}^M d_m=D\right\},
 
-and the :math:`(M-1)`-*simplex* by
+and the *simplex* by
 
 .. math:: \Delta^{M-1} = \left\{(t_1,\ldots,t_M)\in\mathbb R^M | \sum_{m=1}^M t_m=1\right\}.
 
