@@ -11,6 +11,26 @@ from torch.utils.data import DataLoader, TensorDataset, random_split
 
 
 class BezierSimplexDataModule(pl.LightningDataModule):
+    """A data module for training a Bezier simplex.
+
+    Parameters
+    ----------
+    data
+        The path to a data file.
+    label
+        The path to a label file.
+    header
+        The number of headers in data files.
+    delimiter
+        The delimiter of data files.
+    batch_size
+        The size of minibatch.
+    split_ratio
+        The ratio of train-val split.
+    normalize
+        The data normalization method.
+        Either `"max"`, `"std"`, `"quantile"`, or `"none"`.
+    """
     def __init__(
         self,
         data: str,
@@ -276,7 +296,7 @@ class BezierSimplex(pl.LightningModule):
         return optimizer
  
     def meshgrid(self, num: int = 100) -> Tuple[torch.Tensor, torch.Tensor]:
-        """Meshgrid
+        """Computes a meshgrid of the Bezier simplex.
 
         Parameters
         ----------
@@ -305,7 +325,7 @@ def fit(
     num_nodes: int=1,
     accelerator: str="ddp",
 ) -> BezierSimplex:
-    """Fit a Bezier simplex.
+    """Fits a Bezier simplex.
     
     Parameters
     ----------
