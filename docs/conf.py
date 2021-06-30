@@ -12,6 +12,9 @@
 #
 import os
 import sys
+
+import torch_bsf
+
 sys.path.insert(0, os.path.abspath('../'))
 
 
@@ -32,9 +35,21 @@ release = '0.0.1'
 # ones.
 extensions = [
     'sphinx.ext.autodoc',
-    'sphinx.ext.napoleon',
+    'sphinx.ext.doctest',
     'sphinx.ext.githubpages',
+    'sphinx.ext.linkcode',
+    'numpydoc',
 ]
+
+# https://www.sphinx-doc.org/ja/master/usage/extensions/doctest.html#confval-doctest_global_setup
+doctest_global_setup = '''
+try:
+    import torch
+    import torch_bsf
+except ImportError:
+    pd = None
+'''
+doctest_test_doctest_blocks = 'default'
 
 # Add any paths that contain templates here, relative to this directory.
 templates_path = ['_templates']
@@ -56,3 +71,29 @@ html_theme = 'sphinx_rtd_theme'
 # relative to this directory. They are copied after the builtin static files,
 # so a file named "default.css" will overwrite the builtin "default.css".
 html_static_path = ['_static']
+
+
+# https://www.sphinx-doc.org/ja/master/usage/extensions/linkcode.html
+# Resolve function for the linkcode extension.
+def linkcode_resolve(domain, info):
+    def find_source():
+        # try to find the file and line number, based on code from numpy:
+        # https://github.com/numpy/numpy/blob/master/doc/source/conf.py#L286
+        obj = sys.modules[info['module']]
+        for part in info['fullname'].split('.'):
+            obj = getattr(obj, part)
+        import inspect
+        import os
+        fn = inspect.getsourcefile(obj)
+        fn = os.path.relpath(fn, start=os.path.dirname(torch_bsf.__file__))
+        source, lineno = inspect.getsourcelines(obj)
+        return fn, lineno, lineno + len(source) - 1
+
+    if domain != 'py' or not info['module']:
+        return None
+    try:
+        filename = 'torch_bsf/%s#L%d-L%d' % find_source()
+    except Exception:
+        filename = info['module'].replace('.', '/') + '.py'
+    tag = 'master'  # if 'dev' in release else ('v' + release)
+    return "https://github.com/rafcc/pytorch-bsf/blob/%s/%s" % (tag, filename)
