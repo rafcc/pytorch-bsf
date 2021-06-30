@@ -1,1 +1,3 @@
 git+https://github.com/rafcc/pytorch-bsf.git
+numpydoc
+sphinx_rtd_theme
