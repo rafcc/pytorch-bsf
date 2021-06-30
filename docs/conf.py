@@ -49,6 +49,7 @@ try:
 except ImportError:
     pd = None
 '''
+doctest_test_doctest_blocks = 'default'
 
 # Add any paths that contain templates here, relative to this directory.
 templates_path = ['_templates']
