@@ -307,16 +307,16 @@ override the <code class="xref py py-meth docutils literal notranslate"><span cl
 <dl class="py method">
 <dt class="sig sig-object py" id="torch_bsf.bezier_simplex.BezierSimplex.forward">
 <span class="sig-name descname"><span class="pre">forward</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">t</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">torch.Tensor</span></span></em><span class="sig-paren">)</span> &#x2192; <span class="pre">torch.Tensor</span><a class="headerlink" href="#torch_bsf.bezier_simplex.BezierSimplex.forward" title="Permalink to this definition">¶</a></dt>
-<dd><p>Same as <code class="xref py py-meth docutils literal notranslate"><span class="pre">torch.nn.Module.forward()</span></code>.</p>
+<dd><p>Process a forwarding step of training.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>*args</strong> – Whatever you decide to pass into the forward method.</p></li>
-<li><p><strong>**kwargs</strong> – Keyword arguments are also possible.</p></li>
-</ul>
+<dd class="field-odd"><p><strong>t</strong> – A minibatch of parameter vectors.</p>
 </dd>
 <dt class="field-even">Returns</dt>
-<dd class="field-even"><p>Your model’s output</p>
+<dd class="field-even"><p>A minibatch of value vectors.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>x</p>
 </dd>
 </dl>
 </dd></dl>
@@ -1015,16 +1015,16 @@ override the <code class="xref py py-meth docutils literal notranslate"><span cl
 <dl class="py method">
 <dt class="sig sig-object py" id="torch_bsf.BezierSimplex.forward">
 <span class="sig-name descname"><span class="pre">forward</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">t</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">torch.Tensor</span></span></em><span class="sig-paren">)</span> &#x2192; <span class="pre">torch.Tensor</span><a class="headerlink" href="#torch_bsf.BezierSimplex.forward" title="Permalink to this definition">¶</a></dt>
-<dd><p>Same as <code class="xref py py-meth docutils literal notranslate"><span class="pre">torch.nn.Module.forward()</span></code>.</p>
+<dd><p>Process a forwarding step of training.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>*args</strong> – Whatever you decide to pass into the forward method.</p></li>
-<li><p><strong>**kwargs</strong> – Keyword arguments are also possible.</p></li>
-</ul>
+<dd class="field-odd"><p><strong>t</strong> – A minibatch of parameter vectors.</p>
 </dd>
 <dt class="field-even">Returns</dt>
-<dd class="field-even"><p>Your model’s output</p>
+<dd class="field-even"><p>A minibatch of value vectors.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>x</p>
 </dd>
 </dl>
 </dd></dl>
