@@ -35,6 +35,7 @@
         <script src="_static/jquery.js"></script>
         <script src="_static/underscore.js"></script>
         <script src="_static/doctools.js"></script>
+        <script async="async" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
     
     <script type="text/javascript" src="_static/js/theme.js"></script>
 
@@ -88,6 +89,7 @@
               <!-- Local TOC -->
               <div class="local-toc"><ul>
 <li><a class="reference internal" href="#">Welcome to PyTorch-BSF’s documentation!</a></li>
+<li><a class="reference internal" href="#bezier-simplex">Bezier simplex</a></li>
 <li><a class="reference internal" href="#indices-and-tables">Indices and tables</a></li>
 </ul>
 </div>
@@ -158,9 +160,18 @@
             
   <div class="section" id="welcome-to-pytorch-bsf-s-documentation">
 <h1>Welcome to PyTorch-BSF’s documentation!<a class="headerlink" href="#welcome-to-pytorch-bsf-s-documentation" title="Permalink to this headline">¶</a></h1>
-<p>PyTorch-BSF is a PyTorch implementation of Bezier simplex ftting.</p>
-<p>See repository:
-<a class="reference external" href="https://github.com/rafcc/pytorch-bst">https://github.com/rafcc/pytorch-bst</a></p>
+<p>PyTorch-BSF is a PyTorch implementation of Bezier simplex ftting.
+The project is on <a class="reference external" href="https://github.com/rafcc/pytorch-bst">GitHub</a>.</p>
+</div>
+<div class="section" id="bezier-simplex">
+<h1>Bezier simplex<a class="headerlink" href="#bezier-simplex" title="Permalink to this headline">¶</a></h1>
+<p>Let <span class="math notranslate nohighlight">\(\mathbb N\)</span> be the set of nonnegative integers.
+An <span class="math notranslate nohighlight">\((M-1)\)</span>-dimensional Bezier simplex of degree <span class="math notranslate nohighlight">\(D\)</span> in <span class="math notranslate nohighlight">\(\mathbb R^N\)</span> is a map <span class="math notranslate nohighlight">\(b: \Delta^{M-1}\to\mathbb R^N\)</span> defined by
+.. math:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">b</span><span class="p">(</span><span class="n">t</span><span class="p">)</span> <span class="o">=</span> \<span class="n">sum_</span><span class="p">{</span><span class="n">d</span>\<span class="ow">in</span>\<span class="n">mathbb</span> <span class="n">N_D</span><span class="o">^</span><span class="n">M</span><span class="p">}</span> \<span class="n">binom</span><span class="p">{</span><span class="n">D</span><span class="p">}{</span><span class="n">d</span><span class="p">}</span> <span class="n">t</span><span class="o">^</span><span class="n">d</span> <span class="n">p_d</span><span class="p">,</span>
+</pre></div>
+</div>
+<p>where <span class="math notranslate nohighlight">\(p_d\in\mathbb R^N\ (d\in\mathbb N_D^M)\)</span> are parameters called the <em>control points</em>.</p>
 <div class="toctree-wrapper compound">
 </div>
 </div>
