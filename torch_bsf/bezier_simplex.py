@@ -115,6 +115,23 @@ def monomial(var: Iterable[float], deg: Iterable[int]) -> torch.Tensor:
 
 
 class BezierSimplex(pl.LightningModule):
+    """A Bezier simplex model.
+
+    Parameters
+    ----------
+    n_params
+        The number of parameters.
+    n_values
+        The number of values.
+    degree
+        The degree of the Bezier simplex.
+    
+    Examples
+    --------
+    >>> bs = BezierSimplex(2, 3, 2)
+    >>> bs.
+
+    """
     def __init__(
         self,
         n_params: int,
@@ -184,7 +201,7 @@ class BezierSimplex(pl.LightningModule):
         Parameters
         ----------
         num
-            number of grid points on each edge
+            The number of grid points on each edge.
 
         Returns
         ----------
@@ -207,7 +224,33 @@ def fit(
     gpus: Union[str, int, List[int]]=-1,
     num_nodes: int=1,
     accelerator: str="ddp",
-):
+) -> BezierSimplex:
+    """Fit a Bezier simplex.
+    
+    Parameters
+    ----------
+    params
+        The data.
+    values
+        The label data.
+    degree
+        The degree of the Bezier simplex.
+    batch_size
+        The size of minibatch.
+    max_epochs
+        The number of epochs to stop training.
+    gpus
+        The number of gpus.
+    num_nodes
+        The number of compute nodes.
+    accelerator
+        Distributed mode.
+    
+    Returns
+    -------
+    bs
+        A trained Bezier simplex.
+    """
     data = TensorDataset(params, values)
     dl = DataLoader(data, batch_size=batch_size or len(data))
     bs = BezierSimplex(n_params=int(params.shape[1]), n_values=int(values.shape[1]), degree=degree)
