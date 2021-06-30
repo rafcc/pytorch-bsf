@@ -90,6 +90,20 @@ class BezierSimplexDataModule(pl.LightningDataModule):
 Index = Tuple[int, ...]
 
 def indices(dim: int, deg: int) -> Iterable[Index]:
+    """Iterates the index of control points of the Bezier simplex.
+
+    Parameters
+    ----------
+    dim
+        The array length of indices.
+    deg
+        The degree of the Bezier simplex.
+
+    Returns
+    -------
+    indices
+        The indices.
+    """
     def iterate(c, r):
         if len(c) == dim - 1:
             yield c + (r, )
@@ -102,6 +116,20 @@ def indices(dim: int, deg: int) -> Iterable[Index]:
 
 @lru_cache(1024)
 def polynom(degree: int, index: Iterable[int]) -> float:
+    """Computes a polynomial coefficient.
+
+    Parameters
+    ----------
+    degree
+        The degree.
+    index
+        The index.
+
+    Returns
+    -------
+    polynom
+        The polynomial coefficient.
+    """
     r = factorial(degree)
     for i in index:
         r /= factorial(i)
@@ -109,6 +137,20 @@ def polynom(degree: int, index: Iterable[int]) -> float:
 
 
 def monomial(var: Iterable[float], deg: Iterable[int]) -> torch.Tensor:
+    """Computes a monomial `var**deg = v[0]**d[0] * v[1]**d[1] * ... * v[n]**d[n]`.
+
+    Parameters
+    ----------
+    var
+        The bases.
+    deg
+        The powers.
+    
+    Returns
+    -------
+    monomial
+        The monomial.
+    """
     var = torch.as_tensor(var)
     deg = torch.as_tensor(deg, device=var.device)
     return (var ** deg).prod(dim=-1)
@@ -129,18 +171,18 @@ class BezierSimplex(pl.LightningModule):
     Examples
     --------
     >>> ts = torch.tensor(  # parameters on a simplex
-    ... [
-    ...     [3/3, 0/3, 0/3],
-    ...     [2/3, 1/3, 0/3],
-    ...     [2/3, 0/3, 1/3],
-    ...     [1/3, 2/3, 0/3],
-    ...     [1/3, 1/3, 1/3],
-    ...     [1/3, 0/3, 2/3],
-    ...     [0/3, 3/3, 0/3],
-    ...     [0/3, 2/3, 1/3],
-    ...     [0/3, 1/3, 2/3],
-    ...     [0/3, 0/3, 3/3],
-    ... ]
+    ...     [
+    ...         [3/3, 0/3, 0/3],
+    ...         [2/3, 1/3, 0/3],
+    ...         [2/3, 0/3, 1/3],
+    ...         [1/3, 2/3, 0/3],
+    ...         [1/3, 1/3, 1/3],
+    ...         [1/3, 0/3, 2/3],
+    ...         [0/3, 3/3, 0/3],
+...             [0/3, 2/3, 1/3],
+    ...         [0/3, 1/3, 2/3],
+    ...         [0/3, 0/3, 3/3],
+    ...     ]
     ... )
     >>> xs = 1 - ts * ts  # values corresponding to the parameters
     >>> dl = DataLoader(TensorDataset(ts, xs))
@@ -294,27 +336,27 @@ def fit(
     >>> import torch
     >>> import torch_bsf
 
-    >>> # Prepare training data
+    Prepare training data
     >>> ts = torch.tensor(  # parameters on a simplex
-    ... [
-    ...     [3/3, 0/3, 0/3],
-    ...     [2/3, 1/3, 0/3],
-    ...     [2/3, 0/3, 1/3],
-    ...     [1/3, 2/3, 0/3],
-    ...     [1/3, 1/3, 1/3],
-    ...     [1/3, 0/3, 2/3],
-    ...     [0/3, 3/3, 0/3],
-    ...     [0/3, 2/3, 1/3],
-    ...     [0/3, 1/3, 2/3],
-    ...     [0/3, 0/3, 3/3],
-    ... ]
+    ...     [
+    ...         [3/3, 0/3, 0/3],
+    ...         [2/3, 1/3, 0/3],
+    ...         [2/3, 0/3, 1/3],
+    ...         [1/3, 2/3, 0/3],
+    ...         [1/3, 1/3, 1/3],
+    ...         [1/3, 0/3, 2/3],
+    ...         [0/3, 3/3, 0/3],
+    ...         [0/3, 2/3, 1/3],
+    ...         [0/3, 1/3, 2/3],
+    ...         [0/3, 0/3, 3/3],
+    ...     ]
     ... )
     >>> xs = 1 - ts * ts  # values corresponding to the parameters
 
-    >>> # Train a model
+    Train a model
     >>> bs = torch_bsf.fit(params=ts, values=xs, degree=3, max_epochs=100)
 
-    >>> # Predict by the trained model
+    Predict by the trained model
     >>> t = [[0.2, 0.3, 0.5]]
     >>> x = bs(t)
     >>> print(f"{t} -> {x}")
