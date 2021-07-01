@@ -122,8 +122,7 @@ def indices(dim: int, deg: int) -> Iterable[Index]:
 
     Returns
     -------
-    indices
-        The indices.
+    The indices.
 
     """
     def iterate(c, r):
