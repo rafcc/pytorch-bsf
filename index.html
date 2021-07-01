@@ -177,44 +177,6 @@ The project is on <a class="reference external" href="https://github.com/rafcc/p
 </ul>
 </div>
 </div>
-<div class="section" id="quickstart">
-<h1>Quickstart<a class="headerlink" href="#quickstart" title="Permalink to this headline">¶</a></h1>
-<p>Assume you have installed Python 3.8 or above.
-Then, install the package:</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>pip install pytorch-bsf
-</pre></div>
-</div>
-<p>Train a model by <code class="docutils literal notranslate"><span class="pre">fit()</span></code>, and call the model to predict.</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">torch</span>
-<span class="kn">import</span> <span class="nn">torch_bsf</span>
-
-<span class="c1"># Prepare training data</span>
-<span class="n">ts</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">tensor</span><span class="p">(</span>  <span class="c1"># parameters on a simplex</span>
-   <span class="p">[</span>
-      <span class="p">[</span><span class="mi">3</span><span class="o">/</span><span class="mi">3</span><span class="p">,</span> <span class="mi">0</span><span class="o">/</span><span class="mi">3</span><span class="p">,</span> <span class="mi">0</span><span class="o">/</span><span class="mi">3</span><span class="p">],</span>
-      <span class="p">[</span><span class="mi">2</span><span class="o">/</span><span class="mi">3</span><span class="p">,</span> <span class="mi">1</span><span class="o">/</span><span class="mi">3</span><span class="p">,</span> <span class="mi">0</span><span class="o">/</span><span class="mi">3</span><span class="p">],</span>
-      <span class="p">[</span><span class="mi">2</span><span class="o">/</span><span class="mi">3</span><span class="p">,</span> <span class="mi">0</span><span class="o">/</span><span class="mi">3</span><span class="p">,</span> <span class="mi">1</span><span class="o">/</span><span class="mi">3</span><span class="p">],</span>
-      <span class="p">[</span><span class="mi">1</span><span class="o">/</span><span class="mi">3</span><span class="p">,</span> <span class="mi">2</span><span class="o">/</span><span class="mi">3</span><span class="p">,</span> <span class="mi">0</span><span class="o">/</span><span class="mi">3</span><span class="p">],</span>
-      <span class="p">[</span><span class="mi">1</span><span class="o">/</span><span class="mi">3</span><span class="p">,</span> <span class="mi">1</span><span class="o">/</span><span class="mi">3</span><span class="p">,</span> <span class="mi">1</span><span class="o">/</span><span class="mi">3</span><span class="p">],</span>
-      <span class="p">[</span><span class="mi">1</span><span class="o">/</span><span class="mi">3</span><span class="p">,</span> <span class="mi">0</span><span class="o">/</span><span class="mi">3</span><span class="p">,</span> <span class="mi">2</span><span class="o">/</span><span class="mi">3</span><span class="p">],</span>
-      <span class="p">[</span><span class="mi">0</span><span class="o">/</span><span class="mi">3</span><span class="p">,</span> <span class="mi">3</span><span class="o">/</span><span class="mi">3</span><span class="p">,</span> <span class="mi">0</span><span class="o">/</span><span class="mi">3</span><span class="p">],</span>
-      <span class="p">[</span><span class="mi">0</span><span class="o">/</span><span class="mi">3</span><span class="p">,</span> <span class="mi">2</span><span class="o">/</span><span class="mi">3</span><span class="p">,</span> <span class="mi">1</span><span class="o">/</span><span class="mi">3</span><span class="p">],</span>
-      <span class="p">[</span><span class="mi">0</span><span class="o">/</span><span class="mi">3</span><span class="p">,</span> <span class="mi">1</span><span class="o">/</span><span class="mi">3</span><span class="p">,</span> <span class="mi">2</span><span class="o">/</span><span class="mi">3</span><span class="p">],</span>
-      <span class="p">[</span><span class="mi">0</span><span class="o">/</span><span class="mi">3</span><span class="p">,</span> <span class="mi">0</span><span class="o">/</span><span class="mi">3</span><span class="p">,</span> <span class="mi">3</span><span class="o">/</span><span class="mi">3</span><span class="p">],</span>
-   <span class="p">]</span>
-<span class="p">)</span>
-<span class="n">xs</span> <span class="o">=</span> <span class="mi">1</span> <span class="o">-</span> <span class="n">ts</span> <span class="o">*</span> <span class="n">ts</span>  <span class="c1"># values corresponding to the parameters</span>
-
-<span class="c1"># Train a model</span>
-<span class="n">bs</span> <span class="o">=</span> <span class="n">torch_bsf</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">params</span><span class="o">=</span><span class="n">ts</span><span class="p">,</span> <span class="n">values</span><span class="o">=</span><span class="n">xs</span><span class="p">,</span> <span class="n">degree</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span> <span class="n">max_epochs</span><span class="o">=</span><span class="mi">100</span><span class="p">)</span>
-
-<span class="c1"># Predict by the trained model</span>
-<span class="n">t</span> <span class="o">=</span> <span class="p">[[</span><span class="mf">0.2</span><span class="p">,</span> <span class="mf">0.3</span><span class="p">,</span> <span class="mf">0.5</span><span class="p">]]</span>
-<span class="n">x</span> <span class="o">=</span> <span class="n">bs</span><span class="p">(</span><span class="n">t</span><span class="p">)</span>
-<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">t</span><span class="si">}</span><span class="s2"> -&gt; </span><span class="si">{</span><span class="n">x</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
-</pre></div>
-</div>
-</div>
 <div class="section" id="indices-and-tables">
 <h1>Indices and tables<a class="headerlink" href="#indices-and-tables" title="Permalink to this headline">¶</a></h1>
 <ul class="simple">
