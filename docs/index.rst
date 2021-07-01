@@ -11,6 +11,7 @@ The project is on `GitHub`_.
 .. image:: _static/bezier-triangle.png
    :scale: 100%
    :align: center
+   :alt: A Bezier simplex
 
 .. toctree::
    :maxdepth: 2
@@ -22,6 +23,7 @@ The project is on `GitHub`_.
 .. toctree::
    :maxdepth: 2
    :caption: APIs
+
    modules
 
 
