@@ -3,7 +3,7 @@ What is Bezier simplex fitting?
 
 Bezier simplex
 --------------
-Let :math:`D, M, N` be nonnegative integers, :math:`\mathbb N` the set of nonnegative integers, and :math:`\mathbb R^N` the :math:`N`-dimensional Euclidean space.
+Let :math:`D, M, N` be nonnegative integers, :math:`\mathbb N` the set of nonnegative integers (including zero!), and :math:`\mathbb R^N` the :math:`N`-dimensional Euclidean space.
 We define the *index set* by
 
 .. math:: \mathbb N_D^M = \left\{(d_1,\ldots,d_M)\in\mathbb N^M \Big| \sum_{m=1}^M d_m=D\right\},
