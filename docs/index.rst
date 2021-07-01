@@ -3,10 +3,17 @@
    You can adapt this file completely to your liking, but it should at least
    contain the root `toctree` directive.
 
-Welcome to PyTorch-BSF's documentation!
+Welcome to PyTorch-BSF!
 =======================================
 PyTorch-BSF is a PyTorch implementation of Bezier simplex ftting.
 The project is on `GitHub`_.
+
+.. toctree::
+   :maxdepth: 2
+   :caption: Contents:
+   modules
+   torch_bsf
+
 
 What is Bezier simplex fitting?
 ===============================
@@ -44,12 +51,6 @@ The Bezier simplex can approximate the solution set of "good" multiobjective opt
 More precisely, for the weighted sum scalarization problem of any multiobjective strongly convex problem, the map from a simplex of weight vectors to the solution set of weighted sum problems can be approximated by a Bezier simplex.
 If we find few solutions to such a problem, the entire solution set can be approximated by Bezier simplex fitting.
 An important application is hyperparameter search of the elastic net.
-
-
-.. toctree::
-   :maxdepth: 2
-   :caption: Contents:
-
 
 
 Indices and tables
