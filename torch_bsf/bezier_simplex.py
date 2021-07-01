@@ -1,3 +1,4 @@
+from __future__ import annotations
 from functools import lru_cache
 from math import factorial
 from typing import Any, Dict, Iterable, List, Optional, Tuple, Union
