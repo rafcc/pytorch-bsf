@@ -43,6 +43,19 @@ extensions = [
     'sphinx.ext.napoleon',
 ]
 
+# -- autodoc -----------------------------------------------------------------
+autodoc_default_options = {
+    'member-order': 'bysource',
+    'special-members': '__init__',
+    'inherited-members': None,
+    'undoc-members': True,
+    'exclude-members': '__weakref__'
+}
+autodoc_type_aliases = {
+    'Index': 'torch_bsf.bezier_simplex.Index',
+}
+
+# -- doctest -----------------------------------------------------------------
 # https://www.sphinx-doc.org/ja/master/usage/extensions/doctest.html#confval-doctest_global_setup
 doctest_global_setup = '''
 import torch
