@@ -11,6 +11,7 @@ The project is on `GitHub`_.
 .. toctree::
    :maxdepth: 2
    :caption: Contents:
+
    modules
    torch_bsf
 
