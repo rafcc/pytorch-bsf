@@ -60,9 +60,9 @@ doctest_test_doctest_blocks = 'default'
 
 # -- intersphinx -------------------------------------------------------------
 intersphinx_mapping = {
-    'python': ('https://docs.python.org/3/', 'python-inv.txt'),
-    'pytorch': ('https://pytorch.org/docs/stable/', 'pytorch-inv.txt'),
-    'pl': ('https://pytorch-lightning.readthedocs.io/en/latest/', 'pl-inv.txt'),
+    'python': ('https://docs.python.org/3/', None),
+    'pytorch': ('https://pytorch.org/docs/stable/', None),
+    'pl': ('https://pytorch-lightning.readthedocs.io/en/latest/', None),
 }
 
 # Add any paths that contain templates here, relative to this directory.
