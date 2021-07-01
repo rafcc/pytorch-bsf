@@ -1,4 +1,3 @@
-from __future__ import annotations
 from functools import lru_cache
 from math import factorial
 from typing import Any, Dict, Iterable, List, Optional, Tuple, Union
@@ -30,7 +29,7 @@ class BezierSimplexDataModule(pl.LightningDataModule):
         The ratio of train-val split.
     normalize
         The data normalization method.
-        Either `"max"`, `"std"`, `"quantile"`, or `"none"`.
+        Either ``"max"``, ``"std"``, ``"quantile"``, or ``"none"``.
 
     """
     def __init__(
@@ -138,19 +137,18 @@ def indices(dim: int, deg: int) -> Iterable[Index]:
 
 @lru_cache(1024)
 def polynom(degree: int, index: Iterable[int]) -> float:
-    """Computes a polynomial coefficient.
+    """Computes a polynomial coefficient :math:`\binom{D}{\mathbf d} = \frac{D!}{d_1!d_2!\cdots d_M!}`.
 
     Parameters
     ----------
     degree
-        The degree.
+        The degree :math:`D`.
     index
-        The index.
+        The index :math:`\mathbf d`.
 
     Returns
     -------
-    polynom
-        The polynomial coefficient.
+    The polynomial coefficient :math:`\binom{D}{\mathbf d}`.
 
     """
     r = factorial(degree)
@@ -160,19 +158,18 @@ def polynom(degree: int, index: Iterable[int]) -> float:
 
 
 def monomial(var: Iterable[float], deg: Iterable[int]) -> torch.Tensor:
-    """Computes a monomial `var**deg = v[0]**d[0] * v[1]**d[1] * ... * v[n]**d[n]`.
+    """Computes a monomial :math:`\mathbf t^{\mathbf d} = t_1^{d_1} t_2^{d_2}\cdots t_M^{d^M}`.
 
     Parameters
     ----------
     var
-        The bases.
+        The bases :math:`\mathbf t`.
     deg
-        The powers.
+        The powers :math:`\mathbf d`.
     
     Returns
     -------
-    monomial
-        The monomial.
+    The monomial :math:`\mathbf t^{\mathbf d}`.
 
     """
     var = torch.as_tensor(var)
@@ -245,12 +242,11 @@ class BezierSimplex(pl.LightningModule):
         Parameters
         ----------
         t
-            A minibatch of parameter vectors.
+            A minibatch of parameter vectors :math:`\mathbf t`.
 
         Returns
         -------
-        x
-            A minibatch of value vectors. 
+        A minibatch of value vectors. 
 
         """
         # REQUIRED
@@ -354,8 +350,7 @@ def fit(
     
     Returns
     -------
-    bs
-        A trained Bezier simplex.
+    A trained Bezier simplex.
     
     Examples
     --------
