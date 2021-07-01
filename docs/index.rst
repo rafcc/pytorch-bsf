@@ -8,6 +8,10 @@ Welcome to PyTorch-BSF!
 PyTorch-BSF is a PyTorch implementation of Bezier simplex ftting.
 The project is on `GitHub`_.
 
+.. image:: _static/bezier-triangle.png
+   :scale: 100%
+   :align: center
+
 .. toctree::
    :maxdepth: 2
    :caption: Tutorial
@@ -22,7 +26,7 @@ The project is on `GitHub`_.
 
 
 Indices and tables
-==================
+------------------
 
 * :ref:`genindex`
 * :ref:`modindex`
