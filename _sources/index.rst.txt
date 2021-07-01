@@ -9,14 +9,14 @@ PyTorch-BSF is a PyTorch implementation of Bezier simplex ftting.
 The project is on `GitHub`_.
 
 .. image:: _static/bezier-simplex.png
-   :scale: 50%
+   :width: 49%
    :align: center
    :alt: A Bezier simplex
 
 .. image:: _static/bezier-simplex-fitting.png
-   :scale: 50%
+   :width: 49%
    :align: center
-   :alt: A Bezier simplex fitting
+   :alt: Fit to a dataset
 
 .. toctree::
    :maxdepth: 2
