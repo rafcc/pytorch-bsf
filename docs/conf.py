@@ -38,6 +38,7 @@ extensions = [
     'sphinx.ext.autosummary',
     'sphinx.ext.doctest',
     'sphinx.ext.githubpages',
+    'sphinx.ext.intersphinx',
     'sphinx.ext.linkcode',
     'sphinx.ext.mathjax',
     'sphinx.ext.napoleon',
@@ -56,6 +57,13 @@ import torch
 import torch_bsf
 '''
 doctest_test_doctest_blocks = 'default'
+
+# -- intersphinx -------------------------------------------------------------
+intersphinx_mapping = {
+    'python': ('https://docs.python.org/3/', 'python-inv.txt'),
+    'pytorch': ('https://pytorch.org/docs/stable/', 'pytorch-inv.txt'),
+    'pl': ('https://pytorch-lightning.readthedocs.io/en/latest/', 'pl-inv.txt'),
+}
 
 # Add any paths that contain templates here, relative to this directory.
 templates_path = ['_templates']
