@@ -43,8 +43,8 @@ Then, install the package:
   pip install pytorch-bsf
 
 
-Run as a Python code
---------------------
+Run as Python code
+------------------
 Assume you have installed Python 3.8 or above.
 Then, install the package:
 
