@@ -13,6 +13,11 @@ The project is on `GitHub`_.
    :align: center
    :alt: A Bezier simplex
 
+.. image:: _static/bezier-simplex-fitting.png
+   :scale: 50%
+   :align: center
+   :alt: A Bezier simplex fitting
+
 .. toctree::
    :maxdepth: 2
    :caption: Tutorial
