@@ -10,10 +10,14 @@ The project is on `GitHub`_.
 
 .. toctree::
    :maxdepth: 2
-   :caption: Contents:
+   :caption: Tutorial
 
    quickstart
    whatis
+
+.. toctree::
+   :maxdepth: 2
+   :caption: APIs
    modules
 
 
