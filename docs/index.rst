@@ -22,7 +22,7 @@ The project is on `GitHub`_.
 
 .. toctree::
    :maxdepth: 2
-   :caption: APIs
+   :caption: API
 
    modules
 
