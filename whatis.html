@@ -1,0 +1,248 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" />
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  
+  <title>What is Bezier simplex fitting? &mdash; PyTorch-BSF 0.0.1 documentation</title>
+  
+
+  
+  <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+
+  
+  
+
+  
+  
+
+  
+
+  
+  <!--[if lt IE 9]>
+    <script src="_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+        <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
+        <script src="_static/jquery.js"></script>
+        <script src="_static/underscore.js"></script>
+        <script src="_static/doctools.js"></script>
+        <script async="async" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    
+    <script type="text/javascript" src="_static/js/theme.js"></script>
+
+    
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="torch_bsf" href="modules.html" />
+    <link rel="prev" title="Welcome to PyTorch-BSF!" href="index.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="index.html" class="icon icon-home"> PyTorch-BSF
+          
+
+          
+          </a>
+
+          
+            
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <p class="caption"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1 current"><a class="current reference internal" href="#">What is Bezier simplex fitting?</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#bezier-simplex">Bezier simplex</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#fitting-a-bezier-simplex-to-a-dataset">Fitting a Bezier simplex to a dataset</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#why-does-bezier-simplex-fitting-matter">Why does Bezier simplex fitting matter?</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="modules.html">torch_bsf</a></li>
+</ul>
+
+            
+          
+        </div>
+        
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">PyTorch-BSF</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="index.html" class="icon icon-home"></a> &raquo;</li>
+        
+      <li>What is Bezier simplex fitting?</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+          
+            <a href="_sources/whatis.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="what-is-bezier-simplex-fitting">
+<h1>What is Bezier simplex fitting?<a class="headerlink" href="#what-is-bezier-simplex-fitting" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="bezier-simplex">
+<h2>Bezier simplex<a class="headerlink" href="#bezier-simplex" title="Permalink to this headline">¶</a></h2>
+<p>Let <span class="math notranslate nohighlight">\(D, M, N\)</span> be nonnegative integers, <span class="math notranslate nohighlight">\(\mathbb N\)</span> the set of nonnegative integers, and <span class="math notranslate nohighlight">\(\mathbb R^N\)</span> the <span class="math notranslate nohighlight">\(N\)</span>-dimensional Euclidean space.
+We define the <em>index set</em> by</p>
+<div class="math notranslate nohighlight">
+\[\mathbb N_D^M = \left\{(d_1,\ldots,d_M)\in\mathbb N^M \Big| \sum_{m=1}^M d_m=D\right\},\]</div>
+<p>and the <em>simplex</em> by</p>
+<div class="math notranslate nohighlight">
+\[\Delta^{M-1} = \left\{(t_1,\ldots,t_M)\in\mathbb R^M \Big| \sum_{m=1}^M t_m=1\right\}.\]</div>
+<p>An <span class="math notranslate nohighlight">\((M-1)\)</span>-dimensional <em>Bezier simplex</em> of degree <span class="math notranslate nohighlight">\(D\)</span> in <span class="math notranslate nohighlight">\(\mathbb R^N\)</span> is a polynomial map <span class="math notranslate nohighlight">\(b: \Delta^{M-1}\to\mathbb R^N\)</span> defined by</p>
+<div class="math notranslate nohighlight">
+\[b(t|p) = \sum_{d\in\mathbb N_D^M} \binom{D}{d} t^d p_d,\]</div>
+<p>where <span class="math notranslate nohighlight">\(t^d=t_1^{d_1} t_2^{d_2}\cdots t_M^{d_M}\)</span>, <span class="math notranslate nohighlight">\(\binom{D}{d}=D! / (d_1!d_2!\cdots d_M!)\)</span>, and <span class="math notranslate nohighlight">\(p_d\in\mathbb R^N\ (d\in\mathbb N_D^M)\)</span> are parameters called the <em>control points</em>.</p>
+</div>
+<div class="section" id="fitting-a-bezier-simplex-to-a-dataset">
+<h2>Fitting a Bezier simplex to a dataset<a class="headerlink" href="#fitting-a-bezier-simplex-to-a-dataset" title="Permalink to this headline">¶</a></h2>
+<p>Assume we have a finite dataset <span class="math notranslate nohighlight">\(B\subset\Delta^{M-1}\times\mathbb R^N\)</span> and want to fit a Bezier simplex to the dataset.
+What we are trying can be formulated as a problem of finding the best vector of control points <span class="math notranslate nohighlight">\(p=(p_d)_{d\in\mathbb N_D^M}\)</span> that minimizes the least square error between the Bezier simplex and the dataset:</p>
+<div class="math notranslate nohighlight">
+\[\min_{p} \sum_{(t,x)\in B}\|b(t|p)-x\|^2.\]</div>
+<p>PyTorch-BSF provides an algorithm for solving this optimization problem with the L-BFGS algorithm.</p>
+</div>
+<div class="section" id="why-does-bezier-simplex-fitting-matter">
+<h2>Why does Bezier simplex fitting matter?<a class="headerlink" href="#why-does-bezier-simplex-fitting-matter" title="Permalink to this headline">¶</a></h2>
+<p>The Bezier simplex can approximate the solution set of “good” multiobjective optimization problems.
+More precisely, for the weighted sum scalarization problem of any multiobjective strongly convex problem, the map from a simplex of weight vectors to the solution set of weighted sum problems can be approximated by a Bezier simplex.
+If we find few solutions to such a problem, the entire solution set can be approximated by Bezier simplex fitting.
+An important application is hyperparameter search of the elastic net.</p>
+</div>
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+        <a href="modules.html" class="btn btn-neutral float-right" title="torch_bsf" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+        <a href="index.html" class="btn btn-neutral float-left" title="Welcome to PyTorch-BSF!" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &#169; Copyright 2021, FUJITSU LIMITED and RIKEN.
+
+    </p>
+  </div>
+    
+    
+    
+    Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    
+    provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>
