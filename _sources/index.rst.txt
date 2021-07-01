@@ -8,7 +8,7 @@ Welcome to PyTorch-BSF!
 PyTorch-BSF is a PyTorch implementation of Bezier simplex ftting.
 The project is on `GitHub`_.
 
-.. image:: _static/bezier-triangle.png
+.. image:: _static/bezier-simplex.png
    :scale: 100%
    :align: center
    :alt: A Bezier simplex
