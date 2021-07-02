@@ -2,8 +2,8 @@ What is Bezier simplex fitting?
 ===============================
 
 The Bezier simplex is a high-dimensional generalization of the Bezier curve and Bezier triangle with which we are familiar in computer graphics and computer-aided design.
-As such 1D and 2D instances of Bezier simplices have a great success in those fields, a Bezier simplex of general dimension has excellent flexibility to represent various shapes in arbitrary dimensions.
-This page introduces the basics of the Bezier simplex and its fitting algorithm.
+As such 1D and 2D instances of Bezier simplices have a great success in those fields, Bezier simplices of general dimension have excellent flexibility to represent various shapes in arbitrary dimensions.
+This page introduces the basics of Bezier simplices and its fitting algorithm, along with illustrative applications.
 
 
 Bezier simplex
