@@ -190,10 +190,10 @@ We define the <em>index set</em> by</p>
 <p>and the <em>simplex</em> by</p>
 <div class="math notranslate nohighlight">
 \[\Delta^{M-1} = \left\{(t_1,\ldots,t_M)\in\mathbb R^M \Big| \sum_{m=1}^M t_m=1\right\}.\]</div>
-<p>An <span class="math notranslate nohighlight">\((M-1)\)</span>-dimensional <em>Bezier simplex</em> of degree <span class="math notranslate nohighlight">\(D\)</span> in <span class="math notranslate nohighlight">\(\mathbb R^N\)</span> is a polynomial map <span class="math notranslate nohighlight">\(b: \Delta^{M-1}\to\mathbb R^N\)</span> defined by</p>
+<p>An <span class="math notranslate nohighlight">\((M-1)\)</span>-dimensional <em>Bezier simplex</em> of degree <span class="math notranslate nohighlight">\(D\)</span> in <span class="math notranslate nohighlight">\(\mathbb R^N\)</span> is a polynomial map <span class="math notranslate nohighlight">\(\mathbf b: \Delta^{M-1}\to\mathbb R^N\)</span> defined by</p>
 <div class="math notranslate nohighlight">
-\[b(t|p) = \sum_{d\in\mathbb N_D^M} \binom{D}{d} t^d p_d,\]</div>
-<p>where <span class="math notranslate nohighlight">\(t^d=t_1^{d_1} t_2^{d_2}\cdots t_M^{d_M}\)</span>, <span class="math notranslate nohighlight">\(\binom{D}{d}=D! / (d_1!d_2!\cdots d_M!)\)</span>, and <span class="math notranslate nohighlight">\(p_d\in\mathbb R^N\ (d\in\mathbb N_D^M)\)</span> are parameters called the <em>control points</em>.</p>
+\[\mathbf b(\mathbf t|\mathbf p) = \sum_{\mathbf d\in\mathbb N_D^M} \binom{D}{\mathbf d} \mathbf t^{\mathbf d} \mathbf p_{\mathbf d},\]</div>
+<p>where <span class="math notranslate nohighlight">\(\mathbf t^{\mathbf d} = t_1^{d_1} t_2^{d_2}\cdots t_M^{d_M}\)</span>, <span class="math notranslate nohighlight">\(\binom{D}{\mathbf d}=D! / (d_1!d_2!\cdots d_M!)\)</span>, and <span class="math notranslate nohighlight">\(\mathbf p_{\mathbf d}\in\mathbb R^N\ (\mathbf d\in\mathbb N_D^M)\)</span> are parameters called the <em>control points</em>.</p>
 <a class="reference internal image-reference" href="_images/bezier-simplex.png"><img alt="A Bezier simplex and its control points" class="align-center" src="_images/bezier-simplex.png" style="width: 50%;" /></a>
 </div>
 <div class="section" id="fitting-a-bezier-simplex-to-a-dataset">
@@ -243,7 +243,7 @@ See [4] for technical details.</p>
 <ol class="arabic simple">
 <li><p>Kobayashi, K., Hamada, N., Sannai, A., Tanaka, A., Bannai, K., &amp; Sugiyama, M. (2019). Bézier Simplex Fitting: Describing Pareto Fronts of Simplicial Problems with Small Samples in Multi-Objective Optimization. Proceedings of the AAAI Conference on Artificial Intelligence, 33(01), 2304-2313. <a class="reference external" href="https://doi.org/10.1609/aaai.v33i01.33012304">https://doi.org/10.1609/aaai.v33i01.33012304</a></p></li>
 <li><p>Tanaka, A., Sannai, A., Kobayashi, K., &amp; Hamada, N. (2020). Asymptotic Risk of Bézier Simplex Fitting. Proceedings of the AAAI Conference on Artificial Intelligence, 34(03), 2416-2424. <a class="reference external" href="https://doi.org/10.1609/aaai.v34i03.5622">https://doi.org/10.1609/aaai.v34i03.5622</a></p></li>
-<li><p>Mizota, Y., Hamada, N., &amp; Ichiki, S. (2021). All unconstrained strongly convex problems are weakly simplicial, arXiv:2106.12704 [math.OC]. https://arxiv.org/abs/2106.12704</p></li>
+<li><p>Mizota, Y., Hamada, N., &amp; Ichiki, S. (2021). All unconstrained strongly convex problems are weakly simplicial. arXiv:2106.12704 [math.OC]. https://arxiv.org/abs/2106.12704</p></li>
 <li><p>Hamada, N. &amp; Goto, K. (2018). Data-Driven Analysis of Pareto Set Topology. Proceedings of the Genetic and Evolutionary Computation Conference, 657-664. <a class="reference external" href="https://doi.org/10.1145/3205455.3205613">https://doi.org/10.1145/3205455.3205613</a></p></li>
 </ol>
 </div>
