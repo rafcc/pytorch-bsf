@@ -10,13 +10,11 @@ The project is on `GitHub`_.
 
 .. image:: _static/bezier-simplex.png
    :width: 49%
-   :align: center
-   :alt: A Bezier simplex
+   :alt: A Bezier simplex and its control points
 
 .. image:: _static/bezier-simplex-fitting.png
    :width: 49%
-   :align: center
-   :alt: Fit to a dataset
+   :alt: A Bezier simplex that fits to a dataset
 
 .. toctree::
    :maxdepth: 2
