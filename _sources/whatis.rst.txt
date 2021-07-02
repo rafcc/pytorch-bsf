@@ -54,10 +54,19 @@ If we find few solutions to such a problem, the entire solution set can be appro
 An important application is hyperparameter search of the elastic net.
 
 
+Approximation theorem
+^^^^^^^^^^^^^^^^^^^^^
+
+Any continuous map from a simplex to a Euclidean space can be approximated by a Bezier simplex.
+More precisely, the following theorem holds.
+See [1] for technical details.
+
+
 Weakly simplicial problems
 ^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 There exists a continuous map from a simplex to the Pareto set and Pareto front such that the map sends a subsimplex to the Pareto set/front of a subproblem.
+See [3].
 
 
 Weighted sum scalarization and solution map

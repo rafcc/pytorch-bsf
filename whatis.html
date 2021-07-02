@@ -95,6 +95,7 @@
 <li class="toctree-l2"><a class="reference internal" href="#bezier-simplex">Bezier simplex</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#fitting-a-bezier-simplex-to-a-dataset">Fitting a Bezier simplex to a dataset</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#why-does-bezier-simplex-fitting-matter">Why does Bezier simplex fitting matter?</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#approximation-theorem">Approximation theorem</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#weakly-simplicial-problems">Weakly simplicial problems</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#weighted-sum-scalarization-and-solution-map">Weighted sum scalarization and solution map</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#elastic-net">Elastic net</a></li>
@@ -210,9 +211,16 @@ What we are trying can be formulated as a problem of finding the best vector of 
 More precisely, for the weighted sum scalarization problem of any multiobjective strongly convex problem, the map from a simplex of weight vectors to the solution set of weighted sum problems can be approximated by a Bezier simplex.
 If we find few solutions to such a problem, the entire solution set can be approximated by Bezier simplex fitting.
 An important application is hyperparameter search of the elastic net.</p>
+<div class="section" id="approximation-theorem">
+<h3>Approximation theorem<a class="headerlink" href="#approximation-theorem" title="Permalink to this headline">¶</a></h3>
+<p>Any continuous map from a simplex to a Euclidean space can be approximated by a Bezier simplex.
+More precisely, the following theorem holds.
+See [1] for technical details.</p>
+</div>
 <div class="section" id="weakly-simplicial-problems">
 <h3>Weakly simplicial problems<a class="headerlink" href="#weakly-simplicial-problems" title="Permalink to this headline">¶</a></h3>
-<p>There exists a continuous map from a simplex to the Pareto set and Pareto front such that the map sends a subsimplex to the Pareto set/front of a subproblem.</p>
+<p>There exists a continuous map from a simplex to the Pareto set and Pareto front such that the map sends a subsimplex to the Pareto set/front of a subproblem.
+See [3].</p>
 </div>
 <div class="section" id="weighted-sum-scalarization-and-solution-map">
 <h3>Weighted sum scalarization and solution map<a class="headerlink" href="#weighted-sum-scalarization-and-solution-map" title="Permalink to this headline">¶</a></h3>
