@@ -34,9 +34,9 @@ Fitting a Bezier simplex to a dataset
 -------------------------------------
 
 Assume we have a finite dataset :math:`B\subset\Delta^{M-1}\times\mathbb R^N` and want to fit a Bezier simplex to the dataset.
-What we are trying can be formulated as a problem of finding the best vector of control points :math:`p=(p_d)_{d\in\mathbb N_D^M}` that minimizes the least square error between the Bezier simplex and the dataset:
+What we are trying can be formulated as a problem of finding the best vector of control points :math:`\mathbf p=(\mathbf p_{\mathbf d})_{\mathbf d\in\mathbb N_D^M}` that minimizes the least square error between the Bezier simplex and the dataset:
 
-.. math:: \min_{p} \sum_{(t,x)\in B}\|b(t|p)-x\|^2.
+.. math:: \min_{\mathbf p} \sum_{(\mathbf t,\mathbf x)\in B}\|\mathbf b(\mathbf t|\mathbf p)-\mathbf x\|^2.
 
 PyTorch-BSF provides an algorithm for solving this optimization problem with the L-BFGS algorithm.
 
