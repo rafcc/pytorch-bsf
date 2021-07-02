@@ -1,8 +1,18 @@
 What is Bezier simplex fitting?
 ===============================
 
+The Bezier simplex is a high-dimensional generalization of the Bezier curve and Bezier triangle with which we are familiar in computer graphics and computer aided design.
+This page introduces
+
+
 Bezier simplex
 --------------
+
+.. image:: _static/bezier-simplex.png
+   :width: 50%
+   :align: center
+   :alt: A Bezier simplex and its control points
+
 Let :math:`D, M, N` be nonnegative integers, :math:`\mathbb N` the set of nonnegative integers (including zero!), and :math:`\mathbb R^N` the :math:`N`-dimensional Euclidean space.
 We define the *index set* by
 
@@ -21,6 +31,12 @@ where :math:`t^d=t_1^{d_1} t_2^{d_2}\cdots t_M^{d_M}`, :math:`\binom{D}{d}=D! / 
 
 Fitting a Bezier simplex to a dataset
 -------------------------------------
+
+.. image:: _static/bezier-simplex-fitting.png
+   :width: 50%
+   :align: center
+   :alt: A Bezier simplex that fits to a dataset
+
 Assume we have a finite dataset :math:`B\subset\Delta^{M-1}\times\mathbb R^N` and want to fit a Bezier simplex to the dataset.
 What we are trying can be formulated as a problem of finding the best vector of control points :math:`p=(p_d)_{d\in\mathbb N_D^M}` that minimizes the least square error between the Bezier simplex and the dataset:
 

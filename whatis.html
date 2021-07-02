@@ -170,8 +170,11 @@
             
   <div class="section" id="what-is-bezier-simplex-fitting">
 <h1>What is Bezier simplex fitting?<a class="headerlink" href="#what-is-bezier-simplex-fitting" title="Permalink to this headline">¶</a></h1>
+<p>The Bezier simplex is a high-dimensional generalization of the Bezier curve and Bezier triangle with which we are familiar in computer graphics and computer aided design.
+This page introduces</p>
 <div class="section" id="bezier-simplex">
 <h2>Bezier simplex<a class="headerlink" href="#bezier-simplex" title="Permalink to this headline">¶</a></h2>
+<a class="reference internal image-reference" href="_images/bezier-simplex.png"><img alt="A Bezier simplex and its control points" class="align-center" src="_images/bezier-simplex.png" style="width: 50%;" /></a>
 <p>Let <span class="math notranslate nohighlight">\(D, M, N\)</span> be nonnegative integers, <span class="math notranslate nohighlight">\(\mathbb N\)</span> the set of nonnegative integers (including zero!), and <span class="math notranslate nohighlight">\(\mathbb R^N\)</span> the <span class="math notranslate nohighlight">\(N\)</span>-dimensional Euclidean space.
 We define the <em>index set</em> by</p>
 <div class="math notranslate nohighlight">
@@ -186,6 +189,7 @@ We define the <em>index set</em> by</p>
 </div>
 <div class="section" id="fitting-a-bezier-simplex-to-a-dataset">
 <h2>Fitting a Bezier simplex to a dataset<a class="headerlink" href="#fitting-a-bezier-simplex-to-a-dataset" title="Permalink to this headline">¶</a></h2>
+<a class="reference internal image-reference" href="_images/bezier-simplex-fitting.png"><img alt="A Bezier simplex that fits to a dataset" class="align-center" src="_images/bezier-simplex-fitting.png" style="width: 50%;" /></a>
 <p>Assume we have a finite dataset <span class="math notranslate nohighlight">\(B\subset\Delta^{M-1}\times\mathbb R^N\)</span> and want to fit a Bezier simplex to the dataset.
 What we are trying can be formulated as a problem of finding the best vector of control points <span class="math notranslate nohighlight">\(p=(p_d)_{d\in\mathbb N_D^M}\)</span> that minimizes the least square error between the Bezier simplex and the dataset:</p>
 <div class="math notranslate nohighlight">
