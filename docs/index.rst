@@ -18,14 +18,14 @@ The project is on `GitHub`_.
 
 .. toctree::
    :maxdepth: 2
-   :caption: Tutorial
+   :caption: User Guide
 
    quickstart
    whatis
 
 .. toctree::
    :maxdepth: 2
-   :caption: API
+   :caption: API Reference
 
    modules
 
