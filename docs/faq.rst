@@ -24,7 +24,7 @@ Are approximation results always reliable?
 
 No, not always.
 The approximation theorem says nothing about the approximation accuracy of the Bezier simplex of **fixed** degree.
-After fitting a Bezier simplex, you need to check the goodness of git by using your domain knowledge.
+After fitting a Bezier simplex, you need to check the goodness of fit by using your domain knowledge.
 
 
 Are there any applications other than multiobjective optimization?
