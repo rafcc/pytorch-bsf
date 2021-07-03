@@ -19,7 +19,7 @@ The project is on `GitHub`_.
 
 .. toctree::
    :maxdepth: 2
-   :caption: User Guide
+   :caption: User guide
 
    quickstart
    whatis
@@ -27,7 +27,7 @@ The project is on `GitHub`_.
 
 .. toctree::
    :maxdepth: 2
-   :caption: API Reference
+   :caption: API reference
 
    modules
 
