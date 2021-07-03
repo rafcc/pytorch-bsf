@@ -25,7 +25,7 @@ An :math:`(M-1)`-dimensional *Bezier simplex* of degree :math:`D` in :math:`\mat
 where :math:`\mathbf t^{\mathbf d} = t_1^{d_1} t_2^{d_2}\cdots t_M^{d_M}`, :math:`\binom{D}{\mathbf d}=D! / (d_1!d_2!\cdots d_M!)`, and :math:`\mathbf p_{\mathbf d}\in\mathbb R^N\ (\mathbf d\in\mathbb N_D^M)` are parameters called the *control points*.
 
 .. image:: _static/bezier-simplex.png
-   :width: 50%
+   :width: 33%
    :align: center
    :alt: A Bezier simplex and its control points
 
@@ -41,7 +41,7 @@ What we are trying can be formulated as a problem of finding the best vector of 
 PyTorch-BSF provides an algorithm for solving this optimization problem with the L-BFGS algorithm.
 
 .. image:: _static/bezier-simplex-fitting.png
-   :width: 50%
+   :width: 66%
    :align: center
    :alt: A Bezier simplex that fits to a dataset
 
