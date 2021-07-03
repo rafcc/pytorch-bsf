@@ -36,7 +36,7 @@ Fitting a Bezier simplex to a dataset
 Assume we have a finite dataset :math:`B\subset\Delta^{M-1}\times\mathbb R^N` and want to fit a Bezier simplex to the dataset.
 What we are trying can be formulated as a problem of finding the best vector of control points :math:`\mathbf p=(\mathbf p_{\mathbf d})_{\mathbf d\in\mathbb N_D^M}` that minimizes the least square error between the Bezier simplex and the dataset:
 
-.. math:: \min_{\mathbf p} \sum_{(\mathbf t,\mathbf x)\in B}\|\mathbf b(\mathbf t\mid\mathbf p)-\mathbf x\|^2.
+.. math:: \arg\min_{\mathbf p} \sum_{(\mathbf t,\mathbf x)\in B}\|\mathbf b(\mathbf t\mid\mathbf p)-\mathbf x\|^2.
 
 PyTorch-BSF provides an algorithm for solving this optimization problem with the L-BFGS algorithm.
 
@@ -88,7 +88,7 @@ The *weighted-sum scalarization* :math:`x^*: \Delta^{M-1}\to\mathbb R^N` defined
 
 .. math:: x^*(w)=\arg\min_x \sum_{m=1}^M w_m f_m(x).
 
-We define the *solution map* :math:`(f\circ x^*,x^*):\Delta^{M-1}\to G^*(f)` by
+We define the *solution map* :math:`(x^*,f\circ x^*):\Delta^{M-1}\to G^*(f)` by
 
 .. math:: (x^*,f\circ x^*)(w)=(x^*(w),f(x^*(x))).
 
@@ -102,6 +102,13 @@ Elastic net
 Hyper-parameter search.
 See [3] for technical details.
 
+
+Deep neural networks
+^^^^^^^^^^^^^^^^^^^^
+
+The loss function for the generator is
+
+.. math:: l(\theta)=G+\lambda_\mathrm{dis}+\lambda_\mathrm{dis}
 
 Statistical test for weakly simpliciality
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
