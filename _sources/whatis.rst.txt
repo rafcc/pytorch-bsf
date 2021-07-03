@@ -16,7 +16,7 @@ We define the *index set* by
 
 and the *simplex* by
 
-.. math:: \Delta^{M-1} = \left\{(t_1,\ldots,t_M)\in\mathbb R^M\ \Biggr|\ \sum_{m=1}^M t_m=1\right\}.
+.. math:: \Delta^{M-1} = \left\{(t_1,\ldots,t_M)\in[0,1]]^M\ \Biggr|\ \sum_{m=1}^M t_m=1\right\}.
 
 An :math:`(M-1)`-dimensional *Bezier simplex* of degree :math:`D` in :math:`\mathbb R^N` is a polynomial map :math:`\mathbf b: \Delta^{M-1}\to\mathbb R^N` defined by
 
