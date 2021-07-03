@@ -102,8 +102,11 @@ Application 2: Deep neural networks
 
 The loss function for the generator is
 
-.. math:: l(\theta)=G+\lambda_\mathrm{dis}+\lambda_\mathrm{dis}
-
+.. math::
+   
+   L_D^\mathrm{BCR}=L_D+\lambda_\mathrm{real}L_\mathrm{real}+\lambda_\mathrm{fake}L_\mathrm{fake}
+   
+   L_G^\mathrm{ZCR}=L_G+\lambda_\mathrm{dis}L_\mathrm{dis}+\lambda_\mathrm{gen}L_\mathrm{gen}
 
 Statistical test for weakly simpliciality
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
