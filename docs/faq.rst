@@ -31,6 +31,6 @@ Are there any applications other than multiobjective optimization?
 ------------------------------------------------------------------
 
 Not yet, but possibly yes.
-However, I believe Bezier simplices arise everywhere we need high-dimensional shape representation.
+I believe Bezier simplices arise everywhere we need high-dimensional shape representation.
 If you find a new application, then please let me know it.
 Your application will be documented in the application section.
