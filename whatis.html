@@ -97,7 +97,11 @@
 <li class="toctree-l2"><a class="reference internal" href="#why-does-bezier-simplex-fitting-matter">Why does Bezier simplex fitting matter?</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="#approximation-theorem">Approximation theorem</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#weakly-simplicial-problems">Weakly simplicial problems</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#weighted-sum-scalarization-and-solution-map">Weighted sum scalarization and solution map</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#applications">Applications</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#strongly-convex-problems">Strongly convex problems</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#weighted-sum-scalarization-and-solution-map">Weighted-sum scalarization and solution map</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#elastic-net">Elastic net</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#statistical-test-for-weakly-simpliciality">Statistical test for weakly simpliciality</a></li>
 </ul>
@@ -222,8 +226,22 @@ See [1] for technical details.</p>
 <p>There exists a continuous map from a simplex to the Pareto set and Pareto front such that the map sends a subsimplex to the Pareto set/front of a subproblem.
 See [3].</p>
 </div>
+</div>
+<div class="section" id="applications">
+<h2>Applications<a class="headerlink" href="#applications" title="Permalink to this headline">¶</a></h2>
+<p>We have two cases Weakly simplicial and</p>
+<div class="section" id="strongly-convex-problems">
+<h3>Strongly convex problems<a class="headerlink" href="#strongly-convex-problems" title="Permalink to this headline">¶</a></h3>
+<p>All unconstrained strongly convex problems are weakly simplicial [3].</p>
+</div>
 <div class="section" id="weighted-sum-scalarization-and-solution-map">
-<h3>Weighted sum scalarization and solution map<a class="headerlink" href="#weighted-sum-scalarization-and-solution-map" title="Permalink to this headline">¶</a></h3>
+<h3>Weighted-sum scalarization and solution map<a class="headerlink" href="#weighted-sum-scalarization-and-solution-map" title="Permalink to this headline">¶</a></h3>
+<p>The <em>weighted-sum scalarization</em> <span class="math notranslate nohighlight">\(x^*: \Delta^{M-1}\to\mathbb R^N\)</span> defined by</p>
+<div class="math notranslate nohighlight">
+\[x^*(w)=\arg\min_x \sum_{m=1}^M w_m f_m(x).\]</div>
+<p>We define the <em>solution map</em> <span class="math notranslate nohighlight">\((f\circ x^*,x^*):\Delta^{M-1}\to G^*(f)\)</span> by</p>
+<div class="math notranslate nohighlight">
+\[(x^*,f\circ x^*)(w)=(x^*(w),f(x^*(x))).\]</div>
 <p>The solution map is continuous and surjective.
 See [3] for technical details.</p>
 </div>

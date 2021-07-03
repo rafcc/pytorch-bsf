@@ -69,8 +69,28 @@ There exists a continuous map from a simplex to the Pareto set and Pareto front 
 See [3].
 
 
-Weighted sum scalarization and solution map
+Applications
+------------
+
+We have two cases Weakly simplicial and 
+
+
+Strongly convex problems
+^^^^^^^^^^^^^^^^^^^^^^^^
+
+All unconstrained strongly convex problems are weakly simplicial [3].
+
+
+Weighted-sum scalarization and solution map
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+The *weighted-sum scalarization* :math:`x^*: \Delta^{M-1}\to\mathbb R^N` defined by
+
+.. math:: x^*(w)=\arg\min_x \sum_{m=1}^M w_m f_m(x).
+
+We define the *solution map* :math:`(f\circ x^*,x^*):\Delta^{M-1}\to G^*(f)` by
+
+.. math:: (x^*,f\circ x^*)(w)=(x^*(w),f(x^*(x))).
 
 The solution map is continuous and surjective.
 See [3] for technical details.
