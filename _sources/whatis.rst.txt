@@ -104,9 +104,15 @@ The loss function for the generator is
 
 .. math::
    
-   L_D^\mathrm{BCR}=L_D+\lambda_\mathrm{real}L_\mathrm{real}+\lambda_\mathrm{fake}L_\mathrm{fake}
+   L_D^\mathrm{bCR}&=L_D+\lambda_\mathrm{real}L_\mathrm{real}+\lambda_\mathrm{fake}L_\mathrm{fake}
+
+   L_D&=D(G(z))-D(x)
+
+   L_\mathrm{real}&=\|D(x)-D(T(x))\|^2
+
+   L_\mathrm{fake}&=\|D(G(z))-D(T(G(z)))\|^2
    
-   L_G^\mathrm{ZCR}=L_G+\lambda_\mathrm{dis}L_\mathrm{dis}+\lambda_\mathrm{gen}L_\mathrm{gen}
+   L_G^\mathrm{zCR}&=L_G+\lambda_\mathrm{dis}L_\mathrm{dis}+\lambda_\mathrm{gen}L_\mathrm{gen}
 
 Statistical test for weakly simpliciality
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
