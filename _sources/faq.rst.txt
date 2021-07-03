@@ -30,7 +30,7 @@ After fitting a Bezier simplex, you need to check the goodness of fit by using y
 Are there any applications other than multiobjective optimization?
 ------------------------------------------------------------------
 
-No, not yet.
+Not yet, but possibly yes.
 However, I believe Bezier simplices arise everywhere we need high-dimensional shape representation.
 If you find a new application, then please let me know it.
 Your application will be documented in the application section.
