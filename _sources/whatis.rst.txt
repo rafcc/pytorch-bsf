@@ -69,10 +69,11 @@ There exists a continuous map from a simplex to the Pareto set and Pareto front 
 See [3].
 
 
-Applications
-------------
+Application 1: Elastic net
+--------------------------
 
-We have two cases Weakly simplicial and 
+Hyper-parameter search.
+See [3] for technical details.
 
 
 Strongly convex problems
@@ -96,19 +97,13 @@ The solution map is continuous and surjective.
 See [3] for technical details.
 
 
-Elastic net
-^^^^^^^^^^^
-
-Hyper-parameter search.
-See [3] for technical details.
-
-
-Deep neural networks
-^^^^^^^^^^^^^^^^^^^^
+Application 2: Deep neural networks
+-----------------------------------
 
 The loss function for the generator is
 
 .. math:: l(\theta)=G+\lambda_\mathrm{dis}+\lambda_\mathrm{dis}
+
 
 Statistical test for weakly simpliciality
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
