@@ -23,6 +23,7 @@ The project is on `GitHub`_.
 
    quickstart
    whatis
+   faq
 
 .. toctree::
    :maxdepth: 2
