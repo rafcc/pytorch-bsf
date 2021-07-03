@@ -65,6 +65,7 @@ See [1] for technical details.
 Weakly simplicial problems
 ^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Such a map :math:`\Phi` arises in, e.g., multiobjective optimization.
 There exists a continuous map from a simplex to the Pareto set and Pareto front such that the map sends a subsimplex to the Pareto set/front of a subproblem.
 See [3].
 
@@ -103,16 +104,25 @@ Application 2: Deep neural networks
 The loss function for the generator is
 
 .. math::
-   
-   L_D^\mathrm{bCR}&=L_D+\lambda_\mathrm{real}L_\mathrm{real}+\lambda_\mathrm{fake}L_\mathrm{fake}
 
-   L_D&=D(G(z))-D(x)
+   L_D^\mathrm{bCR}&=L_D+\lambda_\mathrm{real}L_\mathrm{real}+\lambda_\mathrm{fake}L_\mathrm{fake},
 
-   L_\mathrm{real}&=\|D(x)-D(T(x))\|^2
+   L_D&=D(G(z))-D(x),
 
-   L_\mathrm{fake}&=\|D(G(z))-D(T(G(z)))\|^2
-   
-   L_G^\mathrm{zCR}&=L_G+\lambda_\mathrm{dis}L_\mathrm{dis}+\lambda_\mathrm{gen}L_\mathrm{gen}
+   L_\mathrm{real}&=\|D(x)-D(T(x))\|^2,
+
+   L_\mathrm{fake}&=\|D(G(z))-D(T(G(z)))\|^2,
+
+   L_D^\mathrm{zCR}&=L_D+\lambda_\mathrm{dis}L_\mathrm{dis},
+
+   L_G^\mathrm{zCR}&=L_G+\lambda_\mathrm{gen}L_\mathrm{gen},
+
+   L_G&=-D(G(z)),
+
+   L_\mathrm{dis}&=\|D(G(z))-D(G(T(z)))\|^2,
+
+   L_\mathrm{gen}&=\|G(z)-G(T(z))\|^2.
+
 
 Statistical test for weakly simpliciality
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^

@@ -225,7 +225,8 @@ See [1] for technical details.</p>
 </div>
 <div class="section" id="weakly-simplicial-problems">
 <h3>Weakly simplicial problems<a class="headerlink" href="#weakly-simplicial-problems" title="Permalink to this headline">¶</a></h3>
-<p>There exists a continuous map from a simplex to the Pareto set and Pareto front such that the map sends a subsimplex to the Pareto set/front of a subproblem.
+<p>Such a map <span class="math notranslate nohighlight">\(\Phi\)</span> arises in, e.g., multiobjective optimization.
+There exists a continuous map from a simplex to the Pareto set and Pareto front such that the map sends a subsimplex to the Pareto set/front of a subproblem.
 See [3].</p>
 </div>
 </div>
@@ -253,7 +254,7 @@ See [3] for technical details.</p>
 <h2>Application 2: Deep neural networks<a class="headerlink" href="#application-2-deep-neural-networks" title="Permalink to this headline">¶</a></h2>
 <p>The loss function for the generator is</p>
 <div class="math notranslate nohighlight">
-\[ \begin{align}\begin{aligned}L_D^\mathrm{bCR}&amp;=L_D+\lambda_\mathrm{real}L_\mathrm{real}+\lambda_\mathrm{fake}L_\mathrm{fake}\\L_D&amp;=D(G(z))-D(x)\\L_\mathrm{real}&amp;=\|D(x)-D(T(x))\|^2\\L_\mathrm{fake}&amp;=\|D(G(z))-D(T(G(z)))\|^2\\L_G^\mathrm{zCR}&amp;=L_G+\lambda_\mathrm{dis}L_\mathrm{dis}+\lambda_\mathrm{gen}L_\mathrm{gen}\end{aligned}\end{align} \]</div>
+\[ \begin{align}\begin{aligned}L_D^\mathrm{bCR}&amp;=L_D+\lambda_\mathrm{real}L_\mathrm{real}+\lambda_\mathrm{fake}L_\mathrm{fake},\\L_D&amp;=D(G(z))-D(x),\\L_\mathrm{real}&amp;=\|D(x)-D(T(x))\|^2,\\L_\mathrm{fake}&amp;=\|D(G(z))-D(T(G(z)))\|^2,\\L_D^\mathrm{zCR}&amp;=L_D+\lambda_\mathrm{dis}L_\mathrm{dis},\\L_G^\mathrm{zCR}&amp;=L_G+\lambda_\mathrm{gen}L_\mathrm{gen},\\L_G&amp;=-D(G(z)),\\L_\mathrm{dis}&amp;=\|D(G(z))-D(G(T(z)))\|^2,\\L_\mathrm{gen}&amp;=\|G(z)-G(T(z))\|^2.\end{aligned}\end{align} \]</div>
 <div class="section" id="statistical-test-for-weakly-simpliciality">
 <h3>Statistical test for weakly simpliciality<a class="headerlink" href="#statistical-test-for-weakly-simpliciality" title="Permalink to this headline">¶</a></h3>
 <p>When problem class is unknown.
