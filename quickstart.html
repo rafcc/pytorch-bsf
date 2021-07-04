@@ -98,7 +98,7 @@
 <li class="toctree-l3"><a class="reference internal" href="#installation">Installation</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#training">Training</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#prediction">Prediction</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#expose-prediction-api">Expose prediction API</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#serve-prediction-api">Serve prediction API</a></li>
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="#run-as-a-python-package">Run as a Python package</a></li>
@@ -238,8 +238,8 @@ cat <span class="s">&lt;&lt; EOS &gt; train_label.tsv</span>
 </pre></div>
 </div>
 </div>
-<div class="section" id="expose-prediction-api">
-<h3>Expose prediction API<a class="headerlink" href="#expose-prediction-api" title="Permalink to this headline">¶</a></h3>
+<div class="section" id="serve-prediction-api">
+<h3>Serve prediction API<a class="headerlink" href="#serve-prediction-api" title="Permalink to this headline">¶</a></h3>
 <p>You can also serve a Web API for prediction:</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>mlflow models serve <span class="se">\</span>
   --model-uri <span class="o">{</span>Full Path<span class="o">}</span> <span class="se">\</span>
