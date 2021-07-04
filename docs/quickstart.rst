@@ -7,7 +7,7 @@ There are several ways to use PyTorch-BSF.
 Run as an MLflow project
 ------------------------
 
-If you have data and labels in Tab-Separated Value (TSV) files for training a Bezier simplex, the easiest way is to use `MLflow`_.
+If you have data and labels for training a Bezier simplex in common formats such as CSV, JSON, etc., then the easiest way is to invoke PyTorch-BSF via `MLflow`_.
 In this way, some CUI commands for training and prediction are provided without installing PyTorch-BSF.
 On each training and prediction, separation of runtime environment and installation of PyTorch-BSF are automatically handled by MLflow!
 
