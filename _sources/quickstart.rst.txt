@@ -1,10 +1,12 @@
 Quickstart
 ==========
+
 There are several ways to use PyTorch-BSF.
 
 
 Run as an MLflow project
 ------------------------
+
 If you have data and labels in Tab-Separated Value (TSV) files for training a Bezier simplex, the easiest way is to use `MLflow`_.
 In this way, some CUI commands for training and prediction are provided without installing PyTorch-BSF.
 On each training and prediction, separation of runtime environment and installation of PyTorch-BSF are automatically handled by MLflow!
@@ -40,7 +42,15 @@ You have a trained model in ``mlruns`` directory.
      --output-path test_label.csv
 
 
-You can serve a Web API for prediction.
+You have results in ``test_label.csv``:
+
+.. code-block:: bash
+
+   cat predict.csv 
+   [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2]
+
+
+You can also serve a Web API for prediction:
 
 .. code-block:: bash
 
@@ -50,8 +60,24 @@ You can serve a Web API for prediction.
      --port 5001
 
 
+Request a prediction with HTTP POST method:
+
+.. code-block:: bash
+
+   curl http://localhost:5001/invocations -H 'Content-Type: application/json' -d '{
+     "columns": ["t1", "t2", "t3"],
+     "data": [
+        [0.1, 0.2, 0.7],
+        [0.4, 0.5, 0.1]
+     ]
+   }'
+
+See for details https://www.mlflow.org/docs/latest/models.html#deploy-mlflow-models
+
+
 Run as a Python package
 -----------------------
+
 Assume you have installed Python 3.8 or above.
 Then, install the package:
 
@@ -62,6 +88,7 @@ Then, install the package:
 
 Run as Python code
 ------------------
+
 Assume you have installed Python 3.8 or above.
 Then, install the package:
 
@@ -100,4 +127,3 @@ Train a model by ``fit()``, and call the model to predict.
    t = [[0.2, 0.3, 0.5]]
    x = bs(t)
    print(f"{t} -> {x}")
-
