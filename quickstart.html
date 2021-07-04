@@ -95,6 +95,7 @@
 <ul class="current">
 <li class="toctree-l1 current"><a class="current reference internal" href="#">Quickstart</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="#run-as-an-mlflow-project">Run as an MLflow project</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#installation">installation</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#training">Training</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#prediction">Prediction</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#expose-prediction-api">Expose prediction API</a></li>
@@ -182,16 +183,19 @@
 <p>There are several ways to use PyTorch-BSF.</p>
 <div class="section" id="run-as-an-mlflow-project">
 <h2>Run as an MLflow project<a class="headerlink" href="#run-as-an-mlflow-project" title="Permalink to this headline">¶</a></h2>
-<p>If you have data and labels for training a Bezier simplex in common formats such as CSV, JSON, etc., then the easiest way is to invoke PyTorch-BSF via <a class="reference external" href="https://www.mlflow.org/docs/latest/">MLflow</a>.
+<p>If you have data and labels for training a Bezier simplex in common file formats such as CSV, JSON, etc., then the easiest way is to invoke PyTorch-BSF via <a href="#id2"><span class="problematic" id="id3">`MLflow`_</span></a>.
 In this way, some CUI commands for training and prediction are provided without installing PyTorch-BSF.
 On each training and prediction, separation of runtime environment and installation of PyTorch-BSF are automatically handled by MLflow!</p>
-<div class="section" id="training">
-<h3>Training<a class="headerlink" href="#training" title="Permalink to this headline">¶</a></h3>
-<p>Assume you have installed Miniconda.
-Install <code class="docutils literal notranslate"><span class="pre">mlflow</span></code> conda package from <code class="docutils literal notranslate"><span class="pre">conda-forge</span></code> channel:</p>
+<div class="section" id="installation">
+<h3>installation<a class="headerlink" href="#installation" title="Permalink to this headline">¶</a></h3>
+<p>First, install <a href="#id4"><span class="problematic" id="id5">`Miniconda`_</span></a>.
+Then, install <code class="docutils literal notranslate"><span class="pre">mlflow</span></code> conda package from <code class="docutils literal notranslate"><span class="pre">conda-forge</span></code> channel:</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>conda install -c conda-forge mlflow
 </pre></div>
 </div>
+</div>
+<div class="section" id="training">
+<h3>Training<a class="headerlink" href="#training" title="Permalink to this headline">¶</a></h3>
 <p>Now, you can fit a Bezier simplex to a dataset with the latest version of PyTorch-BSF:</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>mlflow run https://github.com/rafcc/pytorch-bsf <span class="se">\</span>
 -P <span class="nv">data</span><span class="o">=</span>train_data.tsv <span class="se">\</span>
