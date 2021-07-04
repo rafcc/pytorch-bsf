@@ -13,6 +13,10 @@ On each training and prediction, separation of runtime environment and installat
 
 .. _MLflow: https://www.mlflow.org/docs/latest/
 
+
+Training
+^^^^^^^^
+
 Assume you have installed Miniconda.
 Install ``mlflow`` conda package from ``conda-forge`` channel:
 
@@ -33,6 +37,9 @@ Now, you can fit a Bezier simplex to a dataset with the latest version of PyTorc
 
 You have a trained model in ``mlruns`` directory.
 
+Prediction
+^^^^^^^^^^
+
 .. code-block:: bash
 
    mlflow models predict \
@@ -46,9 +53,12 @@ You have results in ``test_label.csv``:
 
 .. code-block:: bash
 
-   cat predict.csv 
+   cat test_label.csv 
    [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2]
 
+
+Expose prediction API
+^^^^^^^^^^^^^^^^^^^^^
 
 You can also serve a Web API for prediction:
 
@@ -84,6 +94,16 @@ Then, install the package:
 .. code-block:: bash
 
   pip install pytorch-bsf
+
+Then, run `torch_bsf` as a module:
+
+.. code-block:: bash
+
+   python -m torch_bsf \
+     --model-uri file://`pwd`/mlruns/0/${run_uuid}/artifacts/model \
+     --content-type csv \
+     --input-path test_data.csv \
+     --output-path test_label.csv
 
 
 Run as Python code
