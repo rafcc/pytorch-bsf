@@ -1,4 +1,6 @@
 # pytorch-bsf
+![](.docs/_static/bezier-simplex.png | width=49%)
+![](.docs/_static/bezier-simplex-fitting.png | width=49%)
 
 PyTorch implementation of Bezier simplex fitting.
 
