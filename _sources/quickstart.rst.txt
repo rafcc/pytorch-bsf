@@ -24,13 +24,13 @@ Then, install ``mlflow`` conda package from ``conda-forge`` channel:
 
    conda install -c conda-forge mlflow
 
-.. _MLflow: https://docs.conda.io/en/latest/miniconda.html
+.. _Miniconda: https://docs.conda.io/en/latest/miniconda.html
 
 
 Training
 ^^^^^^^^
 
-Let's prepare data and labels for training.
+Let's prepare data and labels for training:
 
 .. code-block:: bash
 
@@ -46,8 +46,10 @@ Let's prepare data and labels for training.
    3
    EOS
 
+.. warning::
+   The data file and label file must have the same number of lines.
 
-Now, you can fit a Bezier simplex to a dataset with the latest version of PyTorch-BSF:
+Now, you can fit a Bezier simplex to those data and labels with the latest version of PyTorch-BSF:
 
 .. code-block:: bash
 

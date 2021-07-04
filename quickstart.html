@@ -183,12 +183,12 @@
 <p>There are several ways to use PyTorch-BSF.</p>
 <div class="section" id="run-as-an-mlflow-project">
 <h2>Run as an MLflow project<a class="headerlink" href="#run-as-an-mlflow-project" title="Permalink to this headline">¶</a></h2>
-<p>If you have data and labels for training a Bezier simplex in common file formats such as CSV, JSON, etc., then the easiest way is to invoke PyTorch-BSF via <a href="#id2"><span class="problematic" id="id3">`MLflow`_</span></a>.
+<p>If you have data and labels for training a Bezier simplex in common file formats such as CSV, JSON, etc., then the easiest way is to invoke PyTorch-BSF via <a class="reference external" href="https://www.mlflow.org/docs/latest/">MLflow</a>.
 In this way, some CUI commands for training and prediction are provided without installing PyTorch-BSF.
 On each training and prediction, separation of runtime environment and installation of PyTorch-BSF are automatically handled by MLflow!</p>
 <div class="section" id="installation">
 <h3>Installation<a class="headerlink" href="#installation" title="Permalink to this headline">¶</a></h3>
-<p>First, install <a href="#id4"><span class="problematic" id="id5">`Miniconda`_</span></a>.
+<p>First, install <a class="reference external" href="https://docs.conda.io/en/latest/miniconda.html">Miniconda</a>.
 Then, install <code class="docutils literal notranslate"><span class="pre">mlflow</span></code> conda package from <code class="docutils literal notranslate"><span class="pre">conda-forge</span></code> channel:</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>conda install -c conda-forge mlflow
 </pre></div>
@@ -196,7 +196,7 @@ Then, install <code class="docutils literal notranslate"><span class="pre">mlflo
 </div>
 <div class="section" id="training">
 <h3>Training<a class="headerlink" href="#training" title="Permalink to this headline">¶</a></h3>
-<p>Let’s prepare data and labels for training.</p>
+<p>Let’s prepare data and labels for training:</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>cat <span class="s">&lt;&lt; EOS &gt; train_data.tsv</span>
 <span class="s">1 2</span>
 <span class="s">4 3</span>
@@ -210,7 +210,11 @@ cat <span class="s">&lt;&lt; EOS &gt; train_label.tsv</span>
 <span class="s">EOS</span>
 </pre></div>
 </div>
-<p>Now, you can fit a Bezier simplex to a dataset with the latest version of PyTorch-BSF:</p>
+<div class="admonition warning">
+<p class="admonition-title">Warning</p>
+<p>The data file and label file must have the same number of lines.</p>
+</div>
+<p>Now, you can fit a Bezier simplex to those data and labels with the latest version of PyTorch-BSF:</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>mlflow run https://github.com/rafcc/pytorch-bsf <span class="se">\</span>
 -P <span class="nv">data</span><span class="o">=</span>train_data.tsv <span class="se">\</span>
 -P <span class="nv">label</span><span class="o">=</span>train_label.tsv <span class="se">\</span>
