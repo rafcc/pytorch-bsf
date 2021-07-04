@@ -1,5 +1,9 @@
-# pytorch-bsf
 <img src="./docs/_static/bezier-simplex.png" width="49%"><img src="./docs/_static/bezier-simplex-fitting.png" width="49%">
+
+# pytorch-bsf
+![pipy](https://github.com/rafcc/pytorch-bsf/actions/workflows/python-package.yml/badge.svg)
+![conda](https://github.com/rafcc/pytorch-bsf/actions/workflows/python-package-conda.yml/badge.svg)
+![documents](https://github.com/rafcc/pytorch-bsf/actions/workflows/sphinx-pages.yml/badge.svg)
 
 PyTorch implementation of Bezier simplex fitting.
 
