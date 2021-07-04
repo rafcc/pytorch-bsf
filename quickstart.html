@@ -95,7 +95,7 @@
 <ul class="current">
 <li class="toctree-l1 current"><a class="current reference internal" href="#">Quickstart</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="#run-as-an-mlflow-project">Run as an MLflow project</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="#installation">installation</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#installation">Installation</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#training">Training</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#prediction">Prediction</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#expose-prediction-api">Expose prediction API</a></li>
@@ -187,7 +187,7 @@
 In this way, some CUI commands for training and prediction are provided without installing PyTorch-BSF.
 On each training and prediction, separation of runtime environment and installation of PyTorch-BSF are automatically handled by MLflow!</p>
 <div class="section" id="installation">
-<h3>installation<a class="headerlink" href="#installation" title="Permalink to this headline">¶</a></h3>
+<h3>Installation<a class="headerlink" href="#installation" title="Permalink to this headline">¶</a></h3>
 <p>First, install <a href="#id4"><span class="problematic" id="id5">`Miniconda`_</span></a>.
 Then, install <code class="docutils literal notranslate"><span class="pre">mlflow</span></code> conda package from <code class="docutils literal notranslate"><span class="pre">conda-forge</span></code> channel:</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>conda install -c conda-forge mlflow
@@ -196,6 +196,20 @@ Then, install <code class="docutils literal notranslate"><span class="pre">mlflo
 </div>
 <div class="section" id="training">
 <h3>Training<a class="headerlink" href="#training" title="Permalink to this headline">¶</a></h3>
+<p>Let’s prepare data and labels for training.</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>cat <span class="s">&lt;&lt; EOS &gt; train_data.tsv</span>
+<span class="s">1 2</span>
+<span class="s">4 3</span>
+<span class="s">5 6</span>
+<span class="s">EOS</span>
+
+cat <span class="s">&lt;&lt; EOS &gt; train_label.tsv</span>
+<span class="s">1</span>
+<span class="s">2</span>
+<span class="s">3</span>
+<span class="s">EOS</span>
+</pre></div>
+</div>
 <p>Now, you can fit a Bezier simplex to a dataset with the latest version of PyTorch-BSF:</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>mlflow run https://github.com/rafcc/pytorch-bsf <span class="se">\</span>
 -P <span class="nv">data</span><span class="o">=</span>train_data.tsv <span class="se">\</span>
@@ -203,7 +217,7 @@ Then, install <code class="docutils literal notranslate"><span class="pre">mlflo
 -P <span class="nv">degree</span><span class="o">=</span><span class="m">3</span>
 </pre></div>
 </div>
-<p>You have a trained model in <code class="docutils literal notranslate"><span class="pre">mlruns</span></code> directory.</p>
+<p>After the command finished, you will get a trained model in <code class="docutils literal notranslate"><span class="pre">mlruns</span></code> directory.</p>
 </div>
 <div class="section" id="prediction">
 <h3>Prediction<a class="headerlink" href="#prediction" title="Permalink to this headline">¶</a></h3>

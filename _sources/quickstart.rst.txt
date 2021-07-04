@@ -14,7 +14,7 @@ On each training and prediction, separation of runtime environment and installat
 .. _MLflow: https://www.mlflow.org/docs/latest/
 
 
-installation
+Installation
 ^^^^^^^^^^^^
 
 First, install `Miniconda`_.
@@ -30,6 +30,23 @@ Then, install ``mlflow`` conda package from ``conda-forge`` channel:
 Training
 ^^^^^^^^
 
+Let's prepare data and labels for training.
+
+.. code-block:: bash
+
+   cat << EOS > train_data.tsv
+   1 2
+   4 3
+   5 6
+   EOS
+
+   cat << EOS > train_label.tsv
+   1
+   2
+   3
+   EOS
+
+
 Now, you can fit a Bezier simplex to a dataset with the latest version of PyTorch-BSF:
 
 .. code-block:: bash
@@ -40,7 +57,8 @@ Now, you can fit a Bezier simplex to a dataset with the latest version of PyTorc
    -P degree=3
 
 
-You have a trained model in ``mlruns`` directory.
+After the command finished, you will get a trained model in ``mlruns`` directory.
+
 
 Prediction
 ^^^^^^^^^^
