@@ -5,7 +5,12 @@ There are several ways to use PyTorch-BSF.
 
 Run as an MLflow project
 ------------------------
-If you have data and labels in Tab-Separated Value (TSV) files for training a Bezier simplex, the easiest way is to use MLflow projects.
+If you have data and labels in Tab-Separated Value (TSV) files for training a Bezier simplex, the easiest way is to use `MLflow`_.
+In this way, some CUI commands for training and prediction are provided without installing PyTorch-BSF.
+On each training and prediction, separation of runtime environment and installation of PyTorch-BSF are automatically handled by MLflow!
+
+.. _MLflow: https://www.mlflow.org/docs/latest/
+
 Assume you have installed Miniconda.
 Install ``mlflow`` conda package from ``conda-forge`` channel:
 
@@ -14,18 +19,35 @@ Install ``mlflow`` conda package from ``conda-forge`` channel:
    conda install -c conda-forge mlflow
 
 
-Now, you can fit a Bezier simplex to a dataset with the latest version:
+Now, you can fit a Bezier simplex to a dataset with the latest version of PyTorch-BSF:
 
 .. code-block:: bash
 
    mlflow run https://github.com/rafcc/pytorch-bsf \
-   -P data=data.tsv \
-   -P label=label.tsv \
+   -P data=train_data.tsv \
+   -P label=train_label.tsv \
    -P degree=3
+
+
+You have a trained model in ``mlruns`` directory.
 
 .. code-block:: bash
 
-   mlflow models serve <run_id>
+   mlflow models predict \
+     --model-uri file://`pwd`/mlruns/0/${run_uuid}/artifacts/model \
+     --content-type csv \
+     --input-path test_data.csv \
+     --output-path test_label.csv
+
+
+You can serve a Web API for prediction.
+
+.. code-block:: bash
+
+   mlflow models serve \
+     --model-uri {Full Path} \
+     --host localhost \
+     --port 5001
 
 
 Run as a Python package

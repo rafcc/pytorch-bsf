@@ -177,20 +177,34 @@
 <p>There are several ways to use PyTorch-BSF.</p>
 <div class="section" id="run-as-an-mlflow-project">
 <h2>Run as an MLflow project<a class="headerlink" href="#run-as-an-mlflow-project" title="Permalink to this headline">¶</a></h2>
-<p>If you have data and labels in Tab-Separated Value (TSV) files for training a Bezier simplex, the easiest way is to use MLflow projects.
-Assume you have installed Miniconda.
+<p>If you have data and labels in Tab-Separated Value (TSV) files for training a Bezier simplex, the easiest way is to use <a class="reference external" href="https://www.mlflow.org/docs/latest/">MLflow</a>.
+In this way, some CUI commands for training and prediction are provided without installing PyTorch-BSF.
+On each training and prediction, separation of runtime environment and installation of PyTorch-BSF are automatically handled by MLflow!</p>
+<p>Assume you have installed Miniconda.
 Install <code class="docutils literal notranslate"><span class="pre">mlflow</span></code> conda package from <code class="docutils literal notranslate"><span class="pre">conda-forge</span></code> channel:</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>conda install -c conda-forge mlflow
 </pre></div>
 </div>
-<p>Now, you can fit a Bezier simplex to a dataset with the latest version:</p>
+<p>Now, you can fit a Bezier simplex to a dataset with the latest version of PyTorch-BSF:</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>mlflow run https://github.com/rafcc/pytorch-bsf <span class="se">\</span>
--P <span class="nv">data</span><span class="o">=</span>data.tsv <span class="se">\</span>
--P <span class="nv">label</span><span class="o">=</span>label.tsv <span class="se">\</span>
+-P <span class="nv">data</span><span class="o">=</span>train_data.tsv <span class="se">\</span>
+-P <span class="nv">label</span><span class="o">=</span>train_label.tsv <span class="se">\</span>
 -P <span class="nv">degree</span><span class="o">=</span><span class="m">3</span>
 </pre></div>
 </div>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>mlflow models serve &lt;run_id&gt;
+<p>You have a trained model in <code class="docutils literal notranslate"><span class="pre">mlruns</span></code> directory.</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>mlflow models predict <span class="se">\</span>
+  --model-uri file://<span class="sb">`</span><span class="nb">pwd</span><span class="sb">`</span>/mlruns/0/<span class="si">${</span><span class="nv">run_uuid</span><span class="si">}</span>/artifacts/model <span class="se">\</span>
+  --content-type csv <span class="se">\</span>
+  --input-path test_data.csv <span class="se">\</span>
+  --output-path test_label.csv
+</pre></div>
+</div>
+<p>You can serve a Web API for prediction.</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>mlflow models serve <span class="se">\</span>
+  --model-uri <span class="o">{</span>Full Path<span class="o">}</span> <span class="se">\</span>
+  --host localhost <span class="se">\</span>
+  --port <span class="m">5001</span>
 </pre></div>
 </div>
 </div>
