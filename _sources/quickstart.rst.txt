@@ -5,9 +5,9 @@ There are several ways to use PyTorch-BSF.
 
 Run as an MLflow project
 ------------------------
-The fastest way is to use MLflow projects.
+If you have data and labels in Tab-Separated Value (TSV) files for training a Bezier simplex, the easiest way is to use MLflow projects.
 Assume you have installed Miniconda.
-Install the conda package ``mlflow`` from the channel ``conda-forge``:
+Install ``mlflow`` conda package from ``conda-forge`` channel:
 
 .. code-block:: bash
 
