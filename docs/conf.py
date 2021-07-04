@@ -25,7 +25,7 @@ copyright = '2021, FUJITSU LIMITED and RIKEN'
 author = 'RIKEN AIP-FUJITSU Collaboration Center (RAFCC)'
 
 # The full version, including alpha/beta/rc tags
-release = '0.0.1'
+release = version = torch_bsf.__version__
 
 
 # -- General configuration ---------------------------------------------------
