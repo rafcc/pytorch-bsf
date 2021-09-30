@@ -396,7 +396,7 @@ def fit(
     bs = BezierSimplex(n_params=int(params.shape[1]), n_values=int(values.shape[1]), degree=degree)
     trainer = pl.Trainer(
         gpus=gpus,
-        auto_select_gpus=True,
+        auto_select_gpus=(gpus != 0),
         accelerator=accelerator,
         num_nodes=num_nodes,
         max_epochs=max_epochs,
