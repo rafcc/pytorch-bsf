@@ -25,7 +25,7 @@ copyright = '2021, FUJITSU LIMITED and RIKEN'
 author = 'RIKEN AIP-FUJITSU Collaboration Center (RAFCC)'
 
 # The full version, including alpha/beta/rc tags
-release = '0.0.1'
+release = version = torch_bsf.__version__
 
 
 # -- General configuration ---------------------------------------------------
@@ -38,17 +38,32 @@ extensions = [
     'sphinx.ext.autosummary',
     'sphinx.ext.doctest',
     'sphinx.ext.githubpages',
+    'sphinx.ext.intersphinx',
     'sphinx.ext.linkcode',
     'sphinx.ext.mathjax',
     'sphinx.ext.napoleon',
 ]
 
+# -- autodoc -----------------------------------------------------------------
+autodoc_type_aliases = {
+    'Index': 'torch_bsf.bezier_simplex.Index',
+}
+autodoc_inherit_docstrings = False
+
+# -- doctest -----------------------------------------------------------------
 # https://www.sphinx-doc.org/ja/master/usage/extensions/doctest.html#confval-doctest_global_setup
 doctest_global_setup = '''
 import torch
 import torch_bsf
 '''
 doctest_test_doctest_blocks = 'default'
+
+# -- intersphinx -------------------------------------------------------------
+intersphinx_mapping = {
+    'python': ('https://docs.python.org/3/', None),
+    'pytorch': ('https://pytorch.org/docs/stable/', None),
+    'pl': ('https://pytorch-lightning.readthedocs.io/en/latest/', None),
+}
 
 # Add any paths that contain templates here, relative to this directory.
 templates_path = ['_templates']
