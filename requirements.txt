@@ -46,7 +46,6 @@ pyDeprecate==0.3.2
 PyJWT==2.4.0
 pyparsing==3.0.9
 python-dateutil==2.8.2
-pytorch-bsf==0.0.1
 pytorch-lightning==1.7.3
 pytz==2022.2.1
 PyYAML==6.0
