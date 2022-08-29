@@ -52,10 +52,10 @@ which automatically sets up the environment and runs an experiment:
 |split_ratio|float (0.0 < x < 1.0)|`0.5`|The ratio of training data against validation data.|
 |batch_size|int (x >= 0)|`0`|The size of minibatch. The default uses all records in a single batch.|
 |max_epochs|int (x >= 1)|`1000`|The number of epochs to stop training.|
-|accelerator|`cpu`, `cuda`, `hpu`, `ipu`, `mps`, `tpu`|Accelerator to use. See [PyTorch Lightning documentation](https://pytorch-lightning.readthedocs.io/en/stable/advanced/multi_gpu.html#distributed-modes).|
+|accelerator|`cpu`, `cuda`, `hpu`, `ipu`, `mps`, `tpu`|Accelerator to use. See [PyTorch Lightning documentation](https://pytorch-lightning.readthedocs.io/en/latest/extensions/accelerator.html).|
 |devices|int (x >= -1)|`-1`|The number of accelerators to use. By default, use all available devices. See [PyTorch Lightning documentation](https://pytorch-lightning.readthedocs.io/en/latest/accelerators/gpu_basic.html).|
-|num_nodes|int (x >= 1)|`1`|The number of compute nodes to use. See [PyTorch Lightning documentation](https://pytorch-lightning.readthedocs.io/en/stable/advanced/multi_gpu.html#distributed-modes).|
-|strategy|`auto`, `dp`, `ddp`, `ddp_spawn`, etc.|`auto`|Distributed strategy. See [PyTorch Lightning documentation](https://pytorch-lightning.readthedocs.io/en/stable/advanced/multi_gpu.html#distributed-modes).|
+|num_nodes|int (x >= 1)|`1`|The number of compute nodes to use. See [PyTorch Lightning documentation](https://pytorch-lightning.readthedocs.io/en/latest/guides/speed.html).|
+|strategy|`auto`, `dp`, `ddp`, `ddp_spawn`, etc.|`auto`|Distributed strategy. See [PyTorch Lightning documentation](https://pytorch-lightning.readthedocs.io/en/latest/extensions/strategy.html).|
 |loglevel|int (0 <= x <= 2)|`2`|What objects to be logged. `0`: nothing; `1`: metrics; `2`: metrics and models.|
 
 
