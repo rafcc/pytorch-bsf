@@ -8,7 +8,7 @@ PyTorch implementation of Bezier simplex fitting.
 The Bezier simplex is a high-dimensional generalization of the Bezier curve.
 It enables us to model a complex-shaped point cloud as a parametric hyper-surface in high-dimensional spaces.
 This package provides an algorithm to fit a Bezier simplex to given data points.
-To process terabyte-scale data, this package supports distributed computing, realtime reporting of training progress, and checkpointing on top of [PyTorch Lightning](https://www.pytorchlightning.ai/) and [MLflow](https://mlflow.org/).
+To process terabyte-scale data, this package supports distributed training, realtime progress reporting, and checkpointing on top of [PyTorch Lightning](https://www.pytorchlightning.ai/) and [MLflow](https://mlflow.org/).
 
 <img src="https://rafcc.github.io/pytorch-bsf/_images/bezier-simplex.png" width="49%"><img src="https://rafcc.github.io/pytorch-bsf/_images/bezier-simplex-fitting.png" width="49%">
 
