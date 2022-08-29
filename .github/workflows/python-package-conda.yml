@@ -13,7 +13,7 @@ jobs:
     - name: Set up Python 3.9
       uses: actions/setup-python@v2
       with:
-        python-version: 3.9
+        python-version: 3.10
     - name: Add conda to system path
       run: |
         # $CONDA is an environment variable pointing to the root of the miniconda directory
@@ -57,7 +57,7 @@ jobs:
     - name: Set up Python 3.9
       uses: actions/setup-python@v2
       with:
-        python-version: 3.9
+        python-version: 3.10
     - name: Add conda to system path
       run: |
         # $CONDA is an environment variable pointing to the root of the miniconda directory
@@ -78,4 +78,4 @@ jobs:
         2
         3
         EOS
-        mlflow run https://github.com/rafcc/pytorch-bsf --version ${{github.sha}} -P data=data.tsv -P label=label.tsv -P degree=3
+        mlflow run https://github.com/rafcc/pytorch-bsf --version ${{ github.sha }} -P data=data.tsv -P label=label.tsv -P degree=3
