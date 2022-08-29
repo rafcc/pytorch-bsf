@@ -1,6 +1,5 @@
 from functools import lru_cache
 from math import factorial
-#from typing import Any, Dict, Iterable, List, Optional, Tuple, Union
 import typing
 
 import numpy as np
@@ -8,6 +7,7 @@ import pytorch_lightning as pl
 import torch
 import torch.optim
 import torch.nn as nn
+from pytorch_lightning.callbacks.early_stopping import EarlyStopping
 from torch.nn import functional as F
 from torch.utils.data import DataLoader, TensorDataset, random_split
 
@@ -39,7 +39,7 @@ class BezierSimplexDataModule(pl.LightningDataModule):
         data: str,
         label: str,
         header: int = 0,
-        delimiter: str = " ",
+        delimiter: typing.Optional[str] = None,
         batch_size: typing.Optional[int] = None,
         split_ratio: float = 0.5,
         normalize: str = "none",  # "max", "std", "quantile" or "none"
@@ -217,8 +217,6 @@ class BezierSimplex(pl.LightningModule):
     ...     degree=3,
     ... )
     >>> trainer = pl.Trainer(
-    ...     gpus=0,
-    ...     max_epochs=10,
     ...     callbacks=[EarlyStopping(monitor="val_mse")],
     ... )
     >>> trainer.fit(bs, dl)
@@ -326,10 +324,11 @@ def fit(
     values: torch.Tensor,
     degree: int,
     batch_size: typing.Optional[int]=None,
-    max_epochs: int=1000,
-    gpus: typing.Union[str, int, typing.List[int]]=-1,
-    num_nodes: int=1,
-    accelerator: str="ddp",
+    max_epochs: typing.Optional[int]=None,
+    accelerator: typing.Optional[str]=None,
+    devices: typing.Union[str, int, typing.List[int], None]=None,
+    num_nodes: typing.Optional[int]=None,
+    strategy: typing.Optional[str]=None,
 ) -> BezierSimplex:
     """Fits a Bezier simplex.
     
@@ -345,12 +344,14 @@ def fit(
         The size of minibatch.
     max_epochs
         The number of epochs to stop training.
-    gpus
-        The number of gpus.
-    num_nodes
-        The number of compute nodes.
     accelerator
-        Distributed mode.
+        The type of accelerators to use.
+    devices
+        The number of accelerator devices to use.
+    num_nodes
+        The number of compute nodes to use.
+    strategy
+        Distributed computing strategy.
     
     Returns
     -------
@@ -394,11 +395,13 @@ def fit(
     dl = DataLoader(data, batch_size=batch_size or len(data))
     bs = BezierSimplex(n_params=int(params.shape[1]), n_values=int(values.shape[1]), degree=degree)
     trainer = pl.Trainer(
-        gpus=gpus,
-        auto_select_gpus=(gpus != 0),
         accelerator=accelerator,
+        devices=devices,
+        auto_select_gpus=True,
         num_nodes=num_nodes,
+        strategy=strategy,
         max_epochs=max_epochs,
+        callbacks=[EarlyStopping(monitor="val_mse")],
     )
     trainer.fit(bs, dl)
     return bs
