@@ -5,11 +5,12 @@
 
 PyTorch implementation of Bezier simplex fitting.
 
-<img src="./docs/_static/bezier-simplex.png" width="49%"><img src="./docs/_static/bezier-simplex-fitting.png" width="49%">
-
 The Bezier simplex is a high-dimensional generalization of the Bezier curve.
-Mathematically, it is a polynomial map from a simplex to a Euclidean space determined by a set of vectors called the control points.
+It enables us to model a complex-shaped point cloud as a parametric hyper-surface in high-dimensional spaces.
 This package provides an algorithm to fit a Bezier simplex to given data points.
+To process terabyte-scale data, this package supports distributed computing, realtime reporting of training progress, and checkpointing on top of [PyTorch Lightning](https://www.pytorchlightning.ai/) and [MLflow](https://mlflow.org/).
+
+<img src="https://rafcc.github.io/pytorch-bsf/_images/bezier-simplex.png" width="49%"><img src="https://rafcc.github.io/pytorch-bsf/_images/bezier-simplex-fitting.png" width="49%">
 
 See the following papers for technical details.
 - Kobayashi, K., Hamada, N., Sannai, A., Tanaka, A., Bannai, K., & Sugiyama, M. (2019). Bézier Simplex Fitting: Describing Pareto Fronts of´ Simplicial Problems with Small Samples in Multi-Objective Optimization. Proceedings of the AAAI Conference on Artificial Intelligence, 33(01), 2304-2313. https://doi.org/10.1609/aaai.v33i01.33012304
@@ -45,18 +46,18 @@ which automatically sets up the environment and runs an experiment:
 |-|-|-|-|
 |data|path|required|The data file. The file should contain a numerical matrix in the TSV format: each row represents a record that consists of features separated by Tabs or spaces.|
 |label|path|required|The label file. The file should contain a numerical matrix in the TSV format: each row represents a record that consists of outcomes separated by Tabs or spaces.|
-|degree|int (x >= 1)|required|The degree of the Bezier simplex.|
-|header|int (x >= 0)|`0`|The number of header lines in data/label files.|
+|degree|int $(x \ge 1)$|required|The degree of the Bezier simplex.|
+|header|int $(x \ge 0)$|`0`|The number of header lines in data/label files.|
 |delimiter|str|`" "`|The delimiter of values in data/label files.|
-|normalize|`"max"`, `"std"`, `"quantile"`|`None`|The data normalization: `max` scales each feature as the minimum is 0 and the maximum is 1, suitable for uniformly distributed data; `std` does as the mean is 0 and the standard deviation is 1, suitable for nonuniformly distributed data; `quantile` does as 5%-quantile is 0 and 95%-quantile is 1, suitable for data containing outliers; `None` does not perform any scaling, suitable for pre-normalized data.|
-|split_ratio|float (0.0 < x < 1.0)|`0.5`|The ratio of training data against validation data.|
-|batch_size|int (x >= 0)|`0`|The size of minibatch. The default uses all records in a single batch.|
-|max_epochs|int (x >= 1)|`1000`|The number of epochs to stop training.|
+|normalize|`"max"`, `"std"`, `"quantile"`|`None`|The data normalization: `"max"` scales each feature as the minimum is 0 and the maximum is 1, suitable for uniformly distributed data; `"std"` does as the mean is 0 and the standard deviation is 1, suitable for nonuniformly distributed data; `"quantile"` does as 5%-quantile is 0 and 95%-quantile is 1, suitable for data containing outliers; `None` does not perform any scaling, suitable for pre-normalized data.|
+|split_ratio|float $(0 < x < 1)$|`0.5`|The ratio of training data against validation data.|
+|batch_size|int $(x \ge 0)$|`0`|The size of minibatch. The default uses all records in a single batch.|
+|max_epochs|int $(x \ge 1)$|`1000`|The number of epochs to stop training.|
 |accelerator|`"auto"`, `"cpu"`, `"gpu"`, etc.|`"auto"`|Accelerator to use. See [PyTorch Lightning documentation](https://pytorch-lightning.readthedocs.io/en/latest/extensions/accelerator.html).|
-|devices|int (x >= -1)|`None`|The number of accelerators to use. By default, use all available devices. See [PyTorch Lightning documentation](https://pytorch-lightning.readthedocs.io/en/latest/accelerators/gpu_basic.html).|
-|num_nodes|int (x >= 1)|`1`|The number of compute nodes to use. See [PyTorch Lightning documentation](https://pytorch-lightning.readthedocs.io/en/latest/guides/speed.html).|
+|devices|int $(x \ge -1)$|`None`|The number of accelerators to use. By default, use all available devices. See [PyTorch Lightning documentation](https://pytorch-lightning.readthedocs.io/en/latest/accelerators/gpu_basic.html).|
+|num_nodes|int $(x \ge 1)$|`1`|The number of compute nodes to use. See [PyTorch Lightning documentation](https://pytorch-lightning.readthedocs.io/en/latest/guides/speed.html).|
 |strategy|`"dp"`, `"ddp"`, `"ddp_spawn"`, etc.|`None`|Distributed strategy. See [PyTorch Lightning documentation](https://pytorch-lightning.readthedocs.io/en/latest/extensions/strategy.html).|
-|loglevel|int (0 <= x <= 2)|`2`|What objects to be logged. `0`: nothing; `1`: metrics; `2`: metrics and models.|
+|loglevel|int $(0 \le x \le 2)$|`2`|What objects to be logged. `0`: nothing; `1`: metrics; `2`: metrics and models.|
 
 
 ## Installation
