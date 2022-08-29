@@ -113,3 +113,8 @@ dmypy.json
 
 # Pyre type checker
 .pyre/
+
+# PyTorch Lightning
+lightning_logs/
+mlruns/
+*,meshgrid,*.csv

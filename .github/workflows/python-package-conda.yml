@@ -10,10 +10,10 @@ jobs:
 
     steps:
     - uses: actions/checkout@v2
-    - name: Set up Python 3.9
+    - name: Set up Python 3.10
       uses: actions/setup-python@v2
       with:
-        python-version: 3.9
+        python-version: "3.10"
     - name: Add conda to system path
       run: |
         # $CONDA is an environment variable pointing to the root of the miniconda directory
@@ -45,7 +45,7 @@ jobs:
         2
         3
         EOS
-        python -m torch_bsf --data=data.tsv --label=label.tsv --degree=3 --gpus=0
+        python -m torch_bsf --data=data.tsv --label=label.tsv --degree=3
 
   build-mlflow:
     runs-on: ubuntu-latest
@@ -54,10 +54,10 @@ jobs:
 
     steps:
     - uses: actions/checkout@v2
-    - name: Set up Python 3.9
+    - name: Set up Python 3.10
       uses: actions/setup-python@v2
       with:
-        python-version: 3.9
+        python-version: "3.10"
     - name: Add conda to system path
       run: |
         # $CONDA is an environment variable pointing to the root of the miniconda directory
@@ -78,4 +78,4 @@ jobs:
         2
         3
         EOS
-        mlflow run https://github.com/rafcc/pytorch-bsf -P data=data.tsv -P label=label.tsv -P degree=3 -P gpus=0
+        mlflow run https://github.com/rafcc/pytorch-bsf --version ${{ github.sha }} -P data=data.tsv -P label=label.tsv -P degree=3
