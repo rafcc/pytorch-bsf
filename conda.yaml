@@ -8,6 +8,6 @@ dependencies:
 - cudatoolkit=10.2
 - pytorch=1.12.1
 - pytorch-lightning=1.7.3
-- torchmetrics=0.6.0
+- torchmetrics=0.7.0
 - torchvision=0.13.1  # only used for mlflow
 - mlflow=1.28.0
