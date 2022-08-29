@@ -58,7 +58,7 @@ class BezierSimplexDataModule(pl.LightningDataModule):
         with open(self.label) as f:
             self.n_values = len(f.readline().split(self.delimiter))
 
-    def setup(self, stage: typing.Optional[str]=None):
+    def setup(self, stage: typing.Optional[str] = None):
         # OPTIONAL
         params = torch.from_numpy(
             np.loadtxt(self.data, delimiter=self.delimiter, skiprows=self.header)
@@ -96,7 +96,7 @@ class BezierSimplexDataModule(pl.LightningDataModule):
             batch_size=self.batch_size or len(self.trainset),
         )
         return train_loader
-        
+
     def val_dataloader(self) -> DataLoader:
         # OPTIONAL
         val_loader = DataLoader(
@@ -104,7 +104,7 @@ class BezierSimplexDataModule(pl.LightningDataModule):
             batch_size=self.batch_size or len(self.valset),
         )
         return val_loader
-        
+
     def test_dataloader(self) -> DataLoader:
         # OPTIONAL
         return self.val_dataloader()
@@ -170,7 +170,7 @@ def monomial(var: typing.Iterable[float], deg: typing.Iterable[int]) -> torch.Te
         The bases :math:`\mathbf t`.
     deg
         The powers :math:`\mathbf d`.
-    
+
     Returns
     -------
     The monomial :math:`\mathbf t^{\mathbf d}`.
@@ -192,7 +192,7 @@ class BezierSimplex(pl.LightningModule):
         The number of values.
     degree
         The degree of the Bezier simplex.
-    
+
     Examples
     --------
     >>> ts = torch.tensor(  # parameters on a simplex
@@ -248,7 +248,7 @@ class BezierSimplex(pl.LightningModule):
 
         Returns
         -------
-        A minibatch of value vectors. 
+        A minibatch of value vectors.
 
         """
         # REQUIRED
@@ -265,7 +265,7 @@ class BezierSimplex(pl.LightningModule):
         tensorboard_logs = {'train_loss': loss}
         self.log("train_mse", loss, sync_dist=True)
         return {'loss': loss, 'log': tensorboard_logs}
- 
+
     def validation_step(self, batch, batch_idx) -> typing.Dict[str, typing.Any]:
         # OPTIONAL
         x, y = batch
@@ -275,14 +275,14 @@ class BezierSimplex(pl.LightningModule):
         self.log("val_mse", mse, sync_dist=True)
         self.log("val_mae", mae, sync_dist=True)
         return {'val_loss': mse}
- 
+
     def validation_end(self, outputs) -> typing.Dict[str, typing.Any]:
         # OPTIONAL
         avg_loss = torch.stack([x['val_loss'] for x in outputs]).mean()
         tensorboard_logs = {'val_loss': avg_loss}
         self.log("val_avg_mse", avg_loss, sync_dist=True)
         return {'avg_val_loss': avg_loss, 'log': tensorboard_logs}
- 
+
     def test_step(self, batch, batch_idx) -> typing.Dict[str, typing.Any]:
         # OPTIONAL
         x, y = batch
@@ -297,7 +297,7 @@ class BezierSimplex(pl.LightningModule):
         # REQUIRED
         optimizer = torch.optim.LBFGS(self.parameters())
         return optimizer
- 
+
     def meshgrid(self, num: int = 100) -> typing.Tuple[torch.Tensor, torch.Tensor]:
         """Computes a meshgrid of the Bezier simplex.
 
@@ -323,15 +323,15 @@ def fit(
     params: torch.Tensor,
     values: torch.Tensor,
     degree: int,
-    batch_size: typing.Optional[int]=None,
-    max_epochs: typing.Optional[int]=None,
-    accelerator: typing.Optional[str]=None,
-    devices: typing.Union[str, int, typing.List[int], None]=None,
-    num_nodes: typing.Optional[int]=None,
-    strategy: typing.Optional[str]=None,
+    batch_size: typing.Optional[int] = None,
+    max_epochs: typing.Optional[int] = None,
+    accelerator: typing.Optional[str] = None,
+    devices: typing.Union[str, int, typing.List[int], None] = None,
+    num_nodes: typing.Optional[int] = None,
+    strategy: typing.Optional[str] = None,
 ) -> BezierSimplex:
     """Fits a Bezier simplex.
-    
+
     Parameters
     ----------
     params
@@ -352,11 +352,11 @@ def fit(
         The number of compute nodes to use.
     strategy
         Distributed computing strategy.
-    
+
     Returns
     -------
     A trained Bezier simplex.
-    
+
     Examples
     --------
     >>> import torch

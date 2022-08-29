@@ -26,13 +26,13 @@ parser.add_argument("--loglevel", type=int, default=2)  # 0: nothing, 1: metrics
 args = parser.parse_args()
 
 autolog(
-    log_input_examples = args.loglevel >= 2,
-    log_model_signatures = args.loglevel >= 2,
-    log_models = args.loglevel >= 2,
-    disable = args.loglevel <= 0,
-    exclusive = False,
-    disable_for_unsupported_versions = False,
-    silent = args.loglevel <= 0,
+    log_input_examples=(args.loglevel >= 2),
+    log_model_signatures=(args.loglevel >= 2),
+    log_models=(args.loglevel >= 2),
+    disable=(args.loglevel <= 0),
+    exclusive=False,
+    disable_for_unsupported_versions=False,
+    silent=(args.loglevel <= 0),
 )
 
 dm = BezierSimplexDataModule(
