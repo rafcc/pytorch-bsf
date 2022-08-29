@@ -12,9 +12,10 @@ entry_points:
       split_ratio: {type: float, default: 0.5}
       batch_size: {type: int, default: 0}
       max_epochs: {type: int, default: 1000}
-      gpus: {type: int, default: -1}
+      accelerator: {type: string, default: auto}
+      devices: {type: int, default: 1}
       num_nodes: {type: int, default: 1}
-      accelerator: {type: string, default: ddp}
+      strategy: {type: string, default: auto}
       loglevel: {type: int, default: 2}
     command: >
       python -m torch_bsf
@@ -27,7 +28,8 @@ entry_points:
       --split_ratio={split_ratio}
       --batch_size={batch_size}
       --max_epochs={max_epochs}
-      --gpus={gpus}
-      --num_nodes={num_nodes}
       --accelerator={accelerator}
+      --devices={devices}
+      --num_nodes={num_nodes}
+      --strategy={strategy}
       --loglevel={loglevel}
