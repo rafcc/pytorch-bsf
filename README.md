@@ -22,7 +22,7 @@ See the following papers for technical details.
 Python 3.8, 3.9, 3.10.
 
 
-## Installation-free Execution
+## Quickstart
 
 Download the latest [Miniconda](https://docs.conda.io/en/latest/miniconda.html) and install it.
 Then, install MLflow on your conda environment:
