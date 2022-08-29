@@ -382,7 +382,7 @@ def fit(
 
     Train a model
 
-    >>> bs = torch_bsf.fit(params=ts, values=xs, degree=3, max_epochs=100)
+    >>> bs = torch_bsf.fit(params=ts, values=xs, degree=3)
 
     Predict by the trained model
 
@@ -401,7 +401,7 @@ def fit(
         num_nodes=num_nodes,
         strategy=strategy,
         max_epochs=max_epochs,
-        callbacks=[EarlyStopping(monitor="val_mse")],
+        callbacks=[EarlyStopping(monitor="train_mse")],
     )
     trainer.fit(bs, dl)
     return bs
