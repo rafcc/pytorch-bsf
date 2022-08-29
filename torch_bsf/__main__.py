@@ -13,25 +13,26 @@ parser.add_argument("--data", type=str, required=True)
 parser.add_argument("--label", type=str, required=True)
 parser.add_argument("--degree", type=int, required=True)
 parser.add_argument("--header", type=int, default=0)
-parser.add_argument("--delimiter", type=str, default=" ")
+parser.add_argument("--delimiter", type=str)
 parser.add_argument("--normalize", type=str, default="none")
 parser.add_argument("--split_ratio", type=float, default=0.5)
 parser.add_argument("--batch_size", type=int)
-parser.add_argument("--max_epochs", type=int, default=1000)
-parser.add_argument("--gpus", type=int, default=-1)
-parser.add_argument("--num_nodes", type=int, default=1)
-parser.add_argument("--accelerator", type=str, default="ddp")
+parser.add_argument("--max_epochs", type=int)
+parser.add_argument("--accelerator", type=str)
+parser.add_argument("--devices", type=int)
+parser.add_argument("--num_nodes", type=int)
+parser.add_argument("--strategy", type=str)
 parser.add_argument("--loglevel", type=int, default=2)  # 0: nothing, 1: metrics, 2: metrics & models
 args = parser.parse_args()
 
 autolog(
-    log_input_examples = args.loglevel >= 2,
-    log_model_signatures = args.loglevel >= 2,
-    log_models = args.loglevel >= 2,
-    disable = args.loglevel <= 0,
-    exclusive = False,
-    disable_for_unsupported_versions = False,
-    silent = args.loglevel <= 0,
+    log_input_examples=(args.loglevel >= 2),
+    log_model_signatures=(args.loglevel >= 2),
+    log_models=(args.loglevel >= 2),
+    disable=(args.loglevel <= 0),
+    exclusive=False,
+    disable_for_unsupported_versions=False,
+    silent=(args.loglevel <= 0),
 )
 
 dm = BezierSimplexDataModule(
@@ -50,9 +51,10 @@ bs = BezierSimplex(
 )
 
 trainer = pl.Trainer(
-    gpus=args.gpus,
-    auto_select_gpus=(args.gpus != 0),
     accelerator=args.accelerator,
+    devices=args.devices,
+    auto_select_gpus=True,
+    strategy=args.strategy,
     num_nodes=args.num_nodes,
     max_epochs=args.max_epochs,
     callbacks=[EarlyStopping(monitor="val_mse")],
