@@ -18,7 +18,7 @@ See the following papers for technical details.
 
 ## Requirements
 
-Python 3.8 or above.
+Python 3.8, 3.9, 3.10.
 
 
 ## Installation-free Execution
@@ -47,15 +47,15 @@ which automatically sets up the environment and runs an experiment:
 |label|path|required|The label file. The file should contain a numerical matrix in the TSV format: each row represents a record that consists of outcomes separated by Tabs or spaces.|
 |degree|int (x >= 1)|required|The degree of the Bezier simplex.|
 |header|int (x >= 0)|`0`|The number of header lines in data/label files.|
-|delimiter|str|` `|The delimiter of values in data/label files.|
-|normalize|`max`, `std`, `quantile`, `none`|`none`|The data normalization: `max` scales each feature as the minimum is 0 and the maximum is 1, suitable for uniformly distributed data; `std` does as the mean is 0 and the standard deviation is 1, suitable for nonuniformly distributed data; `quantile` does as 5%-quantile is 0 and 95%-quantile is 1, suitable for data containing outliers; `none` does not perform any scaling, suitable for pre-normalized data.|
+|delimiter|str|`" "`|The delimiter of values in data/label files.|
+|normalize|`"max"`, `"std"`, `"quantile"`|`None`|The data normalization: `max` scales each feature as the minimum is 0 and the maximum is 1, suitable for uniformly distributed data; `std` does as the mean is 0 and the standard deviation is 1, suitable for nonuniformly distributed data; `quantile` does as 5%-quantile is 0 and 95%-quantile is 1, suitable for data containing outliers; `None` does not perform any scaling, suitable for pre-normalized data.|
 |split_ratio|float (0.0 < x < 1.0)|`0.5`|The ratio of training data against validation data.|
 |batch_size|int (x >= 0)|`0`|The size of minibatch. The default uses all records in a single batch.|
 |max_epochs|int (x >= 1)|`1000`|The number of epochs to stop training.|
-|accelerator|`auto`, `cpu`, `cuda`, `gpu`, `hpu`, `ipu`, `mps`, `tpu`|`auto`|Accelerator to use. See [PyTorch Lightning documentation](https://pytorch-lightning.readthedocs.io/en/latest/extensions/accelerator.html).|
-|devices|int (x >= -1)|`-1`|The number of accelerators to use. By default, use all available devices. See [PyTorch Lightning documentation](https://pytorch-lightning.readthedocs.io/en/latest/accelerators/gpu_basic.html).|
+|accelerator|`"auto"`, `"cpu"`, `"gpu"`, etc.|`"auto"`|Accelerator to use. See [PyTorch Lightning documentation](https://pytorch-lightning.readthedocs.io/en/latest/extensions/accelerator.html).|
+|devices|int (x >= -1)|`None`|The number of accelerators to use. By default, use all available devices. See [PyTorch Lightning documentation](https://pytorch-lightning.readthedocs.io/en/latest/accelerators/gpu_basic.html).|
 |num_nodes|int (x >= 1)|`1`|The number of compute nodes to use. See [PyTorch Lightning documentation](https://pytorch-lightning.readthedocs.io/en/latest/guides/speed.html).|
-|strategy|`auto`, `dp`, `ddp`, `ddp_spawn`, etc.|`auto`|Distributed strategy. See [PyTorch Lightning documentation](https://pytorch-lightning.readthedocs.io/en/latest/extensions/strategy.html).|
+|strategy|`"dp"`, `"ddp"`, `"ddp_spawn"`, etc.|`None`|Distributed strategy. See [PyTorch Lightning documentation](https://pytorch-lightning.readthedocs.io/en/latest/extensions/strategy.html).|
 |loglevel|int (0 <= x <= 2)|`2`|What objects to be logged. `0`: nothing; `1`: metrics; `2`: metrics and models.|
 
 
