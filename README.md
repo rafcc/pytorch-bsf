@@ -1,7 +1,9 @@
 # pytorch-bsf
-![pipy](https://github.com/rafcc/pytorch-bsf/actions/workflows/python-package.yml/badge.svg)
-![conda](https://github.com/rafcc/pytorch-bsf/actions/workflows/python-package-conda.yml/badge.svg)
-![documents](https://github.com/rafcc/pytorch-bsf/actions/workflows/sphinx-pages.yml/badge.svg)
+[![CodeQL](https://github.com/rafcc/pytorch-bsf/actions/workflows/codeql-analysis.yml/badge.svg)](https://github.com/rafcc/pytorch-bsf/actions/workflows/codeql-analysis.yml)
+[![PyTest](https://github.com/rafcc/pytorch-bsf/actions/workflows/python-package.yml/badge.svg)](https://github.com/rafcc/pytorch-bsf/actions/workflows/python-package.yml)
+[![PyPI](https://github.com/rafcc/pytorch-bsf/actions/workflows/python-publish.yml/badge.svg)](https://github.com/rafcc/pytorch-bsf/actions/workflows/python-publish.yml)
+[![Conda](https://github.com/rafcc/pytorch-bsf/actions/workflows/python-package-conda.yml/badge.svg)](https://github.com/rafcc/pytorch-bsf/actions/workflows/python-package-conda.yml)
+[![GHPages](https://github.com/rafcc/pytorch-bsf/actions/workflows/sphinx-pages.yml/badge.svg)](https://github.com/rafcc/pytorch-bsf/actions/workflows/sphinx-pages.yml)
 
 PyTorch implementation of Bezier simplex fitting.
 
@@ -19,7 +21,7 @@ See the following papers for technical details.
 
 ## Requirements
 
-Python 3.8, 3.9, 3.10.
+Python >=3.8, <3.11.
 
 
 ## Quickstart
@@ -27,7 +29,7 @@ Python 3.8, 3.9, 3.10.
 Download the latest [Miniconda](https://docs.conda.io/en/latest/miniconda.html) and install it.
 Then, install MLflow on your conda environment:
 ```
-conda install mlflow
+conda install -c conda-forge mlflow
 ```
 
 Run the following command:
