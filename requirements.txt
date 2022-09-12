@@ -65,7 +65,7 @@ tensorboard-plugin-wit==1.8.1
 torch==1.12.1
 torchmetrics==0.9.3
 torchvision==0.13.1
-tqdm==4.64.0
+tqdm==4.64.1
 typing-extensions==4.3.0
 urllib3==1.26.12
 websocket-client==1.4.1
