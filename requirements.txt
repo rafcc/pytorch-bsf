@@ -46,7 +46,7 @@ pyDeprecate==0.3.2
 PyJWT==2.4.0
 pyparsing==3.0.9
 python-dateutil==2.8.2
-pytorch-lightning==1.7.4
+pytorch-lightning==1.7.5
 pytz==2022.2.1
 PyYAML==6.0
 querystring-parser==1.2.4
@@ -68,7 +68,7 @@ torchvision==0.13.1
 tqdm==4.64.0
 typing-extensions==4.3.0
 urllib3==1.26.12
-websocket-client==1.4.0
+websocket-client==1.4.1
 Werkzeug==2.2.2
 yarl==1.8.1
 zipp==3.8.1
