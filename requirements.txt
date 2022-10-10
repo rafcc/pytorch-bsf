@@ -59,11 +59,11 @@ smmap==5.0.0
 SQLAlchemy==1.4.41
 sqlparse==0.4.3
 tabulate==0.8.10
-tensorboard==2.10.0
+tensorboard==2.10.1
 tensorboard-data-server==0.6.1
 tensorboard-plugin-wit==1.8.1
 torch==1.12.1
-torchmetrics==0.9.3
+torchmetrics==0.10.0
 torchvision==0.13.1
 tqdm==4.64.1
 typing-extensions==4.3.0
