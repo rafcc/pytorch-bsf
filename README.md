@@ -32,6 +32,24 @@ Then, install MLflow on your conda environment:
 conda install -c conda-forge mlflow
 ```
 
+Prepare data:
+```
+cat <<EOS > data.tsv
+1 0
+0.75 0.25
+0.5 0.5
+0.25 0.75
+0 1
+EOS
+cat <<EOS > label.tsv
+0 1
+3 2
+4 5
+7 6
+8 9
+EOS
+```
+
 Run the following command:
 ```
 mlflow run https://github.com/rafcc/pytorch-bsf \
