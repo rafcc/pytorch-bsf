@@ -69,6 +69,6 @@ tqdm==4.64.1
 typing-extensions==4.3.0
 urllib3==1.26.12
 websocket-client==1.4.1
-Werkzeug==2.2.2
+Werkzeug==2.2.3
 yarl==1.8.2
 zipp==3.8.1
