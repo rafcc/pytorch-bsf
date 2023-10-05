@@ -30,7 +30,7 @@ Jinja2==3.1.2
 Mako==1.2.3
 Markdown==3.4.1
 MarkupSafe==2.1.1
-mlflow==2.5.0
+mlflow==2.6.0
 multidict==6.0.2
 numpy==1.23.3
 oauthlib==3.2.2
