@@ -1,5 +1,5 @@
 name: pytorch-bsf
-conda_env: conda.yaml
+conda_env: environment.yml
 entry_points:
   main:
     parameters:
