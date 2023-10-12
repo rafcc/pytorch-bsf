@@ -21,7 +21,7 @@ See the following papers for technical details.
 
 ## Requirements
 
-Python >=3.8, <3.11.
+Python >=3.8, <3.12.
 
 
 ## Quickstart
@@ -74,9 +74,10 @@ which automatically sets up the environment and runs an experiment:
 |batch_size|int $(x \ge 0)$|`0`|The size of minibatch. The default uses all records in a single batch.|
 |max_epochs|int $(x \ge 1)$|`1000`|The number of epochs to stop training.|
 |accelerator|`"auto"`, `"cpu"`, `"gpu"`, etc.|`"auto"`|Accelerator to use. See [PyTorch Lightning documentation](https://pytorch-lightning.readthedocs.io/en/latest/extensions/accelerator.html).|
-|devices|int $(x \ge -1)$|`None`|The number of accelerators to use. By default, use all available devices. See [PyTorch Lightning documentation](https://pytorch-lightning.readthedocs.io/en/latest/accelerators/gpu_basic.html).|
+|strategy|`"auto"`, `"dp"`, `"ddp"`, etc.|`"auto"`|Distributed strategy. See [PyTorch Lightning documentation](https://pytorch-lightning.readthedocs.io/en/latest/extensions/strategy.html).|
+|devices|int $(x \ge -1)$|`"auto"`|The number of accelerators to use. By default, use all available devices. See [PyTorch Lightning documentation](https://pytorch-lightning.readthedocs.io/en/latest/accelerators/gpu_basic.html).|
 |num_nodes|int $(x \ge 1)$|`1`|The number of compute nodes to use. See [PyTorch Lightning documentation](https://pytorch-lightning.readthedocs.io/en/latest/guides/speed.html).|
-|strategy|`"dp"`, `"ddp"`, `"ddp_spawn"`, etc.|`None`|Distributed strategy. See [PyTorch Lightning documentation](https://pytorch-lightning.readthedocs.io/en/latest/extensions/strategy.html).|
+|precision|`"64"`, `"32"`, `"16"`, `"bf16"`|`"32"`|The precision of floating point numbers.|
 |loglevel|int $(0 \le x \le 2)$|`2`|What objects to be logged. `0`: nothing; `1`: metrics; `2`: metrics and models.|
 
 
