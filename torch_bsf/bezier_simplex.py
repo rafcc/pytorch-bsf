@@ -34,6 +34,7 @@ class BezierSimplexDataModule(pl.LightningDataModule):
         Either ``"max"``, ``"std"``, ``"quantile"``, or ``"none"``.
 
     """
+
     def __init__(
         self,
         data: str,
@@ -129,12 +130,13 @@ def indices(dim: int, deg: int) -> typing.Iterable[Index]:
     The indices.
 
     """
+
     def iterate(c, r):
         if len(c) == dim - 1:
-            yield c + (r, )
+            yield c + (r,)
         else:
             for i in range(r, -1, -1):
-                yield from iterate(c + (i, ), r - i)
+                yield from iterate(c + (i,), r - i)
 
     yield from iterate((), deg)
 
@@ -178,7 +180,7 @@ def monomial(var: typing.Iterable[float], deg: typing.Iterable[int]) -> torch.Te
     """
     var = torch.as_tensor(var)
     deg = torch.as_tensor(deg, device=var.device)
-    return (var ** deg).prod(dim=-1)
+    return (var**deg).prod(dim=-1)
 
 
 class BezierSimplex(pl.LightningModule):
@@ -223,6 +225,7 @@ class BezierSimplex(pl.LightningModule):
     >>> ts, xs = bs.meshgrid()
 
     """
+
     def __init__(
         self,
         n_params: int,
@@ -234,9 +237,12 @@ class BezierSimplex(pl.LightningModule):
         self.n_params = n_params
         self.n_values = n_values
         self.degree = degree
-        self.control_points = nn.ParameterDict({
-            str(i): nn.Parameter(torch.randn(n_values)) for i in indices(n_params, degree)
-        })
+        self.control_points = nn.ParameterDict(
+            {
+                str(i): nn.Parameter(torch.randn(n_values))
+                for i in indices(n_params, degree)
+            }
+        )
 
     def forward(self, t: torch.Tensor) -> torch.Tensor:
         """Process a forwarding step of training.
@@ -254,7 +260,9 @@ class BezierSimplex(pl.LightningModule):
         # REQUIRED
         x = 0
         for i in indices(self.n_params, self.degree):
-            x += polynom(self.degree, i) * torch.outer(monomial(t, i), self.control_points[str(i)])
+            x += polynom(self.degree, i) * torch.outer(
+                monomial(t, i), self.control_points[str(i)]
+            )
         return x
 
     def training_step(self, batch, batch_idx) -> typing.Dict[str, typing.Any]:
@@ -262,9 +270,9 @@ class BezierSimplex(pl.LightningModule):
         x, y = batch
         y_hat = self.forward(x)
         loss = F.mse_loss(y_hat, y)
-        tensorboard_logs = {'train_loss': loss}
+        tensorboard_logs = {"train_loss": loss}
         self.log("train_mse", loss, sync_dist=True)
-        return {'loss': loss, 'log': tensorboard_logs}
+        return {"loss": loss, "log": tensorboard_logs}
 
     def validation_step(self, batch, batch_idx) -> typing.Dict[str, typing.Any]:
         # OPTIONAL
@@ -274,14 +282,14 @@ class BezierSimplex(pl.LightningModule):
         mae = F.l1_loss(y_hat, y)
         self.log("val_mse", mse, sync_dist=True)
         self.log("val_mae", mae, sync_dist=True)
-        return {'val_loss': mse}
+        return {"val_loss": mse}
 
     def validation_end(self, outputs) -> typing.Dict[str, typing.Any]:
         # OPTIONAL
-        avg_loss = torch.stack([x['val_loss'] for x in outputs]).mean()
-        tensorboard_logs = {'val_loss': avg_loss}
+        avg_loss = torch.stack([x["val_loss"] for x in outputs]).mean()
+        tensorboard_logs = {"val_loss": avg_loss}
         self.log("val_avg_mse", avg_loss, sync_dist=True)
-        return {'avg_val_loss': avg_loss, 'log': tensorboard_logs}
+        return {"avg_val_loss": avg_loss, "log": tensorboard_logs}
 
     def test_step(self, batch, batch_idx) -> typing.Dict[str, typing.Any]:
         # OPTIONAL
@@ -291,7 +299,7 @@ class BezierSimplex(pl.LightningModule):
         mae = F.l1_loss(y_hat, y)
         self.log("test_mse", mse, sync_dist=True)
         self.log("test_mae", mae, sync_dist=True)
-        return {'test_loss': mse}
+        return {"test_loss": mse}
 
     def configure_optimizers(self) -> torch.optim.Optimizer:
         # REQUIRED
@@ -393,7 +401,9 @@ def fit(
     """
     data = TensorDataset(params, values)
     dl = DataLoader(data, batch_size=batch_size or len(data))
-    bs = BezierSimplex(n_params=int(params.shape[1]), n_values=int(values.shape[1]), degree=degree)
+    bs = BezierSimplex(
+        n_params=int(params.shape[1]), n_values=int(values.shape[1]), degree=degree
+    )
     trainer = pl.Trainer(
         accelerator=accelerator,
         devices=devices,
