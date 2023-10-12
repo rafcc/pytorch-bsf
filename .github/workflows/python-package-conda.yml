@@ -18,6 +18,8 @@ jobs:
       run: |
         # $CONDA is an environment variable pointing to the root of the miniconda directory
         echo $CONDA/bin >> $GITHUB_PATH
+        conda install --rev 0  # this will revert your environment to its default state, removing all dependencies installed there
+        conda update conda # This will install the latest conda
         conda info
     - name: Install dependencies
       run: |
@@ -62,6 +64,8 @@ jobs:
       run: |
         # $CONDA is an environment variable pointing to the root of the miniconda directory
         echo $CONDA/bin >> $GITHUB_PATH
+        conda install --rev 0  # this will revert your environment to its default state, removing all dependencies installed there
+        conda update conda # This will install the latest conda
         conda info
     - name: Install dependencies
       run: |
