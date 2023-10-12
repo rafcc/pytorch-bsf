@@ -1,4 +1,5 @@
 import os
+import typing
 from argparse import ArgumentParser
 
 import pytorch_lightning as pl
@@ -8,10 +9,23 @@ from pytorch_lightning.callbacks.early_stopping import EarlyStopping
 from torch_bsf import BezierSimplex, BezierSimplexDataModule
 
 
-def int_or_str(val: str):
+def int_or_str(val: str) -> typing.Union[int, str]:
+    """Try to convert a given string to int.
+    Return the int value if the conversion is succeeded; the original string otherwise.
+
+    Parameter
+    ---------
+    val
+        The value to try to convert into int.
+
+    Return
+    ------
+    typing.Union[int, str]
+        The converted integer or the original value.
+    """
     try:
         return int(val)
-    except:
+    except ValueError:
         return val
 
 

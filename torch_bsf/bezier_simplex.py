@@ -333,10 +333,10 @@ def fit(
     degree: int,
     batch_size: typing.Optional[int] = None,
     max_epochs: typing.Optional[int] = None,
-    accelerator: typing.Optional[str] = None,
-    devices: typing.Union[str, int, typing.List[int], None] = None,
+    accelerator: typing.Union[str, pl.accelerators.Accelerator] = "auto",
+    strategy: typing.Union[str, pl.strategies.Strategy] = "auto",
+    devices: typing.Union[typing.List[int], str, int] = "auto",
     num_nodes: typing.Optional[int] = None,
-    strategy: typing.Optional[str] = None,
 ) -> BezierSimplex:
     """Fits a Bezier simplex.
 
@@ -354,12 +354,12 @@ def fit(
         The number of epochs to stop training.
     accelerator
         The type of accelerators to use.
+    strategy
+        Distributed computing strategy.
     devices
         The number of accelerator devices to use.
     num_nodes
         The number of compute nodes to use.
-    strategy
-        Distributed computing strategy.
 
     Returns
     -------
@@ -406,10 +406,9 @@ def fit(
     )
     trainer = pl.Trainer(
         accelerator=accelerator,
-        devices=devices,
-        auto_select_gpus=True,
-        num_nodes=num_nodes,
         strategy=strategy,
+        devices=devices,
+        num_nodes=num_nodes,
         max_epochs=max_epochs,
         callbacks=[EarlyStopping(monitor="train_mse")],
     )
