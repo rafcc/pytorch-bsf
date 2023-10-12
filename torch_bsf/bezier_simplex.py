@@ -1,19 +1,19 @@
+import typing
 from functools import lru_cache
 from math import factorial
-import typing
 
 import numpy as np
 import pytorch_lightning as pl
 import torch
-import torch.optim
 import torch.nn as nn
+import torch.optim
 from pytorch_lightning.callbacks.early_stopping import EarlyStopping
 from torch.nn import functional as F
 from torch.utils.data import DataLoader, TensorDataset, random_split
 
 
 class BezierSimplexDataModule(pl.LightningDataModule):
-    """A data module for training a Bezier simplex.
+    r"""A data module for training a Bezier simplex.
 
     Parameters
     ----------
@@ -111,12 +111,12 @@ class BezierSimplexDataModule(pl.LightningDataModule):
         return self.val_dataloader()
 
 
-"""The index of control points of a Bezier simplex"""
+r"""The index of control points of a Bezier simplex"""
 Index = typing.Tuple[int, ...]
 
 
 def indices(dim: int, deg: int) -> typing.Iterable[Index]:
-    """Iterates the index of control points of the Bezier simplex.
+    r"""Iterates the index of control points of the Bezier simplex.
 
     Parameters
     ----------
@@ -143,7 +143,7 @@ def indices(dim: int, deg: int) -> typing.Iterable[Index]:
 
 @lru_cache(1024)
 def polynom(degree: int, index: typing.Iterable[int]) -> float:
-    """Computes a polynomial coefficient :math:`\binom{D}{\mathbf d} = \frac{D!}{d_1!d_2!\cdots d_M!}`.
+    r"""Computes a polynomial coefficient :math:`\binom{D}{\mathbf d} = \frac{D!}{d_1!d_2!\cdots d_M!}`.
 
     Parameters
     ----------
@@ -164,7 +164,7 @@ def polynom(degree: int, index: typing.Iterable[int]) -> float:
 
 
 def monomial(var: typing.Iterable[float], deg: typing.Iterable[int]) -> torch.Tensor:
-    """Computes a monomial :math:`\mathbf t^{\mathbf d} = t_1^{d_1} t_2^{d_2}\cdots t_M^{d^M}`.
+    r"""Computes a monomial :math:`\mathbf t^{\mathbf d} = t_1^{d_1} t_2^{d_2}\cdots t_M^{d^M}`.
 
     Parameters
     ----------
@@ -184,7 +184,7 @@ def monomial(var: typing.Iterable[float], deg: typing.Iterable[int]) -> torch.Te
 
 
 class BezierSimplex(pl.LightningModule):
-    """A Bezier simplex model.
+    r"""A Bezier simplex model.
 
     Parameters
     ----------
@@ -245,7 +245,7 @@ class BezierSimplex(pl.LightningModule):
         )
 
     def forward(self, t: torch.Tensor) -> torch.Tensor:
-        """Process a forwarding step of training.
+        r"""Process a forwarding step of training.
 
         Parameters
         ----------
@@ -307,7 +307,7 @@ class BezierSimplex(pl.LightningModule):
         return optimizer
 
     def meshgrid(self, num: int = 100) -> typing.Tuple[torch.Tensor, torch.Tensor]:
-        """Computes a meshgrid of the Bezier simplex.
+        r"""Computes a meshgrid of the Bezier simplex.
 
         Parameters
         ----------
@@ -337,8 +337,9 @@ def fit(
     strategy: typing.Union[str, pl.strategies.Strategy] = "auto",
     devices: typing.Union[typing.List[int], str, int] = "auto",
     num_nodes: typing.Optional[int] = None,
+    precision: typing.Union[str, int] = "32-true",
 ) -> BezierSimplex:
-    """Fits a Bezier simplex.
+    r"""Fits a Bezier simplex.
 
     Parameters
     ----------
@@ -360,6 +361,8 @@ def fit(
         The number of accelerator devices to use.
     num_nodes
         The number of compute nodes to use.
+    precision
+        The precision of floating point numbers.
 
     Returns
     -------
@@ -408,6 +411,7 @@ def fit(
         accelerator=accelerator,
         strategy=strategy,
         devices=devices,
+        precision=precision,
         num_nodes=num_nodes,
         max_epochs=max_epochs,
         callbacks=[EarlyStopping(monitor="train_mse")],
