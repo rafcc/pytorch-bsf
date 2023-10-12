@@ -407,7 +407,6 @@ def fit(
     trainer = pl.Trainer(
         accelerator=accelerator,
         devices=devices,
-        auto_select_gpus=True,
         num_nodes=num_nodes,
         strategy=strategy,
         max_epochs=max_epochs,
