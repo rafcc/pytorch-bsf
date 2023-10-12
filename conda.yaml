@@ -4,10 +4,10 @@ channels:
 - conda-forge
 - defaults
 dependencies:
-- python=3.10
-- cudatoolkit=10.2
-- pytorch=1.12.1
-- pytorch-lightning=1.7.3
-- torchmetrics=0.8.2
-- torchvision=0.13.1  # only used for mlflow
-- mlflow=1.28.0
+- python=3.12
+- cudatoolkit
+- pytorch
+- pytorch-lightning
+- torchmetrics
+- torchvision  # only used for mlflow
+- mlflow

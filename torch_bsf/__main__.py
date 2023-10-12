@@ -8,7 +8,16 @@ from pytorch_lightning.callbacks.early_stopping import EarlyStopping
 from torch_bsf import BezierSimplex, BezierSimplexDataModule
 
 
-parser = ArgumentParser(prog="python -m torch_bsf", description="Bezier simplex fitting")
+def int_or_str(val: str):
+    try:
+        return int(val)
+    except:
+        return val
+
+
+parser = ArgumentParser(
+    prog="python -m torch_bsf", description="Bezier simplex fitting"
+)
 parser.add_argument("--data", type=str, required=True)
 parser.add_argument("--label", type=str, required=True)
 parser.add_argument("--degree", type=int, required=True)
@@ -18,11 +27,13 @@ parser.add_argument("--normalize", type=str, default="none")
 parser.add_argument("--split_ratio", type=float, default=0.5)
 parser.add_argument("--batch_size", type=int)
 parser.add_argument("--max_epochs", type=int)
-parser.add_argument("--accelerator", type=str)
-parser.add_argument("--devices", type=int)
-parser.add_argument("--num_nodes", type=int)
-parser.add_argument("--strategy", type=str)
-parser.add_argument("--loglevel", type=int, default=2)  # 0: nothing, 1: metrics, 2: metrics & models
+parser.add_argument("--accelerator", type=str, default="auto")
+parser.add_argument("--devices", type=int_or_str, default="auto")
+parser.add_argument("--num_nodes", type=int, default=1)
+parser.add_argument("--strategy", type=str, default="auto")
+parser.add_argument(
+    "--loglevel", type=int, default=2
+)  # 0: nothing, 1: metrics, 2: metrics & models
 args = parser.parse_args()
 
 autolog(
@@ -52,9 +63,8 @@ bs = BezierSimplex(
 
 trainer = pl.Trainer(
     accelerator=args.accelerator,
-    devices=args.devices,
-    auto_select_gpus=True,
     strategy=args.strategy,
+    devices=args.devices,
     num_nodes=args.num_nodes,
     max_epochs=args.max_epochs,
     callbacks=[EarlyStopping(monitor="val_mse")],
