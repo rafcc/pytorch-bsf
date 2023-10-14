@@ -7,7 +7,7 @@ from mlflow import autolog
 from pytorch_lightning.callbacks.early_stopping import EarlyStopping
 
 from torch_bsf import BezierSimplex, BezierSimplexDataModule
-from torch_bsf.validator import int_or_str, skeleton
+from torch_bsf.validator import int_or_str, skeleton, validate_skeleton
 
 
 parser = ArgumentParser(
@@ -35,8 +35,6 @@ parser.add_argument(
 )  # 0: nothing, 1: metrics, 2: metrics & models
 args = parser.parse_args()
 print(args.skeleton)
-validate(args.skeleton, SKELETON_JSONSCHEMA)
-exit()
 autolog(
     log_input_examples=(args.loglevel >= 2),
     log_model_signatures=(args.loglevel >= 2),
@@ -61,6 +59,8 @@ bs = BezierSimplex(
     n_values=dm.n_values,
     degree=args.degree,
 )
+
+validate_skeleton(args.skeleton, dm.n_params, args.degree)
 
 trainer = pl.Trainer(
     accelerator=args.accelerator,

@@ -336,7 +336,7 @@ def fit(
     accelerator: typing.Union[str, pl.accelerators.Accelerator] = "auto",
     strategy: typing.Union[str, pl.strategies.Strategy] = "auto",
     devices: typing.Union[typing.List[int], str, int] = "auto",
-    num_nodes: typing.Optional[int] = None,
+    num_nodes: int = 1,
     precision: typing.Union[str, int] = "32-true",
 ) -> BezierSimplex:
     r"""Fits a Bezier simplex.
