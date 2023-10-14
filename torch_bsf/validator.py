@@ -7,7 +7,7 @@ from torch_bsf.bezier_simplex import Index
 
 
 def validate_skeleton(data: object, dimension: int, degree: int) -> None:
-    schema = test_skeleton_schema(dimension, degree)
+    schema = skeleton_schema(dimension, degree)
     validate(data, schema)
     pass
 
