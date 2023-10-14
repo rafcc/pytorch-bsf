@@ -35,8 +35,6 @@ parser.add_argument(
 )  # 0: nothing, 1: metrics, 2: metrics & models
 args = parser.parse_args()
 print(args.skeleton)
-validate(args.skeleton, SKELETON_JSONSCHEMA)
-exit()
 autolog(
     log_input_examples=(args.loglevel >= 2),
     log_model_signatures=(args.loglevel >= 2),
@@ -61,6 +59,8 @@ bs = BezierSimplex(
     n_values=dm.n_values,
     degree=args.degree,
 )
+
+validate_skeleton(args.skeleton, dm.n_params, args.degree)
 
 trainer = pl.Trainer(
     accelerator=args.accelerator,
