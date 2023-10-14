@@ -6,6 +6,12 @@ from jsonschema import validate
 from torch_bsf.bezier_simplex import Index
 
 
+def validate_skeleton(data: object, dimension: int, degree: int) -> None:
+    schema = test_skeleton_schema(dimension, degree)
+    validate(data, schema)
+    pass
+
+
 def skeleton_schema(dimension: int, degree: int) -> typing.Dict[str, typing.Any]:
     r"""JSON schema for skeleton of bezier simplex."""
     return {

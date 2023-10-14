@@ -7,7 +7,7 @@ from mlflow import autolog
 from pytorch_lightning.callbacks.early_stopping import EarlyStopping
 
 from torch_bsf import BezierSimplex, BezierSimplexDataModule
-from torch_bsf.validator import int_or_str, skeleton
+from torch_bsf.validator import int_or_str, skeleton, validate_skeleton
 
 
 parser = ArgumentParser(
