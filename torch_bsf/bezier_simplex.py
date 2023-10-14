@@ -111,8 +111,8 @@ class BezierSimplexDataModule(pl.LightningDataModule):
         return self.val_dataloader()
 
 
-r"""The index of control points of a Bezier simplex"""
 Index = typing.Tuple[int, ...]
+r"""The index of control points of a Bezier simplex"""
 
 
 def indices(dim: int, deg: int) -> typing.Iterable[Index]:

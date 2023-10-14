@@ -1,5 +1,5 @@
 import os
-import typing
+import json
 from argparse import ArgumentParser
 
 import pytorch_lightning as pl
@@ -7,26 +7,7 @@ from mlflow import autolog
 from pytorch_lightning.callbacks.early_stopping import EarlyStopping
 
 from torch_bsf import BezierSimplex, BezierSimplexDataModule
-
-
-def int_or_str(val: str) -> typing.Union[int, str]:
-    """Try to convert a given string to int.
-    Return the int value if the conversion is succeeded; the original string otherwise.
-
-    Parameter
-    ---------
-    val
-        The value to try to convert into int.
-
-    Return
-    ------
-    typing.Union[int, str]
-        The converted integer or the original value.
-    """
-    try:
-        return int(val)
-    except ValueError:
-        return val
+from torch_bsf.validator import int_or_str, skeleton
 
 
 parser = ArgumentParser(
@@ -35,6 +16,7 @@ parser = ArgumentParser(
 parser.add_argument("--data", type=str, required=True)
 parser.add_argument("--label", type=str, required=True)
 parser.add_argument("--degree", type=int, required=True)
+parser.add_argument("--skeleton", type=skeleton, default=None)
 parser.add_argument("--header", type=int, default=0)
 parser.add_argument("--delimiter", type=str)
 parser.add_argument(
@@ -52,7 +34,9 @@ parser.add_argument(
     "--loglevel", type=int, choices=(0, 1, 2), default=2
 )  # 0: nothing, 1: metrics, 2: metrics & models
 args = parser.parse_args()
-
+print(args.skeleton)
+validate(args.skeleton, SKELETON_JSONSCHEMA)
+exit()
 autolog(
     log_input_examples=(args.loglevel >= 2),
     log_model_signatures=(args.loglevel >= 2),
