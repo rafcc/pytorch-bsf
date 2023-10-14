@@ -138,6 +138,6 @@ def test_skeleton_schema_schema_error(dimension, degree):
     ),
 )
 def test_skeleton_schema_validation_error(dimension, degree, val):
-    with pytest.raises(ValidationError) as e:
+    with pytest.raises(ValidationError):
         schema = skeleton_schema(dimension, degree)
         validate(val, schema)
