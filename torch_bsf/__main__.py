@@ -1,14 +1,14 @@
 import os
-import json
 from argparse import ArgumentParser
 
 import pytorch_lightning as pl
 from mlflow import autolog
 from pytorch_lightning.callbacks.early_stopping import EarlyStopping
 
-from torch_bsf import BezierSimplex, BezierSimplexDataModule
+from torch_bsf import BezierSimplexDataModule
+from torch_bsf.control_points import indices
+from torch_bsf.bezier_simplex import randn
 from torch_bsf.validator import int_or_str, skeleton, validate_skeleton
-
 
 parser = ArgumentParser(
     prog="python -m torch_bsf", description="Bezier simplex fitting"
@@ -54,12 +54,13 @@ dm = BezierSimplexDataModule(
     split_ratio=args.split_ratio,
     normalize=args.normalize,
 )
-bs = BezierSimplex(
+bs = randn(
     n_params=dm.n_params,
     n_values=dm.n_values,
     degree=args.degree,
 )
 
+args.skeleton = args.skeleton or [list(i) for i in indices(dm.n_params, args.degree)]
 validate_skeleton(args.skeleton, dm.n_params, args.degree)
 
 trainer = pl.Trainer(

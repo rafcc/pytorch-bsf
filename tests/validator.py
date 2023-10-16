@@ -1,7 +1,7 @@
 import pytest
-from jsonschema import SchemaError, validate, ValidationError
+from jsonschema import ValidationError
 
-from torch_bsf.validator import int_or_str, skeleton, skeleton_schema
+from torch_bsf.validator import int_or_str, skeleton, skeleton_schema, validate_skeleton
 
 
 @pytest.mark.parametrize(
@@ -53,6 +53,32 @@ def test_skeleton(val, expected):
 
 
 @pytest.mark.parametrize(
+    "dimension, degree",
+    (
+        (0, 0),
+        (0, 1),
+        (1, 0),
+        (1, 1),
+    ),
+)
+def test_skeleton_schema(dimension, degree):
+    skeleton_schema(dimension, degree)
+
+
+@pytest.mark.parametrize(
+    "dimension, degree",
+    (
+        (-1, -1),
+        (-1, 0),
+        (0, -1),
+    ),
+)
+def test_skeleton_schema_value_error(dimension, degree):
+    with pytest.raises(ValueError):
+        skeleton_schema(dimension, degree)
+
+
+@pytest.mark.parametrize(
     "dimension, degree, val",
     (
         (0, 0, []),
@@ -80,9 +106,8 @@ def test_skeleton(val, expected):
         (3, 1, [[1, 0, 0], [0, 1, 0], [0, 0, 1]]),
     ),
 )
-def test_skeleton_schema(dimension, degree, val):
-    schema = skeleton_schema(dimension, degree)
-    validate(val, schema)
+def test_validate_skeleton(dimension, degree, val):
+    validate_skeleton(val, dimension, degree)
 
 
 @pytest.mark.parametrize(
@@ -95,10 +120,9 @@ def test_skeleton_schema(dimension, degree, val):
         (-1, 2),
     ),
 )
-def test_skeleton_schema_schema_error(dimension, degree):
-    with pytest.raises(SchemaError):
-        schema = skeleton_schema(dimension, degree)
-        validate(None, schema)
+def test_validate_skeleton_value_error(dimension, degree):
+    with pytest.raises(ValueError):
+        validate_skeleton(None, dimension, degree)
 
 
 @pytest.mark.parametrize(
@@ -120,9 +144,6 @@ def test_skeleton_schema_schema_error(dimension, degree):
         (0, 0, [[""]]),
         (0, 0, [[0]]),
         (0, 0, [[0, 0]]),
-        (1, -1, [[-1]]),
-        (1, -1, [[0]]),
-        (1, -1, [[1]]),
         (1, 0, [[]]),
         (1, 0, [[0, 0]]),
         (1, 0, [[-1]]),
@@ -135,9 +156,10 @@ def test_skeleton_schema_schema_error(dimension, degree):
         (2, 0, [[0, 1]]),
         (2, 1, [[0, -1]]),
         (2, 1, [[0, 2]]),
+        (2, 1, [[0, 0]]),
+        (2, 1, [[1, 1]]),
     ),
 )
-def test_skeleton_schema_validation_error(dimension, degree, val):
+def test_validate_skeleton_validation_error(dimension, degree, val):
     with pytest.raises(ValidationError):
-        schema = skeleton_schema(dimension, degree)
-        validate(val, schema)
+        validate_skeleton(val, dimension, degree)

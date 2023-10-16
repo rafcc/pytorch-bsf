@@ -5,11 +5,12 @@ from math import factorial
 import numpy as np
 import pytorch_lightning as pl
 import torch
-import torch.nn as nn
 import torch.optim
 from pytorch_lightning.callbacks.early_stopping import EarlyStopping
 from torch.nn import functional as F
 from torch.utils.data import DataLoader, TensorDataset, random_split
+
+from torch_bsf.control_points import ControlPoints, ControlPointsData, Index, indices
 
 
 class BezierSimplexDataModule(pl.LightningDataModule):
@@ -32,7 +33,6 @@ class BezierSimplexDataModule(pl.LightningDataModule):
     normalize
         The data normalization method.
         Either ``"max"``, ``"std"``, ``"quantile"``, or ``"none"``.
-
     """
 
     def __init__(
@@ -111,36 +111,6 @@ class BezierSimplexDataModule(pl.LightningDataModule):
         return self.val_dataloader()
 
 
-Index = typing.Tuple[int, ...]
-r"""The index of control points of a Bezier simplex"""
-
-
-def indices(dim: int, deg: int) -> typing.Iterable[Index]:
-    r"""Iterates the index of control points of the Bezier simplex.
-
-    Parameters
-    ----------
-    dim
-        The array length of indices.
-    deg
-        The degree of the Bezier simplex.
-
-    Returns
-    -------
-    The indices.
-
-    """
-
-    def iterate(c, r):
-        if len(c) == dim - 1:
-            yield c + (r,)
-        else:
-            for i in range(r, -1, -1):
-                yield from iterate(c + (i,), r - i)
-
-    yield from iterate((), deg)
-
-
 @lru_cache(1024)
 def polynom(degree: int, index: typing.Iterable[int]) -> float:
     r"""Computes a polynomial coefficient :math:`\binom{D}{\mathbf d} = \frac{D!}{d_1!d_2!\cdots d_M!}`.
@@ -155,32 +125,33 @@ def polynom(degree: int, index: typing.Iterable[int]) -> float:
     Returns
     -------
     The polynomial coefficient :math:`\binom{D}{\mathbf d}`.
-
     """
-    r = factorial(degree)
+    r: float = factorial(degree)
     for i in index:
         r /= factorial(i)
     return r
 
 
-def monomial(var: typing.Iterable[float], deg: typing.Iterable[int]) -> torch.Tensor:
+def monomial(
+    variable: typing.Iterable[float], degree: typing.Iterable[int]
+) -> torch.Tensor:
     r"""Computes a monomial :math:`\mathbf t^{\mathbf d} = t_1^{d_1} t_2^{d_2}\cdots t_M^{d^M}`.
 
     Parameters
     ----------
-    var
+    variable
         The bases :math:`\mathbf t`.
-    deg
+    degree
         The powers :math:`\mathbf d`.
 
     Returns
     -------
     The monomial :math:`\mathbf t^{\mathbf d}`.
-
     """
-    var = torch.as_tensor(var)
-    deg = torch.as_tensor(deg, device=var.device)
-    return (var**deg).prod(dim=-1)
+    v = torch.as_tensor(variable)
+    d = torch.as_tensor(degree, device=v.device)
+    ret: torch.Tensor = (v**d).prod(dim=-1)
+    return ret
 
 
 class BezierSimplex(pl.LightningModule):
@@ -188,12 +159,8 @@ class BezierSimplex(pl.LightningModule):
 
     Parameters
     ----------
-    n_params
-        The number of parameters.
-    n_values
-        The number of values.
-    degree
-        The degree of the Bezier simplex.
+    control_points
+        The control points of the Bezier simplex.
 
     Examples
     --------
@@ -213,7 +180,7 @@ class BezierSimplex(pl.LightningModule):
     ... )
     >>> xs = 1 - ts * ts  # values corresponding to the parameters
     >>> dl = DataLoader(TensorDataset(ts, xs))
-    >>> bs = BezierSimplex(
+    >>> bs = randn(
     ...     n_params=int(ts.shape[1]),
     ...     n_values=int(xs.shape[1]),
     ...     degree=3,
@@ -228,21 +195,18 @@ class BezierSimplex(pl.LightningModule):
 
     def __init__(
         self,
-        n_params: int,
-        n_values: int,
-        degree: int,
+        control_points: typing.Union[ControlPoints, ControlPointsData],
     ):
         # REQUIRED
         super().__init__()
-        self.n_params = n_params
-        self.n_values = n_values
-        self.degree = degree
-        self.control_points = nn.ParameterDict(
-            {
-                str(i): nn.Parameter(torch.randn(n_values))
-                for i in indices(n_params, degree)
-            }
+        self.control_points = (
+            control_points
+            if isinstance(control_points, ControlPoints)
+            else ControlPoints(control_points)
         )
+        self.n_params = self.control_points.n_params
+        self.n_values = self.control_points.n_values
+        self.degree = self.control_points.degree
 
     def forward(self, t: torch.Tensor) -> torch.Tensor:
         r"""Process a forwarding step of training.
@@ -255,13 +219,12 @@ class BezierSimplex(pl.LightningModule):
         Returns
         -------
         A minibatch of value vectors.
-
         """
         # REQUIRED
-        x = 0
+        x = torch.zeros(len(t), self.n_values)
         for i in indices(self.n_params, self.degree):
             x += polynom(self.degree, i) * torch.outer(
-                monomial(t, i), self.control_points[str(i)]
+                monomial(t, i), self.control_points[i]
             )
         return x
 
@@ -327,10 +290,168 @@ class BezierSimplex(pl.LightningModule):
         return ts, xs
 
 
+def zeros(n_params: int, n_values: int, degree: int) -> BezierSimplex:
+    r"""Generates a Bezier simplex filled with zeros.
+
+    Parameters
+    ----------
+    n_params
+        The number of parameters, i.e., the source dimension + 1.
+    n_values
+        The number of values, i.e., the target dimension.
+    degree
+        The degree of the Bezier simplex.
+
+    Returns
+    -------
+        A Bezier simplex filled with zeros.
+
+    Raises
+    ------
+    ValueError
+        If ``n_params`` or ``n_values`` or ``degree`` is negative.
+
+    Examples
+    --------
+    >>> import torch
+    >>> from torch_bsf import bezier_simplex
+    >>> bs = bezier_simplex.zeros(n_params=2, n_values=3, degree=2)
+    >>> print(bs)
+    BezierSimplex(
+        (control_points): ParameterDict(
+            (0, Parameter containing: [torch.FloatTensor of size 3])
+            (1, Parameter containing: [torch.FloatTensor of size 3])
+            (2, Parameter containing: [torch.FloatTensor of size 3])
+            (3, Parameter containing: [torch.FloatTensor of size 3])
+            (4, Parameter containing: [torch.FloatTensor of size 3])
+            (5, Parameter containing: [torch.FloatTensor of size 3])
+        )
+    )
+    >>> print(bs(torch.tensor([[0.2, 0.8]])))
+    tensor([[0., 0., 0.]])
+    """
+    if n_params < 0:
+        raise ValueError(f"n_params must be non-negative: {n_params}")
+    if n_values < 0:
+        raise ValueError(f"n_values must be non-negative: {n_values}")
+    if degree < 0:
+        raise ValueError(f"degree must be non-negative: {degree}")
+
+    return BezierSimplex({i: torch.zeros(n_values) for i in indices(n_params, degree)})
+
+
+def rand(n_params: int, n_values: int, degree: int) -> BezierSimplex:
+    r"""Generates a random Bezier simplex.
+
+    The control points are initialized by random values.
+    The values are uniformly distributed in [0, 1).
+
+    Parameters
+    ----------
+    n_params
+        The number of parameters, i.e., the source dimension + 1.
+    n_values
+        The number of values, i.e., the target dimension.
+    degree
+        The degree of the Bezier simplex.
+
+    Returns
+    -------
+        A random Bezier simplex.
+
+    Raises
+    ------
+    ValueError
+        If ``n_params`` or ``n_values`` or ``degree`` is negative.
+
+    Examples
+    --------
+    >>> import torch
+    >>> from torch_bsf import bezier_simplex
+    >>> bs = bezier_simplex.rand(n_params=2, n_values=3, degree=2)
+    >>> print(bs)
+    BezierSimplex(
+      (control_points): ParameterDict(
+          (0, Parameter containing: [torch.FloatTensor of size 3])
+          (1, Parameter containing: [torch.FloatTensor of size 3])
+          (2, Parameter containing: [torch.FloatTensor of size 3])
+          (3, Parameter containing: [torch.FloatTensor of size 3])
+          (4, Parameter containing: [torch.FloatTensor of size 3])
+          (5, Parameter containing: [torch.FloatTensor of size 3])
+      )
+    )
+    >>> print(bs(torch.tensor([[0.2, 0.8]])))
+    tensor([[0.4400, 0.5400, 0.6600]])
+    """
+    if n_params < 0:
+        raise ValueError(f"n_params must be non-negative: {n_params}")
+    if n_values < 0:
+        raise ValueError(f"n_values must be non-negative: {n_values}")
+    if degree < 0:
+        raise ValueError(f"degree must be non-negative: {degree}")
+
+    return BezierSimplex({i: torch.rand(n_values) for i in indices(n_params, degree)})
+
+
+def randn(n_params: int, n_values: int, degree: int) -> BezierSimplex:
+    r"""Generates a random Bezier simplex.
+
+    The control points are initialized by random values.
+    The values are normally distributed with mean 0 and standard deviation 1.
+
+    Parameters
+    ----------
+    n_params
+        The number of parameters, i.e., the source dimension + 1.
+    n_values
+        The number of values, i.e., the target dimension.
+    degree
+        The degree of the Bezier simplex.
+
+    Returns
+    -------
+        A random Bezier simplex.
+
+    Raises
+    ------
+    ValueError
+        If ``n_params`` or ``n_values`` or ``degree`` is negative.
+
+    Examples
+    --------
+    >>> import torch
+    >>> from torch_bsf import bezier_simplex
+    >>> bs = bezier_simplex.randn(n_params=2, n_values=3, degree=2)
+    >>> print(bs)
+    BezierSimplex(
+      (control_points): ParameterDict(
+          (0, Parameter containing: [torch.FloatTensor of size 3])
+          (1, Parameter containing: [torch.FloatTensor of size 3])
+          (2, Parameter containing: [torch.FloatTensor of size 3])
+          (3, Parameter containing: [torch.FloatTensor of size 3])
+          (4, Parameter containing: [torch.FloatTensor of size 3])
+          (5, Parameter containing: [torch.FloatTensor of size 3])
+      )
+    )
+    >>> print(bs(torch.tensor([[0.2, 0.8]])))
+    tensor([[0.4400, 0.5400, 0.6600]])
+    """
+    if n_params < 0:
+        raise ValueError(f"n_params must be non-negative: {n_params}")
+    if n_values < 0:
+        raise ValueError(f"n_values must be non-negative: {n_values}")
+    if degree < 0:
+        raise ValueError(f"degree must be non-negative: {degree}")
+
+    return BezierSimplex({i: torch.randn(n_values) for i in indices(n_params, degree)})
+
+
 def fit(
     params: torch.Tensor,
     values: torch.Tensor,
     degree: int,
+    init: typing.Optional[typing.Union[ControlPoints, ControlPointsData]] = None,
+    skeleton: typing.Optional[typing.Iterable[Index]] = None,
     batch_size: typing.Optional[int] = None,
     max_epochs: typing.Optional[int] = None,
     accelerator: typing.Union[str, pl.accelerators.Accelerator] = "auto",
@@ -349,6 +470,10 @@ def fit(
         The label data.
     degree
         The degree of the Bezier simplex.
+    init
+        The initial guess.
+    skeleton
+        The skeleton to fit.
     batch_size
         The size of minibatch.
     max_epochs
@@ -404,7 +529,7 @@ def fit(
     """
     data = TensorDataset(params, values)
     dl = DataLoader(data, batch_size=batch_size or len(data))
-    bs = BezierSimplex(
+    bs = randn(
         n_params=int(params.shape[1]), n_values=int(values.shape[1]), degree=degree
     )
     trainer = pl.Trainer(
