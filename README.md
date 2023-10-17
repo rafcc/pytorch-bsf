@@ -5,7 +5,7 @@
 [![Conda](https://github.com/rafcc/pytorch-bsf/actions/workflows/python-package-conda.yml/badge.svg)](https://github.com/rafcc/pytorch-bsf/actions/workflows/python-package-conda.yml)
 [![GHPages](https://github.com/rafcc/pytorch-bsf/actions/workflows/sphinx-pages.yml/badge.svg)](https://github.com/rafcc/pytorch-bsf/actions/workflows/sphinx-pages.yml)
 
-PyTorch implementation of Bezier simplex fitting.
+A PyTorch implementation of Bezier simplex fitting.
 
 The Bezier simplex is a high-dimensional generalization of the Bezier curve.
 It enables us to model a complex-shaped point cloud as a parametric hyper-surface in high-dimensional spaces.
@@ -34,14 +34,14 @@ conda install -c conda-forge mlflow
 
 Prepare data:
 ```
-cat <<EOS > data.tsv
+cat <<EOS > params.tsv
 1 0
 0.75 0.25
 0.5 0.5
 0.25 0.75
 0 1
 EOS
-cat <<EOS > label.tsv
+cat <<EOS > values.tsv
 0 1
 3 2
 4 5
@@ -53,8 +53,8 @@ EOS
 Run the following command:
 ```
 mlflow run https://github.com/rafcc/pytorch-bsf \
-  -P data=data.tsv \
-  -P label=label.tsv \
+  -P params=params.tsv \
+  -P values=values.tsv \
   -P degree=3
 ```
 which automatically sets up the environment and runs an experiment:
@@ -62,23 +62,25 @@ which automatically sets up the environment and runs an experiment:
 2. Create a new conda environment and install dependencies in it.
 3. Run an experiment on the temporary directory and environment.
 
-|Parameter|Type|Default|Description|
-|-|-|-|-|
-|data|path|required|The data file. The file should contain a numerical matrix in the TSV format: each row represents a record that consists of features separated by Tabs or spaces.|
-|label|path|required|The label file. The file should contain a numerical matrix in the TSV format: each row represents a record that consists of outcomes separated by Tabs or spaces.|
-|degree|int $(x \ge 1)$|required|The degree of the Bezier simplex.|
-|header|int $(x \ge 0)$|`0`|The number of header lines in data/label files.|
-|delimiter|str|`" "`|The delimiter of values in data/label files.|
-|normalize|`"max"`, `"std"`, `"quantile"`|`None`|The data normalization: `"max"` scales each feature as the minimum is 0 and the maximum is 1, suitable for uniformly distributed data; `"std"` does as the mean is 0 and the standard deviation is 1, suitable for nonuniformly distributed data; `"quantile"` does as 5%-quantile is 0 and 95%-quantile is 1, suitable for data containing outliers; `None` does not perform any scaling, suitable for pre-normalized data.|
-|split_ratio|float $(0 < x < 1)$|`0.5`|The ratio of training data against validation data.|
-|batch_size|int $(x \ge 0)$|`0`|The size of minibatch. The default uses all records in a single batch.|
-|max_epochs|int $(x \ge 1)$|`1000`|The number of epochs to stop training.|
-|accelerator|`"auto"`, `"cpu"`, `"gpu"`, etc.|`"auto"`|Accelerator to use. See [PyTorch Lightning documentation](https://pytorch-lightning.readthedocs.io/en/latest/extensions/accelerator.html).|
-|strategy|`"auto"`, `"dp"`, `"ddp"`, etc.|`"auto"`|Distributed strategy. See [PyTorch Lightning documentation](https://pytorch-lightning.readthedocs.io/en/latest/extensions/strategy.html).|
-|devices|int $(x \ge -1)$|`"auto"`|The number of accelerators to use. By default, use all available devices. See [PyTorch Lightning documentation](https://pytorch-lightning.readthedocs.io/en/latest/accelerators/gpu_basic.html).|
-|num_nodes|int $(x \ge 1)$|`1`|The number of compute nodes to use. See [PyTorch Lightning documentation](https://pytorch-lightning.readthedocs.io/en/latest/guides/speed.html).|
-|precision|`"64"`, `"32"`, `"16"`, `"bf16"`|`"32"`|The precision of floating point numbers.|
-|loglevel|int $(0 \le x \le 2)$|`2`|What objects to be logged. `0`: nothing; `1`: metrics; `2`: metrics and models.|
+| Parameter   | Type                             | Default  | Description                                                                                                                                                                                                                                                                                                                                                                                                                    |
+| ----------- | -------------------------------- | -------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| params      | path                             | required | The parameter data file. The file should contain a numerical matrix in the TSV format: each row represents a record that consists of features separated by Tabs or spaces.                                                                                                                                                                                                                                                     |
+| values      | path                             | required | The value data file. The file should contain a numerical matrix in the TSV format: each row represents a record that consists of outcomes separated by Tabs or spaces.                                                                                                                                                                                                                                                         |
+| init        | path                             | `None`   | Load initial control points from a file. The file must be of pickled PyTorch (`.pt`), CSV (`.csv`), TSV (`.tsv`), JSON (`.json`), or YAML (`.yml` or `.yaml`). Either this option or `--degree` must be specified.                                                                                                                                                                                                             |
+| degree      | int $(x \ge 1)$                  | `None`   | Generate initial control points at random with specified degree. Either this option or `--init` must be specified.                                                                                                                                                                                                                                                                                                             |
+| skeleton    | list[list[int]]                  | `None`   | Specified control points are trained. By default, all control points are trained.                                                                                                                                                                                                                                                                                                                                              |
+| header      | int $(x \ge 0)$                  | `0`      | The number of header lines in params/values files.                                                                                                                                                                                                                                                                                                                                                                             |
+| delimiter   | str                              | `" "`    | The delimiter of values in params/values files.                                                                                                                                                                                                                                                                                                                                                                                |
+| normalize   | `"max"`, `"std"`, `"quantile"`   | `None`   | The data normalization: `"max"` scales each feature as the minimum is 0 and the maximum is 1, suitable for uniformly distributed data; `"std"` does as the mean is 0 and the standard deviation is 1, suitable for nonuniformly distributed data; `"quantile"` does as 5-percentile is 0 and 95-percentile is 1, suitable for data containing outliers; `None` does not perform any scaling, suitable for pre-normalized data. |
+| split_ratio | float $(0 < x < 1)$              | `0.5`    | The ratio of training data against validation data.                                                                                                                                                                                                                                                                                                                                                                            |
+| batch_size  | int $(x \ge 0)$                  | `0`      | The size of minibatch. The default uses all records in a single batch.                                                                                                                                                                                                                                                                                                                                                         |
+| max_epochs  | int $(x \ge 1)$                  | `1000`   | The number of epochs to stop training.                                                                                                                                                                                                                                                                                                                                                                                         |
+| accelerator | `"auto"`, `"cpu"`, `"gpu"`, etc. | `"auto"` | Accelerator to use. See [PyTorch Lightning documentation](https://pytorch-lightning.readthedocs.io/en/latest/extensions/accelerator.html).                                                                                                                                                                                                                                                                                     |
+| strategy    | `"auto"`, `"dp"`, `"ddp"`, etc.  | `"auto"` | Distributed strategy. See [PyTorch Lightning documentation](https://pytorch-lightning.readthedocs.io/en/latest/extensions/strategy.html).                                                                                                                                                                                                                                                                                      |
+| devices     | int $(x \ge -1)$                 | `"auto"` | The number of accelerators to use. By default, use all available devices. See [PyTorch Lightning documentation](https://pytorch-lightning.readthedocs.io/en/latest/accelerators/gpu_basic.html).                                                                                                                                                                                                                               |
+| num_nodes   | int $(x \ge 1)$                  | `1`      | The number of compute nodes to use. See [PyTorch Lightning documentation](https://pytorch-lightning.readthedocs.io/en/latest/guides/speed.html).                                                                                                                                                                                                                                                                               |
+| precision   | `"64"`, `"32"`, `"16"`, `"bf16"` | `"32"`   | The precision of floating point numbers.                                                                                                                                                                                                                                                                                                                                                                                       |
+| loglevel    | int $(0 \le x \le 2)$            | `2`      | What objects to be logged. `0`: nothing; `1`: metrics; `2`: metrics and models.                                                                                                                                                                                                                                                                                                                                                |
 
 
 ## Installation
@@ -95,8 +97,8 @@ This package provides a command line interface to train a Bezier simplex with a 
 Execute the `torch_bsf` module:
 ```
 python -m torch_bsf \
-  --data=data.tsv \
-  --label=label.tsv \
+  --params=params.tsv \
+  --values=values.tsv \
   --degree=3
 ```
 
