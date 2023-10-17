@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.3.1](https://github.com/rafcc/pytorch-bsf/compare/v0.3.0...v0.3.1) (2023-10-17)
+
+
+### Bug Fixes
+
+* fit() uses init and skeleton ([#127](https://github.com/rafcc/pytorch-bsf/issues/127)) ([c92ffcf](https://github.com/rafcc/pytorch-bsf/commit/c92ffcf2fb21a067da6868e96c671036a391dbd5))
+
 ## [0.3.0](https://github.com/rafcc/pytorch-bsf/compare/v0.2.0...v0.3.0) (2023-10-17)
 
 
