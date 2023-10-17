@@ -39,17 +39,17 @@ jobs:
         pytest
     - name: E2E test with conda
       run: |
-        cat << EOS > data.tsv
+        cat << EOS > params.tsv
         1 2
         4 3
         5 6
         EOS
-        cat << EOS > label.tsv
+        cat << EOS > values.tsv
         1
         2
         3
         EOS
-        python -m torch_bsf --data=data.tsv --label=label.tsv --degree=3
+        python -m torch_bsf --params=params.tsv --values=values.tsv --degree=3
 
   build-mlflow:
     runs-on: ubuntu-latest
@@ -75,14 +75,14 @@ jobs:
         conda install -c conda-forge mlflow
     - name: E2E test with MLflow
       run: |
-        cat << EOS > data.tsv
+        cat << EOS > params.tsv
         1 2
         4 3
         5 6
         EOS
-        cat << EOS > label.tsv
+        cat << EOS > values.tsv
         1
         2
         3
         EOS
-        mlflow run https://github.com/rafcc/pytorch-bsf --version ${{ github.sha }} -P data=data.tsv -P label=label.tsv -P degree=3
+        mlflow run https://github.com/rafcc/pytorch-bsf --version ${{ github.sha }} -P params=params.tsv -P values=values.tsv -P degree=3

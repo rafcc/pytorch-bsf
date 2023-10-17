@@ -3,11 +3,11 @@ conda_env: environment.yml
 entry_points:
   main:
     parameters:
-      data: {type: path}
-      label: {type: path}
+      params: {type: path}
+      values: {type: path}
       degree: {type: int}
     command: >
       python -m torch_bsf
-      --data={data}
-      --label={label}
+      --params={params}
+      --values={values}
       --degree={degree}
