@@ -15,7 +15,14 @@ from pytorch_lightning.callbacks.early_stopping import EarlyStopping
 from torch.nn import functional as F
 from torch.utils.data import DataLoader, TensorDataset, random_split
 
-from torch_bsf.control_points import ControlPoints, ControlPointsData, Index, indices
+from torch_bsf.control_points import (
+    ControlPoints,
+    ControlPointsData,
+    Index,
+    indices,
+    to_parameterdict_key,
+)
+from torch_bsf.validator import validate_skeleton
 
 
 class BezierSimplexDataModule(pl.LightningDataModule):
@@ -455,6 +462,31 @@ def randn(n_params: int, n_values: int, degree: int) -> BezierSimplex:
 
 
 def save(path: str, data: BezierSimplex) -> None:
+    r"""Saves a Bezier simplex to a file.
+
+    Parameters
+    ----------
+    path
+        The path to a file.
+    data
+        The Bezier simplex.
+
+    Raises
+    ------
+    ValueError
+        If the file type is unknown.
+
+    Examples
+    --------
+    >>> import torch_bsf
+    >>> bs = torch_bsf.randn(n_params=2, n_values=3, degree=2)
+    >>> torch_bsf.save("tests/data/bezier_simplex.pt", bs)
+    >>> torch_bsf.save("tests/data/bezier_simplex.csv", bs)
+    >>> torch_bsf.save("tests/data/bezier_simplex.tsv", bs)
+    >>> torch_bsf.save("tests/data/bezier_simplex.json", bs)
+    >>> torch_bsf.save("tests/data/bezier_simplex.yml", bs)
+
+    """
     if path.endswith(".pt"):
         torch.save(data, path)
     elif path.endswith(".csv"):
@@ -491,6 +523,73 @@ CONTROLPOINTS_JSONSCHEMA = {
 
 
 def validate_control_points(data: typing.Dict[str, typing.List[float]]):
+    r"""Validates control points.
+
+    Parameters
+    ----------
+    data
+        The control points.
+
+    Raises
+    ------
+    ValidationError
+        If the control points are invalid.
+
+    Examples
+    --------
+    >>> from torch_bsf.bezier_simplex import validate_control_points
+    >>> validate_control_points({
+    ...     "(1, 0, 0)": [1.0, 0.0, 0.0],
+    ...     "(0, 1, 0)": [0.0, 1.0, 0.0],
+    ...     "(0, 0, 1)": [0.0, 0.0, 1.0],
+    ... })
+
+    >>> validate_control_points({
+    ...     "(1, 0, 0)": [1.0, 0.0, 0.0],
+    ...     "(0, 1, 0)": [0.0, 1.0, 0.0],
+    ...     "0, 0, 1": [0.0, 0.0, 1.0],
+    ... })
+    Traceback (most recent call last):
+        ...
+    jsonschema.exceptions.ValidationError: '0, 0, 1' is not valid under any of the given schemas
+
+    >>> validate_control_points({
+    ...     "(1, 0, 0)": [1.0, 0.0, 0.0],
+    ...     "(0, 1, 0)": [0.0, 1.0, 0.0],
+    ...     "(0, 0, 1)": [0.0, 0.0, 1.0],
+    ...     "(0, 0)": [0.0, 0.0, 0.0],
+    ... })
+    Traceback (most recent call last):
+        ...
+    jsonschema.exceptions.ValidationError: Dimension mismatch: (0, 0)
+
+    >>> validate_control_points({
+    ...     "(1, 0, 0)": [1.0, 0.0, 0.0],
+    ...     "(0, 1, 0)": [0.0, 1.0, 0.0],
+    ...     "(0, 0, 1, 0)": [0.0, 0.0, 1.0],
+    ... })
+    Traceback (most recent call last):
+        ...
+    jsonschema.exceptions.ValidationError: Dimension mismatch: (0, 0, 1, 0)
+
+    >>> validate_control_points({
+    ...     "(1, 0, 0)": [1.0, 0.0, 0.0],
+    ...     "(0, 1, 0)": [0.0, 1.0, 0.0],
+    ...     "(0, 0, 1)": [0.0, 0.0, 1.0, 0.0],
+    ... })
+    Traceback (most recent call last):
+        ...
+    jsonschema.exceptions.ValidationError: Dimension mismatch: [0.0, 0.0, 1.0, 0.0]
+
+    >>> validate_control_points({
+    ...     "(1, 0, 0)": [1.0, 0.0, 0.0],
+    ...     "(0, 1, 0)": [0.0, 1.0, 0.0],
+    ...     "(0, 0, 1)": [0.0, 0.0],
+    ... })
+    Traceback (most recent call last):
+        ...
+    jsonschema.exceptions.ValidationError: Dimension mismatch: [0.0, 0.0]
+    """
     validate(instance=data, schema=CONTROLPOINTS_JSONSCHEMA)
     index, value = next(iter(data.items()))
     n_params = len(eval(index))
@@ -503,6 +602,39 @@ def validate_control_points(data: typing.Dict[str, typing.List[float]]):
 
 
 def load(path: str) -> BezierSimplex:
+    r"""Loads a Bezier simplex from a file.
+
+    Parameters
+    ----------
+    path
+        The path to a file.
+
+    Returns
+    -------
+    A Bezier simplex.
+
+    Raises
+    ------
+    ValueError
+        If the file type is unknown.
+    ValidationError
+        If the control points are invalid.
+
+    Examples
+    --------
+    >>> from torch_bsf import bezier_simplex
+    >>> bs = bezier_simplex.load("tests/data/bezier_simplex.csv")
+    >>> print(bs)
+    BezierSimplex(
+        (control_points): ControlPoints(
+            ([0, 2]): Parameter containing: [torch.FloatTensor of size 3]
+            ([1, 1]): Parameter containing: [torch.FloatTensor of size 3]
+            ([2, 0]): Parameter containing: [torch.FloatTensor of size 3]
+        )
+    )
+    >>> print(bs(torch.tensor([[0.2, 0.8]])))
+    tensor([[0.0000, 0.0000, 0.0000]], grad_fn=<AddBackward0>)
+    """
     cpdata: typing.Dict[str, typing.List[float]]
     if path.endswith(".pt"):
         data = torch.load(path)
@@ -542,7 +674,7 @@ def load(path: str) -> BezierSimplex:
 def fit(
     params: torch.Tensor,
     values: torch.Tensor,
-    degree: int,
+    degree: typing.Optional[int] = None,
     init: typing.Optional[typing.Union[ControlPoints, ControlPointsData]] = None,
     skeleton: typing.Optional[typing.Iterable[Index]] = None,
     batch_size: typing.Optional[int] = None,
@@ -625,9 +757,33 @@ def fit(
     """
     data = TensorDataset(params, values)
     dl = DataLoader(data, batch_size=batch_size or len(data))
-    bs = randn(
-        n_params=int(params.shape[1]), n_values=int(values.shape[1]), degree=degree
+
+    if degree is None and init is None:
+        raise ValueError("Either degree or init must be specified")
+    if degree is not None and init is not None:
+        raise ValueError("Either degree or init must be specified, not both")
+
+    bs = (
+        BezierSimplex(init)
+        if init
+        else randn(
+            n_params=int(params.shape[1]),
+            n_values=int(values.shape[1]),
+            degree=typing.cast(int, degree),
+        )
     )
+
+    if skeleton is None:
+        skeleton = [list(i) for i in bs.control_points.indices()]
+    else:
+        skeleton = [eval(to_parameterdict_key(i)) for i in skeleton]
+    validate_skeleton(skeleton, bs.n_params, bs.degree)
+
+    for value in bs.control_points.values():
+        value.requires_grad = False
+    for index in skeleton:
+        bs.control_points[index].requires_grad = True
+
     trainer = pl.Trainer(
         accelerator=accelerator,
         strategy=strategy,
