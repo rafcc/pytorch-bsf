@@ -1,5 +1,6 @@
 import csv
 import json
+from pathlib import Path
 import typing
 from functools import lru_cache
 from math import factorial
@@ -9,6 +10,7 @@ import pytorch_lightning as pl
 import torch
 import torch.optim
 import yaml
+from jsonschema import validate, ValidationError
 from pytorch_lightning.callbacks.early_stopping import EarlyStopping
 from torch.nn import functional as F
 from torch.utils.data import DataLoader, TensorDataset, random_split
@@ -40,8 +42,8 @@ class BezierSimplexDataModule(pl.LightningDataModule):
 
     def __init__(
         self,
-        params: str,
-        values: str,
+        params: Path,
+        values: Path,
         header: int = 0,
         delimiter: typing.Optional[str] = None,
         batch_size: typing.Optional[int] = None,
@@ -473,6 +475,33 @@ def save(path: str, data: BezierSimplex) -> None:
         raise ValueError(f"Unknown file type: {path}")
 
 
+CONTROLPOINTS_JSONSCHEMA = {
+    "$schema": "https://json-schema.org/draft/2020-12/schema",
+    "type": "object",
+    "patternProperties": {
+        r"^\((\d+,)?\d+\)$": {
+            "type": "array",
+            "items": {
+                "type": "number",
+            },
+        }
+    },
+    "additionalProperties": False,
+}
+
+
+def validate_control_points(data: typing.Dict[str, typing.List[float]]):
+    validate(instance=data, schema=CONTROLPOINTS_JSONSCHEMA)
+    index, value = next(iter(data.items()))
+    n_params = len(eval(index))
+    n_values = len(value)
+    for index, value in data.items():
+        if len(eval(index)) != n_params:
+            raise ValidationError(f"Dimension mismatch: {index}")
+        if len(value) != n_values:
+            raise ValidationError(f"Dimension mismatch: {value}")
+
+
 def load(path: str) -> BezierSimplex:
     cpdata: typing.Dict[str, typing.List[float]]
     if path.endswith(".pt"):
@@ -485,22 +514,26 @@ def load(path: str) -> BezierSimplex:
             row[0]: [float(v) for v in row[1:]]
             for row in csv.reader(open(path, encoding="utf-8"))
         }
+        validate_control_points(cpdata)
         return BezierSimplex(cpdata)
     elif path.endswith(".tsv"):
         cpdata = {
             row[0]: [float(v) for v in row[1:]]
             for row in csv.reader(open(path, encoding="utf-8"), delimiter="\t")
         }
+        validate_control_points(cpdata)
         return BezierSimplex(cpdata)
     elif path.endswith(".json"):
         cpdata = json.load(open(path, encoding="utf-8"))
         for index, value in cpdata.items():
             cpdata[index] = [float(v) for v in value]
+        validate_control_points(cpdata)
         return BezierSimplex(cpdata)
     elif path.endswith(".yml") or path.endswith(".yaml"):
         cpdata = yaml.safe_load(open(path, encoding="utf-8"))
         for index, value in cpdata.items():
             cpdata[index] = [float(v) for v in value]
+        validate_control_points(cpdata)
         return BezierSimplex(cpdata)
     else:
         raise ValueError(f"Unknown file type: {path}")

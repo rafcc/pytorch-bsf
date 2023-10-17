@@ -1,5 +1,5 @@
-import os
 from argparse import ArgumentParser
+from pathlib import Path
 
 import pytorch_lightning as pl
 from mlflow import autolog
@@ -13,10 +13,10 @@ from torch_bsf.validator import int_or_str, skeleton, validate_skeleton
 parser = ArgumentParser(
     prog="python -m torch_bsf", description="Bezier simplex fitting"
 )
-parser.add_argument("--params", type=str, required=True)
-parser.add_argument("--values", type=str, required=True)
+parser.add_argument("--params", type=Path, required=True)
+parser.add_argument("--values", type=Path, required=True)
 parser.add_argument("--degree", type=int)
-parser.add_argument("--init", type=str)
+parser.add_argument("--init", type=Path)
 parser.add_argument("--skeleton", type=skeleton)
 parser.add_argument("--header", type=int, default=0)
 parser.add_argument("--delimiter", type=str)
@@ -92,12 +92,12 @@ trainer.fit(bs, dm)
 
 # search for filename
 fn_tmpl = (
-    f"{args.params},{args.values},meshgrid,d_{args.degree},r_{args.split_ratio},"
+    f"{args.params.name},{args.values.name},meshgrid,d_{args.degree},r_{args.split_ratio},"
     + "{}.csv"
 )
 for i in range(1000000):
-    fn = fn_tmpl.format(i)
-    if not os.path.exists(fn):
+    fn = Path(fn_tmpl.format(i))
+    if not (fn).exists():
         break
 else:
     raise FileExistsError(fn)
