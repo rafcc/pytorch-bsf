@@ -40,8 +40,8 @@ class BezierSimplexDataModule(pl.LightningDataModule):
 
     def __init__(
         self,
-        data: str,
-        label: str,
+        params: str,
+        values: str,
         header: int = 0,
         delimiter: typing.Optional[str] = None,
         batch_size: typing.Optional[int] = None,
@@ -50,25 +50,25 @@ class BezierSimplexDataModule(pl.LightningDataModule):
     ):
         # REQUIRED
         super().__init__()
-        self.data = data
-        self.label = label
+        self.params = params
+        self.values = values
         self.header = header
         self.delimiter = delimiter
         self.batch_size = batch_size
         self.split_ratio = split_ratio
         self.normalize = normalize
-        with open(self.data) as f:
+        with open(self.params) as f:
             self.n_params = len(f.readline().split(self.delimiter))
-        with open(self.label) as f:
+        with open(self.values) as f:
             self.n_values = len(f.readline().split(self.delimiter))
 
     def setup(self, stage: typing.Optional[str] = None):
         # OPTIONAL
         params = torch.from_numpy(
-            np.loadtxt(self.data, delimiter=self.delimiter, skiprows=self.header)
+            np.loadtxt(self.params, delimiter=self.delimiter, skiprows=self.header)
         )
         values = torch.from_numpy(
-            np.loadtxt(self.label, delimiter=self.delimiter, skiprows=self.header)
+            np.loadtxt(self.values, delimiter=self.delimiter, skiprows=self.header)
         )
         if self.normalize == "max":
             mins = values.amin(dim=0)
@@ -210,14 +210,17 @@ class BezierSimplex(pl.LightningModule):
 
     @property
     def n_params(self) -> int:
+        r"""The number of parameters, i.e., the source dimension + 1."""
         return self.control_points.n_params
 
     @property
     def n_values(self) -> int:
+        r"""The number of values, i.e., the target dimension."""
         return self.control_points.n_values
 
     @property
     def degree(self) -> int:
+        r"""The degree of the Bezier simplex."""
         return self.control_points.degree
 
     def forward(self, t: torch.Tensor) -> torch.Tensor:
@@ -290,12 +293,11 @@ class BezierSimplex(pl.LightningModule):
             The number of grid points on each edge.
 
         Returns
-        ----------
+        -------
         ts
             A parameter matrix of the mesh grid.
         xs
             A value matrix of the mesh grid.
-
         """
         ts = torch.Tensor(list(indices(dim=self.n_params, deg=num))) / num
         xs = self.forward(ts)
@@ -303,7 +305,7 @@ class BezierSimplex(pl.LightningModule):
 
 
 def zeros(n_params: int, n_values: int, degree: int) -> BezierSimplex:
-    r"""Generates a Bezier simplex filled with zeros.
+    r"""Generates a Bezier simplex with control points at origin.
 
     Parameters
     ----------
@@ -330,11 +332,11 @@ def zeros(n_params: int, n_values: int, degree: int) -> BezierSimplex:
     >>> bs = bezier_simplex.zeros(n_params=2, n_values=3, degree=2)
     >>> print(bs)
     BezierSimplex(
-        (control_points): ParameterDict(
-            ([2, 0], Parameter containing: [torch.FloatTensor of size 3])
-            ([1, 1], Parameter containing: [torch.FloatTensor of size 3])
-            ([0, 2], Parameter containing: [torch.FloatTensor of size 3])
-        )
+      (control_points): ParameterDict(
+          ([2, 0]): Parameter containing: [torch.FloatTensor of size 3]
+          ([1, 1]): Parameter containing: [torch.FloatTensor of size 3]
+          ([0, 2]): Parameter containing: [torch.FloatTensor of size 3]
+      )
     )
     >>> print(bs(torch.tensor([[0.2, 0.8]])))
     tensor([[0., 0., 0.]])
@@ -381,9 +383,9 @@ def rand(n_params: int, n_values: int, degree: int) -> BezierSimplex:
     >>> print(bs)
     BezierSimplex(
       (control_points): ParameterDict(
-          ([2, 0], Parameter containing: [torch.FloatTensor of size 3])
-          ([1, 1], Parameter containing: [torch.FloatTensor of size 3])
-          ([0, 2], Parameter containing: [torch.FloatTensor of size 3])
+          ([2, 0]): Parameter containing: [torch.FloatTensor of size 3]
+          ([1, 1]): Parameter containing: [torch.FloatTensor of size 3]
+          ([0, 2]): Parameter containing: [torch.FloatTensor of size 3]
       )
     )
     >>> print(bs(torch.tensor([[0.2, 0.8]])))
@@ -431,9 +433,9 @@ def randn(n_params: int, n_values: int, degree: int) -> BezierSimplex:
     >>> print(bs)
     BezierSimplex(
       (control_points): ParameterDict(
-          ([2, 0], Parameter containing: [torch.FloatTensor of size 3])
-          ([1, 1], Parameter containing: [torch.FloatTensor of size 3])
-          ([0, 2], Parameter containing: [torch.FloatTensor of size 3])
+          ([2, 0]): Parameter containing: [torch.FloatTensor of size 3]
+          ([1, 1]): Parameter containing: [torch.FloatTensor of size 3]
+          ([0, 2]): Parameter containing: [torch.FloatTensor of size 3]
       )
     )
     >>> print(bs(torch.tensor([[0.2, 0.8]])))

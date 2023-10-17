@@ -13,9 +13,9 @@ from torch_bsf.validator import int_or_str, skeleton, validate_skeleton
 parser = ArgumentParser(
     prog="python -m torch_bsf", description="Bezier simplex fitting"
 )
-parser.add_argument("--data", type=str, required=True)
-parser.add_argument("--label", type=str, required=True)
-parser.add_argument("--degree", type=int, required=True)
+parser.add_argument("--params", type=str, required=True)
+parser.add_argument("--values", type=str, required=True)
+parser.add_argument("--degree", type=int)
 parser.add_argument("--init", type=str)
 parser.add_argument("--skeleton", type=skeleton)
 parser.add_argument("--header", type=int, default=0)
@@ -34,8 +34,12 @@ parser.add_argument("--precision", type=str, default="32-true")
 parser.add_argument(
     "--loglevel", type=int, choices=(0, 1, 2), default=2
 )  # 0: nothing, 1: metrics, 2: metrics & models
+
 args = parser.parse_args()
-print(args.skeleton)
+
+if args.degree is None and args.init is None:
+    raise ValueError("Either --degree or --init must be specified")
+
 autolog(
     log_input_examples=(args.loglevel >= 2),
     log_model_signatures=(args.loglevel >= 2),
@@ -47,14 +51,15 @@ autolog(
 )
 
 dm = BezierSimplexDataModule(
-    data=args.data,
-    label=args.label,
+    params=args.params,
+    values=args.values,
     header=args.header,
     delimiter=args.delimiter,
     batch_size=args.batch_size,
     split_ratio=args.split_ratio,
     normalize=args.normalize,
 )
+
 bs = (
     load(args.init)
     if args.init
@@ -64,9 +69,9 @@ bs = (
         degree=args.degree,
     )
 )
-print(bs)
 
-args.skeleton = args.skeleton or [list(i) for i in indices(dm.n_params, args.degree)]
+if args.skeleton is None:
+    args.skeleton = [list(i) for i in indices(dm.n_params, args.degree)]
 validate_skeleton(args.skeleton, dm.n_params, args.degree)
 
 for index in bs.control_points.indices():
