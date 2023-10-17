@@ -230,8 +230,7 @@ class BezierSimplex(pl.LightningModule):
         A minibatch of value vectors.
         """
         # REQUIRED
-        # x = torch.zeros(len(t), self.n_values)
-        x = 0
+        x = typing.cast(torch.Tensor, 0)  # x will be of Tensor by subsequent broadcast
         for i in indices(self.n_params, self.degree):
             x += polynom(self.degree, i) * torch.outer(
                 monomial(t, i), self.control_points[i]
