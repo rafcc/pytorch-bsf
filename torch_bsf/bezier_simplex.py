@@ -189,7 +189,8 @@ class BezierSimplex(pl.LightningModule):
     ...     degree=3,
     ... )
     >>> trainer = pl.Trainer(
-    ...     callbacks=[EarlyStopping(monitor="val_mse")],
+    ...     callbacks=[EarlyStopping(monitor="train_mse")],
+    ...     enable_progress_bar=False,
     ... )
     >>> trainer.fit(bs, dl)
     >>> ts, xs = bs.meshgrid()
@@ -332,14 +333,14 @@ def zeros(n_params: int, n_values: int, degree: int) -> BezierSimplex:
     >>> bs = bezier_simplex.zeros(n_params=2, n_values=3, degree=2)
     >>> print(bs)
     BezierSimplex(
-      (control_points): ParameterDict(
-          ([2, 0]): Parameter containing: [torch.FloatTensor of size 3]
-          ([1, 1]): Parameter containing: [torch.FloatTensor of size 3]
+      (control_points): ControlPoints(
           ([0, 2]): Parameter containing: [torch.FloatTensor of size 3]
+          ([1, 1]): Parameter containing: [torch.FloatTensor of size 3]
+          ([2, 0]): Parameter containing: [torch.FloatTensor of size 3]
       )
     )
     >>> print(bs(torch.tensor([[0.2, 0.8]])))
-    tensor([[0., 0., 0.]])
+    tensor([[0., 0., 0.]], grad_fn=<AddBackward0>)
     """
     if n_params < 0:
         raise ValueError(f"n_params must be non-negative: {n_params}")
@@ -382,14 +383,14 @@ def rand(n_params: int, n_values: int, degree: int) -> BezierSimplex:
     >>> bs = bezier_simplex.rand(n_params=2, n_values=3, degree=2)
     >>> print(bs)
     BezierSimplex(
-      (control_points): ParameterDict(
-          ([2, 0]): Parameter containing: [torch.FloatTensor of size 3]
-          ([1, 1]): Parameter containing: [torch.FloatTensor of size 3]
+      (control_points): ControlPoints(
           ([0, 2]): Parameter containing: [torch.FloatTensor of size 3]
+          ([1, 1]): Parameter containing: [torch.FloatTensor of size 3]
+          ([2, 0]): Parameter containing: [torch.FloatTensor of size 3]
       )
     )
-    >>> print(bs(torch.tensor([[0.2, 0.8]])))
-    tensor([[0.4400, 0.5400, 0.6600]])
+    >>> print(bs(torch.tensor([[0.2, 0.8]])))  # doctest: +ELLIPSIS
+    tensor([[..., ..., ...]], grad_fn=<AddBackward0>)
     """
     if n_params < 0:
         raise ValueError(f"n_params must be non-negative: {n_params}")
@@ -432,14 +433,14 @@ def randn(n_params: int, n_values: int, degree: int) -> BezierSimplex:
     >>> bs = bezier_simplex.randn(n_params=2, n_values=3, degree=2)
     >>> print(bs)
     BezierSimplex(
-      (control_points): ParameterDict(
-          ([2, 0]): Parameter containing: [torch.FloatTensor of size 3]
-          ([1, 1]): Parameter containing: [torch.FloatTensor of size 3]
+      (control_points): ControlPoints(
           ([0, 2]): Parameter containing: [torch.FloatTensor of size 3]
+          ([1, 1]): Parameter containing: [torch.FloatTensor of size 3]
+          ([2, 0]): Parameter containing: [torch.FloatTensor of size 3]
       )
     )
-    >>> print(bs(torch.tensor([[0.2, 0.8]])))
-    tensor([[0.4400, 0.5400, 0.6600]])
+    >>> print(bs(torch.tensor([[0.2, 0.8]])))  # doctest: +ELLIPSIS
+    tensor([[..., ..., ...]], grad_fn=<AddBackward0>)
     """
     if n_params < 0:
         raise ValueError(f"n_params must be non-negative: {n_params}")
@@ -507,6 +508,7 @@ def fit(
     devices: typing.Union[typing.List[int], str, int] = "auto",
     num_nodes: int = 1,
     precision: typing.Union[str, int] = "32-true",
+    enable_progress_bar: bool = False,
 ) -> BezierSimplex:
     r"""Fits a Bezier simplex.
 
@@ -536,6 +538,8 @@ def fit(
         The number of compute nodes to use.
     precision
         The precision of floating point numbers.
+    enable_progress_bar
+        Whether to enable progress bar.
 
     Returns
     -------
@@ -573,7 +577,7 @@ def fit(
     >>> t = [[0.2, 0.3, 0.5]]
     >>> x = bs(t)
     >>> print(f"{t} -> {x}")
-
+    [[0.2, 0.3, 0.5]] -> tensor([[0.9600, 0.9100, 0.7500]], grad_fn=<AddBackward0>)
     """
     data = TensorDataset(params, values)
     dl = DataLoader(data, batch_size=batch_size or len(data))
@@ -588,6 +592,7 @@ def fit(
         num_nodes=num_nodes,
         max_epochs=max_epochs,
         callbacks=[EarlyStopping(monitor="train_mse")],
+        enable_progress_bar=enable_progress_bar,
     )
     trainer.fit(bs, dl)
     return bs
