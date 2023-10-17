@@ -91,7 +91,10 @@ trainer = pl.Trainer(
 trainer.fit(bs, dm)
 
 # search for filename
-fn_tmpl = args.data + f",meshgrid,d_{args.degree},r_{args.split_ratio}," + "{}.csv"
+fn_tmpl = (
+    f"{args.params},{args.values},meshgrid,d_{args.degree},r_{args.split_ratio},"
+    + "{}.csv"
+)
 for i in range(1000000):
     fn = fn_tmpl.format(i)
     if not os.path.exists(fn):

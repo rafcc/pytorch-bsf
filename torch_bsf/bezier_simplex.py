@@ -460,6 +460,11 @@ def save(path: str, data: BezierSimplex) -> None:
             writer = csv.writer(f)
             for index, value in data.control_points.items():
                 writer.writerow([index] + value.tolist())
+    elif path.endswith(".tsv"):
+        with open(path, "w", encoding="utf-8") as f:
+            writer = csv.writer(f, delimiter="\t")
+            for index, value in data.control_points.items():
+                writer.writerow([index] + value.tolist())
     elif path.endswith(".json"):
         json.dump(data.control_points, open(path, "w", encoding="utf-8"))
     elif path.endswith(".yml") or path.endswith(".yaml"):
@@ -469,7 +474,7 @@ def save(path: str, data: BezierSimplex) -> None:
 
 
 def load(path: str) -> BezierSimplex:
-    cpdata: ControlPointsData
+    cpdata: typing.Dict[str, typing.List[float]]
     if path.endswith(".pt"):
         data = torch.load(path)
         if isinstance(data, BezierSimplex):
@@ -479,6 +484,12 @@ def load(path: str) -> BezierSimplex:
         cpdata = {
             row[0]: [float(v) for v in row[1:]]
             for row in csv.reader(open(path, encoding="utf-8"))
+        }
+        return BezierSimplex(cpdata)
+    elif path.endswith(".tsv"):
+        cpdata = {
+            row[0]: [float(v) for v in row[1:]]
+            for row in csv.reader(open(path, encoding="utf-8"), delimiter="\t")
         }
         return BezierSimplex(cpdata)
     elif path.endswith(".json"):
