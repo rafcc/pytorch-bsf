@@ -34,14 +34,14 @@ conda install -c conda-forge mlflow
 
 Prepare data:
 ```
-cat <<EOS > data.tsv
+cat <<EOS > params.tsv
 1 0
 0.75 0.25
 0.5 0.5
 0.25 0.75
 0 1
 EOS
-cat <<EOS > label.tsv
+cat <<EOS > values.tsv
 0 1
 3 2
 4 5
@@ -53,8 +53,8 @@ EOS
 Run the following command:
 ```
 mlflow run https://github.com/rafcc/pytorch-bsf \
-  -P data=data.tsv \
-  -P label=label.tsv \
+  -P params=params.tsv \
+  -P values=values.tsv \
   -P degree=3
 ```
 which automatically sets up the environment and runs an experiment:
@@ -64,11 +64,13 @@ which automatically sets up the environment and runs an experiment:
 
 | Parameter   | Type                             | Default  | Description                                                                                                                                                                                                                                                                                                                                                                                                                    |
 | ----------- | -------------------------------- | -------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
-| data        | path                             | required | The data file. The file should contain a numerical matrix in the TSV format: each row represents a record that consists of features separated by Tabs or spaces.                                                                                                                                                                                                                                                               |
-| label       | path                             | required | The label file. The file should contain a numerical matrix in the TSV format: each row represents a record that consists of outcomes separated by Tabs or spaces.                                                                                                                                                                                                                                                              |
-| degree      | int $(x \ge 1)$                  | required | The degree of the Bezier simplex.                                                                                                                                                                                                                                                                                                                                                                                              |
-| header      | int $(x \ge 0)$                  | `0`      | The number of header lines in data/label files.                                                                                                                                                                                                                                                                                                                                                                                |
-| delimiter   | str                              | `" "`    | The delimiter of values in data/label files.                                                                                                                                                                                                                                                                                                                                                                                   |
+| params      | path                             | required | The parameter data file. The file should contain a numerical matrix in the TSV format: each row represents a record that consists of features separated by Tabs or spaces.                                                                                                                                                                                                                                                     |
+| values      | path                             | required | The value data file. The file should contain a numerical matrix in the TSV format: each row represents a record that consists of outcomes separated by Tabs or spaces.                                                                                                                                                                                                                                                         |
+| init        | path                             | `None`   | Load initial control points from a file. The file must be of pickled PyTorch (`.pt`), CSV (`.csv`), TSV (`.tsv`), JSON (`.json`), or YAML (`.yml` or `.yaml`). Either this option or `--degree` must be specified.                                                                                                                                                                                                             |
+| degree      | int $(x \ge 1)$                  | `None`   | Generate initial control points at random with specified degree. Either this option or `--init` must be specified.                                                                                                                                                                                                                                                                                                             |
+| skeleton    | list[list[int]]                  | `None`   | Specified control points are trained. By default, all control points are trained.                                                                                                                                                                                                                                                                                                                                              |
+| header      | int $(x \ge 0)$                  | `0`      | The number of header lines in params/values files.                                                                                                                                                                                                                                                                                                                                                                             |
+| delimiter   | str                              | `" "`    | The delimiter of values in params/values files.                                                                                                                                                                                                                                                                                                                                                                                |
 | normalize   | `"max"`, `"std"`, `"quantile"`   | `None`   | The data normalization: `"max"` scales each feature as the minimum is 0 and the maximum is 1, suitable for uniformly distributed data; `"std"` does as the mean is 0 and the standard deviation is 1, suitable for nonuniformly distributed data; `"quantile"` does as 5-percentile is 0 and 95-percentile is 1, suitable for data containing outliers; `None` does not perform any scaling, suitable for pre-normalized data. |
 | split_ratio | float $(0 < x < 1)$              | `0.5`    | The ratio of training data against validation data.                                                                                                                                                                                                                                                                                                                                                                            |
 | batch_size  | int $(x \ge 0)$                  | `0`      | The size of minibatch. The default uses all records in a single batch.                                                                                                                                                                                                                                                                                                                                                         |
@@ -95,8 +97,8 @@ This package provides a command line interface to train a Bezier simplex with a 
 Execute the `torch_bsf` module:
 ```
 python -m torch_bsf \
-  --data=data.tsv \
-  --label=label.tsv \
+  --params=params.tsv \
+  --values=values.tsv \
   --degree=3
 ```
 
