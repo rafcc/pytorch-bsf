@@ -6,8 +6,8 @@ from mlflow import autolog
 from pytorch_lightning.callbacks.early_stopping import EarlyStopping
 
 from torch_bsf import BezierSimplexDataModule
+from torch_bsf.bezier_simplex import load, randn
 from torch_bsf.control_points import indices
-from torch_bsf.bezier_simplex import randn
 from torch_bsf.validator import int_or_str, skeleton, validate_skeleton
 
 parser = ArgumentParser(
@@ -16,7 +16,8 @@ parser = ArgumentParser(
 parser.add_argument("--data", type=str, required=True)
 parser.add_argument("--label", type=str, required=True)
 parser.add_argument("--degree", type=int, required=True)
-parser.add_argument("--skeleton", type=skeleton, default=None)
+parser.add_argument("--init", type=str)
+parser.add_argument("--skeleton", type=skeleton)
 parser.add_argument("--header", type=int, default=0)
 parser.add_argument("--delimiter", type=str)
 parser.add_argument(
@@ -54,14 +55,24 @@ dm = BezierSimplexDataModule(
     split_ratio=args.split_ratio,
     normalize=args.normalize,
 )
-bs = randn(
-    n_params=dm.n_params,
-    n_values=dm.n_values,
-    degree=args.degree,
+bs = (
+    load(args.init)
+    if args.init
+    else randn(
+        n_params=dm.n_params,
+        n_values=dm.n_values,
+        degree=args.degree,
+    )
 )
+print(bs)
 
 args.skeleton = args.skeleton or [list(i) for i in indices(dm.n_params, args.degree)]
 validate_skeleton(args.skeleton, dm.n_params, args.degree)
+
+for index in bs.control_points.indices():
+    bs.control_points[index].requires_grad = False
+for index in args.skeleton:
+    bs.control_points[index].requires_grad = True
 
 trainer = pl.Trainer(
     accelerator=args.accelerator,

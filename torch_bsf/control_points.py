@@ -12,7 +12,18 @@ r"""The index type of control points of a Bezier simplex."""
 Value: typing_extensions.TypeAlias = typing.Union[typing.Sequence[float], torch.Tensor]
 r"""The value type of control points of a Bezier simplex."""
 
-ControlPointsData: typing_extensions.TypeAlias = typing.Dict[Index, Value]
+ControlPointsData: typing_extensions.TypeAlias = typing.Union[
+    # we can't use typing.Dict[Index, Value] because TypeVar of Dict is invariant.
+    typing.Dict[str, torch.Tensor],
+    typing.Dict[str, typing.List[float]],
+    typing.Dict[str, typing.Tuple[float]],
+    typing.Dict[typing.Tuple[int], torch.Tensor],
+    typing.Dict[typing.Tuple[int], typing.List[float]],
+    typing.Dict[typing.Tuple[int], typing.Tuple[float]],
+    typing.Dict[torch.Tensor, torch.Tensor],
+    typing.Dict[torch.Tensor, typing.List[float]],
+    typing.Dict[torch.Tensor, typing.Tuple[float]],
+]
 r"""The data type of control points of a Bezier simplex."""
 
 
@@ -72,7 +83,7 @@ def to_parameterdict_value(value: Value) -> torch.Tensor:
     return torch.as_tensor(value)
 
 
-def to_parameterdict(data: typing.Dict[Index, Value]) -> typing.Dict[str, torch.Tensor]:
+def to_parameterdict(data: ControlPointsData) -> typing.Dict[str, torch.Tensor]:
     """Convert data to a dictionary of parameters.
 
     Args:
@@ -127,7 +138,7 @@ class ControlPoints(nn.ParameterDict):
 
     def __init__(
         self,
-        data: ControlPointsData = {},
+        data: ControlPointsData,
     ):
         """Initialize the control points of a Bezier simplex.
 
@@ -144,7 +155,10 @@ class ControlPoints(nn.ParameterDict):
             self.n_params = 0
             self.n_values = 0
         else:
-            index, value = next(iter(data.items()))
+            index, value = typing.cast(
+                typing.Tuple[typing.Sequence[int], typing.Sequence[float]],
+                next(iter(data.items())),
+            )
             if isinstance(index, str):
                 index = typing.cast(typing.List[int], eval(index))
             self.degree = sum(index)

@@ -1,3 +1,5 @@
+import csv
+import json
 import typing
 from functools import lru_cache
 from math import factorial
@@ -6,6 +8,7 @@ import numpy as np
 import pytorch_lightning as pl
 import torch
 import torch.optim
+import yaml
 from pytorch_lightning.callbacks.early_stopping import EarlyStopping
 from torch.nn import functional as F
 from torch.utils.data import DataLoader, TensorDataset, random_split
@@ -444,6 +447,49 @@ def randn(n_params: int, n_values: int, degree: int) -> BezierSimplex:
         raise ValueError(f"degree must be non-negative: {degree}")
 
     return BezierSimplex({i: torch.randn(n_values) for i in indices(n_params, degree)})
+
+
+def save(path: str, data: BezierSimplex) -> None:
+    if path.endswith(".pt"):
+        torch.save(data, path)
+    elif path.endswith(".csv"):
+        with open(path, "w", encoding="utf-8") as f:
+            writer = csv.writer(f)
+            for index, value in data.control_points.items():
+                writer.writerow([index] + value.tolist())
+    elif path.endswith(".json"):
+        json.dump(data.control_points, open(path, "w", encoding="utf-8"))
+    elif path.endswith(".yml") or path.endswith(".yaml"):
+        yaml.dump(data.control_points, open(path, "w", encoding="utf-8"))
+    else:
+        raise ValueError(f"Unknown file type: {path}")
+
+
+def load(path: str) -> BezierSimplex:
+    cpdata: ControlPointsData
+    if path.endswith(".pt"):
+        data = torch.load(path)
+        if isinstance(data, BezierSimplex):
+            return data
+        raise ValueError(f"Unknown data type: {type(data)}")
+    elif path.endswith(".csv"):
+        cpdata = {
+            row[0]: [float(v) for v in row[1:]]
+            for row in csv.reader(open(path, encoding="utf-8"))
+        }
+        return BezierSimplex(cpdata)
+    elif path.endswith(".json"):
+        cpdata = json.load(open(path, encoding="utf-8"))
+        for index, value in cpdata.items():
+            cpdata[index] = [float(v) for v in value]
+        return BezierSimplex(cpdata)
+    elif path.endswith(".yml") or path.endswith(".yaml"):
+        cpdata = yaml.safe_load(open(path, encoding="utf-8"))
+        for index, value in cpdata.items():
+            cpdata[index] = [float(v) for v in value]
+        return BezierSimplex(cpdata)
+    else:
+        raise ValueError(f"Unknown file type: {path}")
 
 
 def fit(
