@@ -39,6 +39,8 @@ args = parser.parse_args()
 
 if args.degree is None and args.init is None:
     raise ValueError("Either --degree or --init must be specified")
+if args.degree is not None and args.init is not None:
+    raise ValueError("Either --degree or --init must be specified, not both")
 
 autolog(
     log_input_examples=(args.loglevel >= 2),
@@ -74,8 +76,8 @@ if args.skeleton is None:
     args.skeleton = [list(i) for i in indices(dm.n_params, args.degree)]
 validate_skeleton(args.skeleton, dm.n_params, args.degree)
 
-for index in bs.control_points.indices():
-    bs.control_points[index].requires_grad = False
+for value in bs.control_points.values():
+    value.requires_grad = False
 for index in args.skeleton:
     bs.control_points[index].requires_grad = True
 
