@@ -204,9 +204,18 @@ class BezierSimplex(pl.LightningModule):
             if isinstance(control_points, ControlPoints)
             else ControlPoints(control_points)
         )
-        self.n_params = self.control_points.n_params
-        self.n_values = self.control_points.n_values
-        self.degree = self.control_points.degree
+
+    @property
+    def n_params(self) -> int:
+        return self.control_points.n_params
+
+    @property
+    def n_values(self) -> int:
+        return self.control_points.n_values
+
+    @property
+    def degree(self) -> int:
+        return self.control_points.degree
 
     def forward(self, t: torch.Tensor) -> torch.Tensor:
         r"""Process a forwarding step of training.
@@ -221,7 +230,8 @@ class BezierSimplex(pl.LightningModule):
         A minibatch of value vectors.
         """
         # REQUIRED
-        x = torch.zeros(len(t), self.n_values)
+        # x = torch.zeros(len(t), self.n_values)
+        x = 0
         for i in indices(self.n_params, self.degree):
             x += polynom(self.degree, i) * torch.outer(
                 monomial(t, i), self.control_points[i]
@@ -319,12 +329,9 @@ def zeros(n_params: int, n_values: int, degree: int) -> BezierSimplex:
     >>> print(bs)
     BezierSimplex(
         (control_points): ParameterDict(
-            (0, Parameter containing: [torch.FloatTensor of size 3])
-            (1, Parameter containing: [torch.FloatTensor of size 3])
-            (2, Parameter containing: [torch.FloatTensor of size 3])
-            (3, Parameter containing: [torch.FloatTensor of size 3])
-            (4, Parameter containing: [torch.FloatTensor of size 3])
-            (5, Parameter containing: [torch.FloatTensor of size 3])
+            ([2, 0], Parameter containing: [torch.FloatTensor of size 3])
+            ([1, 1], Parameter containing: [torch.FloatTensor of size 3])
+            ([0, 2], Parameter containing: [torch.FloatTensor of size 3])
         )
     )
     >>> print(bs(torch.tensor([[0.2, 0.8]])))
@@ -372,12 +379,9 @@ def rand(n_params: int, n_values: int, degree: int) -> BezierSimplex:
     >>> print(bs)
     BezierSimplex(
       (control_points): ParameterDict(
-          (0, Parameter containing: [torch.FloatTensor of size 3])
-          (1, Parameter containing: [torch.FloatTensor of size 3])
-          (2, Parameter containing: [torch.FloatTensor of size 3])
-          (3, Parameter containing: [torch.FloatTensor of size 3])
-          (4, Parameter containing: [torch.FloatTensor of size 3])
-          (5, Parameter containing: [torch.FloatTensor of size 3])
+          ([2, 0], Parameter containing: [torch.FloatTensor of size 3])
+          ([1, 1], Parameter containing: [torch.FloatTensor of size 3])
+          ([0, 2], Parameter containing: [torch.FloatTensor of size 3])
       )
     )
     >>> print(bs(torch.tensor([[0.2, 0.8]])))
@@ -425,12 +429,9 @@ def randn(n_params: int, n_values: int, degree: int) -> BezierSimplex:
     >>> print(bs)
     BezierSimplex(
       (control_points): ParameterDict(
-          (0, Parameter containing: [torch.FloatTensor of size 3])
-          (1, Parameter containing: [torch.FloatTensor of size 3])
-          (2, Parameter containing: [torch.FloatTensor of size 3])
-          (3, Parameter containing: [torch.FloatTensor of size 3])
-          (4, Parameter containing: [torch.FloatTensor of size 3])
-          (5, Parameter containing: [torch.FloatTensor of size 3])
+          ([2, 0], Parameter containing: [torch.FloatTensor of size 3])
+          ([1, 1], Parameter containing: [torch.FloatTensor of size 3])
+          ([0, 2], Parameter containing: [torch.FloatTensor of size 3])
       )
     )
     >>> print(bs(torch.tensor([[0.2, 0.8]])))

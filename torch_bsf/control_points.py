@@ -90,19 +90,54 @@ def to_parameterdict(data: typing.Dict[Index, Value]) -> typing.Dict[str, torch.
 class ControlPoints(nn.ParameterDict):
     """Control points of a Bezier simplex.
 
-    Args:
-        degree (int): Degree of the Bezier simplex.
-        dimension (int): Dimension of the Bezier simplex.
-        dtype (torch.dtype): Data type of the control points.
-        device (torch.device): Device of the control points.
-        requires_grad (bool): Whether to enable gradient computation.
-        names (list[str]): Names of the control points.
+    Attributes
+    ----------
+    degree
+        The degree of the Bezier simplex.
+    n_params
+        The number of parameters.
+    n_values
+        The number of values.
+
+    Examples
+    --------
+    >>> import torch_bsf
+    >>> control_points = torch_bsf.ControlPoints({
+    ...     (1, 0): [0.0, 0.1, 0.2],
+    ...     (0, 1): [1.0, 1.1, 1.2],
+    ... })
+
+    >>> control_points.degree
+    1
+    >>> control_points.n_params
+    2
+    >>> control_points.n_values
+    3
+
+    >>> control_points[(1, 0)]
+    Parameter containing:
+    tensor([0.0000, 0.1000, 0.2000], requires_grad=True)
+    >>> control_points[(0, 1)]
+    Parameter containing:
+    tensor([1.0000, 1.1000, 1.2000], requires_grad=True)
+
+    >>> control_points[(1, 0)].requires_grad = False
+
     """
 
     def __init__(
         self,
         data: ControlPointsData = {},
     ):
+        """Initialize the control points of a Bezier simplex.
+
+        The structure of control points is inferred from the data.
+
+        Parameters
+        ----------
+        data
+            The data of control points.
+        """
         super().__init__(to_parameterdict(data))
         if len(data) == 0:
             self.degree = 0
@@ -111,7 +146,7 @@ class ControlPoints(nn.ParameterDict):
         else:
             index, value = next(iter(data.items()))
             if isinstance(index, str):
-                index = typing.cast(typing.Tuple[int], eval(index))
+                index = typing.cast(typing.List[int], eval(index))
             self.degree = sum(index)
             self.n_params = len(index)
             self.n_values = len(value)
