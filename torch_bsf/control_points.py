@@ -41,6 +41,13 @@ def indices(dim: int, deg: int) -> typing.Iterable[typing.Tuple[int]]:
     -------
     The indices.
     """
+    if dim < 0:
+        raise ValueError(f"dim must be non-negative, but {dim} is given.")
+    if deg < 0:
+        raise ValueError(f"deg must be non-negative, but {deg} is given.")
+    if dim == 0:
+        yield ()  # type: ignore
+        return
 
     def iterate(c, r):
         if len(c) == dim - 1:

@@ -479,7 +479,7 @@ CONTROLPOINTS_JSONSCHEMA = {
     "$schema": "https://json-schema.org/draft/2020-12/schema",
     "type": "object",
     "patternProperties": {
-        r"^\((\d+,)?\d+\)$": {
+        r"^\((\d+, *)?\d*\)$": {  # e.g., "(0, 0, 0)": [0.0, 0.0, 0.0]
             "type": "array",
             "items": {
                 "type": "number",

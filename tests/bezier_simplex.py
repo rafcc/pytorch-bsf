@@ -1,11 +1,58 @@
+import pytest
 import torch
 
 import torch_bsf as tb
+import torch_bsf.bezier_simplex as tbbs
 
 
-def test_indices():
-    for i in tb.bezier_simplex.indices(1, 1):
-        assert i == (1,)
+@pytest.mark.parametrize(
+    "n_params, n_values, degree",
+    (
+        (n_params, n_values, degree)
+        for n_params in range(3)
+        for n_values in range(3)
+        for degree in range(3)
+    ),
+)
+def test_zeros(n_params: int, n_values: int, degree: int):
+    bs = tbbs.zeros(n_params, n_values, degree)
+    assert bs.n_params == n_params
+    assert bs.n_values == n_values
+    if n_params == 0:
+        assert bs.degree == 0
+    else:
+        assert bs.degree == degree
+
+
+@pytest.mark.parametrize(
+    "n_params, degree",
+    ((n_params, degree) for n_params in range(3) for degree in range(3)),
+)
+def test_indices(n_params: int, degree: int):
+    indices = list(tbbs.indices(n_params, degree))
+    if n_params <= 1 or degree == 0:
+        assert len(indices) == 1
+    else:
+        assert len(indices) > 1
+
+    if n_params == 0:
+        assert indices[0] == ()
+        assert indices[-1] == ()
+    else:
+        assert indices[0] == (degree,) + (0,) * (n_params - 1)
+        assert indices[-1] == (0,) * (n_params - 1) + (degree,)
+
+
+@pytest.mark.parametrize(
+    "data",
+    (
+        {str(index): [0] for index in tbbs.indices(0, 1)},
+        {str(index): [0] for index in tbbs.indices(1, 2)},
+        {str(index): [0] for index in tbbs.indices(2, 3)},
+    ),
+)
+def test_validate_control_points(data):
+    tbbs.validate_control_points(data)
 
 
 def test_fit():
