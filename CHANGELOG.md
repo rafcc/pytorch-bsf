@@ -1,5 +1,20 @@
 # Changelog
 
+## [0.5.0](https://github.com/rafcc/pytorch-bsf/compare/v0.4.0...v0.5.0) (2023-10-19)
+
+
+### Features
+
+* auto detect file types ([#134](https://github.com/rafcc/pytorch-bsf/issues/134)) ([964c671](https://github.com/rafcc/pytorch-bsf/commit/964c6717835087b9b93477cd6b9ddb553fcfaeec))
+
+
+### Documentation
+
+* add examples ([a363fc5](https://github.com/rafcc/pytorch-bsf/commit/a363fc52f1a7b523b91c60b0a94245509134d842))
+* fix errors ([f1802b1](https://github.com/rafcc/pytorch-bsf/commit/f1802b146d7f0a38edc2d23c8460862dd523de90))
+* fix minor errors in document ([42d3362](https://github.com/rafcc/pytorch-bsf/commit/42d336202363b96ab30991a4575648b8bd6ed429))
+* update examples ([5a07b7b](https://github.com/rafcc/pytorch-bsf/commit/5a07b7b14008f287a03e38a2f5c5b4f12e2dad45))
+
 ## [0.4.0](https://github.com/rafcc/pytorch-bsf/compare/v0.3.1...v0.4.0) (2023-10-19)
 
 
