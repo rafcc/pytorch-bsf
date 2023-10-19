@@ -111,16 +111,19 @@ Then, install <code class="docutils literal notranslate"><span class="pre">mlflo
 <section id="training">
 <h3>Training<a class="headerlink" href="#training" title="Permalink to this heading"></a></h3>
 <p>Let’s prepare data and labels for training:</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>cat<span class="w"> </span><span class="s">&lt;&lt; EOS &gt; train_data.tsv</span>
-<span class="s">1 2</span>
-<span class="s">4 3</span>
-<span class="s">5 6</span>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>cat<span class="w"> </span><span class="s">&lt;&lt; EOS &gt; params.csv</span>
+<span class="s">1.00, 0.00</span>
+<span class="s">0.75, 0.25</span>
+<span class="s">0.50, 0.50</span>
+<span class="s">0.25, 0.75</span>
+<span class="s">0.00, 1.00</span>
 <span class="s">EOS</span>
-
-cat<span class="w"> </span><span class="s">&lt;&lt; EOS &gt; train_label.tsv</span>
-<span class="s">1</span>
-<span class="s">2</span>
-<span class="s">3</span>
+cat<span class="w"> </span><span class="s">&lt;&lt;EOS &gt; values.csv</span>
+<span class="s">0.00, 1.00</span>
+<span class="s">3.00, 2.00</span>
+<span class="s">4.00, 5.00</span>
+<span class="s">7.00, 6.00</span>
+<span class="s">8.00, 9.00</span>
 <span class="s">EOS</span>
 </pre></div>
 </div>
@@ -130,8 +133,8 @@ cat<span class="w"> </span><span class="s">&lt;&lt; EOS &gt; train_label.tsv</sp
 </div>
 <p>Now, you can fit a Bezier simplex to those data and labels with the latest version of PyTorch-BSF:</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>mlflow<span class="w"> </span>run<span class="w"> </span>https://github.com/rafcc/pytorch-bsf<span class="w"> </span><span class="se">\</span>
--P<span class="w"> </span><span class="nv">data</span><span class="o">=</span>train_data.tsv<span class="w"> </span><span class="se">\</span>
--P<span class="w"> </span><span class="nv">label</span><span class="o">=</span>train_label.tsv<span class="w"> </span><span class="se">\</span>
+-P<span class="w"> </span><span class="nv">params</span><span class="o">=</span>params.csv<span class="w"> </span><span class="se">\</span>
+-P<span class="w"> </span><span class="nv">values</span><span class="o">=</span>values.csv<span class="w"> </span><span class="se">\</span>
 -P<span class="w"> </span><span class="nv">degree</span><span class="o">=</span><span class="m">3</span>
 </pre></div>
 </div>
@@ -142,13 +145,13 @@ cat<span class="w"> </span><span class="s">&lt;&lt; EOS &gt; train_label.tsv</sp
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>mlflow<span class="w"> </span>models<span class="w"> </span>predict<span class="w"> </span><span class="se">\</span>
 <span class="w">  </span>--model-uri<span class="w"> </span>file://<span class="sb">`</span><span class="nb">pwd</span><span class="sb">`</span>/mlruns/0/<span class="si">${</span><span class="nv">run_uuid</span><span class="si">}</span>/artifacts/model<span class="w"> </span><span class="se">\</span>
 <span class="w">  </span>--content-type<span class="w"> </span>csv<span class="w"> </span><span class="se">\</span>
-<span class="w">  </span>--input-path<span class="w"> </span>test_data.csv<span class="w"> </span><span class="se">\</span>
-<span class="w">  </span>--output-path<span class="w"> </span>test_label.csv
+<span class="w">  </span>--input-path<span class="w"> </span>params.csv<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>--output-path<span class="w"> </span>test_values.csv
 </pre></div>
 </div>
-<p>You have results in <code class="docutils literal notranslate"><span class="pre">test_label.csv</span></code>:</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>cat<span class="w"> </span>test_label.csv
-<span class="o">[</span><span class="m">0</span>,<span class="w"> </span><span class="m">0</span>,<span class="w"> </span><span class="m">0</span>,<span class="w"> </span><span class="m">0</span>,<span class="w"> </span><span class="m">0</span>,<span class="w"> </span><span class="m">0</span>,<span class="w"> </span><span class="m">0</span>,<span class="w"> </span><span class="m">0</span>,<span class="w"> </span><span class="m">0</span>,<span class="w"> </span><span class="m">0</span>,<span class="w"> </span><span class="m">0</span>,<span class="w"> </span><span class="m">0</span>,<span class="w"> </span><span class="m">0</span>,<span class="w"> </span><span class="m">0</span>,<span class="w"> </span><span class="m">0</span>,<span class="w"> </span><span class="m">0</span>,<span class="w"> </span><span class="m">0</span>,<span class="w"> </span><span class="m">0</span>,<span class="w"> </span><span class="m">0</span>,<span class="w"> </span><span class="m">0</span>,<span class="w"> </span><span class="m">0</span>,<span class="w"> </span><span class="m">0</span>,<span class="w"> </span><span class="m">0</span>,<span class="w"> </span><span class="m">0</span>,<span class="w"> </span><span class="m">0</span>,<span class="w"> </span><span class="m">0</span>,<span class="w"> </span><span class="m">0</span>,<span class="w"> </span><span class="m">0</span>,<span class="w"> </span><span class="m">0</span>,<span class="w"> </span><span class="m">0</span>,<span class="w"> </span><span class="m">0</span>,<span class="w"> </span><span class="m">0</span>,<span class="w"> </span><span class="m">0</span>,<span class="w"> </span><span class="m">0</span>,<span class="w"> </span><span class="m">0</span>,<span class="w"> </span><span class="m">0</span>,<span class="w"> </span><span class="m">0</span>,<span class="w"> </span><span class="m">0</span>,<span class="w"> </span><span class="m">0</span>,<span class="w"> </span><span class="m">0</span>,<span class="w"> </span><span class="m">0</span>,<span class="w"> </span><span class="m">0</span>,<span class="w"> </span><span class="m">0</span>,<span class="w"> </span><span class="m">0</span>,<span class="w"> </span><span class="m">0</span>,<span class="w"> </span><span class="m">0</span>,<span class="w"> </span><span class="m">0</span>,<span class="w"> </span><span class="m">0</span>,<span class="w"> </span><span class="m">0</span>,<span class="w"> </span><span class="m">1</span>,<span class="w"> </span><span class="m">1</span>,<span class="w"> </span><span class="m">1</span>,<span class="w"> </span><span class="m">1</span>,<span class="w"> </span><span class="m">1</span>,<span class="w"> </span><span class="m">1</span>,<span class="w"> </span><span class="m">1</span>,<span class="w"> </span><span class="m">1</span>,<span class="w"> </span><span class="m">1</span>,<span class="w"> </span><span class="m">1</span>,<span class="w"> </span><span class="m">1</span>,<span class="w"> </span><span class="m">1</span>,<span class="w"> </span><span class="m">1</span>,<span class="w"> </span><span class="m">1</span>,<span class="w"> </span><span class="m">1</span>,<span class="w"> </span><span class="m">1</span>,<span class="w"> </span><span class="m">1</span>,<span class="w"> </span><span class="m">1</span>,<span class="w"> </span><span class="m">1</span>,<span class="w"> </span><span class="m">1</span>,<span class="w"> </span><span class="m">1</span>,<span class="w"> </span><span class="m">1</span>,<span class="w"> </span><span class="m">1</span>,<span class="w"> </span><span class="m">1</span>,<span class="w"> </span><span class="m">1</span>,<span class="w"> </span><span class="m">1</span>,<span class="w"> </span><span class="m">1</span>,<span class="w"> </span><span class="m">1</span>,<span class="w"> </span><span class="m">1</span>,<span class="w"> </span><span class="m">1</span>,<span class="w"> </span><span class="m">1</span>,<span class="w"> </span><span class="m">1</span>,<span class="w"> </span><span class="m">1</span>,<span class="w"> </span><span class="m">1</span>,<span class="w"> </span><span class="m">1</span>,<span class="w"> </span><span class="m">1</span>,<span class="w"> </span><span class="m">1</span>,<span class="w"> </span><span class="m">1</span>,<span class="w"> </span><span class="m">1</span>,<span class="w"> </span><span class="m">1</span>,<span class="w"> </span><span class="m">1</span>,<span class="w"> </span><span class="m">1</span>,<span class="w"> </span><span class="m">1</span>,<span class="w"> </span><span class="m">1</span>,<span class="w"> </span><span class="m">1</span>,<span class="w"> </span><span class="m">1</span>,<span class="w"> </span><span class="m">1</span>,<span class="w"> </span><span class="m">1</span>,<span class="w"> </span><span class="m">1</span>,<span class="w"> </span><span class="m">1</span>,<span class="w"> </span><span class="m">2</span>,<span class="w"> </span><span class="m">2</span>,<span class="w"> </span><span class="m">2</span>,<span class="w"> </span><span class="m">2</span>,<span class="w"> </span><span class="m">2</span>,<span class="w"> </span><span class="m">2</span>,<span class="w"> </span><span class="m">2</span>,<span class="w"> </span><span class="m">2</span>,<span class="w"> </span><span class="m">2</span>,<span class="w"> </span><span class="m">2</span>,<span class="w"> </span><span class="m">2</span>,<span class="w"> </span><span class="m">2</span>,<span class="w"> </span><span class="m">2</span>,<span class="w"> </span><span class="m">2</span>,<span class="w"> </span><span class="m">2</span>,<span class="w"> </span><span class="m">2</span>,<span class="w"> </span><span class="m">2</span>,<span class="w"> </span><span class="m">2</span>,<span class="w"> </span><span class="m">2</span>,<span class="w"> </span><span class="m">2</span>,<span class="w"> </span><span class="m">2</span>,<span class="w"> </span><span class="m">2</span>,<span class="w"> </span><span class="m">2</span>,<span class="w"> </span><span class="m">2</span>,<span class="w"> </span><span class="m">2</span>,<span class="w"> </span><span class="m">2</span>,<span class="w"> </span><span class="m">2</span>,<span class="w"> </span><span class="m">2</span>,<span class="w"> </span><span class="m">2</span>,<span class="w"> </span><span class="m">2</span>,<span class="w"> </span><span class="m">2</span>,<span class="w"> </span><span class="m">2</span>,<span class="w"> </span><span class="m">2</span>,<span class="w"> </span><span class="m">2</span>,<span class="w"> </span><span class="m">2</span>,<span class="w"> </span><span class="m">2</span>,<span class="w"> </span><span class="m">2</span>,<span class="w"> </span><span class="m">2</span>,<span class="w"> </span><span class="m">2</span>,<span class="w"> </span><span class="m">2</span>,<span class="w"> </span><span class="m">2</span>,<span class="w"> </span><span class="m">2</span>,<span class="w"> </span><span class="m">2</span>,<span class="w"> </span><span class="m">2</span>,<span class="w"> </span><span class="m">2</span>,<span class="w"> </span><span class="m">2</span>,<span class="w"> </span><span class="m">2</span>,<span class="w"> </span><span class="m">2</span>,<span class="w"> </span><span class="m">2</span>,<span class="w"> </span><span class="m">2</span><span class="o">]</span>
+<p>You have results in <code class="docutils literal notranslate"><span class="pre">test_values.csv</span></code>:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>cat<span class="w"> </span>test_values.csv
+<span class="o">[[</span><span class="m">0</span>.00,<span class="w"> </span><span class="m">1</span>.00<span class="o">]</span>,<span class="w"> </span>...<span class="o">]</span>
 </pre></div>
 </div>
 </section>
@@ -163,10 +166,10 @@ cat<span class="w"> </span><span class="s">&lt;&lt; EOS &gt; train_label.tsv</sp
 </div>
 <p>Request a prediction with HTTP POST method:</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>curl<span class="w"> </span>http://localhost:5001/invocations<span class="w"> </span>-H<span class="w"> </span><span class="s1">&#39;Content-Type: application/json&#39;</span><span class="w"> </span>-d<span class="w"> </span><span class="s1">&#39;{</span>
-<span class="s1">  &quot;columns&quot;: [&quot;t1&quot;, &quot;t2&quot;, &quot;t3&quot;],</span>
+<span class="s1">  &quot;columns&quot;: [&quot;t1&quot;, &quot;t2&quot;],</span>
 <span class="s1">  &quot;data&quot;: [</span>
-<span class="s1">     [0.1, 0.2, 0.7],</span>
-<span class="s1">     [0.4, 0.5, 0.1]</span>
+<span class="s1">     [0.2, 0.8],</span>
+<span class="s1">     [0.7, 0.3]</span>
 <span class="s1">  ]</span>
 <span class="s1">}&#39;</span>
 </pre></div>
@@ -185,8 +188,8 @@ Then, install the package:</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>python<span class="w"> </span>-m<span class="w"> </span>torch_bsf<span class="w"> </span><span class="se">\</span>
 <span class="w">  </span>--model-uri<span class="w"> </span>file://<span class="sb">`</span><span class="nb">pwd</span><span class="sb">`</span>/mlruns/0/<span class="si">${</span><span class="nv">run_uuid</span><span class="si">}</span>/artifacts/model<span class="w"> </span><span class="se">\</span>
 <span class="w">  </span>--content-type<span class="w"> </span>csv<span class="w"> </span><span class="se">\</span>
-<span class="w">  </span>--input-path<span class="w"> </span>test_data.csv<span class="w"> </span><span class="se">\</span>
-<span class="w">  </span>--output-path<span class="w"> </span>test_label.csv
+<span class="w">  </span>--input-path<span class="w"> </span>test_params.csv<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>--output-path<span class="w"> </span>test_values.csv
 </pre></div>
 </div>
 </section>
@@ -204,25 +207,27 @@ Then, install the package:</p>
 <span class="c1"># Prepare training data</span>
 <span class="n">ts</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">tensor</span><span class="p">(</span>  <span class="c1"># parameters on a simplex</span>
    <span class="p">[</span>
-      <span class="p">[</span><span class="mi">3</span><span class="o">/</span><span class="mi">3</span><span class="p">,</span> <span class="mi">0</span><span class="o">/</span><span class="mi">3</span><span class="p">,</span> <span class="mi">0</span><span class="o">/</span><span class="mi">3</span><span class="p">],</span>
-      <span class="p">[</span><span class="mi">2</span><span class="o">/</span><span class="mi">3</span><span class="p">,</span> <span class="mi">1</span><span class="o">/</span><span class="mi">3</span><span class="p">,</span> <span class="mi">0</span><span class="o">/</span><span class="mi">3</span><span class="p">],</span>
-      <span class="p">[</span><span class="mi">2</span><span class="o">/</span><span class="mi">3</span><span class="p">,</span> <span class="mi">0</span><span class="o">/</span><span class="mi">3</span><span class="p">,</span> <span class="mi">1</span><span class="o">/</span><span class="mi">3</span><span class="p">],</span>
-      <span class="p">[</span><span class="mi">1</span><span class="o">/</span><span class="mi">3</span><span class="p">,</span> <span class="mi">2</span><span class="o">/</span><span class="mi">3</span><span class="p">,</span> <span class="mi">0</span><span class="o">/</span><span class="mi">3</span><span class="p">],</span>
-      <span class="p">[</span><span class="mi">1</span><span class="o">/</span><span class="mi">3</span><span class="p">,</span> <span class="mi">1</span><span class="o">/</span><span class="mi">3</span><span class="p">,</span> <span class="mi">1</span><span class="o">/</span><span class="mi">3</span><span class="p">],</span>
-      <span class="p">[</span><span class="mi">1</span><span class="o">/</span><span class="mi">3</span><span class="p">,</span> <span class="mi">0</span><span class="o">/</span><span class="mi">3</span><span class="p">,</span> <span class="mi">2</span><span class="o">/</span><span class="mi">3</span><span class="p">],</span>
-      <span class="p">[</span><span class="mi">0</span><span class="o">/</span><span class="mi">3</span><span class="p">,</span> <span class="mi">3</span><span class="o">/</span><span class="mi">3</span><span class="p">,</span> <span class="mi">0</span><span class="o">/</span><span class="mi">3</span><span class="p">],</span>
-      <span class="p">[</span><span class="mi">0</span><span class="o">/</span><span class="mi">3</span><span class="p">,</span> <span class="mi">2</span><span class="o">/</span><span class="mi">3</span><span class="p">,</span> <span class="mi">1</span><span class="o">/</span><span class="mi">3</span><span class="p">],</span>
-      <span class="p">[</span><span class="mi">0</span><span class="o">/</span><span class="mi">3</span><span class="p">,</span> <span class="mi">1</span><span class="o">/</span><span class="mi">3</span><span class="p">,</span> <span class="mi">2</span><span class="o">/</span><span class="mi">3</span><span class="p">],</span>
-      <span class="p">[</span><span class="mi">0</span><span class="o">/</span><span class="mi">3</span><span class="p">,</span> <span class="mi">0</span><span class="o">/</span><span class="mi">3</span><span class="p">,</span> <span class="mi">3</span><span class="o">/</span><span class="mi">3</span><span class="p">],</span>
+      <span class="p">[</span><span class="mi">8</span><span class="o">/</span><span class="mi">8</span><span class="p">,</span> <span class="mi">0</span><span class="o">/</span><span class="mi">8</span><span class="p">],</span>
+      <span class="p">[</span><span class="mi">7</span><span class="o">/</span><span class="mi">8</span><span class="p">,</span> <span class="mi">1</span><span class="o">/</span><span class="mi">8</span><span class="p">],</span>
+      <span class="p">[</span><span class="mi">6</span><span class="o">/</span><span class="mi">8</span><span class="p">,</span> <span class="mi">2</span><span class="o">/</span><span class="mi">8</span><span class="p">],</span>
+      <span class="p">[</span><span class="mi">5</span><span class="o">/</span><span class="mi">8</span><span class="p">,</span> <span class="mi">3</span><span class="o">/</span><span class="mi">8</span><span class="p">],</span>
+      <span class="p">[</span><span class="mi">4</span><span class="o">/</span><span class="mi">8</span><span class="p">,</span> <span class="mi">4</span><span class="o">/</span><span class="mi">8</span><span class="p">],</span>
+      <span class="p">[</span><span class="mi">3</span><span class="o">/</span><span class="mi">8</span><span class="p">,</span> <span class="mi">5</span><span class="o">/</span><span class="mi">8</span><span class="p">],</span>
+      <span class="p">[</span><span class="mi">2</span><span class="o">/</span><span class="mi">8</span><span class="p">,</span> <span class="mi">6</span><span class="o">/</span><span class="mi">8</span><span class="p">],</span>
+      <span class="p">[</span><span class="mi">1</span><span class="o">/</span><span class="mi">8</span><span class="p">,</span> <span class="mi">7</span><span class="o">/</span><span class="mi">8</span><span class="p">],</span>
+      <span class="p">[</span><span class="mi">0</span><span class="o">/</span><span class="mi">8</span><span class="p">,</span> <span class="mi">8</span><span class="o">/</span><span class="mi">8</span><span class="p">],</span>
    <span class="p">]</span>
 <span class="p">)</span>
 <span class="n">xs</span> <span class="o">=</span> <span class="mi">1</span> <span class="o">-</span> <span class="n">ts</span> <span class="o">*</span> <span class="n">ts</span>  <span class="c1"># values corresponding to the parameters</span>
 
 <span class="c1"># Train a model</span>
-<span class="n">bs</span> <span class="o">=</span> <span class="n">torch_bsf</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">params</span><span class="o">=</span><span class="n">ts</span><span class="p">,</span> <span class="n">values</span><span class="o">=</span><span class="n">xs</span><span class="p">,</span> <span class="n">degree</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span> <span class="n">max_epochs</span><span class="o">=</span><span class="mi">100</span><span class="p">)</span>
+<span class="n">bs</span> <span class="o">=</span> <span class="n">torch_bsf</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">params</span><span class="o">=</span><span class="n">ts</span><span class="p">,</span> <span class="n">values</span><span class="o">=</span><span class="n">xs</span><span class="p">,</span> <span class="n">degree</span><span class="o">=</span><span class="mi">3</span><span class="p">)</span>
 
 <span class="c1"># Predict by the trained model</span>
-<span class="n">t</span> <span class="o">=</span> <span class="p">[[</span><span class="mf">0.2</span><span class="p">,</span> <span class="mf">0.3</span><span class="p">,</span> <span class="mf">0.5</span><span class="p">]]</span>
+<span class="n">t</span> <span class="o">=</span> <span class="p">[</span>
+   <span class="p">[</span><span class="mf">0.2</span><span class="p">,</span> <span class="mf">0.8</span><span class="p">],</span>
+   <span class="p">[</span><span class="mf">0.7</span><span class="p">,</span> <span class="mf">0.3</span><span class="p">],</span>
+<span class="p">]</span>
 <span class="n">x</span> <span class="o">=</span> <span class="n">bs</span><span class="p">(</span><span class="n">t</span><span class="p">)</span>
 <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">t</span><span class="si">}</span><span class="s2"> -&gt; </span><span class="si">{</span><span class="n">x</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
 </pre></div>

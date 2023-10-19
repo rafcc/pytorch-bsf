@@ -34,16 +34,19 @@ Let's prepare data and labels for training:
 
 .. code-block:: bash
 
-   cat << EOS > train_data.tsv
-   1 2
-   4 3
-   5 6
+   cat << EOS > params.csv
+   1.00, 0.00
+   0.75, 0.25
+   0.50, 0.50
+   0.25, 0.75
+   0.00, 1.00
    EOS
-
-   cat << EOS > train_label.tsv
-   1
-   2
-   3
+   cat <<EOS > values.csv
+   0.00, 1.00
+   3.00, 2.00
+   4.00, 5.00
+   7.00, 6.00
+   8.00, 9.00
    EOS
 
 .. warning::
@@ -54,8 +57,8 @@ Now, you can fit a Bezier simplex to those data and labels with the latest versi
 .. code-block:: bash
 
    mlflow run https://github.com/rafcc/pytorch-bsf \
-   -P data=train_data.tsv \
-   -P label=train_label.tsv \
+   -P params=params.csv \
+   -P values=values.csv \
    -P degree=3
 
 
@@ -70,16 +73,16 @@ Prediction
    mlflow models predict \
      --model-uri file://`pwd`/mlruns/0/${run_uuid}/artifacts/model \
      --content-type csv \
-     --input-path test_data.csv \
-     --output-path test_label.csv
+     --input-path params.csv \
+     --output-path test_values.csv
 
 
-You have results in ``test_label.csv``:
+You have results in ``test_values.csv``:
 
 .. code-block:: bash
 
-   cat test_label.csv 
-   [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2]
+   cat test_values.csv
+   [[0.00, 1.00], ...]
 
 
 Serve prediction API
@@ -100,10 +103,10 @@ Request a prediction with HTTP POST method:
 .. code-block:: bash
 
    curl http://localhost:5001/invocations -H 'Content-Type: application/json' -d '{
-     "columns": ["t1", "t2", "t3"],
+     "columns": ["t1", "t2"],
      "data": [
-        [0.1, 0.2, 0.7],
-        [0.4, 0.5, 0.1]
+        [0.2, 0.8],
+        [0.7, 0.3]
      ]
    }'
 
@@ -127,8 +130,8 @@ Then, run `torch_bsf` as a module:
    python -m torch_bsf \
      --model-uri file://`pwd`/mlruns/0/${run_uuid}/artifacts/model \
      --content-type csv \
-     --input-path test_data.csv \
-     --output-path test_label.csv
+     --input-path test_params.csv \
+     --output-path test_values.csv
 
 
 Run as Python code
@@ -151,24 +154,26 @@ Train a model by ``fit()``, and call the model to predict.
    # Prepare training data
    ts = torch.tensor(  # parameters on a simplex
       [
-         [3/3, 0/3, 0/3],
-         [2/3, 1/3, 0/3],
-         [2/3, 0/3, 1/3],
-         [1/3, 2/3, 0/3],
-         [1/3, 1/3, 1/3],
-         [1/3, 0/3, 2/3],
-         [0/3, 3/3, 0/3],
-         [0/3, 2/3, 1/3],
-         [0/3, 1/3, 2/3],
-         [0/3, 0/3, 3/3],
+         [8/8, 0/8],
+         [7/8, 1/8],
+         [6/8, 2/8],
+         [5/8, 3/8],
+         [4/8, 4/8],
+         [3/8, 5/8],
+         [2/8, 6/8],
+         [1/8, 7/8],
+         [0/8, 8/8],
       ]
    )
    xs = 1 - ts * ts  # values corresponding to the parameters
 
    # Train a model
-   bs = torch_bsf.fit(params=ts, values=xs, degree=3, max_epochs=100)
+   bs = torch_bsf.fit(params=ts, values=xs, degree=3)
 
    # Predict by the trained model
-   t = [[0.2, 0.3, 0.5]]
+   t = [
+      [0.2, 0.8],
+      [0.7, 0.3],
+   ]
    x = bs(t)
    print(f"{t} -> {x}")
