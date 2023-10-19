@@ -34,27 +34,27 @@ conda install -c conda-forge mlflow
 
 Prepare data:
 ```
-cat <<EOS > params.tsv
-1 0
-0.75 0.25
-0.5 0.5
-0.25 0.75
-0 1
+cat <<EOS > params.csv
+1.00, 0.00
+0.75, 0.25
+0.50, 0.50
+0.25, 0.75
+0.00, 1.00
 EOS
-cat <<EOS > values.tsv
-0 1
-3 2
-4 5
-7 6
-8 9
+cat <<EOS > values.csv
+0.00, 1.00
+3.00, 2.00
+4.00, 5.00
+7.00, 6.00
+8.00, 9.00
 EOS
 ```
 
 Run the following command:
 ```
 mlflow run https://github.com/rafcc/pytorch-bsf \
-  -P params=params.tsv \
-  -P values=values.tsv \
+  -P params=params.csv \
+  -P values=values.csv \
   -P degree=3
 ```
 which automatically sets up the environment and runs an experiment:
@@ -64,13 +64,12 @@ which automatically sets up the environment and runs an experiment:
 
 | Parameter   | Type                             | Default  | Description                                                                                                                                                                                                                                                                                                                                                                                                                    |
 | ----------- | -------------------------------- | -------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
-| params      | path                             | required | The parameter data file. The file should contain a numerical matrix in the TSV format: each row represents a record that consists of features separated by Tabs or spaces.                                                                                                                                                                                                                                                     |
-| values      | path                             | required | The value data file. The file should contain a numerical matrix in the TSV format: each row represents a record that consists of outcomes separated by Tabs or spaces.                                                                                                                                                                                                                                                         |
-| init        | path                             | `None`   | Load initial control points from a file. The file must be of pickled PyTorch (`.pt`), CSV (`.csv`), TSV (`.tsv`), JSON (`.json`), or YAML (`.yml` or `.yaml`). Either this option or `--degree` must be specified.                                                                                                                                                                                                             |
-| degree      | int $(x \ge 1)$                  | `None`   | Generate initial control points at random with specified degree. Either this option or `--init` must be specified.                                                                                                                                                                                                                                                                                                             |
+| params      | path                             | required | The parameter data file, which contains input observations for training a Bezier simplex. The file must be of CSV (`.csv`) or TSV (`.tsv`). Each line in the file represents an input observation, corresponding to an output observation in the same line in the value data file.                                                                                                                                             |
+| values      | path                             | required | The value data file, which contains output observations for training a Bezier simplex. The file must be of CSV (`.csv`) or TSV (`.tsv`). Each line in the file represents an output observation, corresponding to an intput observation in the same line in the parameter data file.                                                                                                                                           |
+| init        | path                             | `None`   | Load initial control points from a file. The file must be of pickled PyTorch (`.pt`), CSV (`.csv`), TSV (`.tsv`), JSON (`.json`), or YAML (`.yml` or `.yaml`). Either this option or `--degree` must be specified, but not both.                                                                                                                                                                                               |
+| degree      | int $(x \ge 1)$                  | `None`   | Generate initial control points at random with specified degree. Either this option or `--init` must be specified, but not both.                                                                                                                                                                                                                                                                                               |
 | fix         | list[list[int]]                  | `None`   | Indices of control points to exclude from training. By default, all control points are trained.                                                                                                                                                                                                                                                                                                                                |
 | header      | int $(x \ge 0)$                  | `0`      | The number of header lines in params/values files.                                                                                                                                                                                                                                                                                                                                                                             |
-| delimiter   | str                              | `" "`    | The delimiter of values in params/values files.                                                                                                                                                                                                                                                                                                                                                                                |
 | normalize   | `"max"`, `"std"`, `"quantile"`   | `None`   | The data normalization: `"max"` scales each feature as the minimum is 0 and the maximum is 1, suitable for uniformly distributed data; `"std"` does as the mean is 0 and the standard deviation is 1, suitable for nonuniformly distributed data; `"quantile"` does as 5-percentile is 0 and 95-percentile is 1, suitable for data containing outliers; `None` does not perform any scaling, suitable for pre-normalized data. |
 | split_ratio | float $(0 < x < 1)$              | `0.5`    | The ratio of training data against validation data.                                                                                                                                                                                                                                                                                                                                                                            |
 | batch_size  | int $(x \ge 0)$                  | `0`      | The size of minibatch. The default uses all records in a single batch.                                                                                                                                                                                                                                                                                                                                                         |
@@ -113,16 +112,15 @@ import torch_bsf
 # Prepare training data
 ts = torch.tensor(  # parameters on a simplex
     [
-        [3/3, 0/3, 0/3],
-        [2/3, 1/3, 0/3],
-        [2/3, 0/3, 1/3],
-        [1/3, 2/3, 0/3],
-        [1/3, 1/3, 1/3],
-        [1/3, 0/3, 2/3],
-        [0/3, 3/3, 0/3],
-        [0/3, 2/3, 1/3],
-        [0/3, 1/3, 2/3],
-        [0/3, 0/3, 3/3],
+        [8/8, 0/8],
+        [7/8, 1/8],
+        [6/8, 2/8],
+        [5/8, 3/8],
+        [4/8, 4/8],
+        [3/8, 5/8],
+        [2/8, 6/8],
+        [1/8, 7/8],
+        [0/8, 8/8],
     ]
 )
 xs = 1 - ts * ts  # values corresponding to the parameters
@@ -131,7 +129,10 @@ xs = 1 - ts * ts  # values corresponding to the parameters
 bs = torch_bsf.fit(params=ts, values=xs, degree=3)
 
 # Predict by the trained model
-t = [[0.2, 0.3, 0.5]]
+t = [
+    [0.2, 0.8],
+    [0.7, 0.3],
+]
 x = bs(t)
 print(f"{t} -> {x}")
 ```
