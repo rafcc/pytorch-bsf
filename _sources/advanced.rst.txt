@@ -58,15 +58,15 @@ YAML
 
 .. code-block:: yaml
 
-   "(2, 0)": [0.0, 0.1, 0.2],
-   "(1, 1)": [1.0, 1.1, 1.2],
+   "(2, 0)": [0.0, 0.1, 0.2]
+   "(1, 1)": [1.0, 1.1, 1.2]
    "(0, 2)": [2.0, 2.1, 2.2]
 
 
 Partial training
 ----------------
 
-Funciton ``fit()`` accepts partial training, i.e., train some of control points while the others are fixed.
+Funciton ``fit()`` provides some argments for partial training, i.e., train some of control points while the others are fixed.
 
 .. code-block:: python
 
