@@ -4,15 +4,15 @@ import typing
 from jsonschema import ValidationError, validate
 
 
-def validate_skeleton(instance: object, dimension: int, degree: int) -> None:
-    r"""Validate an instance that has appropriate dimension and degree.
+def validate_simplex_indices(instance: object, n_params: int, degree: int) -> None:
+    r"""Validate an instance that has appropriate n_params and degree.
 
     Parameters
     ----------
     instance
         An index list of a Bezier simplex.
-    dimension
-        The dimension of a Bezier simplex.
+    n_params
+        The n_params of a Bezier simplex.
     degree
         The degree of a Bezier simplex.
 
@@ -32,17 +32,17 @@ def validate_skeleton(instance: object, dimension: int, degree: int) -> None:
                     "minimum": 0,
                     "maximum": degree,
                 },
-                "minItems": dimension,
-                "maxItems": dimension,
+                "minItems": n_params,
+                "maxItems": n_params,
             },
         }
         ```
     """
-    schema = skeleton_schema(dimension, degree)
+    schema = indices_schema(n_params, degree)
     validate(instance, schema)
     indices = typing.cast(typing.List[typing.List[int]], instance)
 
-    if dimension == 0:
+    if n_params == 0:
         return  # no need to check sum since indices is a list of empty lists
 
     for index in indices:
@@ -53,15 +53,15 @@ def validate_skeleton(instance: object, dimension: int, degree: int) -> None:
             )
 
 
-def skeleton_schema(dimension: int, degree: int) -> typing.Dict[str, typing.Any]:
-    r"""Generate a JSON schema for skeletons of the bezier simplex with given ``dimension`` and ``degree``.
+def indices_schema(n_params: int, degree: int) -> typing.Dict[str, typing.Any]:
+    r"""Generate a JSON schema for indices of the control points with given ``n_params`` and ``degree``.
 
     Parameters
     ----------
-    dimension
-        The dimension of a Bezier simplex.
+    n_params
+        The number of index elements of control points.
     degree
-        The degree of a Bezier simplex.
+        The degree of a Bezier surface.
 
     Returns
     -------
@@ -70,15 +70,15 @@ def skeleton_schema(dimension: int, degree: int) -> typing.Dict[str, typing.Any]
     Raises
     ------
     ValueError
-        If ``dimension`` or ``degree`` is negative.
+        If ``n_params`` or ``degree`` is negative.
 
     See Also
     --------
-    validate_skeleton
-        Validate an instance that has appropriate dimension and degree.
+    validate_simplex_indices
+        Validate an instance that has appropriate n_params and degree.
     """
-    if dimension < 0:
-        raise ValueError(f"dimension must be non-negative, but {dimension} is given.")
+    if n_params < 0:
+        raise ValueError(f"n_params must be non-negative, but {n_params} is given.")
     if degree < 0:
         raise ValueError(f"degree must be non-negative, but {degree} is given.")
 
@@ -92,27 +92,27 @@ def skeleton_schema(dimension: int, degree: int) -> typing.Dict[str, typing.Any]
                 "minimum": 0,
                 "maximum": degree,
             },
-            "minItems": dimension,
-            "maxItems": dimension,
+            "minItems": n_params,
+            "maxItems": n_params,
         },
     }
 
 
-def skeleton(val: str) -> typing.List[typing.List[int]]:
-    r"""Parse ``val`` into a skeleton.
+def index_list(val: str) -> typing.List[typing.List[int]]:
+    r"""Parse ``val`` into a list of indices.
 
     Parameters
     ----------
     val
-        A string expression of a skeleton.
+        A string expression of a list of indices.
 
     Returns
     -------
-        The persed skeleton.
+        The persed indices.
     """
     val = val.replace("(", "[").replace(")", "]").replace("{", "[").replace("}", "]")
-    skeleton = typing.cast(typing.List[typing.List[int]], json.loads(val))
-    return skeleton
+    indices = typing.cast(typing.List[typing.List[int]], json.loads(val))
+    return indices
 
 
 def int_or_str(val: str) -> typing.Union[int, str]:

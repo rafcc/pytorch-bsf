@@ -19,10 +19,10 @@ from torch_bsf.control_points import (
     ControlPoints,
     ControlPointsData,
     Index,
-    indices,
+    simplex_indices,
     to_parameterdict_key,
 )
-from torch_bsf.validator import validate_skeleton
+from torch_bsf.validator import validate_simplex_indices
 
 
 class BezierSimplexDataModule(pl.LightningDataModule):
@@ -247,7 +247,7 @@ class BezierSimplex(pl.LightningModule):
         """
         # REQUIRED
         x = typing.cast(torch.Tensor, 0)  # x will be of Tensor by subsequent broadcast
-        for i in indices(self.n_params, self.degree):
+        for i in simplex_indices(self.n_params, self.degree):
             x += polynom(self.degree, i) * torch.outer(
                 monomial(t, i), self.control_points[i]
             )
@@ -309,7 +309,10 @@ class BezierSimplex(pl.LightningModule):
         xs
             A value matrix of the mesh grid.
         """
-        ts = torch.Tensor(list(indices(dim=self.n_params, deg=num))) / num
+        ts = (
+            torch.Tensor(list(simplex_indices(n_params=self.n_params, degree=num)))
+            / num
+        )
         xs = self.forward(ts)
         return ts, xs
 
@@ -358,7 +361,9 @@ def zeros(n_params: int, n_values: int, degree: int) -> BezierSimplex:
     if degree < 0:
         raise ValueError(f"degree must be non-negative: {degree}")
 
-    return BezierSimplex({i: torch.zeros(n_values) for i in indices(n_params, degree)})
+    return BezierSimplex(
+        {i: torch.zeros(n_values) for i in simplex_indices(n_params, degree)}
+    )
 
 
 def rand(n_params: int, n_values: int, degree: int) -> BezierSimplex:
@@ -408,7 +413,9 @@ def rand(n_params: int, n_values: int, degree: int) -> BezierSimplex:
     if degree < 0:
         raise ValueError(f"degree must be non-negative: {degree}")
 
-    return BezierSimplex({i: torch.rand(n_values) for i in indices(n_params, degree)})
+    return BezierSimplex(
+        {i: torch.rand(n_values) for i in simplex_indices(n_params, degree)}
+    )
 
 
 def randn(n_params: int, n_values: int, degree: int) -> BezierSimplex:
@@ -458,18 +465,20 @@ def randn(n_params: int, n_values: int, degree: int) -> BezierSimplex:
     if degree < 0:
         raise ValueError(f"degree must be non-negative: {degree}")
 
-    return BezierSimplex({i: torch.randn(n_values) for i in indices(n_params, degree)})
+    return BezierSimplex(
+        {i: torch.randn(n_values) for i in simplex_indices(n_params, degree)}
+    )
 
 
-def save(path: str, data: BezierSimplex) -> None:
+def save(path: typing.Union[str, Path], data: BezierSimplex) -> None:
     r"""Saves a Bezier simplex to a file.
 
     Parameters
     ----------
     path
-        The path to a file.
+        The file path to save.
     data
-        The Bezier simplex.
+        The Bezier simplex to save.
 
     Raises
     ------
@@ -487,22 +496,28 @@ def save(path: str, data: BezierSimplex) -> None:
     >>> torch_bsf.save("tests/data/bezier_simplex.yml", bs)
 
     """
-    if path.endswith(".pt"):
+    path = Path(path)
+    if path.suffix == ".pt":
         torch.save(data, path)
-    elif path.endswith(".csv"):
+
+    elif path.suffix == ".csv":
         with open(path, "w", encoding="utf-8") as f:
             writer = csv.writer(f)
             for index, value in data.control_points.items():
                 writer.writerow([index] + value.tolist())
-    elif path.endswith(".tsv"):
+
+    elif path.suffix == ".tsv":
         with open(path, "w", encoding="utf-8") as f:
             writer = csv.writer(f, delimiter="\t")
             for index, value in data.control_points.items():
                 writer.writerow([index] + value.tolist())
-    elif path.endswith(".json"):
+
+    elif path.suffix == ".json":
         json.dump(data.control_points, open(path, "w", encoding="utf-8"))
-    elif path.endswith(".yml") or path.endswith(".yaml"):
+
+    elif path.suffix in (".yml", ".yaml"):
         yaml.dump(data.control_points, open(path, "w", encoding="utf-8"))
+
     else:
         raise ValueError(f"Unknown file type: {path}")
 
@@ -601,7 +616,7 @@ def validate_control_points(data: typing.Dict[str, typing.List[float]]):
             raise ValidationError(f"Dimension mismatch: {value}")
 
 
-def load(path: str) -> BezierSimplex:
+def load(path: typing.Union[str, Path]) -> BezierSimplex:
     r"""Loads a Bezier simplex from a file.
 
     Parameters
@@ -636,37 +651,43 @@ def load(path: str) -> BezierSimplex:
     tensor([[0.0000, 0.0000, 0.0000]], grad_fn=<AddBackward0>)
     """
     cpdata: typing.Dict[str, typing.List[float]]
-    if path.endswith(".pt"):
+    path = Path(path)
+    if path.suffix == ".pt":
         data = torch.load(path)
         if isinstance(data, BezierSimplex):
             return data
         raise ValueError(f"Unknown data type: {type(data)}")
-    elif path.endswith(".csv"):
+
+    elif path.suffix == ".csv":
         cpdata = {
             row[0]: [float(v) for v in row[1:]]
             for row in csv.reader(open(path, encoding="utf-8"))
         }
         validate_control_points(cpdata)
         return BezierSimplex(cpdata)
-    elif path.endswith(".tsv"):
+
+    elif path.suffix == ".tsv":
         cpdata = {
             row[0]: [float(v) for v in row[1:]]
             for row in csv.reader(open(path, encoding="utf-8"), delimiter="\t")
         }
         validate_control_points(cpdata)
         return BezierSimplex(cpdata)
-    elif path.endswith(".json"):
+
+    elif path.suffix == ".json":
         cpdata = json.load(open(path, encoding="utf-8"))
         for index, value in cpdata.items():
             cpdata[index] = [float(v) for v in value]
         validate_control_points(cpdata)
         return BezierSimplex(cpdata)
-    elif path.endswith(".yml") or path.endswith(".yaml"):
+
+    elif path.suffix in (".yml", ".yaml"):
         cpdata = yaml.safe_load(open(path, encoding="utf-8"))
         for index, value in cpdata.items():
             cpdata[index] = [float(v) for v in value]
         validate_control_points(cpdata)
         return BezierSimplex(cpdata)
+
     else:
         raise ValueError(f"Unknown file type: {path}")
 
@@ -675,8 +696,10 @@ def fit(
     params: torch.Tensor,
     values: torch.Tensor,
     degree: typing.Optional[int] = None,
-    init: typing.Optional[typing.Union[ControlPoints, ControlPointsData]] = None,
-    skeleton: typing.Optional[typing.Iterable[Index]] = None,
+    init: typing.Optional[
+        typing.Union[BezierSimplex, ControlPoints, ControlPointsData]
+    ] = None,
+    fix: typing.Optional[typing.Iterable[Index]] = None,
     batch_size: typing.Optional[int] = None,
     max_epochs: typing.Optional[int] = None,
     accelerator: typing.Union[str, pl.accelerators.Accelerator] = "auto",
@@ -697,9 +720,9 @@ def fit(
     degree
         The degree of the Bezier simplex.
     init
-        The initial guess.
-    skeleton
-        The skeleton to fit.
+        The initial values of a bezier simplex or control points.
+    fix
+        The indices of control points to exclude from training.
     batch_size
         The size of minibatch.
     max_epochs
@@ -763,26 +786,22 @@ def fit(
     if degree is not None and init is not None:
         raise ValueError("Either degree or init must be specified, not both")
 
-    bs = (
-        BezierSimplex(init)
-        if init
-        else randn(
+    if isinstance(init, BezierSimplex):
+        bs = init
+    elif init is not None:
+        bs = BezierSimplex(init)
+    else:
+        bs = randn(
             n_params=int(params.shape[1]),
             n_values=int(values.shape[1]),
             degree=typing.cast(int, degree),
         )
-    )
 
-    if skeleton is None:
-        skeleton = [list(i) for i in bs.control_points.indices()]
-    else:
-        skeleton = [eval(to_parameterdict_key(i)) for i in skeleton]
-    validate_skeleton(skeleton, bs.n_params, bs.degree)
+    fix = fix or []
+    validate_simplex_indices(fix, bs.n_params, bs.degree)
 
-    for value in bs.control_points.values():
-        value.requires_grad = False
-    for index in skeleton:
-        bs.control_points[index].requires_grad = True
+    for index in fix:
+        bs.control_points[index].requires_grad = False
 
     trainer = pl.Trainer(
         accelerator=accelerator,
