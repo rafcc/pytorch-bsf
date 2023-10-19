@@ -91,7 +91,18 @@ Funciton ``fit()`` provides some argments for partial training, i.e., train some
    xs = 1 - ts * ts  # values corresponding to the parameters
 
    # Load control points from a file
-   initial_bezier_simplex = torch_bsf.bezier_simplex.load("control_points.yml")
+   init = torch_bsf.bezier_simplex.load("control_points.yml")
+
+   # ... or, make control points by hand
+   init = {
+      (3, 0, 0): [0.0, 0.1, 0.2],  # index: value
+      (2, 1, 0): [1.0, 1.1, 1.2],
+      (2, 0, 1): [2.0, 2.1, 2.2],
+      (1, 2, 0): [3.0, 3.1, 3.2],
+      (1, 1, 1): [4.0, 4.1, 4.2],
+      (1, 0, 2): [5.0, 5.1, 5.2],
+      (0, 0, 3): [6.0, 6.1, 6.2],
+   }
 
    # Train the edges and surface of a Bezier triangle while its vertices are fixed
    bs = torch_bsf.fit(
