@@ -96,8 +96,8 @@ This package provides a command line interface to train a Bezier simplex with a 
 Execute the `torch_bsf` module:
 ```
 python -m torch_bsf \
-  --params=params.tsv \
-  --values=values.tsv \
+  --params=params.csv \
+  --values=values.csv \
   --degree=3
 ```
 
