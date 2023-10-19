@@ -1,5 +1,19 @@
 # Changelog
 
+## [0.4.0](https://github.com/rafcc/pytorch-bsf/compare/v0.3.1...v0.4.0) (2023-10-19)
+
+
+### Features
+
+* fixable control points ([#130](https://github.com/rafcc/pytorch-bsf/issues/130)) ([e4d6c0e](https://github.com/rafcc/pytorch-bsf/commit/e4d6c0e5d5aabadeb5f42f8c41ca8057f7a5fcf4))
+
+
+### Documentation
+
+* fix minor errors in document ([fec508e](https://github.com/rafcc/pytorch-bsf/commit/fec508ed9c5f15bc5406de4833282d9b9fd99b57))
+* fix readme ([4517668](https://github.com/rafcc/pytorch-bsf/commit/4517668ba33b5f10e1240a958c6a1aa85dd7dfaf))
+* fix typos in document ([5964b30](https://github.com/rafcc/pytorch-bsf/commit/5964b30ebb168ea20589f2c7faa8eb848cfbf3ab))
+
 ## [0.3.1](https://github.com/rafcc/pytorch-bsf/compare/v0.3.0...v0.3.1) (2023-10-17)
 
 
