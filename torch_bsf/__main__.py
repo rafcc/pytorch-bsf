@@ -1,3 +1,4 @@
+import typing
 from argparse import ArgumentParser
 from pathlib import Path
 
@@ -7,8 +8,8 @@ from pytorch_lightning.callbacks.early_stopping import EarlyStopping
 
 from torch_bsf import BezierSimplexDataModule
 from torch_bsf.bezier_simplex import load, randn
-from torch_bsf.control_points import indices
-from torch_bsf.validator import int_or_str, skeleton, validate_skeleton
+from torch_bsf.control_points import simplex_indices
+from torch_bsf.validator import int_or_str, index_list, validate_simplex_indices
 
 parser = ArgumentParser(
     prog="python -m torch_bsf", description="Bezier simplex fitting"
@@ -17,7 +18,7 @@ parser.add_argument("--params", type=Path, required=True)
 parser.add_argument("--values", type=Path, required=True)
 parser.add_argument("--degree", type=int)
 parser.add_argument("--init", type=Path)
-parser.add_argument("--skeleton", type=skeleton)
+parser.add_argument("--fix", type=index_list)
 parser.add_argument("--header", type=int, default=0)
 parser.add_argument("--delimiter", type=str)
 parser.add_argument(
@@ -72,14 +73,11 @@ bs = (
     )
 )
 
-if args.skeleton is None:
-    args.skeleton = [list(i) for i in indices(dm.n_params, args.degree)]
-validate_skeleton(args.skeleton, dm.n_params, args.degree)
+fix: typing.List[typing.List[int]] = args.fix or []
+validate_simplex_indices(fix, bs.n_params, bs.degree)
 
-for value in bs.control_points.values():
-    value.requires_grad = False
-for index in args.skeleton:
-    bs.control_points[index].requires_grad = True
+for index in fix:
+    bs.control_points[index].requires_grad = False
 
 trainer = pl.Trainer(
     accelerator=args.accelerator,

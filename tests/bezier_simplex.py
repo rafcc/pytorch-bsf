@@ -25,11 +25,49 @@ def test_zeros(n_params: int, n_values: int, degree: int):
 
 
 @pytest.mark.parametrize(
+    "n_params, n_values, degree",
+    (
+        (n_params, n_values, degree)
+        for n_params in range(3)
+        for n_values in range(3)
+        for degree in range(3)
+    ),
+)
+def test_rand(n_params: int, n_values: int, degree: int):
+    bs = tbbs.rand(n_params, n_values, degree)
+    assert bs.n_params == n_params
+    assert bs.n_values == n_values
+    if n_params == 0:
+        assert bs.degree == 0
+    else:
+        assert bs.degree == degree
+
+
+@pytest.mark.parametrize(
+    "n_params, n_values, degree",
+    (
+        (n_params, n_values, degree)
+        for n_params in range(3)
+        for n_values in range(3)
+        for degree in range(3)
+    ),
+)
+def test_randn(n_params: int, n_values: int, degree: int):
+    bs = tbbs.randn(n_params, n_values, degree)
+    assert bs.n_params == n_params
+    assert bs.n_values == n_values
+    if n_params == 0:
+        assert bs.degree == 0
+    else:
+        assert bs.degree == degree
+
+
+@pytest.mark.parametrize(
     "n_params, degree",
     ((n_params, degree) for n_params in range(3) for degree in range(3)),
 )
-def test_indices(n_params: int, degree: int):
-    indices = list(tbbs.indices(n_params, degree))
+def test_simplex_indices(n_params: int, degree: int):
+    indices = list(tbbs.simplex_indices(n_params, degree))
     if n_params <= 1 or degree == 0:
         assert len(indices) == 1
     else:
@@ -46,9 +84,9 @@ def test_indices(n_params: int, degree: int):
 @pytest.mark.parametrize(
     "data",
     (
-        {str(index): [0] for index in tbbs.indices(0, 1)},
-        {str(index): [0] for index in tbbs.indices(1, 2)},
-        {str(index): [0] for index in tbbs.indices(2, 3)},
+        {str(index): [0] for index in tbbs.simplex_indices(0, 1)},
+        {str(index): [0] for index in tbbs.simplex_indices(1, 2)},
+        {str(index): [0] for index in tbbs.simplex_indices(2, 3)},
     ),
 )
 def test_validate_control_points(data):

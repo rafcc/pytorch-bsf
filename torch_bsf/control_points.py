@@ -16,47 +16,52 @@ ControlPointsData: typing_extensions.TypeAlias = typing.Union[
     # we can't use typing.Dict[Index, Value] because TypeVar of Dict is invariant.
     typing.Dict[str, torch.Tensor],
     typing.Dict[str, typing.List[float]],
-    typing.Dict[str, typing.Tuple[float]],
-    typing.Dict[typing.Tuple[int], torch.Tensor],
-    typing.Dict[typing.Tuple[int], typing.List[float]],
-    typing.Dict[typing.Tuple[int], typing.Tuple[float]],
+    typing.Dict[str, typing.Tuple[float, ...]],
+    typing.Dict[typing.Tuple[int, ...], torch.Tensor],
+    typing.Dict[typing.Tuple[int, ...], typing.List[float]],
+    typing.Dict[typing.Tuple[int, ...], typing.Tuple[float, ...]],
     typing.Dict[torch.Tensor, torch.Tensor],
     typing.Dict[torch.Tensor, typing.List[float]],
-    typing.Dict[torch.Tensor, typing.Tuple[float]],
+    typing.Dict[torch.Tensor, typing.Tuple[float, ...]],
 ]
 r"""The data type of control points of a Bezier simplex."""
 
 
-def indices(dim: int, deg: int) -> typing.Iterable[typing.Tuple[int]]:
-    r"""Iterates the index of control points of the Bezier simplex.
+def simplex_indices(
+    n_params: int, degree: int
+) -> typing.Iterable[typing.Tuple[int, ...]]:
+    r"""Iterates the index of control points of a Bezier simplex.
 
     Parameters
     ----------
-    dim
-        The array length of indices.
-    deg
+    n_params
+        The tuple length of each index.
+    degree
         The degree of the Bezier simplex.
 
     Returns
     -------
     The indices.
     """
-    if dim < 0:
-        raise ValueError(f"dim must be non-negative, but {dim} is given.")
-    if deg < 0:
-        raise ValueError(f"deg must be non-negative, but {deg} is given.")
-    if dim == 0:
-        yield ()  # type: ignore
+    if n_params < 0:
+        raise ValueError(f"n_params must be non-negative, but {n_params} is given.")
+    if degree < 0:
+        raise ValueError(f"degree must be non-negative, but {degree} is given.")
+    if n_params == 0:
+        yield typing.cast(typing.Tuple[int, ...], ())
         return
 
-    def iterate(c, r):
-        if len(c) == dim - 1:
+    def iterate(
+        c: typing.Tuple[int, ...],
+        r: int,
+    ) -> typing.Iterable[typing.Tuple[int, ...]]:
+        if len(c) == n_params - 1:
             yield c + (r,)
         else:
             for i in range(r, -1, -1):
                 yield from iterate(c + (i,), r - i)
 
-    yield from iterate((), deg)
+    yield from iterate((), degree)
 
 
 def to_parameterdict_key(index: Index) -> str:
@@ -181,11 +186,11 @@ class ControlPoints(nn.ParameterDict):
         value = to_parameterdict_value(value)
         super().__setitem__(key, value)
 
-    def indices(self) -> typing.Iterable[typing.Tuple[int]]:
+    def indices(self) -> typing.Iterable[typing.Tuple[int, ...]]:
         """Iterates the index of control points of the Bezier simplex.
 
         Returns
         -------
             The indices.
         """
-        return indices(self.n_params, self.degree)
+        return simplex_indices(self.n_params, self.degree)

@@ -12,6 +12,7 @@
 #
 import os
 import sys
+from datetime import date
 
 import torch_bsf
 
@@ -21,7 +22,7 @@ sys.path.insert(0, os.path.abspath("../"))
 # -- Project information -----------------------------------------------------
 
 project = "PyTorch-BSF"
-copyright = "2021, FUJITSU LIMITED and RIKEN"
+copyright = f"2017--{date.today().year}, FUJITSU LIMITED and RIKEN"
 author = "RIKEN AIP-FUJITSU Collaboration Center (RAFCC)"
 
 # The full version, including alpha/beta/rc tags
