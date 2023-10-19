@@ -12,3 +12,4 @@ dependencies:
 - torchvision  # only used for mlflow
 - mlflow
 - jsonschema
+- pyyaml
