@@ -1,7 +1,12 @@
 import pytest
 from jsonschema import ValidationError
 
-from torch_bsf.validator import int_or_str, skeleton, skeleton_schema, validate_skeleton
+from torch_bsf.validator import (
+    int_or_str,
+    index_list,
+    indices_schema,
+    validate_simplex_indices,
+)
 
 
 @pytest.mark.parametrize(
@@ -48,12 +53,12 @@ def test_int_or_str(val, expected):
         ("[()]", [[]]),
     ),
 )
-def test_skeleton(val, expected):
-    assert skeleton(val) == expected
+def test_index_list(val, expected):
+    assert index_list(val) == expected
 
 
 @pytest.mark.parametrize(
-    "dimension, degree",
+    "n_params, degree",
     (
         (0, 0),
         (0, 1),
@@ -61,25 +66,25 @@ def test_skeleton(val, expected):
         (1, 1),
     ),
 )
-def test_skeleton_schema(dimension, degree):
-    skeleton_schema(dimension, degree)
+def test_indices_schema(n_params, degree):
+    indices_schema(n_params, degree)
 
 
 @pytest.mark.parametrize(
-    "dimension, degree",
+    "n_params, degree",
     (
         (-1, -1),
         (-1, 0),
         (0, -1),
     ),
 )
-def test_skeleton_schema_value_error(dimension, degree):
+def test_indices_schema_value_error(n_params, degree):
     with pytest.raises(ValueError):
-        skeleton_schema(dimension, degree)
+        indices_schema(n_params, degree)
 
 
 @pytest.mark.parametrize(
-    "dimension, degree, val",
+    "n_params, degree, instance",
     (
         (0, 0, []),
         (0, 0, [[]]),
@@ -106,12 +111,12 @@ def test_skeleton_schema_value_error(dimension, degree):
         (3, 1, [[1, 0, 0], [0, 1, 0], [0, 0, 1]]),
     ),
 )
-def test_validate_skeleton(dimension, degree, val):
-    validate_skeleton(val, dimension, degree)
+def test_validate_simplex_indices(n_params, degree, instance):
+    validate_simplex_indices(instance, n_params, degree)
 
 
 @pytest.mark.parametrize(
-    "dimension, degree",
+    "n_params, degree",
     (
         (-1, -2),
         (-1, -1),
@@ -120,13 +125,13 @@ def test_validate_skeleton(dimension, degree, val):
         (-1, 2),
     ),
 )
-def test_validate_skeleton_value_error(dimension, degree):
+def test_validate_simplex_indices_value_error(n_params, degree):
     with pytest.raises(ValueError):
-        validate_skeleton(None, dimension, degree)
+        validate_simplex_indices(None, n_params, degree)
 
 
 @pytest.mark.parametrize(
-    "dimension, degree, val",
+    "n_params, degree, instance",
     (
         (0, 0, True),
         (0, 0, False),
@@ -160,6 +165,6 @@ def test_validate_skeleton_value_error(dimension, degree):
         (2, 1, [[1, 1]]),
     ),
 )
-def test_validate_skeleton_validation_error(dimension, degree, val):
+def test_validate_simplex_indices_validation_error(n_params, degree, instance):
     with pytest.raises(ValidationError):
-        validate_skeleton(val, dimension, degree)
+        validate_simplex_indices(instance, n_params, degree)
