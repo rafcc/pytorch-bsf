@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.5.1](https://github.com/rafcc/pytorch-bsf/compare/v0.5.0...v0.5.1) (2023-10-19)
+
+
+### Dependencies
+
+* types-setuptools and pyyaml ([#136](https://github.com/rafcc/pytorch-bsf/issues/136)) ([f006b7f](https://github.com/rafcc/pytorch-bsf/commit/f006b7f02eeb0633cedc8748ce18bea1e7a4863d))
+
 ## [0.5.0](https://github.com/rafcc/pytorch-bsf/compare/v0.4.0...v0.5.0) (2023-10-19)
 
 
