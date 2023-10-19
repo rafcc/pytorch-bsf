@@ -22,6 +22,7 @@ The project is on `GitHub`_.
    :caption: User guide
 
    quickstart
+   advanced
    whatis
    faq
 
