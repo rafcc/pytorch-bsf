@@ -8,7 +8,6 @@ from pytorch_lightning.callbacks.early_stopping import EarlyStopping
 
 from torch_bsf import BezierSimplexDataModule
 from torch_bsf.bezier_simplex import load, randn
-from torch_bsf.control_points import simplex_indices
 from torch_bsf.validator import int_or_str, index_list, validate_simplex_indices
 
 parser = ArgumentParser(
@@ -20,7 +19,6 @@ parser.add_argument("--degree", type=int)
 parser.add_argument("--init", type=Path)
 parser.add_argument("--fix", type=index_list)
 parser.add_argument("--header", type=int, default=0)
-parser.add_argument("--delimiter", type=str)
 parser.add_argument(
     "--normalize", type=str, choices=("none", "max", "std", "quantile"), default="none"
 )
@@ -57,7 +55,6 @@ dm = BezierSimplexDataModule(
     params=args.params,
     values=args.values,
     header=args.header,
-    delimiter=args.delimiter,
     batch_size=args.batch_size,
     split_ratio=args.split_ratio,
     normalize=args.normalize,

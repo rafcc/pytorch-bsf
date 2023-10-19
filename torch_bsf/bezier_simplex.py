@@ -36,8 +36,6 @@ class BezierSimplexDataModule(pl.LightningDataModule):
         The path to a label file.
     header
         The number of headers in data files.
-    delimiter
-        The delimiter of data files.
     batch_size
         The size of minibatch.
     split_ratio
@@ -52,7 +50,6 @@ class BezierSimplexDataModule(pl.LightningDataModule):
         params: Path,
         values: Path,
         header: int = 0,
-        delimiter: typing.Optional[str] = None,
         batch_size: typing.Optional[int] = None,
         split_ratio: float = 0.5,
         normalize: str = "none",  # "max", "std", "quantile" or "none"
@@ -62,22 +59,25 @@ class BezierSimplexDataModule(pl.LightningDataModule):
         self.params = params
         self.values = values
         self.header = header
-        self.delimiter = delimiter
         self.batch_size = batch_size
         self.split_ratio = split_ratio
         self.normalize = normalize
         with open(self.params) as f:
-            self.n_params = len(f.readline().split(self.delimiter))
+            delimiter = "," if self.params.suffix == ".csv" else None
+            self.n_params = len(f.readline().split(delimiter))
         with open(self.values) as f:
-            self.n_values = len(f.readline().split(self.delimiter))
+            delimiter = "," if self.values.suffix == ".csv" else None
+            self.n_values = len(f.readline().split(delimiter))
 
     def setup(self, stage: typing.Optional[str] = None):
         # OPTIONAL
+        delimiter = "," if self.params.suffix == ".csv" else None
         params = torch.from_numpy(
-            np.loadtxt(self.params, delimiter=self.delimiter, skiprows=self.header)
+            np.loadtxt(self.params, delimiter=delimiter, skiprows=self.header)
         )
+        delimiter = "," if self.values.suffix == ".csv" else None
         values = torch.from_numpy(
-            np.loadtxt(self.values, delimiter=self.delimiter, skiprows=self.header)
+            np.loadtxt(self.values, delimiter=delimiter, skiprows=self.header)
         )
         if self.normalize == "max":
             mins = values.amin(dim=0)
