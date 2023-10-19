@@ -66,7 +66,7 @@ YAML
 Partial training
 ----------------
 
-Funciton ``fit()`` accepts partial training, i.e., train some of control points while the others are fixed.
+Funciton ``fit()`` provides some argments for partial training, i.e., train some of control points while the others are fixed.
 
 .. code-block:: python
 
