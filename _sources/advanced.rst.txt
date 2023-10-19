@@ -108,7 +108,7 @@ Funciton ``fit()`` provides some argments for partial training, i.e., train some
    bs = torch_bsf.fit(
       params=ts,  # input observations (training data)
       values=xs,  # output observations (training data)
-      init=initial_bezier_simplex,  # initial values of control points
+      init=init,  # initial values of control points
       fix=[[3, 0, 0], [0, 3, 0], [0, 0, 3]],  # fix vertices of the Bezier triangle
    )
 

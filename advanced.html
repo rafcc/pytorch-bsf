@@ -184,7 +184,7 @@ The file format should be pickled pytorch (<code class="docutils literal notrans
 <span class="n">bs</span> <span class="o">=</span> <span class="n">torch_bsf</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span>
    <span class="n">params</span><span class="o">=</span><span class="n">ts</span><span class="p">,</span>  <span class="c1"># input observations (training data)</span>
    <span class="n">values</span><span class="o">=</span><span class="n">xs</span><span class="p">,</span>  <span class="c1"># output observations (training data)</span>
-   <span class="n">init</span><span class="o">=</span><span class="n">initial_bezier_simplex</span><span class="p">,</span>  <span class="c1"># initial values of control points</span>
+   <span class="n">init</span><span class="o">=</span><span class="n">init</span><span class="p">,</span>  <span class="c1"># initial values of control points</span>
    <span class="n">fix</span><span class="o">=</span><span class="p">[[</span><span class="mi">3</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">],</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">0</span><span class="p">],</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">3</span><span class="p">]],</span>  <span class="c1"># fix vertices of the Bezier triangle</span>
 <span class="p">)</span>
 
