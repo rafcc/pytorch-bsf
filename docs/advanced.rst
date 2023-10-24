@@ -24,7 +24,7 @@ See PyTorch documentation for details:
 CSV
 ^^^
 
-.. code-block:: csv
+.. code-block::
 
    "(2, 0)", 0.0, 0.1
    "(1, 1)", 1.0, 1.1
@@ -34,7 +34,7 @@ CSV
 TSV
 ^^^
 
-.. code-block:: tsv
+.. code-block::
 
    "(2, 0)"	0.0	0.1
    "(1, 1)"	1.0	1.1
@@ -58,9 +58,9 @@ YAML
 
 .. code-block:: yaml
 
-   "(2, 0)": [0.0, 0.1]
-   "(1, 1)": [1.0, 1.1]
-   "(0, 2)": [2.0, 2.1]
+   (2, 0): [0.0, 0.1]
+   (1, 1): [1.0, 1.1]
+   (0, 2): [2.0, 2.1]
 
 
 Partial training

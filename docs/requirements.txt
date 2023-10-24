@@ -1,2 +1,3 @@
 git+https://github.com/rafcc/pytorch-bsf.git
 sphinx_rtd_theme
+sphinx-multiversion

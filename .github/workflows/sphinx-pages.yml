@@ -2,19 +2,30 @@ name: GHPages
 
 on:
  push:
-   branches:
-   - master
 
 jobs:
   build:
     runs-on: ubuntu-latest
     steps:
     - name: Sphinx Pages
-      # You may pin to the exact commit or the version.
-      # uses: seanzhengw/sphinx-pages@70dd0557fc226cfcd41c617aec5e9ee4fce4afe2
-      uses: seanzhengw/sphinx-pages@master
+      uses: ammaraskar/sphinx-action@master
       with:
+        docs-folder: "docs/"
+        build-command: "sphinx-multiversion . _build"
+    - name: Commit documentation changes
+      run: |
+        git clone ${{ github.repositoryUrl }} --branch gh-pages --single-branch gh-pages
+        cp -r docs/_build/* gh-pages/
+        cd gh-pages
+        git config --local user.email "action@github.com"
+        git config --local user.name "GitHub Action"
+        git add .
+        git commit -m "Update documentation" -a || true
+        # The above command will fail if no changes were present, so we ignore
+        # the return code.
+    - name: Push changes
+      uses: ad-m/github-push-action@master
+      with:
+        branch: gh-pages
+        directory: gh-pages
         github_token: ${{ secrets.GITHUB_TOKEN }}
-        create_readme: true
-        source_dir: docs
-        install_extensions: true

@@ -12,7 +12,6 @@
 #
 import os
 import sys
-from datetime import date
 
 import torch_bsf
 
@@ -22,7 +21,7 @@ sys.path.insert(0, os.path.abspath("../"))
 # -- Project information -----------------------------------------------------
 
 project = "PyTorch-BSF"
-copyright = f"2017--{date.today().year}, FUJITSU LIMITED and RIKEN"
+copyright = "2021, FUJITSU LIMITED and RIKEN"
 author = "RIKEN AIP-FUJITSU Collaboration Center (RAFCC)"
 
 # The full version, including alpha/beta/rc tags
@@ -43,6 +42,8 @@ extensions = [
     "sphinx.ext.linkcode",
     "sphinx.ext.mathjax",
     "sphinx.ext.napoleon",
+    "sphinx_rtd_theme",
+    "sphinx_multiversion",
 ]
 
 # -- autodoc -----------------------------------------------------------------
@@ -86,6 +87,12 @@ html_theme = "sphinx_rtd_theme"
 # relative to this directory. They are copied after the builtin static files,
 # so a file named "default.css" will overwrite the builtin "default.css".
 html_static_path = ["_static"]
+
+
+# -- Options for sphinx-multiversion -----------------------------------------
+
+smv_tag_whitelist = r"^v\d+\.\d+.\d+$"  # v1.2.3
+smv_branch_whitelist = r"^(?!gh-pages|release-please).+$"  # all branches except gh-pages and release-please
 
 
 # https://www.sphinx-doc.org/ja/master/usage/extensions/linkcode.html
