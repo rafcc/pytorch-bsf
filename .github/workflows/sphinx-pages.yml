@@ -7,6 +7,8 @@ jobs:
   build:
     runs-on: ubuntu-latest
     steps:
+    - name: pwd
+      run: pwd
     - name: ls
       run: ls
     - name: Sphinx Pages
