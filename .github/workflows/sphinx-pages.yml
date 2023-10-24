@@ -11,8 +11,9 @@ jobs:
     - name: Sphinx Pages
       uses: ammaraskar/sphinx-action@master
       with:
-        docs-folder: "docs/"
-        build-command: "sphinx-multiversion . _build"
+        docs-folder: docs/
+        pre-build-command: pip install -U pip
+        build-command: sphinx-multiversion . _build
     - name: Commit documentation changes
       run: |
         git clone ${{ github.repositoryUrl }} --branch gh-pages --single-branch gh-pages
