@@ -22,10 +22,13 @@ jobs:
         git clone ${{ github.server_url }}/${{ github.repository }} --branch gh-pages --single-branch gh-pages
         cp -r docs/_build/* gh-pages/
         cd gh-pages
+        echo "GitHub Pages of [${{ github.repository }}](${{ github.server_url }}/${{ github.repository }})" > README.md
+        echo "===" >> README.md
+        echo "Sphinx html documentation of [${{ github.sha }}](${{ github.server_url }}/${{ github.repository }}/tree/${{ github.sha }})" >> README.md
         git config --local user.email "action@github.com"
         git config --local user.name "GitHub Action"
         git add .
-        git commit --allow-empty -m "From ${{github.ref}} ${{ github.sha }}"
+        git commit --allow-empty -m "From ${{ github.ref }} ${{ github.sha }}"
         # The above command will fail if no changes were present, so we ignore
         # the return code.
     - name: Push changes
