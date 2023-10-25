@@ -12,7 +12,7 @@ It enables us to model a complex-shaped point cloud as a parametric hyper-surfac
 This package provides an algorithm to fit a Bezier simplex to given data points.
 To process terabyte-scale data, this package supports distributed training, realtime progress reporting, and checkpointing on top of [PyTorch Lightning](https://www.pytorchlightning.ai/) and [MLflow](https://mlflow.org/).
 
-<img src="https://rafcc.github.io/pytorch-bsf/_images/bezier-simplex.png" width="49%"><img src="https://rafcc.github.io/pytorch-bsf/_images/bezier-simplex-fitting.png" width="49%">
+<img src="https://rafcc.github.io/pytorch-bsf/master/_images/bezier-simplex.png" width="49%"><img src="https://rafcc.github.io/pytorch-bsf/master/_images/bezier-simplex-fitting.png" width="49%">
 
 See the following papers for technical details.
 - Kobayashi, K., Hamada, N., Sannai, A., Tanaka, A., Bannai, K., & Sugiyama, M. (2019). Bézier Simplex Fitting: Describing Pareto Fronts of´ Simplicial Problems with Small Samples in Multi-Objective Optimization. Proceedings of the AAAI Conference on Artificial Intelligence, 33(01), 2304-2313. https://doi.org/10.1609/aaai.v33i01.33012304
