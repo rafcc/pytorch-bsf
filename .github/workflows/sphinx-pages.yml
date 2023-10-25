@@ -12,11 +12,14 @@ jobs:
       uses: cor3ntin/sphinx-action@main
       with:
         docs-folder: docs/
-        pre-build-command: apt-get update && apt-get install -y git && git config --global --add safe.directory /github/workspace
+        pre-build-command: |
+          apt-get update
+          apt-get install -y git
+          git config --global --add safe.directory ${{ github.workspace }}
         build-command: sphinx-multiversion . _build
     - name: Commit documentation changes
       run: |
-        git clone ${{ github.repositoryUrl }} --branch gh-pages --single-branch gh-pages
+        git clone git@github.com:${{ github.repository }} --branch gh-pages --single-branch gh-pages
         cp -r docs/_build/* gh-pages/
         cd gh-pages
         git config --local user.email "action@github.com"
