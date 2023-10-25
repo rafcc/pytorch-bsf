@@ -9,7 +9,7 @@ jobs:
     steps:
     - uses: actions/checkout@master
     - name: Sphinx Pages
-      uses: cor3ntin/sphinx-action@master
+      uses: cor3ntin/sphinx-action@main
       with:
         docs-folder: docs/
         build-command: sphinx-multiversion . _build
