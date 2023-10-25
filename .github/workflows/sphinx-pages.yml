@@ -8,11 +8,13 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@master
+    - name: Install dependencies
+      run: |
+        pip install --update pip
     - name: Sphinx Pages
       uses: ammaraskar/sphinx-action@master
       with:
         docs-folder: docs/
-        pre-build-command: pip install -U pip
         build-command: sphinx-multiversion . _build
     - name: Commit documentation changes
       run: |
