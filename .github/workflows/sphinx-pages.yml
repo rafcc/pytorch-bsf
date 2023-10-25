@@ -19,7 +19,7 @@ jobs:
         build-command: sphinx-multiversion . _build
     - name: Commit documentation changes
       run: |
-        git clone ${{ github.server_url }}/${{ github.repository }} --branch gh-pages
+        git clone ${{ github.server_url }}/${{ github.repository }} --branch gh-pages --single-branch gh-pages
         cp -r docs/_build/* gh-pages/
         cd gh-pages
         git config --local user.email "action@github.com"
