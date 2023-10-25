@@ -8,9 +8,6 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@master
-    - name: Upgrade pip
-      run: |
-        pip install --upgrade pip
     - name: Sphinx Pages
       uses: ammaraskar/sphinx-action@master
       with:
