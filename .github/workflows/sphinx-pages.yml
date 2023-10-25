@@ -19,13 +19,13 @@ jobs:
         build-command: sphinx-multiversion . _build
     - name: Commit documentation changes
       run: |
-        git clone ${{ github.server_url }}/${{ github.repository }} --branch gh-pages --single-branch gh-pages
+        git clone ${{ github.server_url }}/${{ github.repository }} --branch gh-pages
         cp -r docs/_build/* gh-pages/
         cd gh-pages
         git config --local user.email "action@github.com"
         git config --local user.name "GitHub Action"
         git add .
-        git commit -m "${{ github.sha }}" -a || true
+        git commit --allow-empty -m "From ${{github.ref}} ${{ github.sha }}"
         # The above command will fail if no changes were present, so we ignore
         # the return code.
     - name: Push changes
