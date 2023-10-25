@@ -1,4 +1,4 @@
--U pip
+pip
 -e .
 sphinx_rtd_theme
 sphinx-multiversion
