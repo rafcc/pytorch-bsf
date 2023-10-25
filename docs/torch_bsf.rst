@@ -12,6 +12,22 @@ torch\_bsf.bezier\_simplex module
    :undoc-members:
    :show-inheritance:
 
+torch\_bsf.control\_points module
+---------------------------------
+
+.. automodule:: torch_bsf.control_points
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+torch\_bsf.validator module
+---------------------------
+
+.. automodule:: torch_bsf.validator
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
 Module contents
 ---------------
 
