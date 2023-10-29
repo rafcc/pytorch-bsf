@@ -1,16 +1,16 @@
 import csv
 import json
-from pathlib import Path
 import typing
 from functools import lru_cache
 from math import factorial
+from pathlib import Path
 
 import numpy as np
 import pytorch_lightning as pl
 import torch
 import torch.optim
 import yaml
-from jsonschema import validate, ValidationError
+from jsonschema import ValidationError, validate
 from pytorch_lightning.callbacks.early_stopping import EarlyStopping
 from torch.nn import functional as F
 from torch.utils.data import DataLoader, TensorDataset, random_split

@@ -2,9 +2,9 @@ import pytest
 from jsonschema import ValidationError
 
 from torch_bsf.validator import (
-    int_or_str,
     index_list,
     indices_schema,
+    int_or_str,
     validate_simplex_indices,
 )
 
