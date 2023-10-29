@@ -8,7 +8,7 @@ from pytorch_lightning.callbacks.early_stopping import EarlyStopping
 
 from torch_bsf import BezierSimplexDataModule
 from torch_bsf.bezier_simplex import load, randn
-from torch_bsf.validator import int_or_str, index_list, validate_simplex_indices
+from torch_bsf.validator import index_list, int_or_str, validate_simplex_indices
 
 parser = ArgumentParser(
     prog="python -m torch_bsf", description="Bezier simplex fitting"

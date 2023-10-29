@@ -20,7 +20,7 @@ In designing software, there is always a trade-off between generality and effici
 
 
 Are approximation results always reliable?
-------------------------------------------------
+------------------------------------------
 
 No, not always.
 The approximation theorem says nothing about the approximation accuracy of the Bezier simplex of **fixed** degree.
