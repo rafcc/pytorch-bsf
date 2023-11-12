@@ -112,15 +112,15 @@ import torch_bsf
 # Prepare training data
 ts = torch.tensor(  # parameters on a simplex
     [
-        [8/8, 0/8],
-        [7/8, 1/8],
-        [6/8, 2/8],
-        [5/8, 3/8],
-        [4/8, 4/8],
-        [3/8, 5/8],
-        [2/8, 6/8],
-        [1/8, 7/8],
-        [0/8, 8/8],
+        [8 / 8, 0 / 8],
+        [7 / 8, 1 / 8],
+        [6 / 8, 2 / 8],
+        [5 / 8, 3 / 8],
+        [4 / 8, 4 / 8],
+        [3 / 8, 5 / 8],
+        [2 / 8, 6 / 8],
+        [1 / 8, 7 / 8],
+        [0 / 8, 8 / 8],
     ]
 )
 xs = 1 - ts * ts  # values corresponding to the parameters
