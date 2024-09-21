@@ -1,21 +1,23 @@
 <!DOCTYPE html>
-<html class="writer-html5" lang="en" >
+<html class="writer-html5" lang="en" data-content_root="./">
 <head>
-  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>What is Bezier simplex fitting? &mdash; PyTorch-BSF 0.5.1 documentation</title>
-      <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
-      <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+      <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=80d5e7a1" />
+      <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=19f00094" />
+
+  
   <!--[if lt IE 9]>
     <script src="_static/js/html5shiv.min.js"></script>
   <![endif]-->
   
         <script src="_static/jquery.js?v=5d32c60e"></script>
         <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-        <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js?v=9bd53f53"></script>
-        <script src="_static/doctools.js?v=888ff710"></script>
-        <script src="_static/sphinx_highlight.js?v=4825356b"></script>
+        <script src="_static/documentation_options.js?v=b9afe91b"></script>
+        <script src="_static/doctools.js?v=9a2dae69"></script>
+        <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
         <script async="async" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
     <script src="_static/js/theme.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
@@ -102,12 +104,12 @@
            <div itemprop="articleBody">
              
   <section id="what-is-bezier-simplex-fitting">
-<h1>What is Bezier simplex fitting?<a class="headerlink" href="#what-is-bezier-simplex-fitting" title="Permalink to this heading"></a></h1>
+<h1>What is Bezier simplex fitting?<a class="headerlink" href="#what-is-bezier-simplex-fitting" title="Link to this heading"></a></h1>
 <p>The Bezier simplex is a high-dimensional generalization of the Bezier curve and Bezier triangle with which we are familiar in computer graphics and computer-aided design.
 As such 1D and 2D instances of Bezier simplices have a great success in those fields, Bezier simplices of general dimension have excellent flexibility to represent various shapes in arbitrary dimensions.
 This page introduces the basics of Bezier simplices and their fitting algorithm, along with illustrative applications.</p>
 <section id="bezier-simplex">
-<h2>Bezier simplex<a class="headerlink" href="#bezier-simplex" title="Permalink to this heading"></a></h2>
+<h2>Bezier simplex<a class="headerlink" href="#bezier-simplex" title="Link to this heading"></a></h2>
 <p>Let <span class="math notranslate nohighlight">\(D, M, N\)</span> be nonnegative integers, <span class="math notranslate nohighlight">\(\mathbb N\)</span> the set of nonnegative integers (including zero!), and <span class="math notranslate nohighlight">\(\mathbb R^N\)</span> the <span class="math notranslate nohighlight">\(N\)</span>-dimensional Euclidean space.
 We define the <em>index set</em> by</p>
 <div class="math notranslate nohighlight">
@@ -122,7 +124,7 @@ We define the <em>index set</em> by</p>
 <a class="reference internal image-reference" href="_images/bezier-simplex.png"><img alt="A Bezier simplex and its control points" class="align-center" src="_images/bezier-simplex.png" style="width: 33%;" /></a>
 </section>
 <section id="fitting-a-bezier-simplex-to-a-dataset">
-<h2>Fitting a Bezier simplex to a dataset<a class="headerlink" href="#fitting-a-bezier-simplex-to-a-dataset" title="Permalink to this heading"></a></h2>
+<h2>Fitting a Bezier simplex to a dataset<a class="headerlink" href="#fitting-a-bezier-simplex-to-a-dataset" title="Link to this heading"></a></h2>
 <p>Assume we have a finite dataset <span class="math notranslate nohighlight">\(B\subset\Delta^{M-1}\times\mathbb R^N\)</span> and want to fit a Bezier simplex to the dataset.
 What we are trying can be formulated as a problem of finding the best vector of control points <span class="math notranslate nohighlight">\(\mathbf p=(\mathbf p_{\mathbf d})_{\mathbf d\in\mathbb N_D^M}\)</span> that minimizes the least square error between the Bezier simplex and the dataset:</p>
 <div class="math notranslate nohighlight">
@@ -131,34 +133,34 @@ What we are trying can be formulated as a problem of finding the best vector of 
 <a class="reference internal image-reference" href="_images/bezier-simplex-fitting.png"><img alt="A Bezier simplex that fits to a dataset" class="align-center" src="_images/bezier-simplex-fitting.png" style="width: 66%;" /></a>
 </section>
 <section id="why-does-bezier-simplex-fitting-matter">
-<h2>Why does Bezier simplex fitting matter?<a class="headerlink" href="#why-does-bezier-simplex-fitting-matter" title="Permalink to this heading"></a></h2>
+<h2>Why does Bezier simplex fitting matter?<a class="headerlink" href="#why-does-bezier-simplex-fitting-matter" title="Link to this heading"></a></h2>
 <p>The Bezier simplex can approximate the solution set of “good” multiobjective optimization problems.
 More precisely, for the weighted sum scalarization problem of any multiobjective strongly convex problem, the map from a simplex of weight vectors to the solution set of weighted sum problems can be approximated by a Bezier simplex.
 If we find few solutions to such a problem, the entire solution set can be approximated by Bezier simplex fitting.
 An important application is hyperparameter search of the elastic net.</p>
 <section id="approximation-theorem">
-<h3>Approximation theorem<a class="headerlink" href="#approximation-theorem" title="Permalink to this heading"></a></h3>
+<h3>Approximation theorem<a class="headerlink" href="#approximation-theorem" title="Link to this heading"></a></h3>
 <p>Any continuous map from a simplex to a Euclidean space can be approximated by a Bezier simplex.
 More precisely, the following theorem holds.
 See [1] for technical details.</p>
 </section>
 <section id="weakly-simplicial-problems">
-<h3>Weakly simplicial problems<a class="headerlink" href="#weakly-simplicial-problems" title="Permalink to this heading"></a></h3>
+<h3>Weakly simplicial problems<a class="headerlink" href="#weakly-simplicial-problems" title="Link to this heading"></a></h3>
 <p>Such a map <span class="math notranslate nohighlight">\(\Phi\)</span> arises in, e.g., multiobjective optimization.
 There exists a continuous map from a simplex to the Pareto set and Pareto front such that the map sends a subsimplex to the Pareto set/front of a subproblem.
 See [3].</p>
 </section>
 </section>
 <section id="application-1-elastic-net">
-<h2>Application 1: Elastic net<a class="headerlink" href="#application-1-elastic-net" title="Permalink to this heading"></a></h2>
+<h2>Application 1: Elastic net<a class="headerlink" href="#application-1-elastic-net" title="Link to this heading"></a></h2>
 <p>Hyper-parameter search.
 See [3] for technical details.</p>
 <section id="strongly-convex-problems">
-<h3>Strongly convex problems<a class="headerlink" href="#strongly-convex-problems" title="Permalink to this heading"></a></h3>
+<h3>Strongly convex problems<a class="headerlink" href="#strongly-convex-problems" title="Link to this heading"></a></h3>
 <p>All unconstrained strongly convex problems are weakly simplicial [3].</p>
 </section>
 <section id="weighted-sum-scalarization-and-solution-map">
-<h3>Weighted-sum scalarization and solution map<a class="headerlink" href="#weighted-sum-scalarization-and-solution-map" title="Permalink to this heading"></a></h3>
+<h3>Weighted-sum scalarization and solution map<a class="headerlink" href="#weighted-sum-scalarization-and-solution-map" title="Link to this heading"></a></h3>
 <p>The <em>weighted-sum scalarization</em> <span class="math notranslate nohighlight">\(x^*: \Delta^{M-1}\to\mathbb R^N\)</span> defined by</p>
 <div class="math notranslate nohighlight">
 \[x^*(w)=\arg\min_x \sum_{m=1}^M w_m f_m(x).\]</div>
@@ -170,18 +172,18 @@ See [3] for technical details.</p>
 </section>
 </section>
 <section id="application-2-deep-neural-networks">
-<h2>Application 2: Deep neural networks<a class="headerlink" href="#application-2-deep-neural-networks" title="Permalink to this heading"></a></h2>
+<h2>Application 2: Deep neural networks<a class="headerlink" href="#application-2-deep-neural-networks" title="Link to this heading"></a></h2>
 <p>The loss function for the generator is</p>
 <div class="math notranslate nohighlight">
 \[ \begin{align}\begin{aligned}L_D^\mathrm{bCR}&amp;=L_D+\lambda_\mathrm{real}L_\mathrm{real}+\lambda_\mathrm{fake}L_\mathrm{fake},\\L_D&amp;=D(G(z))-D(x),\\L_\mathrm{real}&amp;=\|D(x)-D(T(x))\|^2,\\L_\mathrm{fake}&amp;=\|D(G(z))-D(T(G(z)))\|^2,\\L_D^\mathrm{zCR}&amp;=L_D+\lambda_\mathrm{dis}L_\mathrm{dis},\\L_G^\mathrm{zCR}&amp;=L_G+\lambda_\mathrm{gen}L_\mathrm{gen},\\L_G&amp;=-D(G(z)),\\L_\mathrm{dis}&amp;=\|D(G(z))-D(G(T(z)))\|^2,\\L_\mathrm{gen}&amp;=\|G(z)-G(T(z))\|^2.\end{aligned}\end{align} \]</div>
 <section id="statistical-test-for-weakly-simpliciality">
-<h3>Statistical test for weakly simpliciality<a class="headerlink" href="#statistical-test-for-weakly-simpliciality" title="Permalink to this heading"></a></h3>
+<h3>Statistical test for weakly simpliciality<a class="headerlink" href="#statistical-test-for-weakly-simpliciality" title="Link to this heading"></a></h3>
 <p>When problem class is unknown.
 See [4] for technical details.</p>
 </section>
 </section>
 <section id="references">
-<h2>References<a class="headerlink" href="#references" title="Permalink to this heading"></a></h2>
+<h2>References<a class="headerlink" href="#references" title="Link to this heading"></a></h2>
 <ol class="arabic simple">
 <li><p>Kobayashi, K., Hamada, N., Sannai, A., Tanaka, A., Bannai, K., &amp; Sugiyama, M. (2019). Bézier Simplex Fitting: Describing Pareto Fronts of Simplicial Problems with Small Samples in Multi-Objective Optimization. Proceedings of the AAAI Conference on Artificial Intelligence, 33(01), 2304-2313. <a class="reference external" href="https://doi.org/10.1609/aaai.v33i01.33012304">https://doi.org/10.1609/aaai.v33i01.33012304</a></p></li>
 <li><p>Tanaka, A., Sannai, A., Kobayashi, K., &amp; Hamada, N. (2020). Asymptotic Risk of Bézier Simplex Fitting. Proceedings of the AAAI Conference on Artificial Intelligence, 34(03), 2416-2424. <a class="reference external" href="https://doi.org/10.1609/aaai.v34i03.5622">https://doi.org/10.1609/aaai.v34i03.5622</a></p></li>
