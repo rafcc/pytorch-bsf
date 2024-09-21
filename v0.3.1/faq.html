@@ -1,21 +1,23 @@
 <!DOCTYPE html>
-<html class="writer-html5" lang="en" >
+<html class="writer-html5" lang="en" data-content_root="./">
 <head>
-  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Frequently asked questions &mdash; PyTorch-BSF 0.5.1 documentation</title>
-      <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
-      <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+      <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=80d5e7a1" />
+      <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=19f00094" />
+
+  
   <!--[if lt IE 9]>
     <script src="_static/js/html5shiv.min.js"></script>
   <![endif]-->
   
         <script src="_static/jquery.js?v=5d32c60e"></script>
         <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-        <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js?v=9bd53f53"></script>
-        <script src="_static/doctools.js?v=888ff710"></script>
-        <script src="_static/sphinx_highlight.js?v=4825356b"></script>
+        <script src="_static/documentation_options.js?v=b9afe91b"></script>
+        <script src="_static/doctools.js?v=9a2dae69"></script>
+        <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="_static/js/theme.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
@@ -86,10 +88,10 @@
            <div itemprop="articleBody">
              
   <section id="frequently-asked-questions">
-<h1>Frequently asked questions<a class="headerlink" href="#frequently-asked-questions" title="Permalink to this heading"></a></h1>
+<h1>Frequently asked questions<a class="headerlink" href="#frequently-asked-questions" title="Link to this heading"></a></h1>
 <p>TBA.</p>
 <section id="there-are-too-many-tools-for-hyperparameter-search-of-ml-why-do-you-propose-yet-another-one">
-<h2>There are too many tools for hyperparameter search of ML. Why do you propose yet another one?<a class="headerlink" href="#there-are-too-many-tools-for-hyperparameter-search-of-ml-why-do-you-propose-yet-another-one" title="Permalink to this heading"></a></h2>
+<h2>There are too many tools for hyperparameter search of ML. Why do you propose yet another one?<a class="headerlink" href="#there-are-too-many-tools-for-hyperparameter-search-of-ml-why-do-you-propose-yet-another-one" title="Link to this heading"></a></h2>
 <p>There are many important differences between the PyTorch-BSF and other hyperparameter search tools.
 First, the domain of a Bezier simplex is a (bounded) simplex, whereas other tools assume a (non-bounded) Euclidean space.
 Thus, the Bezier simplex can represent a compact subspace of the ambient space.</p>
@@ -101,13 +103,13 @@ And also you will find such a type of hyperparameters is quite ubiquitous.
 In designing software, there is always a trade-off between generality and efficiency.</p>
 </section>
 <section id="are-approximation-results-always-reliable">
-<h2>Are approximation results always reliable?<a class="headerlink" href="#are-approximation-results-always-reliable" title="Permalink to this heading"></a></h2>
+<h2>Are approximation results always reliable?<a class="headerlink" href="#are-approximation-results-always-reliable" title="Link to this heading"></a></h2>
 <p>No, not always.
 The approximation theorem says nothing about the approximation accuracy of the Bezier simplex of <strong>fixed</strong> degree.
 After fitting a Bezier simplex, you need to check the goodness of fit by using your domain knowledge.</p>
 </section>
 <section id="are-there-any-applications-other-than-multiobjective-optimization">
-<h2>Are there any applications other than multiobjective optimization?<a class="headerlink" href="#are-there-any-applications-other-than-multiobjective-optimization" title="Permalink to this heading"></a></h2>
+<h2>Are there any applications other than multiobjective optimization?<a class="headerlink" href="#are-there-any-applications-other-than-multiobjective-optimization" title="Link to this heading"></a></h2>
 <p>Not yet, but possibly yes.
 I believe Bezier simplices arise everywhere we need high-dimensional shape representation.
 If you find a new application, then please let me know it.
@@ -161,7 +163,7 @@ Your application will be documented in the application section.</p>
         </dl>
         <dl>
             <dt>Branches</dt>
-            <dd><a href="../master/faq.html">master</a></dd>
+            <dd><a href="../149-grid-sampler/faq.html">149-grid-sampler</a></dd>
         </dl>
     </div>
 </div><script>
