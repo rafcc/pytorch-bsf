@@ -1,5 +1,24 @@
 # Changelog
 
+## [0.6.0](https://github.com/rafcc/pytorch-bsf/compare/v0.5.1...v0.6.0) (2024-09-21)
+
+
+### Features
+
+* grid sampler for elastic net ([#150](https://github.com/rafcc/pytorch-bsf/issues/150)) ([2b5da95](https://github.com/rafcc/pytorch-bsf/commit/2b5da9501a1788671e30055dc71d8fdcd118144d))
+
+
+### Dependencies
+
+* use git lfs ([#142](https://github.com/rafcc/pytorch-bsf/issues/142)) ([4157690](https://github.com/rafcc/pytorch-bsf/commit/41576902f7c4ee8fe235193f0068d8b628024cc3))
+
+
+### Documentation
+
+* multiple document versions ([#144](https://github.com/rafcc/pytorch-bsf/issues/144)) ([80f7d99](https://github.com/rafcc/pytorch-bsf/commit/80f7d996a12279d1c7d172208c8286fdd0faed54))
+* sphinx multiversion ([#139](https://github.com/rafcc/pytorch-bsf/issues/139)) ([ae94f10](https://github.com/rafcc/pytorch-bsf/commit/ae94f107902c2345bcd60db1956304854b59334f))
+* use license_files instead of license_file ([#146](https://github.com/rafcc/pytorch-bsf/issues/146)) ([82b5fd8](https://github.com/rafcc/pytorch-bsf/commit/82b5fd86f6b56454e69218f513de1a7c4431f76c))
+
 ## [0.5.1](https://github.com/rafcc/pytorch-bsf/compare/v0.5.0...v0.5.1) (2023-10-19)
 
 
