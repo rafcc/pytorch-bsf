@@ -1,5 +1,6 @@
 import numpy as np
 
+
 def reverse_logspace(num=50, base=10):
     """Return numbers spaced evenly on a log scale.
 
@@ -34,7 +35,9 @@ def reverse_logspace(num=50, base=10):
     >>> reverse_logspace(num=5, base=1000)
     array([0.        , 0.74956092, 0.93784211, 0.9851362 , 0.99701594])
     """
-    return 1.0 - (np.logspace(1.0, 0.0, num, endpoint=False, base=base) - 1.0) / (base - 1)
+    return 1.0 - (np.logspace(1.0, 0.0, num, endpoint=False, base=base) - 1.0) / (
+        base - 1
+    )
 
 
 def elastic_net_grid(num=(100, 10), base=10):
@@ -122,8 +125,10 @@ def elastic_net_grid(num=(100, 10), base=10):
 
 if __name__ == "__main__":
     from argparse import ArgumentParser
+
     parser = ArgumentParser(
-        prog="python -m torch_bsf.model_selection.elastic_net_grid", description="Grid search for elastic net's hyperparameters"
+        prog="python -m torch_bsf.model_selection.elastic_net_grid",
+        description="Grid search for elastic net's hyperparameters",
     )
     parser.add_argument("--num1", type=int, default=100)
     parser.add_argument("--num2", type=int, default=10)
