@@ -40,9 +40,25 @@ def reverse_logspace(num=50, base=10):
 def elastic_net_grid(num=(100, 10), base=10):
     """Return an array of 3D grid points on the standard 2-simplex, which is suitable for grid search for elastic net's hyperparameters.
 
-    The returned array is of shape ``(num[0] * num[1], 3)``.
+    The returned array is of shape ``(num[0] * num[1] + 1, 3)``.
     The first column values are spaced evenly on a log scale.
     The second and third column values are spaced evenly over a specified interval.
+
+    Parameters
+    ----------
+    num : tuple[int, int], optional
+        Number of samples to generate along the first and second axis.
+        The total number is ``num[0] * num[1] + 1``.
+        Default is `(100, 10)``. Each element must be non-negative.
+    base : int, optional
+        The base of the log space.
+        The step size between the elements in ``ln(samples) / ln(base)`` (or ``log_base(samples)``) is uniform.
+        Default is 10.0.
+
+    Returns
+    -------
+    samples : ndarray
+        `num` samples, equally spaced on a log scale.
 
     Examples
     --------
@@ -107,12 +123,12 @@ def elastic_net_grid(num=(100, 10), base=10):
 if __name__ == "__main__":
     from argparse import ArgumentParser
     parser = ArgumentParser(
-        prog="python -m torch_bsf.grid", description="Bezier simplex fitting"
+        prog="python -m torch_bsf.model_selection.elastic_net_grid", description="Grid search for elastic net's hyperparameters"
     )
     parser.add_argument("--num1", type=int, default=100)
     parser.add_argument("--num2", type=int, default=10)
     parser.add_argument("--base", type=int, default=10)
     args = parser.parse_args()
-    
+
     grid = elastic_net_grid(num=(args.num1, args.num2), base=args.base)
     print("\n".join(f"{p[0]:.17e},{p[1]:.17e},{p[2]:.17e}" for p in grid.tolist()))
