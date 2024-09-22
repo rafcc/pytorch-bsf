@@ -95,6 +95,9 @@ trainer = KFoldTrainer(
 
 # Returns a dict of stats over the different splits
 cross_val_stats = trainer.cross_validate(bs, datamodule=dm)
+print("===========CROSS VALIDATION STATISTICS===========")
+print(cross_val_stats)
+print("===========CROSS VALIDATION STATISTICS===========")
 
 # Additionally, we can construct an ensemble from the K trained models
 ensemble_model = trainer.create_ensemble(bs)
@@ -111,7 +114,12 @@ for i in range(1000000):
 else:
     raise FileExistsError(fn)
 
-ts, xs = ensemble_model.meshgrid()
+meshgrids = ensemble_model.meshgrid()
+print("===========MESHGRIDS===========")
+print(meshgrids)
+print("===========MESHGRIDS===========")
+ts = sum(tx[0] for tx in meshgrids) / args.num_folds
+xs = sum(tx[1] for tx in meshgrids) / args.num_folds
 
 # save meshgrid
 with open(fn, "w") as f:

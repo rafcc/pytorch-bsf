@@ -4,13 +4,15 @@ channels:
 - conda-forge
 - defaults
 dependencies:
-- python=3.11
+- python=3.12
 - cudatoolkit
 - pytorch
 - lightning
-- pl-crossvalidate
 - torchmetrics
 - torchvision  # only used for mlflow
 - mlflow
 - jsonschema
 - pyyaml
+- pip
+- pip:
+  - pl-crossvalidate
