@@ -2,16 +2,17 @@ import typing
 from argparse import ArgumentParser
 from pathlib import Path
 
-from lightning.pytorch import Trainer
 from lightning.pytorch.callbacks.early_stopping import EarlyStopping
 from mlflow import autolog
+from pl_crossvalidate import KFoldTrainer
 
 from torch_bsf import BezierSimplexDataModule
 from torch_bsf.bezier_simplex import load, randn
 from torch_bsf.validator import index_list, int_or_str, validate_simplex_indices
 
 parser = ArgumentParser(
-    prog="python -m torch_bsf", description="Bezier simplex fitting"
+    prog="python -m torch_bsf.model_selection.kfold",
+    description="Bezier simplex fitting with k-fold cross validation",
 )
 parser.add_argument("--params", type=Path, required=True)
 parser.add_argument("--values", type=Path, required=True)
@@ -22,7 +23,10 @@ parser.add_argument("--header", type=int, default=0)
 parser.add_argument(
     "--normalize", type=str, choices=("none", "max", "std", "quantile"), default="none"
 )
-parser.add_argument("--split_ratio", type=float, default=0.5)
+parser.add_argument("--num_folds", type=int, default=5)
+parser.add_argument("--shuffle", type=bool, default=True)
+parser.add_argument("--stratified", type=bool, default=True)
+parser.add_argument("--split_ratio", type=float, default=0.9999)
 parser.add_argument("--batch_size", type=int)
 parser.add_argument("--max_epochs", type=int)
 parser.add_argument("--accelerator", type=str, default="auto")
@@ -76,7 +80,10 @@ validate_simplex_indices(fix, bs.n_params, bs.degree)
 for index in fix:
     bs.control_points[index].requires_grad = False
 
-trainer = Trainer(
+trainer = KFoldTrainer(
+    num_folds=args.num_folds,
+    shuffle=args.shuffle,
+    stratified=args.stratified,
     accelerator=args.accelerator,
     strategy=args.strategy,
     devices=args.devices,
@@ -85,7 +92,12 @@ trainer = Trainer(
     max_epochs=args.max_epochs,
     callbacks=[EarlyStopping(monitor="val_mse")],
 )
-trainer.fit(bs, dm)
+
+# Returns a dict of stats over the different splits
+cross_val_stats = trainer.cross_validate(bs, datamodule=dm)
+
+# Additionally, we can construct an ensemble from the K trained models
+ensemble_model = trainer.create_ensemble(bs)
 
 # search for filename
 fn_tmpl = (
@@ -99,7 +111,7 @@ for i in range(1000000):
 else:
     raise FileExistsError(fn)
 
-ts, xs = bs.meshgrid()
+ts, xs = ensemble_model.meshgrid()
 
 # save meshgrid
 with open(fn, "w") as f:

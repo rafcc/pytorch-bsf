@@ -95,7 +95,9 @@ def to_parameterdict_value(value: Value) -> torch.Tensor:
     return torch.as_tensor(value)
 
 
-def to_parameterdict(data: ControlPointsData) -> typing.Dict[str, torch.Tensor]:
+def to_parameterdict(
+    data: ControlPointsData,
+) -> typing.Dict[str, torch.Tensor]:
     """Convert data to a dictionary of parameters.
 
     Args:
@@ -150,7 +152,7 @@ class ControlPoints(nn.ParameterDict):
 
     def __init__(
         self,
-        data: ControlPointsData,
+        data: typing.Optional[ControlPointsData] = None,
     ):
         """Initialize the control points of a Bezier simplex.
 
@@ -161,6 +163,7 @@ class ControlPoints(nn.ParameterDict):
         data
             The data of control points.
         """
+        data = data or {}
         super().__init__(to_parameterdict(data))
         if len(data) == 0:
             self.degree = 0

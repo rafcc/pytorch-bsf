@@ -5,13 +5,13 @@ from functools import lru_cache
 from math import factorial
 from pathlib import Path
 
+import lightning.pytorch as L
 import numpy as np
-import pytorch_lightning as pl
 import torch
 import torch.optim
 import yaml
 from jsonschema import ValidationError, validate
-from pytorch_lightning.callbacks.early_stopping import EarlyStopping
+from lightning.pytorch.callbacks.early_stopping import EarlyStopping
 from torch.nn import functional as F
 from torch.utils.data import DataLoader, TensorDataset, random_split
 
@@ -25,7 +25,7 @@ from torch_bsf.control_points import (
 from torch_bsf.validator import validate_simplex_indices
 
 
-class BezierSimplexDataModule(pl.LightningDataModule):
+class BezierSimplexDataModule(L.LightningDataModule):
     r"""A data module for training a Bezier simplex.
 
     Parameters
@@ -68,6 +68,7 @@ class BezierSimplexDataModule(pl.LightningDataModule):
         with open(self.values) as f:
             delimiter = "," if self.values.suffix == ".csv" else None
             self.n_values = len(f.readline().split(delimiter))
+        self.setup()
 
     def setup(self, stage: typing.Optional[str] = None):
         # OPTIONAL
@@ -166,7 +167,7 @@ def monomial(
     return ret
 
 
-class BezierSimplex(pl.LightningModule):
+class BezierSimplex(L.LightningModule):
     r"""A Bezier simplex model.
 
     Parameters
@@ -197,7 +198,7 @@ class BezierSimplex(pl.LightningModule):
     ...     n_values=int(xs.shape[1]),
     ...     degree=3,
     ... )
-    >>> trainer = pl.Trainer(
+    >>> trainer = L.Trainer(
     ...     callbacks=[EarlyStopping(monitor="train_mse")],
     ...     enable_progress_bar=False,
     ... )
@@ -217,6 +218,7 @@ class BezierSimplex(pl.LightningModule):
             if isinstance(control_points, ControlPoints)
             else ControlPoints(control_points)
         )
+        self.save_hyperparameters()
 
     @property
     def n_params(self) -> int:
@@ -702,8 +704,8 @@ def fit(
     fix: typing.Optional[typing.Iterable[Index]] = None,
     batch_size: typing.Optional[int] = None,
     max_epochs: typing.Optional[int] = None,
-    accelerator: typing.Union[str, pl.accelerators.Accelerator] = "auto",
-    strategy: typing.Union[str, pl.strategies.Strategy] = "auto",
+    accelerator: typing.Union[str, L.accelerators.Accelerator] = "auto",
+    strategy: typing.Union[str, L.strategies.Strategy] = "auto",
     devices: typing.Union[typing.List[int], str, int] = "auto",
     num_nodes: int = 1,
     precision: typing.Union[str, int] = "32-true",
@@ -803,7 +805,7 @@ def fit(
     for index in fix:
         bs.control_points[index].requires_grad = False
 
-    trainer = pl.Trainer(
+    trainer = L.Trainer(
         accelerator=accelerator,
         strategy=strategy,
         devices=devices,
