@@ -1,4 +1,3 @@
-import typing
 from argparse import ArgumentParser
 from pathlib import Path
 
@@ -70,7 +69,7 @@ bs = (
     )
 )
 
-fix: typing.List[typing.List[int]] = args.fix or []
+fix: list[list[int]] = args.fix or []
 validate_simplex_indices(fix, bs.n_params, bs.degree)
 
 for index in fix:

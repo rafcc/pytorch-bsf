@@ -1,7 +1,7 @@
 import numpy as np
 
 
-def reverse_logspace(num=50, base=10):
+def reverse_logspace(num: int = 50, base: int = 10) -> np.ndarray:
     """Return numbers spaced evenly on a log scale.
 
     Parameters
@@ -40,7 +40,7 @@ def reverse_logspace(num=50, base=10):
     )
 
 
-def elastic_net_grid(num=(100, 10), base=10):
+def elastic_net_grid(num: tuple[int, int] = (100, 10), base: int = 10) -> np.ndarray:
     """Return an array of 3D grid points on the standard 2-simplex, which is suitable for grid search for elastic net's hyperparameters.
 
     The returned array is of shape ``(num[0] * num[1] + 1, 3)``.

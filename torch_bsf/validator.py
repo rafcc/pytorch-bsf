@@ -1,5 +1,5 @@
 import json
-import typing
+from typing import cast, Any
 
 from jsonschema import ValidationError, validate
 
@@ -40,7 +40,7 @@ def validate_simplex_indices(instance: object, n_params: int, degree: int) -> No
     """
     schema = indices_schema(n_params, degree)
     validate(instance, schema)
-    indices = typing.cast(typing.List[typing.List[int]], instance)
+    indices = cast(list[list[int]], instance)
 
     if n_params == 0:
         return  # no need to check sum since indices is a list of empty lists
@@ -53,7 +53,7 @@ def validate_simplex_indices(instance: object, n_params: int, degree: int) -> No
             )
 
 
-def indices_schema(n_params: int, degree: int) -> typing.Dict[str, typing.Any]:
+def indices_schema(n_params: int, degree: int) -> dict[str, Any]:
     r"""Generate a JSON schema for indices of the control points with given ``n_params`` and ``degree``.
 
     Parameters
@@ -98,7 +98,7 @@ def indices_schema(n_params: int, degree: int) -> typing.Dict[str, typing.Any]:
     }
 
 
-def index_list(val: str) -> typing.List[typing.List[int]]:
+def index_list(val: str) -> list[list[int]]:
     r"""Parse ``val`` into a list of indices.
 
     Parameters
@@ -111,11 +111,11 @@ def index_list(val: str) -> typing.List[typing.List[int]]:
         The persed indices.
     """
     val = val.replace("(", "[").replace(")", "]").replace("{", "[").replace("}", "]")
-    indices = typing.cast(typing.List[typing.List[int]], json.loads(val))
+    indices = cast(list[list[int]], json.loads(val))
     return indices
 
 
-def int_or_str(val: str) -> typing.Union[int, str]:
+def int_or_str(val: str) -> int | str:
     r"""Try to parse int.
     Return the int value if the parse is succeeded; the original string otherwise.
 
