@@ -74,8 +74,7 @@ def indices_schema(n_params: int, degree: int) -> dict[str, Any]:
 
     See Also
     --------
-    validate_simplex_indices
-        Validate an instance that has appropriate n_params and degree.
+    validate_simplex_indices : Validate an instance that has appropriate n_params and degree.
     """
     if n_params < 0:
         raise ValueError(f"n_params must be non-negative, but {n_params} is given.")

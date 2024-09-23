@@ -11,15 +11,15 @@ r"""The value type of control points of a Bezier simplex."""
 
 ControlPointsData: TypeAlias = (
     # we can't use dict[Index, Value] because TypeVar of Dict is invariant.
-    dict[str, torch.Tensor] |
-    dict[str, list[float]] |
-    dict[str, tuple[float, ...]] |
-    dict[tuple[int, ...], torch.Tensor] |
-    dict[tuple[int, ...], list[float]] |
-    dict[tuple[int, ...], tuple[float, ...]] |
-    dict[torch.Tensor, torch.Tensor] |
-    dict[torch.Tensor, list[float]] |
-    dict[torch.Tensor, tuple[float, ...]]
+    dict[str, torch.Tensor]
+    | dict[str, list[float]]
+    | dict[str, tuple[float, ...]]
+    | dict[tuple[int, ...], torch.Tensor]
+    | dict[tuple[int, ...], list[float]]
+    | dict[tuple[int, ...], tuple[float, ...]]
+    | dict[torch.Tensor, torch.Tensor]
+    | dict[torch.Tensor, list[float]]
+    | dict[torch.Tensor, tuple[float, ...]]
 )
 r"""The data type of control points of a Bezier simplex."""
 

@@ -3,8 +3,10 @@ import json
 from functools import lru_cache
 from math import factorial
 from pathlib import Path
+from datetime import timedelta
 from typing import cast, Any, Iterable
 
+import lightning.fabric.utilities.types as LT
 import lightning.pytorch as L
 import numpy as np
 import torch
@@ -145,9 +147,7 @@ def polynom(degree: int, index: Iterable[int]) -> float:
     return r
 
 
-def monomial(
-    variable: Iterable[float], degree: Iterable[int]
-) -> torch.Tensor:
+def monomial(variable: Iterable[float], degree: Iterable[int]) -> torch.Tensor:
     r"""Computes a monomial :math:`\mathbf t^{\mathbf d} = t_1^{d_1} t_2^{d_2}\cdots t_M^{d^M}`.
 
     Parameters
@@ -701,13 +701,7 @@ def fit(
     init: BezierSimplex | ControlPoints | ControlPointsData | None = None,
     fix: Iterable[Index] | None = None,
     batch_size: int | None = None,
-    max_epochs: int | None = None,
-    accelerator: str | L.accelerators.Accelerator = "auto",
-    strategy: str | L.strategies.Strategy = "auto",
-    devices: list[int] | str | int = "auto",
-    num_nodes: int = 1,
-    precision: str | int = "32-true",
-    enable_progress_bar: bool = False,
+    **kwargs,
 ) -> BezierSimplex:
     r"""Fits a Bezier simplex.
 
@@ -725,24 +719,19 @@ def fit(
         The indices of control points to exclude from training.
     batch_size
         The size of minibatch.
-    max_epochs
-        The number of epochs to stop training.
-    accelerator
-        The type of accelerators to use.
-    strategy
-        Distributed computing strategy.
-    devices
-        The number of accelerator devices to use.
-    num_nodes
-        The number of compute nodes to use.
-    precision
-        The precision of floating point numbers.
-    enable_progress_bar
-        Whether to enable progress bar.
+    kwargs
+        All arguments for lightning.pytorch.Trainer
 
     Returns
     -------
     A trained Bezier simplex.
+
+    Raises
+    ------
+    TypeError
+        From Trainer or DataLoader.
+    MisconfigurationException
+        From Trainer.
 
     Examples
     --------
@@ -777,6 +766,11 @@ def fit(
     >>> x = bs(t)
     >>> print(f"{t} -> {x}")
     [[0.2, 0.3, 0.5]] -> tensor([[0.9600, 0.9100, 0.7500]], grad_fn=<AddBackward0>)
+
+    See Also
+    --------
+    lightning.pytorch.Trainer : Argument descriptions.
+    torch.DataLoader : Argument descriptions.
     """
     data = TensorDataset(params, values)
     dl = DataLoader(data, batch_size=batch_size or len(data))
@@ -803,15 +797,6 @@ def fit(
     for index in fix:
         bs.control_points[index].requires_grad = False
 
-    trainer = L.Trainer(
-        accelerator=accelerator,
-        strategy=strategy,
-        devices=devices,
-        precision=precision,
-        num_nodes=num_nodes,
-        max_epochs=max_epochs,
-        callbacks=[EarlyStopping(monitor="train_mse")],
-        enable_progress_bar=enable_progress_bar,
-    )
+    trainer = L.Trainer(**kwargs)
     trainer.fit(bs, dl)
     return bs
