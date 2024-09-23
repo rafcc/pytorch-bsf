@@ -3,17 +3,14 @@ import json
 from functools import lru_cache
 from math import factorial
 from pathlib import Path
-from datetime import timedelta
 from typing import cast, Any, Iterable
 
-import lightning.fabric.utilities.types as LT
 import lightning.pytorch as L
 import numpy as np
 import torch
 import torch.optim
 import yaml
 from jsonschema import ValidationError, validate
-from lightning.pytorch.callbacks.early_stopping import EarlyStopping
 from torch.nn import functional as F
 from torch.utils.data import DataLoader, TensorDataset, random_split
 
@@ -103,6 +100,11 @@ class BezierSimplexDataModule(L.LightningDataModule):
         size = len(xy)
         n_train = int(size * self.split_ratio)
         self.trainset, self.valset = random_split(xy, [n_train, size - n_train])
+
+        index_set = np.array(range(params.shape[1]))
+        labels = np.array([str(index_set[v]) for v in params[self.trainset.indices] > 0])
+        self.trainset.labels = labels
+        self.valset.labels = labels
 
     def train_dataloader(self) -> DataLoader:
         # REQUIRED
