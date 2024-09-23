@@ -1,3 +1,5 @@
+from argparse import ArgumentParser
+
 import numpy as np
 
 
@@ -150,7 +152,6 @@ def elastic_net_grid(n_lambdas: int = 102, n_alphas: int = 12, n_vertex_copies: 
 
 
 if __name__ == "__main__":
-    from argparse import ArgumentParser
 
     parser = ArgumentParser(
         prog="python -m torch_bsf.model_selection.elastic_net_grid",
