@@ -94,21 +94,19 @@ trainer = KFoldTrainer(
 
 # Returns a dict of stats over the different splits
 cross_val_stats = trainer.cross_validate(bs, datamodule=dm)
-print("===========CROSS VALIDATION STATISTICS===========")
-print(cross_val_stats)
-print("===========CROSS VALIDATION STATISTICS===========")
+print(f"cross_val_stats={cross_val_stats}")
 
 # Additionally, we can construct an ensemble from the K trained models
 ensemble_model = trainer.create_ensemble(bs)
 
 # search for filename
 fn_tmpl = (
-    f"{args.params.name},{args.values.name},meshgrid,d_{args.degree},r_{args.split_ratio},"
+    f"{args.params.name},{args.values.name},{args.num_folds}fold,meshgrid,d_{args.degree},r_{args.split_ratio},"
     + "{}.csv"
 )
 for i in range(1000000):
     fn = Path(fn_tmpl.format(i))
-    if not (fn).exists():
+    if not fn.exists():
         break
 else:
     raise FileExistsError(fn)
