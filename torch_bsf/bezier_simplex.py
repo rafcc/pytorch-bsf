@@ -3,7 +3,7 @@ import json
 from functools import lru_cache
 from math import factorial
 from pathlib import Path
-from typing import cast, Any, Iterable
+from typing import cast, Any, Iterable, Literal
 
 import lightning.pytorch as L
 import numpy as np
@@ -23,22 +23,26 @@ from torch_bsf.control_points import (
 )
 from torch_bsf.validator import validate_simplex_indices
 
+NormalizeType = Literal["max", "std", "quantile", "none"]
 
 class BezierSimplexDataModule(L.LightningDataModule):
     r"""A data module for training a Bezier simplex.
 
     Parameters
     ----------
-    data
-        The path to a data file.
-    label
-        The path to a label file.
+    params
+        The path to a parameter file.
+    values
+        The path to a value file.
     header
-        The number of headers in data files.
+        The number of header rows in the parameter file and the value file.
+        The first ``header`` rows are skipped in reading the files.
     batch_size
-        The size of minibatch.
+        The size of each minibatch.
     split_ratio
         The ratio of train-val split.
+        Must be greater than 0 and less than or equal to 1.
+        If it is set to 1, then all the data are used for training and the validation step will be skipped.
     normalize
         The data normalization method.
         Either ``"max"``, ``"std"``, ``"quantile"``, or ``"none"``.
@@ -50,11 +54,20 @@ class BezierSimplexDataModule(L.LightningDataModule):
         values: Path,
         header: int = 0,
         batch_size: int | None = None,
-        split_ratio: float = 0.5,
-        normalize: str = "none",  # "max", "std", "quantile" or "none"
+        split_ratio: float = 1.0,
+        normalize: NormalizeType = "none",  # "max", "std", "quantile" or "none"
     ):
         # REQUIRED
         super().__init__()
+        if header < 0:
+            raise ValueError(f"{header=}. Must be non-negative.")
+        if batch_size is not None and batch_size < 1:
+            raise ValueError(f"{batch_size=}. Must be positive or None.")
+        if split_ratio <= 0.0 or 1.0 < split_ratio:
+            raise ValueError(f"{split_ratio=}. Must be 0.0 < sprit_ratio <= 1.0.")
+        if normalize not in ("max", "std", "quantile", "none"):
+            raise ValueError(f"{normalize=}. Must be one of ['max', 'std', 'quantile', 'none'].")
+
         self.params = params
         self.values = values
         self.header = header
@@ -98,30 +111,32 @@ class BezierSimplexDataModule(L.LightningDataModule):
             values = (values - mins) / (maxs - mins)
         xy = TensorDataset(params, values)
         size = len(xy)
-        n_train = int(size * self.split_ratio)
-        self.trainset, self.valset = random_split(xy, [n_train, size - n_train])
+        if self.split_ratio == 1.0:
+            self.trainset = xy
+            self.trainset.indices = torch.arange(size)
+            self.valset = self.trainset
+        else:
+            n_train = int(size * self.split_ratio)
+            self.trainset, self.valset = random_split(xy, [n_train, size - n_train])
 
-        index_set = np.array(range(params.shape[1]))
+        index_set = torch.arange(params.shape[1])
         labels = np.array([str(index_set[v]) for v in params[self.trainset.indices] > 0])
         self.trainset.labels = labels
-        self.valset.labels = labels
 
     def train_dataloader(self) -> DataLoader:
         # REQUIRED
-        train_loader = DataLoader(
+        return DataLoader(
             self.trainset,
             shuffle=True,
             batch_size=self.batch_size or len(self.trainset),
         )
-        return train_loader
 
     def val_dataloader(self) -> DataLoader:
         # OPTIONAL
-        val_loader = DataLoader(
+        return DataLoader(
             self.valset,
             batch_size=self.batch_size or len(self.valset),
         )
-        return val_loader
 
     def test_dataloader(self) -> DataLoader:
         # OPTIONAL

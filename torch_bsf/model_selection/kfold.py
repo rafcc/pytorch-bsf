@@ -25,9 +25,9 @@ parser.add_argument(
 parser.add_argument("--num_folds", type=int, default=5)
 parser.add_argument("--shuffle", type=bool, default=True)
 parser.add_argument("--stratified", type=bool, default=True)
-parser.add_argument("--split_ratio", type=float, default=0.9999)
+parser.add_argument("--split_ratio", type=float, default=1.0)
 parser.add_argument("--batch_size", type=int)
-parser.add_argument("--max_epochs", type=int)
+parser.add_argument("--max_epochs", type=int, default=2)
 parser.add_argument("--accelerator", type=str, default="auto")
 parser.add_argument("--strategy", type=str, default="auto")
 parser.add_argument("--devices", type=int_or_str, default="auto")
@@ -89,7 +89,6 @@ trainer = KFoldTrainer(
     precision=args.precision,
     num_nodes=args.num_nodes,
     max_epochs=args.max_epochs,
-    callbacks=[EarlyStopping(monitor="val_mse")],
 )
 
 # Returns a dict of stats over the different splits
