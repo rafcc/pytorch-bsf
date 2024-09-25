@@ -1,5 +1,13 @@
 # Changelog
 
+## [0.7.0](https://github.com/rafcc/pytorch-bsf/compare/v0.6.0...v0.7.0) (2024-09-25)
+
+
+### Features
+
+* k-fold cross validation ([#153](https://github.com/rafcc/pytorch-bsf/issues/153)) ([a345dfd](https://github.com/rafcc/pytorch-bsf/commit/a345dfde5dc0ba8eb3fd8cf6ca65f314d9d2db2f))
+* stratified splitting ([#156](https://github.com/rafcc/pytorch-bsf/issues/156)) ([60adc3a](https://github.com/rafcc/pytorch-bsf/commit/60adc3a01ed701206d13a2a2bda7acf0a30cb876))
+
 ## [0.6.0](https://github.com/rafcc/pytorch-bsf/compare/v0.5.1...v0.6.0) (2024-09-21)
 
 
