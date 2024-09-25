@@ -1,7 +1,7 @@
 # pytorch-bsf
 [![CodeQL](https://github.com/rafcc/pytorch-bsf/actions/workflows/codeql-analysis.yml/badge.svg)](https://github.com/rafcc/pytorch-bsf/actions/workflows/codeql-analysis.yml)
 [![PyTest](https://github.com/rafcc/pytorch-bsf/actions/workflows/python-package.yml/badge.svg)](https://github.com/rafcc/pytorch-bsf/actions/workflows/python-package.yml)
-[![PyPI](https://github.com/rafcc/pytorch-bsf/actions/workflows/python-publish.yml/badge.svg)](https://github.com/rafcc/pytorch-bsf/actions/workflows/python-publish.yml)
+[![Release](https://github.com/rafcc/pytorch-bsf/actions/workflows/release-please-action.yml/badge.svg)](https://github.com/rafcc/pytorch-bsf/actions/workflows/release-please-action.yml)
 [![Conda](https://github.com/rafcc/pytorch-bsf/actions/workflows/python-package-conda.yml/badge.svg)](https://github.com/rafcc/pytorch-bsf/actions/workflows/python-package-conda.yml)
 [![GHPages](https://github.com/rafcc/pytorch-bsf/actions/workflows/sphinx-pages.yml/badge.svg)](https://github.com/rafcc/pytorch-bsf/actions/workflows/sphinx-pages.yml)
 

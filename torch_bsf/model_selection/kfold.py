@@ -1,4 +1,3 @@
-import typing
 from argparse import ArgumentParser
 from pathlib import Path
 
@@ -26,9 +25,9 @@ parser.add_argument(
 parser.add_argument("--num_folds", type=int, default=5)
 parser.add_argument("--shuffle", type=bool, default=True)
 parser.add_argument("--stratified", type=bool, default=True)
-parser.add_argument("--split_ratio", type=float, default=0.9999)
+parser.add_argument("--split_ratio", type=float, default=1.0)
 parser.add_argument("--batch_size", type=int)
-parser.add_argument("--max_epochs", type=int)
+parser.add_argument("--max_epochs", type=int, default=2)
 parser.add_argument("--accelerator", type=str, default="auto")
 parser.add_argument("--strategy", type=str, default="auto")
 parser.add_argument("--devices", type=int_or_str, default="auto")
@@ -74,7 +73,7 @@ bs = (
     )
 )
 
-fix: typing.List[typing.List[int]] = args.fix or []
+fix: list[list[int]] = args.fix or []
 validate_simplex_indices(fix, bs.n_params, bs.degree)
 
 for index in fix:
@@ -90,26 +89,23 @@ trainer = KFoldTrainer(
     precision=args.precision,
     num_nodes=args.num_nodes,
     max_epochs=args.max_epochs,
-    callbacks=[EarlyStopping(monitor="val_mse")],
 )
 
 # Returns a dict of stats over the different splits
 cross_val_stats = trainer.cross_validate(bs, datamodule=dm)
-print("===========CROSS VALIDATION STATISTICS===========")
-print(cross_val_stats)
-print("===========CROSS VALIDATION STATISTICS===========")
+print(f"cross_val_stats={cross_val_stats}")
 
 # Additionally, we can construct an ensemble from the K trained models
 ensemble_model = trainer.create_ensemble(bs)
 
 # search for filename
 fn_tmpl = (
-    f"{args.params.name},{args.values.name},meshgrid,d_{args.degree},r_{args.split_ratio},"
+    f"{args.params.name},{args.values.name},{args.num_folds}fold,meshgrid,d_{args.degree},r_{args.split_ratio},"
     + "{}.csv"
 )
 for i in range(1000000):
     fn = Path(fn_tmpl.format(i))
-    if not (fn).exists():
+    if not fn.exists():
         break
 else:
     raise FileExistsError(fn)

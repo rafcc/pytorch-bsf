@@ -1,35 +1,30 @@
-import typing
+from typing import cast, Iterable, Sequence, TypeAlias
 
 import torch
 import torch.nn as nn
-import typing_extensions
 
-Index: typing_extensions.TypeAlias = typing.Union[
-    str, typing.Sequence[int], torch.Tensor
-]
+Index: TypeAlias = str | Sequence[int] | torch.Tensor
 r"""The index type of control points of a Bezier simplex."""
 
-Value: typing_extensions.TypeAlias = typing.Union[typing.Sequence[float], torch.Tensor]
+Value: TypeAlias = Sequence[float] | torch.Tensor
 r"""The value type of control points of a Bezier simplex."""
 
-ControlPointsData: typing_extensions.TypeAlias = typing.Union[
-    # we can't use typing.Dict[Index, Value] because TypeVar of Dict is invariant.
-    typing.Dict[str, torch.Tensor],
-    typing.Dict[str, typing.List[float]],
-    typing.Dict[str, typing.Tuple[float, ...]],
-    typing.Dict[typing.Tuple[int, ...], torch.Tensor],
-    typing.Dict[typing.Tuple[int, ...], typing.List[float]],
-    typing.Dict[typing.Tuple[int, ...], typing.Tuple[float, ...]],
-    typing.Dict[torch.Tensor, torch.Tensor],
-    typing.Dict[torch.Tensor, typing.List[float]],
-    typing.Dict[torch.Tensor, typing.Tuple[float, ...]],
-]
+ControlPointsData: TypeAlias = (
+    # we can't use dict[Index, Value] because TypeVar of Dict is invariant.
+    dict[str, torch.Tensor]
+    | dict[str, list[float]]
+    | dict[str, tuple[float, ...]]
+    | dict[tuple[int, ...], torch.Tensor]
+    | dict[tuple[int, ...], list[float]]
+    | dict[tuple[int, ...], tuple[float, ...]]
+    | dict[torch.Tensor, torch.Tensor]
+    | dict[torch.Tensor, list[float]]
+    | dict[torch.Tensor, tuple[float, ...]]
+)
 r"""The data type of control points of a Bezier simplex."""
 
 
-def simplex_indices(
-    n_params: int, degree: int
-) -> typing.Iterable[typing.Tuple[int, ...]]:
+def simplex_indices(n_params: int, degree: int) -> Iterable[tuple[int, ...]]:
     r"""Iterates the index of control points of a Bezier simplex.
 
     Parameters
@@ -48,13 +43,10 @@ def simplex_indices(
     if degree < 0:
         raise ValueError(f"degree must be non-negative, but {degree} is given.")
     if n_params == 0:
-        yield typing.cast(typing.Tuple[int, ...], ())
+        yield cast(tuple[int, ...], ())
         return
 
-    def iterate(
-        c: typing.Tuple[int, ...],
-        r: int,
-    ) -> typing.Iterable[typing.Tuple[int, ...]]:
+    def iterate(c: tuple[int, ...], r: int) -> Iterable[tuple[int, ...]]:
         if len(c) == n_params - 1:
             yield c + (r,)
         else:
@@ -95,9 +87,7 @@ def to_parameterdict_value(value: Value) -> torch.Tensor:
     return torch.as_tensor(value)
 
 
-def to_parameterdict(
-    data: ControlPointsData,
-) -> typing.Dict[str, torch.Tensor]:
+def to_parameterdict(data: ControlPointsData) -> dict[str, torch.Tensor]:
     """Convert data to a dictionary of parameters.
 
     Args:
@@ -150,10 +140,7 @@ class ControlPoints(nn.ParameterDict):
 
     """
 
-    def __init__(
-        self,
-        data: typing.Optional[ControlPointsData] = None,
-    ):
+    def __init__(self, data: ControlPointsData | None = None):
         """Initialize the control points of a Bezier simplex.
 
         The structure of control points is inferred from the data.
@@ -170,26 +157,26 @@ class ControlPoints(nn.ParameterDict):
             self.n_params = 0
             self.n_values = 0
         else:
-            index, value = typing.cast(
-                typing.Tuple[typing.Sequence[int], typing.Sequence[float]],
+            index, value = cast(
+                tuple[Sequence[int], Sequence[float]],
                 next(iter(data.items())),
             )
             if isinstance(index, str):
-                index = typing.cast(typing.List[int], eval(index))
+                index = cast(list[int], eval(index))
             self.degree = sum(index)
             self.n_params = len(index)
             self.n_values = len(value)
 
     def __getitem__(self, key: Index) -> nn.Parameter:
         key = to_parameterdict_key(key)
-        return typing.cast(nn.Parameter, super().__getitem__(key))
+        return cast(nn.Parameter, super().__getitem__(key))
 
     def __setitem__(self, key: Index, value: Value) -> None:
         key = to_parameterdict_key(key)
         value = to_parameterdict_value(value)
         super().__setitem__(key, value)
 
-    def indices(self) -> typing.Iterable[typing.Tuple[int, ...]]:
+    def indices(self) -> Iterable[tuple[int, ...]]:
         """Iterates the index of control points of the Bezier simplex.
 
         Returns

@@ -1,9 +1,9 @@
 import csv
 import json
-import typing
 from functools import lru_cache
 from math import factorial
 from pathlib import Path
+from typing import cast, Any, Iterable, Literal
 
 import lightning.pytorch as L
 import numpy as np
@@ -11,7 +11,6 @@ import torch
 import torch.optim
 import yaml
 from jsonschema import ValidationError, validate
-from lightning.pytorch.callbacks.early_stopping import EarlyStopping
 from torch.nn import functional as F
 from torch.utils.data import DataLoader, TensorDataset, random_split
 
@@ -24,22 +23,26 @@ from torch_bsf.control_points import (
 )
 from torch_bsf.validator import validate_simplex_indices
 
+NormalizeType = Literal["max", "std", "quantile", "none"]
 
 class BezierSimplexDataModule(L.LightningDataModule):
     r"""A data module for training a Bezier simplex.
 
     Parameters
     ----------
-    data
-        The path to a data file.
-    label
-        The path to a label file.
+    params
+        The path to a parameter file.
+    values
+        The path to a value file.
     header
-        The number of headers in data files.
+        The number of header rows in the parameter file and the value file.
+        The first ``header`` rows are skipped in reading the files.
     batch_size
-        The size of minibatch.
+        The size of each minibatch.
     split_ratio
         The ratio of train-val split.
+        Must be greater than 0 and less than or equal to 1.
+        If it is set to 1, then all the data are used for training and the validation step will be skipped.
     normalize
         The data normalization method.
         Either ``"max"``, ``"std"``, ``"quantile"``, or ``"none"``.
@@ -50,12 +53,21 @@ class BezierSimplexDataModule(L.LightningDataModule):
         params: Path,
         values: Path,
         header: int = 0,
-        batch_size: typing.Optional[int] = None,
-        split_ratio: float = 0.5,
-        normalize: str = "none",  # "max", "std", "quantile" or "none"
+        batch_size: int | None = None,
+        split_ratio: float = 1.0,
+        normalize: NormalizeType = "none",  # "max", "std", "quantile" or "none"
     ):
         # REQUIRED
         super().__init__()
+        if header < 0:
+            raise ValueError(f"{header=}. Must be non-negative.")
+        if batch_size is not None and batch_size < 1:
+            raise ValueError(f"{batch_size=}. Must be positive or None.")
+        if split_ratio <= 0.0 or 1.0 < split_ratio:
+            raise ValueError(f"{split_ratio=}. Must be 0.0 < sprit_ratio <= 1.0.")
+        if normalize not in ("max", "std", "quantile", "none"):
+            raise ValueError(f"{normalize=}. Must be one of ['max', 'std', 'quantile', 'none'].")
+
         self.params = params
         self.values = values
         self.header = header
@@ -70,7 +82,7 @@ class BezierSimplexDataModule(L.LightningDataModule):
             self.n_values = len(f.readline().split(delimiter))
         self.setup()
 
-    def setup(self, stage: typing.Optional[str] = None):
+    def setup(self, stage: str | None = None):
         # OPTIONAL
         delimiter = "," if self.params.suffix == ".csv" else None
         params = torch.from_numpy(
@@ -99,25 +111,32 @@ class BezierSimplexDataModule(L.LightningDataModule):
             values = (values - mins) / (maxs - mins)
         xy = TensorDataset(params, values)
         size = len(xy)
-        n_train = int(size * self.split_ratio)
-        self.trainset, self.valset = random_split(xy, [n_train, size - n_train])
+        if self.split_ratio == 1.0:
+            self.trainset = xy
+            self.trainset.indices = torch.arange(size)
+            self.valset = self.trainset
+        else:
+            n_train = int(size * self.split_ratio)
+            self.trainset, self.valset = random_split(xy, [n_train, size - n_train])
+
+        index_set = torch.arange(params.shape[1])
+        labels = np.array([str(index_set[v]) for v in params[self.trainset.indices] > 0])
+        self.trainset.labels = labels
 
     def train_dataloader(self) -> DataLoader:
         # REQUIRED
-        train_loader = DataLoader(
+        return DataLoader(
             self.trainset,
             shuffle=True,
             batch_size=self.batch_size or len(self.trainset),
         )
-        return train_loader
 
     def val_dataloader(self) -> DataLoader:
         # OPTIONAL
-        val_loader = DataLoader(
+        return DataLoader(
             self.valset,
             batch_size=self.batch_size or len(self.valset),
         )
-        return val_loader
 
     def test_dataloader(self) -> DataLoader:
         # OPTIONAL
@@ -125,7 +144,7 @@ class BezierSimplexDataModule(L.LightningDataModule):
 
 
 @lru_cache(1024)
-def polynom(degree: int, index: typing.Iterable[int]) -> float:
+def polynom(degree: int, index: Iterable[int]) -> float:
     r"""Computes a polynomial coefficient :math:`\binom{D}{\mathbf d} = \frac{D!}{d_1!d_2!\cdots d_M!}`.
 
     Parameters
@@ -145,9 +164,7 @@ def polynom(degree: int, index: typing.Iterable[int]) -> float:
     return r
 
 
-def monomial(
-    variable: typing.Iterable[float], degree: typing.Iterable[int]
-) -> torch.Tensor:
+def monomial(variable: Iterable[float], degree: Iterable[int]) -> torch.Tensor:
     r"""Computes a monomial :math:`\mathbf t^{\mathbf d} = t_1^{d_1} t_2^{d_2}\cdots t_M^{d^M}`.
 
     Parameters
@@ -209,7 +226,7 @@ class BezierSimplex(L.LightningModule):
 
     def __init__(
         self,
-        control_points: typing.Union[ControlPoints, ControlPointsData],
+        control_points: ControlPoints | ControlPointsData,
     ):
         # REQUIRED
         super().__init__()
@@ -248,14 +265,14 @@ class BezierSimplex(L.LightningModule):
         A minibatch of value vectors.
         """
         # REQUIRED
-        x = typing.cast(torch.Tensor, 0)  # x will be of Tensor by subsequent broadcast
+        x = cast(torch.Tensor, 0)  # x will be of Tensor by subsequent broadcast
         for i in simplex_indices(self.n_params, self.degree):
             x += polynom(self.degree, i) * torch.outer(
                 monomial(t, i), self.control_points[i]
             )
         return x
 
-    def training_step(self, batch, batch_idx) -> typing.Dict[str, typing.Any]:
+    def training_step(self, batch, batch_idx) -> dict[str, Any]:
         # REQUIRED
         x, y = batch
         y_hat = self.forward(x)
@@ -264,7 +281,7 @@ class BezierSimplex(L.LightningModule):
         self.log("train_mse", loss, sync_dist=True)
         return {"loss": loss, "log": tensorboard_logs}
 
-    def validation_step(self, batch, batch_idx) -> typing.Dict[str, typing.Any]:
+    def validation_step(self, batch, batch_idx) -> dict[str, Any]:
         # OPTIONAL
         x, y = batch
         y_hat = self.forward(x)
@@ -274,14 +291,14 @@ class BezierSimplex(L.LightningModule):
         self.log("val_mae", mae, sync_dist=True)
         return {"val_loss": mse}
 
-    def validation_end(self, outputs) -> typing.Dict[str, typing.Any]:
+    def validation_end(self, outputs) -> dict[str, Any]:
         # OPTIONAL
         avg_loss = torch.stack([x["val_loss"] for x in outputs]).mean()
         tensorboard_logs = {"val_loss": avg_loss}
         self.log("val_avg_mse", avg_loss, sync_dist=True)
         return {"avg_val_loss": avg_loss, "log": tensorboard_logs}
 
-    def test_step(self, batch, batch_idx) -> typing.Dict[str, typing.Any]:
+    def test_step(self, batch, batch_idx) -> dict[str, Any]:
         # OPTIONAL
         x, y = batch
         y_hat = self.forward(x)
@@ -296,7 +313,7 @@ class BezierSimplex(L.LightningModule):
         optimizer = torch.optim.LBFGS(self.parameters())
         return optimizer
 
-    def meshgrid(self, num: int = 100) -> typing.Tuple[torch.Tensor, torch.Tensor]:
+    def meshgrid(self, num: int = 100) -> tuple[torch.Tensor, torch.Tensor]:
         r"""Computes a meshgrid of the Bezier simplex.
 
         Parameters
@@ -472,7 +489,7 @@ def randn(n_params: int, n_values: int, degree: int) -> BezierSimplex:
     )
 
 
-def save(path: typing.Union[str, Path], data: BezierSimplex) -> None:
+def save(path: str | Path, data: BezierSimplex) -> None:
     r"""Saves a Bezier simplex to a file.
 
     Parameters
@@ -539,7 +556,7 @@ CONTROLPOINTS_JSONSCHEMA = {
 }
 
 
-def validate_control_points(data: typing.Dict[str, typing.List[float]]):
+def validate_control_points(data: dict[str, list[float]]):
     r"""Validates control points.
 
     Parameters
@@ -618,7 +635,7 @@ def validate_control_points(data: typing.Dict[str, typing.List[float]]):
             raise ValidationError(f"Dimension mismatch: {value}")
 
 
-def load(path: typing.Union[str, Path]) -> BezierSimplex:
+def load(path: str | Path) -> BezierSimplex:
     r"""Loads a Bezier simplex from a file.
 
     Parameters
@@ -652,7 +669,7 @@ def load(path: typing.Union[str, Path]) -> BezierSimplex:
     >>> print(bs(torch.tensor([[0.2, 0.8]])))
     tensor([[0.0000, 0.0000, 0.0000]], grad_fn=<AddBackward0>)
     """
-    cpdata: typing.Dict[str, typing.List[float]]
+    cpdata: dict[str, list[float]]
     path = Path(path)
     if path.suffix == ".pt":
         data = torch.load(path)
@@ -697,19 +714,11 @@ def load(path: typing.Union[str, Path]) -> BezierSimplex:
 def fit(
     params: torch.Tensor,
     values: torch.Tensor,
-    degree: typing.Optional[int] = None,
-    init: typing.Optional[
-        typing.Union[BezierSimplex, ControlPoints, ControlPointsData]
-    ] = None,
-    fix: typing.Optional[typing.Iterable[Index]] = None,
-    batch_size: typing.Optional[int] = None,
-    max_epochs: typing.Optional[int] = None,
-    accelerator: typing.Union[str, L.accelerators.Accelerator] = "auto",
-    strategy: typing.Union[str, L.strategies.Strategy] = "auto",
-    devices: typing.Union[typing.List[int], str, int] = "auto",
-    num_nodes: int = 1,
-    precision: typing.Union[str, int] = "32-true",
-    enable_progress_bar: bool = False,
+    degree: int | None = None,
+    init: BezierSimplex | ControlPoints | ControlPointsData | None = None,
+    fix: Iterable[Index] | None = None,
+    batch_size: int | None = None,
+    **kwargs,
 ) -> BezierSimplex:
     r"""Fits a Bezier simplex.
 
@@ -727,24 +736,19 @@ def fit(
         The indices of control points to exclude from training.
     batch_size
         The size of minibatch.
-    max_epochs
-        The number of epochs to stop training.
-    accelerator
-        The type of accelerators to use.
-    strategy
-        Distributed computing strategy.
-    devices
-        The number of accelerator devices to use.
-    num_nodes
-        The number of compute nodes to use.
-    precision
-        The precision of floating point numbers.
-    enable_progress_bar
-        Whether to enable progress bar.
+    kwargs
+        All arguments for lightning.pytorch.Trainer
 
     Returns
     -------
     A trained Bezier simplex.
+
+    Raises
+    ------
+    TypeError
+        From Trainer or DataLoader.
+    MisconfigurationException
+        From Trainer.
 
     Examples
     --------
@@ -779,6 +783,11 @@ def fit(
     >>> x = bs(t)
     >>> print(f"{t} -> {x}")
     [[0.2, 0.3, 0.5]] -> tensor([[0.9600, 0.9100, 0.7500]], grad_fn=<AddBackward0>)
+
+    See Also
+    --------
+    lightning.pytorch.Trainer : Argument descriptions.
+    torch.DataLoader : Argument descriptions.
     """
     data = TensorDataset(params, values)
     dl = DataLoader(data, batch_size=batch_size or len(data))
@@ -796,7 +805,7 @@ def fit(
         bs = randn(
             n_params=int(params.shape[1]),
             n_values=int(values.shape[1]),
-            degree=typing.cast(int, degree),
+            degree=cast(int, degree),
         )
 
     fix = fix or []
@@ -805,15 +814,6 @@ def fit(
     for index in fix:
         bs.control_points[index].requires_grad = False
 
-    trainer = L.Trainer(
-        accelerator=accelerator,
-        strategy=strategy,
-        devices=devices,
-        precision=precision,
-        num_nodes=num_nodes,
-        max_epochs=max_epochs,
-        callbacks=[EarlyStopping(monitor="train_mse")],
-        enable_progress_bar=enable_progress_bar,
-    )
+    trainer = L.Trainer(**kwargs)
     trainer.fit(bs, dl)
     return bs
