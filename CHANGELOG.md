@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.8.0](https://github.com/rafcc/pytorch-bsf/compare/v0.7.0...v0.8.0) (2024-09-25)
+
+
+### Features
+
+* kfold entrypoint ([#158](https://github.com/rafcc/pytorch-bsf/issues/158)) ([69c3d0b](https://github.com/rafcc/pytorch-bsf/commit/69c3d0b4326e3f47aca1d761cf7be58dac3eb5ec))
+
 ## [0.7.0](https://github.com/rafcc/pytorch-bsf/compare/v0.6.0...v0.7.0) (2024-09-25)
 
 
