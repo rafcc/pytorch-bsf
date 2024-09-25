@@ -11,3 +11,13 @@ entry_points:
       --params={params}
       --values={values}
       --degree={degree}
+  kfold:
+    parameters:
+      params: {type: path}
+      values: {type: path}
+      degree: {type: int}
+    command: >
+      python -m torch_bsf.model_selection.kfold
+      --params={params}
+      --values={values}
+      --degree={degree}
