@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.9.0](https://github.com/rafcc/pytorch-bsf/compare/v0.8.0...v0.9.0) (2024-10-12)
+
+
+### Features
+
+* MLproject entrypoint for elastic net grid ([#161](https://github.com/rafcc/pytorch-bsf/issues/161)) ([445cc52](https://github.com/rafcc/pytorch-bsf/commit/445cc5268da83529e23c246ec8b971d39a0c8b32))
+
 ## [0.8.0](https://github.com/rafcc/pytorch-bsf/compare/v0.7.0...v0.8.0) (2024-09-25)
 
 
