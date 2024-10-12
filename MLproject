@@ -28,7 +28,7 @@ entry_points:
       n_vertex_copies: {type: int}
       base: {type: int}
     command: >
-      python -m torch_bsf.model_selection.elastic_net_grid > weight_{n_lambdas}_{nalphas}_{n_vertex_copies}_{base}.csv
+      python -m torch_bsf.model_selection.elastic_net_grid > weight_{n_lambdas}_{n_alphas}_{n_vertex_copies}_{base}.csv
       --n_lambdas={n_lambdas}
       --n_alphas={n_alphas}
       --n_vertex_copies={n_vertex_copies}
