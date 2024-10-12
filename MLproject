@@ -21,3 +21,15 @@ entry_points:
       --params={params}
       --values={values}
       --degree={degree}
+  elastic_net_grid:
+    parameters:
+      n_lambdas: {type: int}
+      n_alphas: {type: int}
+      n_vertex_copies: {type: int}
+      base: {type: int}
+    command: >
+      python -m torch_bsf.model_selection.elastic_net_grid > weight_{n_lambdas}_{n_alphas}_{n_vertex_copies}_{base}.csv
+      --n_lambdas={n_lambdas}
+      --n_alphas={n_alphas}
+      --n_vertex_copies={n_vertex_copies}
+      --base={base}
