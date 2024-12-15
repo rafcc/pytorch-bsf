@@ -6,7 +6,7 @@ entry_points:
       params: {type: path}
       values: {type: path}
       degree: {type: int}
-    command: >
+    command: >-
       python -m torch_bsf
       --params={params}
       --values={values}
@@ -16,7 +16,7 @@ entry_points:
       params: {type: path}
       values: {type: path}
       degree: {type: int}
-    command: >
+    command: >-
       python -m torch_bsf.model_selection.kfold
       --params={params}
       --values={values}
@@ -27,7 +27,7 @@ entry_points:
       n_alphas: {type: int}
       n_vertex_copies: {type: int}
       base: {type: int}
-    command: >
+    command: >-
       python -m torch_bsf.model_selection.elastic_net_grid > weight_{n_lambdas}_{n_alphas}_{n_vertex_copies}_{base}.csv
       --n_lambdas={n_lambdas}
       --n_alphas={n_alphas}
