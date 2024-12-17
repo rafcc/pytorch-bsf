@@ -116,6 +116,7 @@ print(meshgrids)
 print("===========MESHGRIDS===========")
 ts = sum(tx[0] for tx in meshgrids) / args.num_folds
 xs = sum(tx[1] for tx in meshgrids) / args.num_folds
+xs = dm.inverse_transform(xs)
 
 # save meshgrid
 with open(fn, "w") as f:

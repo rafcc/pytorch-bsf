@@ -99,6 +99,7 @@ else:
     raise FileExistsError(fn)
 
 ts, xs = bs.meshgrid()
+xs = dm.inverse_transform(xs)
 
 # save meshgrid
 with open(fn, "w") as f:
