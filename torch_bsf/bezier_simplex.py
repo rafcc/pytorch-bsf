@@ -21,6 +21,7 @@ from torch_bsf.control_points import (
     simplex_indices,
     to_parameterdict_key,
 )
+from torch_bsf.preprocessing import MinMaxScaler, NoneScaler, QuantileScaler, StdScaler
 from torch_bsf.validator import validate_simplex_indices
 
 NormalizeType = Literal["max", "std", "quantile", "none"]
@@ -74,6 +75,15 @@ class BezierSimplexDataModule(L.LightningDataModule):
         self.batch_size = batch_size
         self.split_ratio = split_ratio
         self.normalize = normalize
+        if normalize == "max":
+            self.scaler = MinMaxScaler()
+        elif normalize == "std":
+            self.scaler = StdScaler()
+        if normalize == "quantile":
+            self.scaler = QuantileScaler()
+        if normalize == "none":
+            self.scaler = NoneScaler()
+
         with open(self.params) as f:
             delimiter = "," if self.params.suffix == ".csv" else None
             self.n_params = len(f.readline().split(delimiter))
@@ -92,23 +102,7 @@ class BezierSimplexDataModule(L.LightningDataModule):
         values = torch.from_numpy(
             np.loadtxt(self.values, delimiter=delimiter, skiprows=self.header)
         )
-        if self.normalize == "max":
-            mins = values.amin(dim=0)
-            maxs = values.amax(dim=0)
-            mins[mins == maxs] -= 0.5  # Avoid division by zero
-            maxs[mins == maxs] += 0.5  # Avoid division by zero
-            values = (values - mins) / (maxs - mins)
-        elif self.normalize == "std":
-            stds, means = torch.std_mean(values, dim=0)
-            stds[stds == 0.0] = 1.0  # Avoid division by zero
-            values = (values - means) / stds
-        elif self.normalize == "quantile":
-            q = 0.05  # Ignore 5% outliers
-            mins = values.quantile(q, dim=0)
-            maxs = values.quantile(1 - q, dim=0)
-            mins[mins == maxs] -= 0.5  # Avoid division by zero
-            maxs[mins == maxs] += 0.5  # Avoid division by zero
-            values = (values - mins) / (maxs - mins)
+        values = self.fit_transform(values)
         xy = TensorDataset(params, values)
         size = len(xy)
         if self.split_ratio == 1.0:
@@ -122,6 +116,12 @@ class BezierSimplexDataModule(L.LightningDataModule):
         index_set = torch.arange(params.shape[1])
         labels = np.array([str(index_set[v]) for v in params[self.trainset.indices] > 0])
         self.trainset.labels = labels
+
+    def fit_transform(self, values: torch.Tensor) -> torch.Tensor:
+        return self.scaler.fit_transform(values)
+
+    def inverse_transform(self, values: torch.Tensor) -> torch.Tensor:
+        return self.scaler.inverse_transform(values)
 
     def train_dataloader(self) -> DataLoader:
         # REQUIRED
