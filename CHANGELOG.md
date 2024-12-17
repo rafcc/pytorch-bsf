@@ -1,5 +1,17 @@
 # Changelog
 
+## [0.10.0](https://github.com/rafcc/pytorch-bsf/compare/v0.9.0...v0.10.0) (2024-12-17)
+
+
+### Features
+
+* add scalers ([#166](https://github.com/rafcc/pytorch-bsf/issues/166)) ([af5d0a3](https://github.com/rafcc/pytorch-bsf/commit/af5d0a333b4c1fe681ad02bd34b860f017d6b16e))
+
+
+### Bug Fixes
+
+* MLproject can get additional params ([#163](https://github.com/rafcc/pytorch-bsf/issues/163)) ([9ea524e](https://github.com/rafcc/pytorch-bsf/commit/9ea524e2b82f48ddea9f493937db84b00995df06))
+
 ## [0.9.0](https://github.com/rafcc/pytorch-bsf/compare/v0.8.0...v0.9.0) (2024-10-12)
 
 
