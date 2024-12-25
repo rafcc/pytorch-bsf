@@ -1,6 +1,7 @@
 from argparse import ArgumentParser
 from pathlib import Path
 
+import numpy as np
 from lightning.pytorch.callbacks.early_stopping import EarlyStopping
 from mlflow import autolog
 from pl_crossvalidate import KFoldTrainer
@@ -110,19 +111,13 @@ for i in range(1000000):
 else:
     raise FileExistsError(fn)
 
-meshgrids = ensemble_model.meshgrid()
-print("===========MESHGRIDS===========")
-print(meshgrids)
-print("===========MESHGRIDS===========")
-ts = sum(tx[0] for tx in meshgrids) / args.num_folds
-xs = sum(tx[1] for tx in meshgrids) / args.num_folds
+ts = dm.load_params()
+xs = bs.forward(ts)  # forward for each fold
+xs = xs.mean(dim=0)  ## mean over folds
 xs = dm.inverse_transform(xs)
 
 # save meshgrid
-with open(fn, "w") as f:
-    for t, x in zip(ts, xs):
-        t = ", ".join(str(v) for v in t.tolist())
-        x = ", ".join(str(v) for v in x.tolist())
-        f.write(f"{t}, {x}\n")
+xs = xs.to('cpu').detach().numpy()
+np.savetxt(fn, xs)
 
 print(f"Meshgrid saved: {fn}")

@@ -1,6 +1,7 @@
 from argparse import ArgumentParser
 from pathlib import Path
 
+import numpy as np
 from lightning.pytorch import Trainer
 from lightning.pytorch.callbacks.early_stopping import EarlyStopping
 from mlflow import autolog
@@ -98,14 +99,11 @@ for i in range(1000000):
 else:
     raise FileExistsError(fn)
 
-ts, xs = bs.meshgrid()
+ts = dm.load_params()
+xs = bs.forward(ts)
 xs = dm.inverse_transform(xs)
 
 # save meshgrid
-with open(fn, "w") as f:
-    for t, x in zip(ts, xs):
-        t = ", ".join(str(v) for v in t.tolist())
-        x = ", ".join(str(v) for v in x.tolist())
-        f.write(f"{t}, {x}\n")
-
+xs = xs.to('cpu').detach().numpy()
+np.savetxt(fn, xs)
 print(f"Meshgrid saved: {fn}")
