@@ -99,25 +99,17 @@ print(f"cross_val_stats={cross_val_stats}")
 # Additionally, we can construct an ensemble from the K trained models
 ensemble_model = trainer.create_ensemble(bs)
 
-# search for filename
-fn_tmpl = (
-    f"{args.params.name},{args.values.name},{args.num_folds}fold,meshgrid,d_{args.degree},r_{args.split_ratio},"
-    + "{}.csv"
-)
-for i in range(1000000):
-    fn = Path(fn_tmpl.format(i))
-    if not fn.exists():
-        break
-else:
-    raise FileExistsError(fn)
-
 ts = dm.load_params()
 xs = bs.forward(ts)  # forward for each fold
-xs = xs.mean(dim=0)  ## mean over folds
-xs = dm.inverse_transform(xs)
+for k in range(args.num_folds):
+    x = xs[k]
+    x = dm.inverse_transform(x).to("cpu").detach().numpy()
+    fn = f"{args.params.name},{args.values.name},{args.num_folds}fold,meshgrid,d_{args.degree},r_{args.split_ratio},{k}.csv"
+    np.savetxt(fn, x)
 
-# save meshgrid
-xs = xs.to('cpu').detach().numpy()
-np.savetxt(fn, xs)
+x = xs.mean(dim=0)  ## mean over folds
+x = dm.inverse_transform(x).to("cpu").detach().numpy()
+fn = f"{args.params.name},{args.values.name},{args.num_folds}fold,meshgrid,d_{args.degree},r_{args.split_ratio}.csv"
+np.savetxt(fn, x)
 
 print(f"Meshgrid saved: {fn}")
