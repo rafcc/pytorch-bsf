@@ -94,14 +94,8 @@ class BezierSimplexDataModule(L.LightningDataModule):
 
     def setup(self, stage: str | None = None):
         # OPTIONAL
-        delimiter = "," if self.params.suffix == ".csv" else None
-        params = torch.from_numpy(
-            np.loadtxt(self.params, delimiter=delimiter, skiprows=self.header)
-        )
-        delimiter = "," if self.values.suffix == ".csv" else None
-        values = torch.from_numpy(
-            np.loadtxt(self.values, delimiter=delimiter, skiprows=self.header)
-        )
+        params = self.load_params()
+        values = self.load_values()
         values = self.fit_transform(values)
         xy = TensorDataset(params, values)
         size = len(xy)
@@ -116,6 +110,18 @@ class BezierSimplexDataModule(L.LightningDataModule):
         index_set = torch.arange(params.shape[1])
         labels = np.array([str(index_set[v]) for v in params[self.trainset.indices] > 0])
         self.trainset.labels = labels
+
+    def load_params(self) -> torch.Tensor:
+        delimiter = "," if self.params.suffix == ".csv" else None
+        return torch.from_numpy(
+            np.loadtxt(self.params, delimiter=delimiter, skiprows=self.header)
+        )
+
+    def load_values(self) -> torch.Tensor:
+        delimiter = "," if self.values.suffix == ".csv" else None
+        return torch.from_numpy(
+            np.loadtxt(self.values, delimiter=delimiter, skiprows=self.header)
+        )
 
     def fit_transform(self, values: torch.Tensor) -> torch.Tensor:
         return self.scaler.fit_transform(values)
