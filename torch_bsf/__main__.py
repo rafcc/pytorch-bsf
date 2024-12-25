@@ -88,22 +88,13 @@ trainer = Trainer(
 trainer.fit(bs, dm)
 
 # search for filename
-fn_tmpl = (
-    f"{args.params.name},{args.values.name},meshgrid,d_{args.degree},r_{args.split_ratio},"
-    + "{}.csv"
-)
-for i in range(1000000):
-    fn = Path(fn_tmpl.format(i))
-    if not (fn).exists():
-        break
-else:
-    raise FileExistsError(fn)
+fn = f"{args.params.name},{args.values.name},meshgrid,d_{args.degree},r_{args.split_ratio}.csv"
 
 ts = dm.load_params()
 xs = bs.forward(ts)
 xs = dm.inverse_transform(xs)
 
 # save meshgrid
-xs = xs.to('cpu').detach().numpy()
-np.savetxt(fn, xs)
+x = xs.to("cpu").detach().numpy()
+np.savetxt(fn, x)
 print(f"Meshgrid saved: {fn}")
