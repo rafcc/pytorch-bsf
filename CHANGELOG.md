@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.11.0](https://github.com/rafcc/pytorch-bsf/compare/v0.10.0...v0.11.0) (2024-12-25)
+
+
+### Features
+
+* write a file for each fold ([#170](https://github.com/rafcc/pytorch-bsf/issues/170)) ([b00d4c3](https://github.com/rafcc/pytorch-bsf/commit/b00d4c3807ab67e6d1963d778779903967816a7c))
+
 ## [0.10.0](https://github.com/rafcc/pytorch-bsf/compare/v0.9.0...v0.10.0) (2024-12-17)
 
 
