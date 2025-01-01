@@ -1,5 +1,13 @@
 # Changelog
 
+## [0.11.1](https://github.com/rafcc/pytorch-bsf/compare/v0.11.0...v0.11.1) (2025-01-01)
+
+
+### Bug Fixes
+
+* MLproject ([#174](https://github.com/rafcc/pytorch-bsf/issues/174)) ([ef1d2d4](https://github.com/rafcc/pytorch-bsf/commit/ef1d2d42d636a5535f521b7948405fcc9d3d622c))
+* MLproject ([#176](https://github.com/rafcc/pytorch-bsf/issues/176)) ([5b7afd9](https://github.com/rafcc/pytorch-bsf/commit/5b7afd9e02b0cbf5bd29fa8d361a3edacc4eb5a3))
+
 ## [0.11.0](https://github.com/rafcc/pytorch-bsf/compare/v0.10.0...v0.11.0) (2024-12-25)
 
 
