@@ -118,10 +118,10 @@ class BezierSimplexDataModule(L.LightningDataModule):
         )
 
     def load_params(self) -> torch.Tensor:
-        return self.loaddata(self.params)
+        return self.load_data(self.params)
 
     def load_values(self) -> torch.Tensor:
-        return self.loaddata(self.values)
+        return self.load_data(self.values)
 
     def fit_transform(self, values: torch.Tensor) -> torch.Tensor:
         return self.scaler.fit_transform(values)
