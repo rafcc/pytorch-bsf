@@ -111,17 +111,17 @@ class BezierSimplexDataModule(L.LightningDataModule):
         labels = np.array([str(index_set[v]) for v in params[self.trainset.indices] > 0])
         self.trainset.labels = labels
 
-    def load_params(self) -> torch.Tensor:
-        delimiter = "," if self.params.suffix == ".csv" else None
+    def load_data(self, path) -> torch.Tensor:
+        delimiter = "," if path.suffix == ".csv" else None
         return torch.from_numpy(
-            np.loadtxt(self.params, delimiter=delimiter, skiprows=self.header)
+            np.loadtxt(path, delimiter=delimiter, skiprows=self.header)
         )
 
+    def load_params(self) -> torch.Tensor:
+        return self.loaddata(self.params)
+
     def load_values(self) -> torch.Tensor:
-        delimiter = "," if self.values.suffix == ".csv" else None
-        return torch.from_numpy(
-            np.loadtxt(self.values, delimiter=delimiter, skiprows=self.header)
-        )
+        return self.loaddata(self.values)
 
     def fit_transform(self, values: torch.Tensor) -> torch.Tensor:
         return self.scaler.fit_transform(values)

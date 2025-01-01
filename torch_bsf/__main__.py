@@ -41,6 +41,8 @@ if args.degree is None and args.init is None:
 if args.degree is not None and args.init is not None:
     raise ValueError("Either --degree or --init must be specified, not both")
 
+meshgrid: Path = args.meshgrid or args.params
+
 autolog(
     log_input_examples=(args.loglevel >= 2),
     log_model_signatures=(args.loglevel >= 2),
@@ -90,7 +92,7 @@ trainer.fit(bs, dm)
 # search for filename
 fn = f"{args.params.name},{args.values.name},meshgrid,d_{args.degree},r_{args.split_ratio}.csv"
 
-ts = dm.load_params()
+ts = dm.load_data(meshgrid)
 xs = bs.forward(ts)
 xs = dm.inverse_transform(xs)
 
