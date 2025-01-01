@@ -103,7 +103,7 @@ print(f"{cross_val_stats=}")
 ensemble_model = trainer.create_ensemble(bs)
 
 ts = dm.load_data(meshgrid)
-xs = bs.forward(ts)  # forward for each fold
+xs = ensemble_model.forward(ts)  # forward for each fold
 for k in range(args.num_folds):
     x = xs[k]
     x = dm.inverse_transform(x).to("cpu").detach().numpy()
