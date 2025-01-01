@@ -5,7 +5,7 @@ entry_points:
     parameters:
       params: {type: path}
       values: {type: path}
-      meshgrid: {type: path, default: ""}
+      meshgrid: {type: path}
       degree: {type: int}
     command: >-
       python -m torch_bsf
@@ -17,7 +17,7 @@ entry_points:
     parameters:
       params: {type: path}
       values: {type: path}
-      meshgrid: {type: path, default: ""}
+      meshgrid: {type: path}
       degree: {type: int}
     command: >-
       python -m torch_bsf.model_selection.kfold

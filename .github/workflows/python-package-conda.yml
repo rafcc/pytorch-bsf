@@ -65,4 +65,4 @@ jobs:
         conda install -c conda-forge mlflow
     - name: E2E test with MLflow
       run: |
-        mlflow run https://github.com/rafcc/pytorch-bsf --version ${{ github.sha }} -P params=params.csv -P values=values.csv -P degree=3
+        mlflow run https://github.com/rafcc/pytorch-bsf --version ${{ github.sha }} -P params=params.csv -P values=values.csv -P meshgrid=params.csv -P degree=3
