@@ -15,6 +15,7 @@ parser = ArgumentParser(
 )
 parser.add_argument("--params", type=Path, required=True)
 parser.add_argument("--values", type=Path, required=True)
+parser.add_argument("--meshgrid", type=Path)
 parser.add_argument("--degree", type=int)
 parser.add_argument("--init", type=Path)
 parser.add_argument("--fix", type=index_list)
