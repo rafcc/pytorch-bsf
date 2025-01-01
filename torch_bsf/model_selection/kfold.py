@@ -16,6 +16,7 @@ parser = ArgumentParser(
 )
 parser.add_argument("--params", type=Path, required=True)
 parser.add_argument("--values", type=Path, required=True)
+parser.add_argument("--meshgrid", type=Path)
 parser.add_argument("--degree", type=int)
 parser.add_argument("--init", type=Path)
 parser.add_argument("--fix", type=index_list)
@@ -44,6 +45,8 @@ if args.degree is None and args.init is None:
     raise ValueError("Either --degree or --init must be specified")
 if args.degree is not None and args.init is not None:
     raise ValueError("Either --degree or --init must be specified, not both")
+
+meshgrid: Path = args.meshgrid or args.params
 
 autolog(
     log_input_examples=(args.loglevel >= 2),
@@ -93,13 +96,13 @@ trainer = KFoldTrainer(
 )
 
 # Returns a dict of stats over the different splits
-cross_val_stats = trainer.cross_validate(bs, datamodule=dm)
-print(f"cross_val_stats={cross_val_stats}")
+cross_val_stats: list[list[dict[str, float]]] = trainer.cross_validate(bs, datamodule=dm)
+print(f"{cross_val_stats=}")
 
 # Additionally, we can construct an ensemble from the K trained models
 ensemble_model = trainer.create_ensemble(bs)
 
-ts = dm.load_params()
+ts = dm.load_data(meshgrid)
 xs = bs.forward(ts)  # forward for each fold
 for k in range(args.num_folds):
     x = xs[k]

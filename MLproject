@@ -5,21 +5,25 @@ entry_points:
     parameters:
       params: {type: path}
       values: {type: path}
+      meshgrid: {type: path}
       degree: {type: int}
     command: >-
       python -m torch_bsf
       --params={params}
       --values={values}
+      --meshgrid={meshgrid}
       --degree={degree}
   kfold:
     parameters:
       params: {type: path}
       values: {type: path}
+      meshgrid: {type: path}
       degree: {type: int}
     command: >-
       python -m torch_bsf.model_selection.kfold
       --params={params}
       --values={values}
+      --meshgrid={meshgrid}
       --degree={degree}
   elastic_net_grid:
     parameters:

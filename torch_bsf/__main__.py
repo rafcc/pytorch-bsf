@@ -15,6 +15,7 @@ parser = ArgumentParser(
 )
 parser.add_argument("--params", type=Path, required=True)
 parser.add_argument("--values", type=Path, required=True)
+parser.add_argument("--meshgrid", type=Path)
 parser.add_argument("--degree", type=int)
 parser.add_argument("--init", type=Path)
 parser.add_argument("--fix", type=index_list)
@@ -40,6 +41,8 @@ if args.degree is None and args.init is None:
     raise ValueError("Either --degree or --init must be specified")
 if args.degree is not None and args.init is not None:
     raise ValueError("Either --degree or --init must be specified, not both")
+
+meshgrid: Path = args.meshgrid or args.params
 
 autolog(
     log_input_examples=(args.loglevel >= 2),
@@ -90,7 +93,7 @@ trainer.fit(bs, dm)
 # search for filename
 fn = f"{args.params.name},{args.values.name},meshgrid,d_{args.degree},r_{args.split_ratio}.csv"
 
-ts = dm.load_params()
+ts = dm.load_data(meshgrid)
 xs = bs.forward(ts)
 xs = dm.inverse_transform(xs)
 
