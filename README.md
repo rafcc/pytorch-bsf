@@ -21,7 +21,7 @@ See the following papers for technical details.
 
 ## Requirements
 
-Python >=3.10, <3.13.
+Python >=3.10, <3.14.
 
 
 ## Quickstart
