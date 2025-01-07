@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.11.3](https://github.com/rafcc/pytorch-bsf/compare/v0.11.2...v0.11.3) (2025-01-07)
+
+
+### Dependencies
+
+* Support Python 3.13 ([#184](https://github.com/rafcc/pytorch-bsf/issues/184)) ([6b976ff](https://github.com/rafcc/pytorch-bsf/commit/6b976fff1020edbf56e6cb4b0bd7e68a2d81ed06))
+
 ## [0.11.2](https://github.com/rafcc/pytorch-bsf/compare/v0.11.1...v0.11.2) (2025-01-02)
 
 
