@@ -1,0 +1,300 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="./">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Quickstart &mdash; PyTorch-BSF 0.11.3 documentation</title>
+      <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=80d5e7a1" />
+      <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=e59714d7" />
+
+  
+      <script src="_static/jquery.js?v=5d32c60e"></script>
+      <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="_static/documentation_options.js?v=c44be570"></script>
+      <script src="_static/doctools.js?v=9bcbadda"></script>
+      <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Advanced Topics" href="advanced.html" />
+    <link rel="prev" title="Welcome to PyTorch-BSF!" href="index.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="index.html" class="icon icon-home">
+            PyTorch-BSF
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">User guide</span></p>
+<ul class="current">
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Quickstart</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#run-as-an-mlflow-project">Run as an MLflow project</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#installation">Installation</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#training">Training</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#prediction">Prediction</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#serve-prediction-api">Serve prediction API</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#run-as-a-python-package">Run as a Python package</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#run-as-python-code">Run as Python code</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="advanced.html">Advanced Topics</a></li>
+<li class="toctree-l1"><a class="reference internal" href="whatis.html">What is Bezier simplex fitting?</a></li>
+<li class="toctree-l1"><a class="reference internal" href="faq.html">Frequently asked questions</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">API reference</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="modules.html">torch_bsf</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">PyTorch-BSF</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="index.html" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active">Quickstart</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="_sources/quickstart.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="quickstart">
+<h1>Quickstart<a class="headerlink" href="#quickstart" title="Link to this heading"></a></h1>
+<p>There are several ways to use PyTorch-BSF.</p>
+<section id="run-as-an-mlflow-project">
+<h2>Run as an MLflow project<a class="headerlink" href="#run-as-an-mlflow-project" title="Link to this heading"></a></h2>
+<p>If you have data and labels for training a Bezier simplex in common file formats such as CSV, JSON, etc., then the easiest way is to invoke PyTorch-BSF via <a class="reference external" href="https://www.mlflow.org/docs/latest/">MLflow</a>.
+In this way, some CUI commands for training and prediction are provided without installing PyTorch-BSF.
+On each training and prediction, separation of runtime environment and installation of PyTorch-BSF are automatically handled by MLflow!</p>
+<section id="installation">
+<h3>Installation<a class="headerlink" href="#installation" title="Link to this heading"></a></h3>
+<p>First, install <a class="reference external" href="https://docs.conda.io/en/latest/miniconda.html">Miniconda</a>.
+Then, install <code class="docutils literal notranslate"><span class="pre">mlflow</span></code> conda package from <code class="docutils literal notranslate"><span class="pre">conda-forge</span></code> channel:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>conda<span class="w"> </span>install<span class="w"> </span>-c<span class="w"> </span>conda-forge<span class="w"> </span>mlflow
+</pre></div>
+</div>
+</section>
+<section id="training">
+<h3>Training<a class="headerlink" href="#training" title="Link to this heading"></a></h3>
+<p>Let’s prepare data and labels for training:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>cat<span class="w"> </span><span class="s">&lt;&lt; EOS &gt; params.csv</span>
+<span class="s">1.00, 0.00</span>
+<span class="s">0.75, 0.25</span>
+<span class="s">0.50, 0.50</span>
+<span class="s">0.25, 0.75</span>
+<span class="s">0.00, 1.00</span>
+<span class="s">EOS</span>
+cat<span class="w"> </span><span class="s">&lt;&lt;EOS &gt; values.csv</span>
+<span class="s">0.00, 1.00</span>
+<span class="s">3.00, 2.00</span>
+<span class="s">4.00, 5.00</span>
+<span class="s">7.00, 6.00</span>
+<span class="s">8.00, 9.00</span>
+<span class="s">EOS</span>
+</pre></div>
+</div>
+<div class="admonition warning">
+<p class="admonition-title">Warning</p>
+<p>The data file and label file must have the same number of lines.</p>
+</div>
+<p>Now, you can fit a Bezier simplex to those data and labels with the latest version of PyTorch-BSF:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>mlflow<span class="w"> </span>run<span class="w"> </span>https://github.com/rafcc/pytorch-bsf<span class="w"> </span><span class="se">\</span>
+-P<span class="w"> </span><span class="nv">params</span><span class="o">=</span>params.csv<span class="w"> </span><span class="se">\</span>
+-P<span class="w"> </span><span class="nv">values</span><span class="o">=</span>values.csv<span class="w"> </span><span class="se">\</span>
+-P<span class="w"> </span><span class="nv">degree</span><span class="o">=</span><span class="m">3</span>
+</pre></div>
+</div>
+<p>After the command finished, you will get a trained model in <code class="docutils literal notranslate"><span class="pre">mlruns</span></code> directory.</p>
+</section>
+<section id="prediction">
+<h3>Prediction<a class="headerlink" href="#prediction" title="Link to this heading"></a></h3>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>mlflow<span class="w"> </span>models<span class="w"> </span>predict<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>--model-uri<span class="w"> </span>file://<span class="sb">`</span><span class="nb">pwd</span><span class="sb">`</span>/mlruns/0/<span class="si">${</span><span class="nv">run_uuid</span><span class="si">}</span>/artifacts/model<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>--content-type<span class="w"> </span>csv<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>--input-path<span class="w"> </span>params.csv<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>--output-path<span class="w"> </span>test_values.csv
+</pre></div>
+</div>
+<p>You have results in <code class="docutils literal notranslate"><span class="pre">test_values.csv</span></code>:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>cat<span class="w"> </span>test_values.csv
+<span class="o">[[</span><span class="m">0</span>.00,<span class="w"> </span><span class="m">1</span>.00<span class="o">]</span>,<span class="w"> </span>...<span class="o">]</span>
+</pre></div>
+</div>
+</section>
+<section id="serve-prediction-api">
+<h3>Serve prediction API<a class="headerlink" href="#serve-prediction-api" title="Link to this heading"></a></h3>
+<p>You can also serve a Web API for prediction:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>mlflow<span class="w"> </span>models<span class="w"> </span>serve<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>--model-uri<span class="w"> </span><span class="o">{</span>Full<span class="w"> </span>Path<span class="o">}</span><span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>--host<span class="w"> </span>localhost<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>--port<span class="w"> </span><span class="m">5001</span>
+</pre></div>
+</div>
+<p>Request a prediction with HTTP POST method:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>curl<span class="w"> </span>http://localhost:5001/invocations<span class="w"> </span>-H<span class="w"> </span><span class="s1">&#39;Content-Type: application/json&#39;</span><span class="w"> </span>-d<span class="w"> </span><span class="s1">&#39;{</span>
+<span class="s1">  &quot;columns&quot;: [&quot;t1&quot;, &quot;t2&quot;],</span>
+<span class="s1">  &quot;data&quot;: [</span>
+<span class="s1">     [0.2, 0.8],</span>
+<span class="s1">     [0.7, 0.3]</span>
+<span class="s1">  ]</span>
+<span class="s1">}&#39;</span>
+</pre></div>
+</div>
+<p>See for details <a class="reference external" href="https://www.mlflow.org/docs/latest/models.html#deploy-mlflow-models">https://www.mlflow.org/docs/latest/models.html#deploy-mlflow-models</a></p>
+</section>
+</section>
+<section id="run-as-a-python-package">
+<h2>Run as a Python package<a class="headerlink" href="#run-as-a-python-package" title="Link to this heading"></a></h2>
+<p>Assume you have installed Python 3.8 or above.
+Then, install the package:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>pip<span class="w"> </span>install<span class="w"> </span>pytorch-bsf
+</pre></div>
+</div>
+<p>Then, run <cite>torch_bsf</cite> as a module:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>python<span class="w"> </span>-m<span class="w"> </span>torch_bsf<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>--model-uri<span class="w"> </span>file://<span class="sb">`</span><span class="nb">pwd</span><span class="sb">`</span>/mlruns/0/<span class="si">${</span><span class="nv">run_uuid</span><span class="si">}</span>/artifacts/model<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>--content-type<span class="w"> </span>csv<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>--input-path<span class="w"> </span>test_params.csv<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>--output-path<span class="w"> </span>test_values.csv
+</pre></div>
+</div>
+</section>
+<section id="run-as-python-code">
+<h2>Run as Python code<a class="headerlink" href="#run-as-python-code" title="Link to this heading"></a></h2>
+<p>Assume you have installed Python 3.8 or above.
+Then, install the package:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>pip<span class="w"> </span>install<span class="w"> </span>pytorch-bsf
+</pre></div>
+</div>
+<p>Train a model by <code class="docutils literal notranslate"><span class="pre">fit()</span></code>, and call the model to predict.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">torch</span>
+<span class="kn">import</span> <span class="nn">torch_bsf</span>
+
+<span class="c1"># Prepare training data</span>
+<span class="n">ts</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">tensor</span><span class="p">(</span>  <span class="c1"># parameters on a simplex</span>
+   <span class="p">[</span>
+      <span class="p">[</span><span class="mi">8</span><span class="o">/</span><span class="mi">8</span><span class="p">,</span> <span class="mi">0</span><span class="o">/</span><span class="mi">8</span><span class="p">],</span>
+      <span class="p">[</span><span class="mi">7</span><span class="o">/</span><span class="mi">8</span><span class="p">,</span> <span class="mi">1</span><span class="o">/</span><span class="mi">8</span><span class="p">],</span>
+      <span class="p">[</span><span class="mi">6</span><span class="o">/</span><span class="mi">8</span><span class="p">,</span> <span class="mi">2</span><span class="o">/</span><span class="mi">8</span><span class="p">],</span>
+      <span class="p">[</span><span class="mi">5</span><span class="o">/</span><span class="mi">8</span><span class="p">,</span> <span class="mi">3</span><span class="o">/</span><span class="mi">8</span><span class="p">],</span>
+      <span class="p">[</span><span class="mi">4</span><span class="o">/</span><span class="mi">8</span><span class="p">,</span> <span class="mi">4</span><span class="o">/</span><span class="mi">8</span><span class="p">],</span>
+      <span class="p">[</span><span class="mi">3</span><span class="o">/</span><span class="mi">8</span><span class="p">,</span> <span class="mi">5</span><span class="o">/</span><span class="mi">8</span><span class="p">],</span>
+      <span class="p">[</span><span class="mi">2</span><span class="o">/</span><span class="mi">8</span><span class="p">,</span> <span class="mi">6</span><span class="o">/</span><span class="mi">8</span><span class="p">],</span>
+      <span class="p">[</span><span class="mi">1</span><span class="o">/</span><span class="mi">8</span><span class="p">,</span> <span class="mi">7</span><span class="o">/</span><span class="mi">8</span><span class="p">],</span>
+      <span class="p">[</span><span class="mi">0</span><span class="o">/</span><span class="mi">8</span><span class="p">,</span> <span class="mi">8</span><span class="o">/</span><span class="mi">8</span><span class="p">],</span>
+   <span class="p">]</span>
+<span class="p">)</span>
+<span class="n">xs</span> <span class="o">=</span> <span class="mi">1</span> <span class="o">-</span> <span class="n">ts</span> <span class="o">*</span> <span class="n">ts</span>  <span class="c1"># values corresponding to the parameters</span>
+
+<span class="c1"># Train a model</span>
+<span class="n">bs</span> <span class="o">=</span> <span class="n">torch_bsf</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">params</span><span class="o">=</span><span class="n">ts</span><span class="p">,</span> <span class="n">values</span><span class="o">=</span><span class="n">xs</span><span class="p">,</span> <span class="n">degree</span><span class="o">=</span><span class="mi">3</span><span class="p">)</span>
+
+<span class="c1"># Predict by the trained model</span>
+<span class="n">t</span> <span class="o">=</span> <span class="p">[</span>
+   <span class="p">[</span><span class="mf">0.2</span><span class="p">,</span> <span class="mf">0.8</span><span class="p">],</span>
+   <span class="p">[</span><span class="mf">0.7</span><span class="p">,</span> <span class="mf">0.3</span><span class="p">],</span>
+<span class="p">]</span>
+<span class="n">x</span> <span class="o">=</span> <span class="n">bs</span><span class="p">(</span><span class="n">t</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">t</span><span class="si">}</span><span class="s2"> -&gt; </span><span class="si">{</span><span class="n">x</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="index.html" class="btn btn-neutral float-left" title="Welcome to PyTorch-BSF!" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="advanced.html" class="btn btn-neutral float-right" title="Advanced Topics" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2021, FUJITSU LIMITED and RIKEN.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  
+<div class="rst-versions" data-toggle="rst-versions" role="note" aria-label="versions">
+    <span class="rst-current-version" data-toggle="rst-current-version">
+        <span class="fa fa-book"> Other Versions</span>
+        v: v0.11.3
+        <span class="fa fa-caret-down"></span>
+    </span>
+    <div class="rst-other-versions">
+        <dl>
+            <dt>Tags</dt>
+            <dd><a href="../v0.0.1/quickstart.html">v0.0.1</a></dd>
+            <dd><a href="../v0.0.2/quickstart.html">v0.0.2</a></dd>
+            <dd><a href="../v0.1.0/quickstart.html">v0.1.0</a></dd>
+            <dd><a href="../v0.10.0/quickstart.html">v0.10.0</a></dd>
+            <dd><a href="../v0.11.0/quickstart.html">v0.11.0</a></dd>
+            <dd><a href="../v0.11.1/quickstart.html">v0.11.1</a></dd>
+            <dd><a href="../v0.11.2/quickstart.html">v0.11.2</a></dd>
+            <dd><a href="quickstart.html">v0.11.3</a></dd>
+            <dd><a href="../v0.2.0/quickstart.html">v0.2.0</a></dd>
+            <dd><a href="../v0.3.0/quickstart.html">v0.3.0</a></dd>
+            <dd><a href="../v0.3.1/quickstart.html">v0.3.1</a></dd>
+            <dd><a href="../v0.4.0/quickstart.html">v0.4.0</a></dd>
+            <dd><a href="../v0.5.0/quickstart.html">v0.5.0</a></dd>
+            <dd><a href="../v0.5.1/quickstart.html">v0.5.1</a></dd>
+            <dd><a href="../v0.6.0/quickstart.html">v0.6.0</a></dd>
+            <dd><a href="../v0.7.0/quickstart.html">v0.7.0</a></dd>
+            <dd><a href="../v0.8.0/quickstart.html">v0.8.0</a></dd>
+            <dd><a href="../v0.9.0/quickstart.html">v0.9.0</a></dd>
+        </dl>
+        <dl>
+            <dt>Branches</dt>
+            <dd><a href="../master/quickstart.html">master</a></dd>
+        </dl>
+    </div>
+</div><script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>
