@@ -3,7 +3,7 @@ from argparse import ArgumentParser
 import numpy as np
 
 
-def reverse_logspace(num: int = 50, base: int = 10) -> np.ndarray:
+def reverse_logspace(num: int = 50, base: float = 10) -> np.ndarray:
     """Return numbers spaced evenly on a log scale.
 
     Parameters
@@ -30,6 +30,14 @@ def reverse_logspace(num: int = 50, base: int = 10) -> np.ndarray:
     array([0.        , 0.75974693])
     >>> reverse_logspace(3)
     array([0.        , 0.59537902, 0.87172948])
+    >>> reverse_logspace(num=5, base=0.001)
+    array([0.        , 0.00298406, 0.0148638 , 0.06215789, 0.25043908])
+    >>> reverse_logspace(num=5, base=0.01)
+    array([0.        , 0.01527158, 0.05363205, 0.14998921, 0.39202745])
+    >>> reverse_logspace(num=5, base=0.1)
+    array([0.        , 0.06498813, 0.16798738, 0.33123019, 0.5899526 ])
+    >>> reverse_logspace(num=5, base=1)
+    array([0. , 0.2, 0.4, 0.6, 0.8])
     >>> reverse_logspace(num=5, base=10)
     array([0.        , 0.4100474 , 0.66876981, 0.83201262, 0.93501187])
     >>> reverse_logspace(num=5, base=100)
@@ -37,12 +45,22 @@ def reverse_logspace(num: int = 50, base: int = 10) -> np.ndarray:
     >>> reverse_logspace(num=5, base=1000)
     array([0.        , 0.74956092, 0.93784211, 0.9851362 , 0.99701594])
     """
-    return 1.0 - (np.logspace(1.0, 0.0, num, endpoint=False, base=base) - 1.0) / (
-        base - 1
-    )
+    if base > 1.0:
+        return 1.0 - (np.logspace(1.0, 0.0, num, endpoint=False, base=base) - 1.0) / (
+            base - 1
+        )
+    elif base == 1.0:
+        return np.linspace(0.0, 1.0, num, endpoint=False)
+    elif base > 0:
+        inv_base = 1.0 / base
+        return (np.logspace(0.0, 1.0, num, endpoint=False, base=inv_base) - 1.0) / (
+            inv_base - 1
+        )
+    else:
+        raise ValueError("base must be > 0, but given: {base}")
 
 
-def elastic_net_grid(n_lambdas: int = 102, n_alphas: int = 12, n_vertex_copies: int = 1, base: int = 10) -> np.ndarray:
+def elastic_net_grid(n_lambdas: int = 102, n_alphas: int = 12, n_vertex_copies: int = 1, base: float = 10) -> np.ndarray:
     """Return an array of 3D grid points on the standard 2-simplex, which is suitable for grid search for elastic net's hyperparameters.
 
     The returned array is of shape ``((n_lambdas - 1) * n_alphas + 3 * n_copy_vertices - 2, 3)``.
@@ -64,7 +82,7 @@ def elastic_net_grid(n_lambdas: int = 102, n_alphas: int = 12, n_vertex_copies: 
         Each vertices is sampled ``n_copy_vertices`` times.
         Default is ``1``. Must be non-negative.
         Useful for k-fold cross validation.
-    base : int, optional
+    base : float, optional
         The base of the log space.
         The step size between the elements in ``ln(samples) / ln(base)`` (or ``log_base(samples)``) is uniform.
         Default is 10.0.
@@ -160,7 +178,7 @@ if __name__ == "__main__":
     parser.add_argument("--n_lambdas", help="Number of samples for lambda values", type=int, default=102)
     parser.add_argument("--n_alphas", help="Number of samples for alpha values", type=int, default=12)
     parser.add_argument("--n_vertex_copies", help="Number of copies of each vertex", type=int, default=10)
-    parser.add_argument("--base", help="Base of the log space", type=int, default=10)
+    parser.add_argument("--base", help="Base of the log space", type=float, default=10)
     args = parser.parse_args()
 
     grid = elastic_net_grid(args.n_lambdas, args.n_alphas, args.n_vertex_copies, base=args.base)
