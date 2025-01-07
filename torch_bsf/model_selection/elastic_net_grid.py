@@ -9,11 +9,11 @@ def reverse_logspace(num: int = 50, base: float = 10) -> np.ndarray:
     Parameters
     ----------
     num : integer, optional
-        Number of samples to generate. Default is 50. Must be non-negative.
+        Number of samples to generate. Default is ``50``. Must be non-negative.
     base : array_like, optional
         The base of the log space.
         The step size between the elements in ``ln(samples) / ln(base)`` (or ``log_base(samples)``) is uniform.
-        Default is 10.0.
+        Default is ``10.0``.
 
     Returns
     -------
@@ -85,7 +85,7 @@ def elastic_net_grid(n_lambdas: int = 102, n_alphas: int = 12, n_vertex_copies: 
     base : float, optional
         The base of the log space.
         The step size between the elements in ``ln(samples) / ln(base)`` (or ``log_base(samples)``) is uniform.
-        Default is 10.0.
+        Default is ``10.0``.
 
     Returns
     -------
