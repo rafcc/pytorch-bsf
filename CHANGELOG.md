@@ -1,5 +1,13 @@
 # Changelog
 
+## [0.11.2](https://github.com/rafcc/pytorch-bsf/compare/v0.11.1...v0.11.2) (2025-01-02)
+
+
+### Bug Fixes
+
+* kfold meshgrid ([979ca65](https://github.com/rafcc/pytorch-bsf/commit/979ca65cb37c948459c0a28f22e9862106de4106))
+* kfold meshgrid ([#177](https://github.com/rafcc/pytorch-bsf/issues/177)) ([979ca65](https://github.com/rafcc/pytorch-bsf/commit/979ca65cb37c948459c0a28f22e9862106de4106))
+
 ## [0.11.1](https://github.com/rafcc/pytorch-bsf/compare/v0.11.0...v0.11.1) (2025-01-01)
 
 
