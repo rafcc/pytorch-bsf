@@ -114,7 +114,7 @@ class BezierSimplexDataModule(L.LightningDataModule):
     def load_data(self, path) -> torch.Tensor:
         delimiter = "," if path.suffix == ".csv" else None
         return torch.from_numpy(
-            np.loadtxt(path, delimiter=delimiter, skiprows=self.header)
+            np.loadtxt(path, delimiter=delimiter, skiprows=self.header, ndim=2)
         )
 
     def load_params(self) -> torch.Tensor:
