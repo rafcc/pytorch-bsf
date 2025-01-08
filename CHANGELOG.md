@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.12.1](https://github.com/rafcc/pytorch-bsf/compare/v0.12.0...v0.12.1) (2025-01-08)
+
+
+### Bug Fixes
+
+* load dataset ([2a8cd5b](https://github.com/rafcc/pytorch-bsf/commit/2a8cd5bfaf2f060da217355b193d5f68755703fe))
+
 ## [0.12.0](https://github.com/rafcc/pytorch-bsf/compare/v0.11.3...v0.12.0) (2025-01-08)
 
 
