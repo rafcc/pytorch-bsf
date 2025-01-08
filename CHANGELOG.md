@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.12.0](https://github.com/rafcc/pytorch-bsf/compare/v0.11.3...v0.12.0) (2025-01-08)
+
+
+### Features
+
+* support 1D datasets ([#188](https://github.com/rafcc/pytorch-bsf/issues/188)) ([8b3d29f](https://github.com/rafcc/pytorch-bsf/commit/8b3d29f5bbd286a7951d21fdeb5d11c61c3b07c7))
+
 ## [0.11.3](https://github.com/rafcc/pytorch-bsf/compare/v0.11.2...v0.11.3) (2025-01-07)
 
 
