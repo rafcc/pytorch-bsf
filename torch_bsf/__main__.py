@@ -31,7 +31,7 @@ parser.add_argument("--strategy", type=str, default="auto")
 parser.add_argument("--devices", type=int_or_str, default="auto")
 parser.add_argument("--num_nodes", type=int, default=1)
 parser.add_argument("--precision", type=str, default="32-true")
-parser.add_argument("--enable_checkpointing", action='store_true')
+parser.add_argument("--enable_checkpointing", action="store_true")
 parser.add_argument("--log_every_n_steps", type=int, default=1)
 parser.add_argument(
     "--loglevel", type=int, choices=(0, 1, 2), default=2, help="0: nothing, 1: metrics, 2: metrics & models"
