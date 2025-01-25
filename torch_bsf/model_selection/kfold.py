@@ -97,6 +97,7 @@ trainer = KFoldTrainer(
     max_epochs=args.max_epochs,
     enable_checkpointing=args.enable_checkpointing,
     log_every_n_steps=args.log_every_n_steps,
+    callbacks=[EarlyStopping(monitor="val_mse")],
 )
 
 # Returns a dict of stats over the different splits
