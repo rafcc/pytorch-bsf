@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.13.0](https://github.com/rafcc/pytorch-bsf/compare/v0.12.1...v0.13.0) (2025-01-25)
+
+
+### Features
+
+* disable checkpointing by default ([#192](https://github.com/rafcc/pytorch-bsf/issues/192)) ([9d80470](https://github.com/rafcc/pytorch-bsf/commit/9d80470887494d876f1f6d633663f33d4c04f46b))
+
 ## [0.12.1](https://github.com/rafcc/pytorch-bsf/compare/v0.12.0...v0.12.1) (2025-01-08)
 
 
