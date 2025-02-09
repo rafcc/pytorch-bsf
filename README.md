@@ -4,6 +4,7 @@
 [![Release](https://github.com/rafcc/pytorch-bsf/actions/workflows/release-please-action.yml/badge.svg)](https://github.com/rafcc/pytorch-bsf/actions/workflows/release-please-action.yml)
 [![Conda](https://github.com/rafcc/pytorch-bsf/actions/workflows/python-package-conda.yml/badge.svg)](https://github.com/rafcc/pytorch-bsf/actions/workflows/python-package-conda.yml)
 [![GHPages](https://github.com/rafcc/pytorch-bsf/actions/workflows/sphinx-pages.yml/badge.svg)](https://github.com/rafcc/pytorch-bsf/actions/workflows/sphinx-pages.yml)
+[![PyPI Downloads](https://static.pepy.tech/badge/pytorch-bsf)](https://pepy.tech/projects/pytorch-bsf)
 
 A PyTorch implementation of Bezier simplex fitting.
 
