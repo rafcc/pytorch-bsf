@@ -1,5 +1,13 @@
 # Changelog
 
+## [0.13.1](https://github.com/rafcc/pytorch-bsf/compare/v0.13.0...v0.13.1) (2025-03-10)
+
+
+### Bug Fixes
+
+* pytest bug ([d8dfea7](https://github.com/rafcc/pytorch-bsf/commit/d8dfea7b9e565ad6922eb616a61c6d4ee87237a9))
+* pytest bug ([290b16d](https://github.com/rafcc/pytorch-bsf/commit/290b16db7cb497ad40d5d9a460b4a7f656ea353a))
+
 ## [0.13.0](https://github.com/rafcc/pytorch-bsf/compare/v0.12.1...v0.13.0) (2025-01-25)
 
 
