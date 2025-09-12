@@ -30,13 +30,13 @@ Python >=3.10, <3.14.
 Download the latest [Miniconda](https://docs.conda.io/en/latest/miniconda.html) and install it.
 Then, install MLflow on your conda environment:
 
-```shell
+```bash
 conda install -c conda-forge mlflow
 ```
 
 Prepare data:
 
-```shell
+```bash
 cat <<EOS > params.csv
 1.00, 0.00
 0.75, 0.25
@@ -55,11 +55,11 @@ EOS
 
 Run the following command:
 
-```shell
+```bash
 mlflow run https://github.com/rafcc/pytorch-bsf \
   -P params=params.csv \
-  -P meshgrid=params.csv \
   -P values=values.csv \
+  -P meshgrid=params.csv \
   -P degree=3
 ```
 
@@ -92,7 +92,7 @@ which automatically sets up the environment and runs an experiment:
 
 ## Installation
 
-```shell
+```bash
 pip install pytorch-bsf
 ```
 
@@ -102,11 +102,11 @@ This package provides a command line interface to train a Bezier simplex with a 
 
 Execute the `torch_bsf` module:
 
-```shell
+```bash
 python -m torch_bsf \
   --params=params.csv \
-  --meshgrid=params.csv \
   --values=values.csv \
+  --meshgrid=params.csv \
   --degree=3
 ```
 

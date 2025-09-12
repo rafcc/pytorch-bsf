@@ -59,6 +59,7 @@ Now, you can fit a Bezier simplex to those data and labels with the latest versi
    mlflow run https://github.com/rafcc/pytorch-bsf \
    -P params=params.csv \
    -P values=values.csv \
+   -P meshgrid=params.csv \
    -P degree=3
 
 
