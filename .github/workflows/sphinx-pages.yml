@@ -10,15 +10,16 @@ jobs:
     - uses: actions/checkout@master
       with:
         fetch-depth: 0
-    - name: Sphinx Pages
-      uses: cor3ntin/sphinx-action@main
+    - name: Setup Python and Install Dependencies
+      uses: actions/setup-python@v5
       with:
-        docs-folder: docs/
-        pre-build-command: |
-          apt-get update
-          apt-get install -y git
-          git config --global --add safe.directory /github/workspace
-        build-command: sphinx-multiversion . _build
+        python-version: "3.13"
+    - run: |
+        pip install -r docs/requirements.txt
+
+    - name: Build documentation with sphinx-multiversion
+      run: |
+        sphinx-multiversion docs/ docs/_build
     - name: Commit documentation changes
       run: |
         git clone ${{ github.server_url }}/${{ github.repository }} --branch gh-pages --single-branch gh-pages
