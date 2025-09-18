@@ -7,7 +7,7 @@ There are several ways to use PyTorch-BSF.
 Run as an MLflow project
 ------------------------
 
-If you have data and labels for training a Bezier simplex in common file formats such as CSV, JSON, etc., then the easiest way is to invoke PyTorch-BSF via `MLflow`_.
+If you have parameters and values for training a Bezier simplex in common file formats such as CSV, JSON, etc., then the easiest way is to invoke PyTorch-BSF via `MLflow`_.
 In this way, some CUI commands for training and prediction are provided without installing PyTorch-BSF.
 On each training and prediction, separation of runtime environment and installation of PyTorch-BSF are automatically handled by MLflow!
 
@@ -30,7 +30,7 @@ Then, install ``mlflow`` conda package from ``conda-forge`` channel:
 Training
 ^^^^^^^^
 
-Let's prepare data and labels for training:
+Let's prepare parameters and values for training:
 
 .. code-block:: bash
 
@@ -50,9 +50,9 @@ Let's prepare data and labels for training:
    EOS
 
 .. warning::
-   The data file and label file must have the same number of lines.
+   The parameters file and values file must have the same number of lines.
 
-Now, you can fit a Bezier simplex to those data and labels with the latest version of PyTorch-BSF:
+Now, you can fit a Bezier simplex to those parameters and values with the latest version of PyTorch-BSF:
 
 .. code-block:: bash
 
@@ -152,7 +152,7 @@ Train a model by ``fit()``, and call the model to predict.
    import torch
    import torch_bsf
 
-   # Prepare training data
+   # Prepare training parameters
    ts = torch.tensor(  # parameters on a simplex
       [
          [8/8, 0/8],
