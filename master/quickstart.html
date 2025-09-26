@@ -94,7 +94,7 @@
 <p>There are several ways to use PyTorch-BSF.</p>
 <section id="run-as-an-mlflow-project">
 <h2>Run as an MLflow project<a class="headerlink" href="#run-as-an-mlflow-project" title="Link to this heading"></a></h2>
-<p>If you have data and labels for training a Bezier simplex in common file formats such as CSV, JSON, etc., then the easiest way is to invoke PyTorch-BSF via <a class="reference external" href="https://www.mlflow.org/docs/latest/">MLflow</a>.
+<p>If you have parameters and values for training a Bezier simplex in common file formats such as CSV, JSON, etc., then the easiest way is to invoke PyTorch-BSF via <a class="reference external" href="https://www.mlflow.org/docs/latest/">MLflow</a>.
 In this way, some CUI commands for training and prediction are provided without installing PyTorch-BSF.
 On each training and prediction, separation of runtime environment and installation of PyTorch-BSF are automatically handled by MLflow!</p>
 <section id="installation">
@@ -107,7 +107,7 @@ Then, install <code class="docutils literal notranslate"><span class="pre">mlflo
 </section>
 <section id="training">
 <h3>Training<a class="headerlink" href="#training" title="Link to this heading"></a></h3>
-<p>Let’s prepare data and labels for training:</p>
+<p>Let’s prepare parameters and values for training:</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>cat<span class="w"> </span><span class="s">&lt;&lt; EOS &gt; params.csv</span>
 <span class="s">1.00, 0.00</span>
 <span class="s">0.75, 0.25</span>
@@ -126,9 +126,9 @@ cat<span class="w"> </span><span class="s">&lt;&lt;EOS &gt; values.csv</span>
 </div>
 <div class="admonition warning">
 <p class="admonition-title">Warning</p>
-<p>The data file and label file must have the same number of lines.</p>
+<p>The parameters file and values file must have the same number of lines.</p>
 </div>
-<p>Now, you can fit a Bezier simplex to those data and labels with the latest version of PyTorch-BSF:</p>
+<p>Now, you can fit a Bezier simplex to those parameters and values with the latest version of PyTorch-BSF:</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>mlflow<span class="w"> </span>run<span class="w"> </span>https://github.com/rafcc/pytorch-bsf<span class="w"> </span><span class="se">\</span>
 -P<span class="w"> </span><span class="nv">params</span><span class="o">=</span>params.csv<span class="w"> </span><span class="se">\</span>
 -P<span class="w"> </span><span class="nv">values</span><span class="o">=</span>values.csv<span class="w"> </span><span class="se">\</span>
@@ -202,7 +202,7 @@ Then, install the package:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">torch</span>
 <span class="kn">import</span><span class="w"> </span><span class="nn">torch_bsf</span>
 
-<span class="c1"># Prepare training data</span>
+<span class="c1"># Prepare training parameters</span>
 <span class="n">ts</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">tensor</span><span class="p">(</span>  <span class="c1"># parameters on a simplex</span>
    <span class="p">[</span>
       <span class="p">[</span><span class="mi">8</span><span class="o">/</span><span class="mi">8</span><span class="p">,</span> <span class="mi">0</span><span class="o">/</span><span class="mi">8</span><span class="p">],</span>
