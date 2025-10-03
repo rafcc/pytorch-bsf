@@ -18,7 +18,7 @@ Installation
 ^^^^^^^^^^^^
 
 First, install `Miniconda`_.
-Then, install ``mlflow`` conda package from ``conda-forge`` channel:
+Then, install ``mlflow`` package from ``conda-forge`` channel:
 
 .. code-block:: bash
 
@@ -30,7 +30,7 @@ Then, install ``mlflow`` conda package from ``conda-forge`` channel:
 Training
 ^^^^^^^^
 
-Let's prepare parameters and values for training:
+Let's prepare sample parameters and values files for training:
 
 .. code-block:: bash
 
@@ -41,7 +41,7 @@ Let's prepare parameters and values for training:
    0.25, 0.75
    0.00, 1.00
    EOS
-   cat <<EOS > values.csv
+   cat << EOS > values.csv
    0.00, 1.00
    3.00, 2.00
    4.00, 5.00
@@ -50,9 +50,9 @@ Let's prepare parameters and values for training:
    EOS
 
 .. warning::
-   The parameters file and values file must have the same number of lines.
+   The parameters file and the values file must have the same number of lines.
 
-Now, you can fit a Bezier simplex to those parameters and values with the latest version of PyTorch-BSF:
+Now, you can fit a Bezier simplex model using the latest version of PyTorch-BSF directly from its GitHub repository:
 
 .. code-block:: bash
 
@@ -62,39 +62,48 @@ Now, you can fit a Bezier simplex to those parameters and values with the latest
    -P meshgrid=params.csv \
    -P degree=3
 
-
-After the command finished, you will get a trained model in ``mlruns`` directory.
-
+After the command finishes, you will find the trained model in ``mlruns`` directory. Note the **Run ID** automatically set to the command execution, as you will need it for prediction.
 
 Prediction
 ^^^^^^^^^^
 
+To make predictions, MLflow may use ``virtualenv`` and ``pyenv`` to create an isolated environment for the model. Please ensure it's available in your system.
+
+First, find the **Run ID** (e.g., `47a7...`) from the previous training step. Then, use it to construct the model's URI.
+
 .. code-block:: bash
 
+   # Replace YOUR_RUN_ID with the actual Run ID
+   RUN_ID="YOUR_RUN_ID";\
    mlflow models predict \
-     --model-uri file://`pwd`/mlruns/0/${run_uuid}/artifacts/model \
+     --model-uri file://`pwd`/mlruns/0/models/${RUN_ID}/artifacts \
      --content-type csv \
      --input-path params.csv \
-     --output-path test_values.csv
+     --output-path test_values.json
 
 
-You have results in ``test_values.csv``:
+You have results in ``test_values.json``:
 
 .. code-block:: bash
 
-   cat test_values.csv
-   [[0.00, 1.00], ...]
+   cat test_values.json
+   {"predictions": [{"0": 0.05797366052865982, ...}
+
+See for details https://mlflow.org/docs/latest/api_reference/cli.html#mlflow-models-predict
 
 
 Serve prediction API
 ^^^^^^^^^^^^^^^^^^^^
 
-You can also serve a Web API for prediction:
+You can also serve a Web API for prediction.
+Make sure that your model's requirements at ``${model-uri}/requirements.txt`` has ``pytorch-bsf``!:
 
 .. code-block:: bash
 
+   # Replace YOUR_RUN_ID with the actual Run ID
+   RUN_ID="YOUR_RUN_ID";\
    mlflow models serve \
-     --model-uri {Full Path} \
+     --model-uri file://`pwd`/mlruns/0/models/${RUN_ID}/artifacts \
      --host localhost \
      --port 5001
 
@@ -104,14 +113,16 @@ Request a prediction with HTTP POST method:
 .. code-block:: bash
 
    curl http://localhost:5001/invocations -H 'Content-Type: application/json' -d '{
-     "columns": ["t1", "t2"],
-     "data": [
-        [0.2, 0.8],
-        [0.7, 0.3]
-     ]
+     "dataframe_split":{
+       "columns": ["t1", "t2"],
+       "data": [
+          [0.2, 0.8],
+          [0.7, 0.3]
+       ]
+     }
    }'
 
-See for details https://www.mlflow.org/docs/latest/models.html#deploy-mlflow-models
+See for details https://mlflow.org/docs/latest/genai/serving/
 
 
 Run as a Python package
@@ -129,10 +140,10 @@ Then, run `torch_bsf` as a module:
 .. code-block:: bash
 
    python -m torch_bsf \
-     --model-uri file://`pwd`/mlruns/0/${run_uuid}/artifacts/model \
-     --content-type csv \
-     --input-path test_params.csv \
-     --output-path test_values.csv
+     --params params.csv \
+     --values values.csv \
+     --meshgrid params.csv \
+     --degree 3
 
 
 Run as Python code
