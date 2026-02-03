@@ -35,3 +35,6 @@ jobs:
     - name: Test with pytest
       run: |
         pytest
+    - name: Test with doctest
+      run: |
+        sphinx-build -b doctest docs docs/_build/doctest

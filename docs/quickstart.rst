@@ -154,11 +154,12 @@ Then, install the package:
 
 .. code-block:: bash
 
-  pip install pytorch-bsf
+   pip install pytorch-bsf
 
 Train a model by ``fit()``, and call the model to predict.
 
-.. code-block:: python
+.. testcode::
+   :pyversion: >= 3.10, < 3.14
 
    import torch
    import torch_bsf
@@ -188,4 +189,9 @@ Train a model by ``fit()``, and call the model to predict.
       [0.7, 0.3],
    ]
    x = bs(t)
-   print(f"{t} -> {x}")
+   print(x)
+
+.. testoutput::
+   :hide:
+
+   tensor([[...]], grad_fn=<AddBackward0>)
