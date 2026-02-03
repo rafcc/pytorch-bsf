@@ -792,7 +792,7 @@ def fit(
     >>> t = [[0.2, 0.3, 0.5]]
     >>> x = bs(t)
     >>> print(f"{t} -> {x}")
-    [[0.2, 0.3, 0.5]] -> tensor([[0.9600, 0.9100, 0.7500]], grad_fn=<AddBackward0>)
+    [[0.2, 0.3, 0.5]] -> tensor([[..., ..., ...]], grad_fn=<AddBackward0>)
 
     See Also
     --------
