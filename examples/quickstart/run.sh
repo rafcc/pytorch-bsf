@@ -1,6 +1,5 @@
 #!/bin/bash
 set -eu
-# TODO: CI に bash による実行を追加
 
 wait_for_server() {
   local port=$1
