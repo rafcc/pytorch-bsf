@@ -38,3 +38,6 @@ jobs:
     - name: Test with doctest
       run: |
         sphinx-build -b doctest docs docs/_build/doctest
+    - name: Test CLI samples
+      run: |
+        bash examples/quickstart/run.sh
