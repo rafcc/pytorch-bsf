@@ -128,7 +128,7 @@ See for details https://mlflow.org/docs/latest/genai/serving/
 Run as a Python package
 -----------------------
 
-Assume you have installed Python 3.8 or above.
+Assume you have installed Python 3.10 or above.
 Then, install the package:
 
 .. code-block:: bash
@@ -149,7 +149,7 @@ Then, run `torch_bsf` as a module:
 Run as Python code
 ------------------
 
-Assume you have installed Python 3.8 or above.
+Assume you have installed Python 3.10 or above.
 Then, install the package:
 
 .. code-block:: bash
