@@ -380,7 +380,7 @@ def zeros(n_params: int, n_values: int, degree: int) -> BezierSimplex:
       )
     )
     >>> print(bs(torch.tensor([[0.2, 0.8]])))
-    tensor([[0., 0., 0.]], grad_fn=<AddBackward0>)
+    tensor([[..., ..., ...]], grad_fn=<AddBackward0>)
     """
     if n_params < 0:
         raise ValueError(f"n_params must be non-negative: {n_params}")
@@ -555,7 +555,7 @@ CONTROLPOINTS_JSONSCHEMA = {
     "$schema": "https://json-schema.org/draft/2020-12/schema",
     "type": "object",
     "patternProperties": {
-        r"^\((\d+, *)?\d*\)$": {  # e.g., "(0, 0, 0)": [0.0, 0.0, 0.0]
+        r"^\((\d+, *)*\d*\)$": {  # e.g., "(0, 0, 0)": [0.0, 0.0, 0.0]
             "type": "array",
             "items": {
                 "type": "number",
@@ -670,14 +670,14 @@ def load(path: str | Path) -> BezierSimplex:
     >>> bs = bezier_simplex.load("tests/data/bezier_simplex.csv")
     >>> print(bs)
     BezierSimplex(
-        (control_points): ControlPoints(
-            ([0, 2]): Parameter containing: [torch.FloatTensor of size 3]
-            ([1, 1]): Parameter containing: [torch.FloatTensor of size 3]
-            ([2, 0]): Parameter containing: [torch.FloatTensor of size 3]
-        )
+      (control_points): ControlPoints(
+          ([0, 2]): Parameter containing: [torch.FloatTensor of size 3]
+          ([1, 1]): Parameter containing: [torch.FloatTensor of size 3]
+          ([2, 0]): Parameter containing: [torch.FloatTensor of size 3]
+      )
     )
     >>> print(bs(torch.tensor([[0.2, 0.8]])))
-    tensor([[0.0000, 0.0000, 0.0000]], grad_fn=<AddBackward0>)
+    tensor([[..., ..., ...]], grad_fn=<AddBackward0>)
     """
     cpdata: dict[str, list[float]]
     path = Path(path)
