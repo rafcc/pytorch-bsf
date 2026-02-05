@@ -66,7 +66,7 @@ mlflow run https://github.com/rafcc/pytorch-bsf \
 # [TAG:RunMLflowTraining_End]
 
 # [TAG:FetchLatestRunID]
-LATEST_RUN_ID=$(ls -td mlruns/0/*/ | head -1 | xargs basename)
+LATEST_RUN_ID=$(ls -td mlruns/0/*/ | grep -v "models" | head -1 | xargs basename)
 echo "Tested Run ID: ${LATEST_RUN_ID}"
 # [TAG:FetchLatestRunID_End]
 
