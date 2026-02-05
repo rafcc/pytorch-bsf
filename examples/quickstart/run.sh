@@ -50,19 +50,19 @@ EOS
 echo "Train a Bezier Simplex Model with a package running."
 # [TAG:RunPackageTraining]
 python -m torch_bsf \
-    --params params.csv \
-    --values values.csv \
-    --meshgrid params.csv \
-    --degree 3
+  --params params.csv \
+  --values values.csv \
+  --meshgrid params.csv \
+  --degree 3
 # [TAG:RunPackageTraining_End]
 
 echo "Train a Bezier Simplex Model with MLflow."
 # [TAG:RunMLflowTraining]
 mlflow run https://github.com/rafcc/pytorch-bsf \
--P params=params.csv \
--P values=values.csv \
--P meshgrid=params.csv \
--P degree=3
+  -P params=params.csv \
+  -P values=values.csv \
+  -P meshgrid=params.csv \
+  -P degree=3
 # [TAG:RunMLflowTraining_End]
 
 # [TAG:FetchLatestRunID]
@@ -74,10 +74,11 @@ echo "Tested Run ID: ${LATEST_RUN_ID}"
 echo "Local Prediction."
 # [TAG:MakePrediction]
 mlflow models predict \
-    --model-uri "runs:/${LATEST_RUN_ID}/model" \
-    --content-type csv \
-    --input-path params.csv \
-    --output-path test_values.json
+  --env-manager=conda \
+  --model-uri "runs:/${LATEST_RUN_ID}/model" \
+  --content-type csv \
+  --input-path params.csv \
+  --output-path test_values.json
 cat test_values.json
 # result will be shown like {"predictions": [{"0": 0.05797366052865982, ...}
 # [TAG:MakePrediction_End]
@@ -86,6 +87,7 @@ cat test_values.json
 echo "Web API Prediciton."
 # [TAG:ServeAPI]
 mlflow models serve \
+  --env-manager=conda \
   --model-uri "runs:/${LATEST_RUN_ID}/model" \
   --host localhost \
   --port 5001 &
@@ -96,7 +98,7 @@ trap 'kill "$SERVER_PID"' EXIT
 
 echo "Waiting for server to start..."
 if ! wait_for_server 5001; then
-    exit 1
+  exit 1
 fi
 
 # [TAG:PredictWithHTTPPost]
