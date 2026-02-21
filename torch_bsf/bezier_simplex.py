@@ -1,9 +1,10 @@
 import csv
 import json
+from ast import literal_eval
 from functools import lru_cache
 from math import factorial
 from pathlib import Path
-from typing import cast, Any, Iterable, Literal
+from typing import Any, Iterable, Literal, cast
 
 import lightning.pytorch as L
 import numpy as np
@@ -636,10 +637,10 @@ def validate_control_points(data: dict[str, list[float]]):
     """
     validate(instance=data, schema=CONTROLPOINTS_JSONSCHEMA)
     index, value = next(iter(data.items()))
-    n_params = len(eval(index))
+    n_params = len(literal_eval(index))
     n_values = len(value)
     for index, value in data.items():
-        if len(eval(index)) != n_params:
+        if len(literal_eval(index)) != n_params:
             raise ValidationError(f"Dimension mismatch: {index}")
         if len(value) != n_values:
             raise ValidationError(f"Dimension mismatch: {value}")

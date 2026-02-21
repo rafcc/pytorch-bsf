@@ -1,4 +1,5 @@
-from typing import cast, Iterable, Sequence, TypeAlias
+from ast import literal_eval
+from typing import Iterable, Sequence, TypeAlias, cast
 
 import torch
 import torch.nn as nn
@@ -162,7 +163,7 @@ class ControlPoints(nn.ParameterDict):
                 next(iter(data.items())),
             )
             if isinstance(index, str):
-                index = cast(list[int], eval(index))
+                index = cast(list[int], literal_eval(index))
             self.degree = sum(index)
             self.n_params = len(index)
             self.n_values = len(value)
