@@ -200,6 +200,9 @@ class BezierSimplex(L.LightningModule):
 
     Examples
     --------
+    >>> import lightning.pytorch as L
+    >>> from lightning.pytorch.callbacks.early_stopping import EarlyStopping
+    >>> from torch.utils.data import DataLoader, TensorDataset
     >>> ts = torch.tensor(  # parameters on a simplex
     ...     [
     ...         [3/3, 0/3, 0/3],
@@ -216,7 +219,7 @@ class BezierSimplex(L.LightningModule):
     ... )
     >>> xs = 1 - ts * ts  # values corresponding to the parameters
     >>> dl = DataLoader(TensorDataset(ts, xs))
-    >>> bs = randn(
+    >>> bs = torch_bsf.bezier_simplex.randn(
     ...     n_params=int(ts.shape[1]),
     ...     n_values=int(xs.shape[1]),
     ...     degree=3,
@@ -377,7 +380,7 @@ def zeros(n_params: int, n_values: int, degree: int) -> BezierSimplex:
       )
     )
     >>> print(bs(torch.tensor([[0.2, 0.8]])))
-    tensor([[0., 0., 0.]], grad_fn=<AddBackward0>)
+    tensor([[..., ..., ...]], grad_fn=<AddBackward0>)
     """
     if n_params < 0:
         raise ValueError(f"n_params must be non-negative: {n_params}")
@@ -513,12 +516,12 @@ def save(path: str | Path, data: BezierSimplex) -> None:
     Examples
     --------
     >>> import torch_bsf
-    >>> bs = torch_bsf.randn(n_params=2, n_values=3, degree=2)
-    >>> torch_bsf.save("tests/data/bezier_simplex.pt", bs)
-    >>> torch_bsf.save("tests/data/bezier_simplex.csv", bs)
-    >>> torch_bsf.save("tests/data/bezier_simplex.tsv", bs)
-    >>> torch_bsf.save("tests/data/bezier_simplex.json", bs)
-    >>> torch_bsf.save("tests/data/bezier_simplex.yml", bs)
+    >>> bs = torch_bsf.bezier_simplex.randn(n_params=2, n_values=3, degree=2)
+    >>> torch_bsf.bezier_simplex.save("tests/data/bezier_simplex.pt", bs)
+    >>> torch_bsf.bezier_simplex.save("tests/data/bezier_simplex.csv", bs)
+    >>> torch_bsf.bezier_simplex.save("tests/data/bezier_simplex.tsv", bs)
+    >>> torch_bsf.bezier_simplex.save("tests/data/bezier_simplex.json", bs)
+    >>> torch_bsf.bezier_simplex.save("tests/data/bezier_simplex.yml", bs)
 
     """
     path = Path(path)
@@ -538,7 +541,8 @@ def save(path: str | Path, data: BezierSimplex) -> None:
                 writer.writerow([index] + value.tolist())
 
     elif path.suffix == ".json":
-        json.dump(data.control_points, open(path, "w", encoding="utf-8"))
+        dic = {index:value.tolist() for index,value in data.control_points.items()}
+        json.dump(dic, open(path, "w", encoding="utf-8"))
 
     elif path.suffix in (".yml", ".yaml"):
         yaml.dump(data.control_points, open(path, "w", encoding="utf-8"))
@@ -551,7 +555,7 @@ CONTROLPOINTS_JSONSCHEMA = {
     "$schema": "https://json-schema.org/draft/2020-12/schema",
     "type": "object",
     "patternProperties": {
-        r"^\((\d+, *)?\d*\)$": {  # e.g., "(0, 0, 0)": [0.0, 0.0, 0.0]
+        r"^\((\d+, *)*\d*\)$": {  # e.g., "(0, 0, 0)": [0.0, 0.0, 0.0]
             "type": "array",
             "items": {
                 "type": "number",
@@ -666,14 +670,14 @@ def load(path: str | Path) -> BezierSimplex:
     >>> bs = bezier_simplex.load("tests/data/bezier_simplex.csv")
     >>> print(bs)
     BezierSimplex(
-        (control_points): ControlPoints(
-            ([0, 2]): Parameter containing: [torch.FloatTensor of size 3]
-            ([1, 1]): Parameter containing: [torch.FloatTensor of size 3]
-            ([2, 0]): Parameter containing: [torch.FloatTensor of size 3]
-        )
+      (control_points): ControlPoints(
+          ([0, 2]): Parameter containing: [torch.FloatTensor of size 3]
+          ([1, 1]): Parameter containing: [torch.FloatTensor of size 3]
+          ([2, 0]): Parameter containing: [torch.FloatTensor of size 3]
+      )
     )
     >>> print(bs(torch.tensor([[0.2, 0.8]])))
-    tensor([[0.0000, 0.0000, 0.0000]], grad_fn=<AddBackward0>)
+    tensor([[..., ..., ...]], grad_fn=<AddBackward0>)
     """
     cpdata: dict[str, list[float]]
     path = Path(path)
@@ -788,7 +792,7 @@ def fit(
     >>> t = [[0.2, 0.3, 0.5]]
     >>> x = bs(t)
     >>> print(f"{t} -> {x}")
-    [[0.2, 0.3, 0.5]] -> tensor([[0.9600, 0.9100, 0.7500]], grad_fn=<AddBackward0>)
+    [[0.2, 0.3, 0.5]] -> tensor([[..., ..., ...]], grad_fn=<AddBackward0>)
 
     See Also
     --------

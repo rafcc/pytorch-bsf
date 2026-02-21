@@ -57,6 +57,17 @@ autodoc_inherit_docstrings = False
 doctest_global_setup = """
 import torch
 import torch_bsf
+import contextlib
+import os
+
+if not hasattr(torch_bsf,"_original_fit"):
+    torch_bsf._original_fit = torch_bsf.fit
+    # 1>/dev/null 2>&1
+    def quiet_fit(*args, **kwargs):
+        with open(os.devnull, 'w') as devnull:
+            with contextlib.redirect_stdout(devnull), contextlib.redirect_stderr(devnull):
+                return torch_bsf._original_fit(*args, **kwargs)
+    torch_bsf.fit = quiet_fit
 """
 doctest_test_doctest_blocks = "default"
 

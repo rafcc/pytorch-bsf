@@ -117,7 +117,7 @@ class ControlPoints(nn.ParameterDict):
     Examples
     --------
     >>> import torch_bsf
-    >>> control_points = torch_bsf.ControlPoints({
+    >>> control_points = torch_bsf.control_points.ControlPoints({
     ...     (1, 0): [0.0, 0.1, 0.2],
     ...     (0, 1): [1.0, 1.1, 1.2],
     ... })

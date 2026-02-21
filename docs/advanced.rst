@@ -66,9 +66,10 @@ YAML
 Partial training
 ----------------
 
-Funciton ``fit()`` provides some argments for partial training, i.e., train some of control points while the others are fixed.
+Function ``fit()`` provides some arguments for partial training, i.e., train some of control points while the others are fixed.
 
-.. code-block:: python
+.. testcode::
+   :pyversion: >= 3.10, < 3.14
 
    import torch
    import torch_bsf
@@ -117,4 +118,9 @@ Funciton ``fit()`` provides some argments for partial training, i.e., train some
       [0.7, 0.3],
    ]
    x = bs(t)
-   print(f"{t} -> {x}")
+   print(x)
+
+.. testoutput::
+   :hide:
+
+   tensor([[...]], grad_fn=<AddBackward0>)
