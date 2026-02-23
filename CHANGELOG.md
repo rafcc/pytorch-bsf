@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.13.3](https://github.com/rafcc/pytorch-bsf/compare/v0.13.2...v0.13.3) (2026-02-21)
+
+
+### Bug Fixes
+
+* Fix sample codes. ([#212](https://github.com/rafcc/pytorch-bsf/issues/212)) ([3369166](https://github.com/rafcc/pytorch-bsf/commit/3369166ca5387e37fdaef4c5d6db3a73c723834b))
+
 ## [0.13.2](https://github.com/rafcc/pytorch-bsf/compare/v0.13.1...v0.13.2) (2025-09-26)
 
 
