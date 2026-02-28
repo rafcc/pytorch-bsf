@@ -1,13 +1,10 @@
 import csv
 import json
-import os
 
-import pytest
 import torch
-import yaml
 
 import torch_bsf
-from torch_bsf.bezier_simplex import BezierSimplex, load, save, validate_control_points
+from torch_bsf.bezier_simplex import BezierSimplex, load, save
 
 
 def test_backward_compatibility(tmp_path):
