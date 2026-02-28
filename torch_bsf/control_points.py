@@ -68,12 +68,12 @@ def to_parameterdict_key(index: Index) -> str:
     """
     if isinstance(index, str):
         # If index is a string, it is already a key of a ParameterDict.
-        return index.replace("(", "[").replace(")", "]").replace(",]", "]")
+        return index.replace("[", "(").replace("]", ")").replace(",)", ")")
     if hasattr(index, "tolist"):
         # If index is a tensor or array, convert it to a string.
-        return str(index.tolist())
+        return str(tuple(index.tolist()))
     # If index is a tuple, convert it to a string.
-    return str(list(index))
+    return str(tuple(index))
 
 
 def to_parameterdict_value(value: Value) -> torch.Tensor:
