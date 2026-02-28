@@ -375,9 +375,9 @@ def zeros(n_params: int, n_values: int, degree: int) -> BezierSimplex:
     >>> print(bs)
     BezierSimplex(
       (control_points): ControlPoints(
-          ([0, 2]): Parameter containing: [torch.FloatTensor of size 3]
-          ([1, 1]): Parameter containing: [torch.FloatTensor of size 3]
-          ([2, 0]): Parameter containing: [torch.FloatTensor of size 3]
+          ((0, 2)): Parameter containing: [torch.FloatTensor of size 3]
+          ((1, 1)): Parameter containing: [torch.FloatTensor of size 3]
+          ((2, 0)): Parameter containing: [torch.FloatTensor of size 3]
       )
     )
     >>> print(bs(torch.tensor([[0.2, 0.8]])))
@@ -427,9 +427,9 @@ def rand(n_params: int, n_values: int, degree: int) -> BezierSimplex:
     >>> print(bs)
     BezierSimplex(
       (control_points): ControlPoints(
-          ([0, 2]): Parameter containing: [torch.FloatTensor of size 3]
-          ([1, 1]): Parameter containing: [torch.FloatTensor of size 3]
-          ([2, 0]): Parameter containing: [torch.FloatTensor of size 3]
+          ((0, 2)): Parameter containing: [torch.FloatTensor of size 3]
+          ((1, 1)): Parameter containing: [torch.FloatTensor of size 3]
+          ((2, 0)): Parameter containing: [torch.FloatTensor of size 3]
       )
     )
     >>> print(bs(torch.tensor([[0.2, 0.8]])))  # doctest: +ELLIPSIS
@@ -479,9 +479,9 @@ def randn(n_params: int, n_values: int, degree: int) -> BezierSimplex:
     >>> print(bs)
     BezierSimplex(
       (control_points): ControlPoints(
-          ([0, 2]): Parameter containing: [torch.FloatTensor of size 3]
-          ([1, 1]): Parameter containing: [torch.FloatTensor of size 3]
-          ([2, 0]): Parameter containing: [torch.FloatTensor of size 3]
+          ((0, 2)): Parameter containing: [torch.FloatTensor of size 3]
+          ((1, 1)): Parameter containing: [torch.FloatTensor of size 3]
+          ((2, 0)): Parameter containing: [torch.FloatTensor of size 3]
       )
     )
     >>> print(bs(torch.tensor([[0.2, 0.8]])))  # doctest: +ELLIPSIS
@@ -673,9 +673,9 @@ def load(path: str | Path) -> BezierSimplex:
     >>> print(bs)
     BezierSimplex(
       (control_points): ControlPoints(
-          ([0, 2]): Parameter containing: [torch.FloatTensor of size 3]
-          ([1, 1]): Parameter containing: [torch.FloatTensor of size 3]
-          ([2, 0]): Parameter containing: [torch.FloatTensor of size 3]
+          ((0, 2)): Parameter containing: [torch.FloatTensor of size 3]
+          ((1, 1)): Parameter containing: [torch.FloatTensor of size 3]
+          ((2, 0)): Parameter containing: [torch.FloatTensor of size 3]
       )
     )
     >>> print(bs(torch.tensor([[0.2, 0.8]])))
