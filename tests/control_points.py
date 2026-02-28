@@ -12,23 +12,33 @@ from torch_bsf.control_points import (
 
 
 def test_to_parameterdict_key():
-    assert to_parameterdict_key([]) == "[]"
-    assert to_parameterdict_key(()) == "[]"
-    assert to_parameterdict_key(np.array([])) == "[]"
-    assert to_parameterdict_key(torch.tensor([])) == "[]"
-    assert to_parameterdict_key("[]") == "[]"
-    assert to_parameterdict_key("()") == "[]"
-    assert to_parameterdict_key([1]) == "[1]"
-    assert to_parameterdict_key((1,)) == "[1]"
-    assert to_parameterdict_key(np.array([1])) == "[1]"
-    assert to_parameterdict_key(torch.tensor([1])) == "[1]"
-    assert to_parameterdict_key("[1,]") == "[1]"
-    assert to_parameterdict_key("(1,)") == "[1]"
-    assert to_parameterdict_key([1, 2]) == "[1, 2]"
-    assert to_parameterdict_key((1, 2)) == "[1, 2]"
-    assert to_parameterdict_key("(1, 2)") == "[1, 2]"
-    assert to_parameterdict_key(np.array([1, 2])) == "[1, 2]"
-    assert to_parameterdict_key(torch.tensor([1, 2])) == "[1, 2]"
+    EMPTY = "()"
+    assert to_parameterdict_key([]) == EMPTY
+    assert to_parameterdict_key(()) == EMPTY
+    assert to_parameterdict_key(np.array([])) == EMPTY
+    assert to_parameterdict_key(torch.tensor([])) == EMPTY
+    assert to_parameterdict_key("[]") == EMPTY
+    assert to_parameterdict_key("()") == EMPTY
+
+    ONE_SIZED = "(1,)"
+    assert to_parameterdict_key([1]) == ONE_SIZED
+    assert to_parameterdict_key((1,)) == ONE_SIZED
+    assert to_parameterdict_key(np.array([1])) == ONE_SIZED
+    assert to_parameterdict_key(torch.tensor([1])) == ONE_SIZED
+    assert to_parameterdict_key("[1,]") == ONE_SIZED
+    assert to_parameterdict_key("(1,)") == ONE_SIZED
+    assert to_parameterdict_key("[1]") == ONE_SIZED
+    assert to_parameterdict_key("(1)") == ONE_SIZED
+
+    TWO_SIZED = "(1, 2)"
+    assert to_parameterdict_key([1, 2]) == TWO_SIZED
+    assert to_parameterdict_key((1, 2)) == TWO_SIZED
+    assert to_parameterdict_key(np.array([1, 2])) == TWO_SIZED
+    assert to_parameterdict_key(torch.tensor([1, 2])) == TWO_SIZED
+    assert to_parameterdict_key("[1, 2,]") == TWO_SIZED
+    assert to_parameterdict_key("(1, 2,)") == TWO_SIZED
+    assert to_parameterdict_key("[1, 2]") == TWO_SIZED
+    assert to_parameterdict_key("(1, 2)") == TWO_SIZED
 
 
 @pytest.mark.parametrize(
