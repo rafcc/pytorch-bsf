@@ -67,8 +67,11 @@ def to_parameterdict_key(index: Index) -> str:
         str: A key of a ParameterDict.
     """
     if isinstance(index, str):
-        # If index is a string, it is already a key of a ParameterDict.
-        return index.replace("[", "(").replace("]", ")").replace(",)", ")")
+        obj = literal_eval(index)
+        if isinstance(obj, int):
+            return f"({obj},)"  # str(tuple(obj)) will be error because obj is not iterable.
+        # remove non-required trailing comma (one in 2 or more sized tuple) and square brackets.
+        return str(tuple(obj))
     if hasattr(index, "tolist"):
         # If index is a tensor or array, convert it to a string.
         return str(tuple(index.tolist()))
