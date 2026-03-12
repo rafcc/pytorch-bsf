@@ -153,7 +153,7 @@ See documents for more details.
 
 ## Author
 
-RIKEN AIP-FUJITSU Collaboration Center (RAFCC)
+FUJITSU LIMITED and Naoki Hamada
 
 ## License
 

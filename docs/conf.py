@@ -21,8 +21,8 @@ sys.path.insert(0, os.path.abspath("../"))
 # -- Project information -----------------------------------------------------
 
 project = "PyTorch-BSF"
-copyright = "2021, FUJITSU LIMITED and RIKEN"
-author = "RIKEN AIP-FUJITSU Collaboration Center (RAFCC)"
+copyright = "2021, FUJITSU LIMITED and Naoki Hamada"
+author = "FUJITSU LIMITED and Naoki Hamada"
 
 # The full version, including alpha/beta/rc tags
 release = version = torch_bsf.__version__
