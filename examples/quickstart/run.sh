@@ -76,7 +76,6 @@ echo "Local Prediction."
 mlflow models predict \
   --env-manager=conda \
   --model-uri "runs:/${LATEST_RUN_ID}/model" \
-  --pip-requirements-override pytorch-bsf \
   --content-type csv \
   --input-path params.csv \
   --output-path test_values.json
