@@ -21,8 +21,8 @@ sys.path.insert(0, os.path.abspath("../"))
 # -- Project information -----------------------------------------------------
 
 project = "PyTorch-BSF"
-copyright = "2021, FUJITSU LIMITED and RIKEN"
-author = "RIKEN AIP-FUJITSU Collaboration Center (RAFCC)"
+copyright = "2021, FUJITSU LIMITED and Naoki Hamada"
+author = "FUJITSU LIMITED and Naoki Hamada"
 
 # The full version, including alpha/beta/rc tags
 release = version = torch_bsf.__version__
@@ -130,4 +130,4 @@ def linkcode_resolve(domain, info):
     except Exception:
         filename = info["module"].replace(".", "/") + ".py"
     tag = "master"  # if 'dev' in release else ('v' + release)
-    return "https://github.com/rafcc/pytorch-bsf/blob/%s/%s" % (tag, filename)
+    return "https://github.com/NaokiHamada/pytorch-bsf/blob/%s/%s" % (tag, filename)

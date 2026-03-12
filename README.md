@@ -1,10 +1,10 @@
 # pytorch-bsf
 
-[![CodeQL](https://github.com/rafcc/pytorch-bsf/actions/workflows/codeql-analysis.yml/badge.svg)](https://github.com/rafcc/pytorch-bsf/actions/workflows/codeql-analysis.yml)
-[![PyTest](https://github.com/rafcc/pytorch-bsf/actions/workflows/python-package.yml/badge.svg)](https://github.com/rafcc/pytorch-bsf/actions/workflows/python-package.yml)
-[![Release](https://github.com/rafcc/pytorch-bsf/actions/workflows/release-please-action.yml/badge.svg)](https://github.com/rafcc/pytorch-bsf/actions/workflows/release-please-action.yml)
-[![Conda](https://github.com/rafcc/pytorch-bsf/actions/workflows/python-package-conda.yml/badge.svg)](https://github.com/rafcc/pytorch-bsf/actions/workflows/python-package-conda.yml)
-[![GHPages](https://github.com/rafcc/pytorch-bsf/actions/workflows/sphinx-pages.yml/badge.svg)](https://github.com/rafcc/pytorch-bsf/actions/workflows/sphinx-pages.yml)
+[![CodeQL](https://github.com/NaokiHamada/pytorch-bsf/actions/workflows/codeql-analysis.yml/badge.svg)](https://github.com/NaokiHamada/pytorch-bsf/actions/workflows/codeql-analysis.yml)
+[![PyTest](https://github.com/NaokiHamada/pytorch-bsf/actions/workflows/python-package.yml/badge.svg)](https://github.com/NaokiHamada/pytorch-bsf/actions/workflows/python-package.yml)
+[![Release](https://github.com/NaokiHamada/pytorch-bsf/actions/workflows/release-please-action.yml/badge.svg)](https://github.com/NaokiHamada/pytorch-bsf/actions/workflows/release-please-action.yml)
+[![Conda](https://github.com/NaokiHamada/pytorch-bsf/actions/workflows/python-package-conda.yml/badge.svg)](https://github.com/NaokiHamada/pytorch-bsf/actions/workflows/python-package-conda.yml)
+[![GHPages](https://github.com/NaokiHamada/pytorch-bsf/actions/workflows/sphinx-pages.yml/badge.svg)](https://github.com/NaokiHamada/pytorch-bsf/actions/workflows/sphinx-pages.yml)
 [![PyPI Downloads](https://static.pepy.tech/badge/pytorch-bsf)](https://pepy.tech/projects/pytorch-bsf)
 
 A PyTorch implementation of Bezier simplex fitting.
@@ -14,7 +14,7 @@ It enables us to model a complex-shaped point cloud as a parametric hyper-surfac
 This package provides an algorithm to fit a Bezier simplex to given data points.
 To process terabyte-scale data, this package supports distributed training, realtime progress reporting, and checkpointing on top of [PyTorch Lightning](https://www.pytorchlightning.ai/) and [MLflow](https://mlflow.org/).
 
-<img src="https://rafcc.github.io/pytorch-bsf/master/_images/bezier-simplex.png" width="49%" alt="A Bezier simplex and its control points"><img src="https://rafcc.github.io/pytorch-bsf/master/_images/bezier-simplex-fitting.png" width="49%" alt="A Bezier simplex that fits to a dataset">
+<img src="https://NaokiHamada.github.io/pytorch-bsf/master/_images/bezier-simplex.png" width="49%" alt="A Bezier simplex and its control points"><img src="https://NaokiHamada.github.io/pytorch-bsf/master/_images/bezier-simplex-fitting.png" width="49%" alt="A Bezier simplex that fits to a dataset">
 
 See the following papers for technical details.
 
@@ -56,7 +56,7 @@ EOS
 Run the following command:
 
 ```bash
-mlflow run https://github.com/rafcc/pytorch-bsf \
+mlflow run https://github.com/NaokiHamada/pytorch-bsf \
   -P params=params.csv \
   -P values=values.csv \
   -P meshgrid=params.csv \
@@ -149,11 +149,11 @@ print(f"{t} -> {x}")
 ## Documents
 
 See documents for more details.
-<https://rafcc.github.io/pytorch-bsf/>
+<https://NaokiHamada.github.io/pytorch-bsf/>
 
 ## Author
 
-RIKEN AIP-FUJITSU Collaboration Center (RAFCC)
+FUJITSU LIMITED and Naoki Hamada
 
 ## License
 
