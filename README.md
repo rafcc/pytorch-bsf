@@ -1,10 +1,10 @@
 # pytorch-bsf
 
-[![CodeQL](https://github.com/rafcc/pytorch-bsf/actions/workflows/codeql-analysis.yml/badge.svg)](https://github.com/rafcc/pytorch-bsf/actions/workflows/codeql-analysis.yml)
-[![PyTest](https://github.com/rafcc/pytorch-bsf/actions/workflows/python-package.yml/badge.svg)](https://github.com/rafcc/pytorch-bsf/actions/workflows/python-package.yml)
-[![Release](https://github.com/rafcc/pytorch-bsf/actions/workflows/release-please-action.yml/badge.svg)](https://github.com/rafcc/pytorch-bsf/actions/workflows/release-please-action.yml)
-[![Conda](https://github.com/rafcc/pytorch-bsf/actions/workflows/python-package-conda.yml/badge.svg)](https://github.com/rafcc/pytorch-bsf/actions/workflows/python-package-conda.yml)
-[![GHPages](https://github.com/rafcc/pytorch-bsf/actions/workflows/sphinx-pages.yml/badge.svg)](https://github.com/rafcc/pytorch-bsf/actions/workflows/sphinx-pages.yml)
+[![CodeQL](https://github.com/NaokiHamada/pytorch-bsf/actions/workflows/codeql-analysis.yml/badge.svg)](https://github.com/NaokiHamada/pytorch-bsf/actions/workflows/codeql-analysis.yml)
+[![PyTest](https://github.com/NaokiHamada/pytorch-bsf/actions/workflows/python-package.yml/badge.svg)](https://github.com/NaokiHamada/pytorch-bsf/actions/workflows/python-package.yml)
+[![Release](https://github.com/NaokiHamada/pytorch-bsf/actions/workflows/release-please-action.yml/badge.svg)](https://github.com/NaokiHamada/pytorch-bsf/actions/workflows/release-please-action.yml)
+[![Conda](https://github.com/NaokiHamada/pytorch-bsf/actions/workflows/python-package-conda.yml/badge.svg)](https://github.com/NaokiHamada/pytorch-bsf/actions/workflows/python-package-conda.yml)
+[![GHPages](https://github.com/NaokiHamada/pytorch-bsf/actions/workflows/sphinx-pages.yml/badge.svg)](https://github.com/NaokiHamada/pytorch-bsf/actions/workflows/sphinx-pages.yml)
 [![PyPI Downloads](https://static.pepy.tech/badge/pytorch-bsf)](https://pepy.tech/projects/pytorch-bsf)
 
 A PyTorch implementation of Bezier simplex fitting.
@@ -56,7 +56,7 @@ EOS
 Run the following command:
 
 ```bash
-mlflow run https://github.com/rafcc/pytorch-bsf \
+mlflow run https://github.com/NaokiHamada/pytorch-bsf \
   -P params=params.csv \
   -P values=values.csv \
   -P meshgrid=params.csv \

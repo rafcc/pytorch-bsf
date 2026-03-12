@@ -130,4 +130,4 @@ def linkcode_resolve(domain, info):
     except Exception:
         filename = info["module"].replace(".", "/") + ".py"
     tag = "master"  # if 'dev' in release else ('v' + release)
-    return "https://github.com/rafcc/pytorch-bsf/blob/%s/%s" % (tag, filename)
+    return "https://github.com/NaokiHamada/pytorch-bsf/blob/%s/%s" % (tag, filename)
