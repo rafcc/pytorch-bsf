@@ -45,6 +45,4 @@ jobs:
         sphinx-build -b doctest docs docs/_build/doctest
     - name: Test CLI samples
       run: |
-        conda env list
-        for i in `conda env list | grep mlflow | awk '{print $1}'`; do conda env remove -n $i -y; done
         bash examples/quickstart/run.sh
