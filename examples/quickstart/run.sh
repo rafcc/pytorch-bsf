@@ -70,10 +70,6 @@ LATEST_RUN_ID=$(ls -td mlruns/0/*/ | grep -v "models" | head -1 | xargs basename
 echo "Tested Run ID: ${LATEST_RUN_ID}"
 # [TAG:FetchLatestRunID_End]
 
-mlflow models update-pip-requirements \
-  --model-uri "runs:/${LATEST_RUN_ID}/model" \
-  add "pytorch-bsf"
-
 echo "Local Prediction."
 # [TAG:MakePrediction]
 mlflow models predict \

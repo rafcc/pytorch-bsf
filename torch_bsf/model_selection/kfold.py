@@ -3,10 +3,12 @@ from pathlib import Path
 
 import numpy as np
 from lightning.pytorch.callbacks.early_stopping import EarlyStopping
+import mlflow
 from mlflow import autolog
+from mlflow.models import update_model_requirements
 from pl_crossvalidate import KFoldTrainer
 
-from torch_bsf import BezierSimplexDataModule
+from torch_bsf import BezierSimplexDataModule, __version__ as _torch_bsf_version
 from torch_bsf.bezier_simplex import load, randn
 from torch_bsf.validator import index_list, int_or_str, validate_simplex_indices
 
@@ -103,6 +105,15 @@ trainer = KFoldTrainer(
 # Returns a dict of stats over the different splits
 cross_val_stats: list[list[dict[str, float]]] = trainer.cross_validate(bs, datamodule=dm)
 print(f"{cross_val_stats=}")
+
+if args.loglevel >= 2:
+    run = mlflow.last_active_run()
+    if run is not None:
+        update_model_requirements(
+            f"runs:/{run.info.run_id}/model",
+            "add",
+            [f"pytorch-bsf=={_torch_bsf_version}"],
+        )
 
 # Additionally, we can construct an ensemble from the K trained models
 ensemble_model = trainer.create_ensemble(bs)

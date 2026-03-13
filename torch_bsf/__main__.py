@@ -4,9 +4,11 @@ from pathlib import Path
 import numpy as np
 from lightning.pytorch import Trainer
 from lightning.pytorch.callbacks.early_stopping import EarlyStopping
+import mlflow
 from mlflow import autolog
+from mlflow.models import update_model_requirements
 
-from torch_bsf import BezierSimplexDataModule
+from torch_bsf import BezierSimplexDataModule, __version__ as _torch_bsf_version
 from torch_bsf.bezier_simplex import load, randn
 from torch_bsf.validator import index_list, int_or_str, validate_simplex_indices
 
@@ -93,6 +95,15 @@ trainer = Trainer(
     callbacks=[EarlyStopping(monitor="val_mse")],
 )
 trainer.fit(bs, dm)
+
+if args.loglevel >= 2:
+    run = mlflow.last_active_run()
+    if run is not None:
+        update_model_requirements(
+            f"runs:/{run.info.run_id}/model",
+            "add",
+            [f"pytorch-bsf=={_torch_bsf_version}"],
+        )
 
 # search for filename
 fn = f"{args.params.name},{args.values.name},meshgrid,d_{args.degree},r_{args.split_ratio}.csv"
