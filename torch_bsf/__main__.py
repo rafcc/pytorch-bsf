@@ -6,7 +6,8 @@ from lightning.pytorch import Trainer
 from lightning.pytorch.callbacks.early_stopping import EarlyStopping
 import mlflow
 from mlflow import autolog
-from mlflow.models import update_model_requirements
+from mlflow.models import infer_signature
+from mlflow.pytorch import log_model as _log_pytorch_model
 
 from torch_bsf import BezierSimplexDataModule, __version__ as _torch_bsf_version
 from torch_bsf.bezier_simplex import load, randn
@@ -48,10 +49,15 @@ if args.degree is not None and args.init is not None:
 
 meshgrid: Path = args.meshgrid or args.params
 
+# Start a run before training so autolog can log to it and won't end it.
+# (autolog with manage_run=True only ends runs it created itself.)
+if args.loglevel > 0 and mlflow.active_run() is None:
+    mlflow.start_run()
+
 autolog(
-    log_input_examples=(args.loglevel >= 2),
-    log_model_signatures=(args.loglevel >= 2),
-    log_models=(args.loglevel >= 2),
+    log_input_examples=False,
+    log_model_signatures=False,
+    log_models=False,
     disable=(args.loglevel <= 0),
     exclusive=False,
     disable_for_unsupported_versions=False,
@@ -96,20 +102,26 @@ trainer = Trainer(
 )
 trainer.fit(bs, dm)
 
+# Compute meshgrid predictions (also used for model signature inference below)
+ts = dm.load_data(meshgrid)
+xs = bs.forward(ts)
+
 if args.loglevel >= 2:
-    run = mlflow.last_active_run()
-    if run is not None:
-        update_model_requirements(
-            f"runs:/{run.info.run_id}/model",
-            "add",
-            [f"pytorch-bsf=={_torch_bsf_version}"],
+    log_kwargs: dict = {
+        "artifact_path": "model",
+        "extra_pip_requirements": [f"pytorch-bsf=={_torch_bsf_version}"],
+    }
+    try:
+        log_kwargs["signature"] = infer_signature(
+            ts.detach().cpu().numpy(), xs.detach().cpu().numpy()
         )
+    except Exception:
+        pass
+    _log_pytorch_model(bs, **log_kwargs)
 
 # search for filename
 fn = f"{args.params.name},{args.values.name},meshgrid,d_{args.degree},r_{args.split_ratio}.csv"
 
-ts = dm.load_data(meshgrid)
-xs = bs.forward(ts)
 xs = dm.inverse_transform(xs)
 
 # save meshgrid

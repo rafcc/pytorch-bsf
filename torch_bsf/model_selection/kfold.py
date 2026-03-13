@@ -5,7 +5,7 @@ import numpy as np
 from lightning.pytorch.callbacks.early_stopping import EarlyStopping
 import mlflow
 from mlflow import autolog
-from mlflow.models import update_model_requirements
+from mlflow.pytorch import log_model as _log_pytorch_model
 from pl_crossvalidate import KFoldTrainer
 
 from torch_bsf import BezierSimplexDataModule, __version__ as _torch_bsf_version
@@ -52,10 +52,13 @@ if args.degree is not None and args.init is not None:
 
 meshgrid: Path = args.meshgrid or args.params
 
+if args.loglevel > 0 and mlflow.active_run() is None:
+    mlflow.start_run()
+
 autolog(
-    log_input_examples=(args.loglevel >= 2),
-    log_model_signatures=(args.loglevel >= 2),
-    log_models=(args.loglevel >= 2),
+    log_input_examples=False,
+    log_model_signatures=False,
+    log_models=False,
     disable=(args.loglevel <= 0),
     exclusive=False,
     disable_for_unsupported_versions=False,
@@ -107,13 +110,11 @@ cross_val_stats: list[list[dict[str, float]]] = trainer.cross_validate(bs, datam
 print(f"{cross_val_stats=}")
 
 if args.loglevel >= 2:
-    run = mlflow.last_active_run()
-    if run is not None:
-        update_model_requirements(
-            f"runs:/{run.info.run_id}/model",
-            "add",
-            [f"pytorch-bsf=={_torch_bsf_version}"],
-        )
+    _log_pytorch_model(
+        bs,
+        artifact_path="model",
+        extra_pip_requirements=[f"pytorch-bsf=={_torch_bsf_version}"],
+    )
 
 # Additionally, we can construct an ensemble from the K trained models
 ensemble_model = trainer.create_ensemble(bs)
