@@ -45,4 +45,5 @@ jobs:
         sphinx-build -b doctest docs docs/_build/doctest
     - name: Test CLI samples
       run: |
+        conda env remove -n mlflow-7adcdb5b35126cd9b819838b486abc2e93a6b213-e0f49fe272a9197c2ea972a5be6f1ed4c15eecf2 -y
         bash examples/quickstart/run.sh
