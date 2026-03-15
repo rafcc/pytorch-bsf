@@ -1,5 +1,13 @@
 # Changelog
 
+## [0.13.4](https://github.com/NaokiHamada/pytorch-bsf/compare/v0.13.3...v0.13.4) (2026-03-15)
+
+
+### Documentation
+
+* Fix sphinx multiversion compatibility issue ([#225](https://github.com/NaokiHamada/pytorch-bsf/issues/225)) ([dc513af](https://github.com/NaokiHamada/pytorch-bsf/commit/dc513af4b74ff0643bfb06def5fe4ee144c69b5c))
+* Transfer owner ([#219](https://github.com/NaokiHamada/pytorch-bsf/issues/219)) ([2ac8016](https://github.com/NaokiHamada/pytorch-bsf/commit/2ac8016b3e15ac9c646b4aaed747f52260e8f73d))
+
 ## [0.13.3](https://github.com/NaokiHamada/pytorch-bsf/compare/v0.13.2...v0.13.3) (2026-02-21)
 
 
