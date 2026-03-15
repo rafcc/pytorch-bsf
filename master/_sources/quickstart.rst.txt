@@ -18,7 +18,7 @@ Installation
 ^^^^^^^^^^^^
 
 First, install `Miniconda`_.
-Then, install ``mlflow`` conda package from ``conda-forge`` channel:
+Then, install ``mlflow`` package from ``conda-forge`` channel:
 
 .. code-block:: bash
 
@@ -30,124 +30,114 @@ Then, install ``mlflow`` conda package from ``conda-forge`` channel:
 Training
 ^^^^^^^^
 
-Let's prepare parameters and values for training:
+Let's prepare sample parameters and values files for training:
 
-.. code-block:: bash
-
-   cat << EOS > params.csv
-   1.00, 0.00
-   0.75, 0.25
-   0.50, 0.50
-   0.25, 0.75
-   0.00, 1.00
-   EOS
-   cat <<EOS > values.csv
-   0.00, 1.00
-   3.00, 2.00
-   4.00, 5.00
-   7.00, 6.00
-   8.00, 9.00
-   EOS
+.. literalinclude:: ../examples/quickstart/run.sh
+   :language: bash
+   :start-after: [TAG:CreateFiles]
+   :end-before: [TAG:CreateFiles_End]
 
 .. warning::
-   The parameters file and values file must have the same number of lines.
+   The parameters file and the values file must have the same number of lines.
 
-Now, you can fit a Bezier simplex to those parameters and values with the latest version of PyTorch-BSF:
+Now, you can fit a Bezier simplex model using the latest version of PyTorch-BSF directly from its GitHub repository:
 
-.. code-block:: bash
+.. literalinclude:: ../examples/quickstart/run.sh
+   :language: bash
+   :start-after: [TAG:RunMLflowTraining]
+   :end-before: [TAG:RunMLflowTraining_End]
 
-   mlflow run https://github.com/rafcc/pytorch-bsf \
-   -P params=params.csv \
-   -P values=values.csv \
-   -P meshgrid=params.csv \
-   -P degree=3
-
-
-After the command finished, you will get a trained model in ``mlruns`` directory.
+After the command finishes, the trained model will be saved in ``mlruns/0`` directory.
+Note the **Run ID** automatically set to the command execution, as you will need it for prediction.
 
 
 Prediction
 ^^^^^^^^^^
 
-.. code-block:: bash
+To make predictions, MLflow may use ``virtualenv`` and ``pyenv`` to create an isolated environment for the model. Please ensure it's available in your system.
 
-   mlflow models predict \
-     --model-uri file://`pwd`/mlruns/0/${run_uuid}/artifacts/model \
-     --content-type csv \
-     --input-path params.csv \
-     --output-path test_values.csv
+First, find the **Run ID** (e.g., `47a7...`) from the previous training step.
+
+.. literalinclude:: ../examples/quickstart/run.sh
+   :language: bash
+   :start-after: [TAG:FetchLatestRunID]
+   :end-before: [TAG:FetchLatestRunID_End]
 
 
-You have results in ``test_values.csv``:
+Next, you can predict with the model and output the results to a specified file (in this example, `test_values.json`).
 
-.. code-block:: bash
+.. literalinclude:: ../examples/quickstart/run.sh
+   :language: bash
+   :start-after: [TAG:MakePrediction]
+   :end-before: [TAG:MakePrediction_End]
 
-   cat test_values.csv
-   [[0.00, 1.00], ...]
+See for details https://mlflow.org/docs/latest/api_reference/cli.html#mlflow-models-predict
 
 
 Serve prediction API
 ^^^^^^^^^^^^^^^^^^^^
 
-You can also serve a Web API for prediction:
+You can also serve a Web API for prediction.
 
-.. code-block:: bash
+First, find the Run ID (e.g., `a1b2c3...`) set to the model training.
 
-   mlflow models serve \
-     --model-uri {Full Path} \
-     --host localhost \
-     --port 5001
+.. literalinclude:: ../examples/quickstart/run.sh
+   :language: bash
+   :start-after: [TAG:FetchLatestRunID]
+   :end-before: [TAG:FetchLatestRunID_End]
 
 
-Request a prediction with HTTP POST method:
+Then, start a prediction server using the Run ID.
 
-.. code-block:: bash
+.. literalinclude:: ../examples/quickstart/run.sh
+   :language: bash
+   :start-after: [TAG:ServeAPI]
+   :end-before: [TAG:ServeAPI_End]
 
-   curl http://localhost:5001/invocations -H 'Content-Type: application/json' -d '{
-     "columns": ["t1", "t2"],
-     "data": [
-        [0.2, 0.8],
-        [0.7, 0.3]
-     ]
-   }'
 
-See for details https://www.mlflow.org/docs/latest/models.html#deploy-mlflow-models
+Now, you can request a prediction with HTTP POST method:
+
+.. literalinclude:: ../examples/quickstart/run.sh
+   :language: bash
+   :start-after: [TAG:PredictWithHTTPPost]
+   :end-before: [TAG:PredictWithHTTPPost_End]
+
+
+See for details https://mlflow.org/docs/latest/genai/serving/
 
 
 Run as a Python package
 -----------------------
 
-Assume you have installed Python 3.8 or above.
+Assume you have installed Python 3.10 or above.
 Then, install the package:
 
 .. code-block:: bash
 
-  pip install pytorch-bsf
+   pip install pytorch-bsf
 
 Then, run `torch_bsf` as a module:
 
-.. code-block:: bash
-
-   python -m torch_bsf \
-     --model-uri file://`pwd`/mlruns/0/${run_uuid}/artifacts/model \
-     --content-type csv \
-     --input-path test_params.csv \
-     --output-path test_values.csv
+.. literalinclude:: ../examples/quickstart/run.sh
+   :language: bash
+   :start-after: [TAG:RunPackageTraining]
+   :end-before: [TAG:RunPackageTraining_End]
 
 
 Run as Python code
 ------------------
 
-Assume you have installed Python 3.8 or above.
+Assume you have installed Python 3.10 or above.
 Then, install the package:
 
 .. code-block:: bash
 
-  pip install pytorch-bsf
+   pip install pytorch-bsf
 
 Train a model by ``fit()``, and call the model to predict.
 
-.. code-block:: python
+.. testcode::
+   :pyversion: >= 3.10, < 3.14
 
    import torch
    import torch_bsf
@@ -177,4 +167,9 @@ Train a model by ``fit()``, and call the model to predict.
       [0.7, 0.3],
    ]
    x = bs(t)
-   print(f"{t} -> {x}")
+   print(x)
+
+.. testoutput::
+   :hide:
+
+   tensor([[...]], grad_fn=<AddBackward0>)
