@@ -1,7 +1,8 @@
 Advanced Topics
 ===============
 
-Advanced topics for more customized training.
+This section covers customization options beyond the basic ``fit()`` call: loading pre-computed control points as an initialization, pinning specific control points during training, and more.
+These features are useful when you have prior knowledge about the shape of the Bézier simplex or want to perform incremental refinement.
 
 
 Initial control points
