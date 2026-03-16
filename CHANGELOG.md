@@ -1,5 +1,17 @@
 # Changelog
 
+## [0.14.0](https://github.com/NaokiHamada/pytorch-bsf/compare/v0.13.4...v0.14.0) (2026-03-16)
+
+
+### Features
+
+* meshgrid parameter in entry points is now optional ([#226](https://github.com/NaokiHamada/pytorch-bsf/issues/226)) ([e82be30](https://github.com/NaokiHamada/pytorch-bsf/commit/e82be30c0d4a9e9392221ceac9cbf4450d0b6373))
+
+
+### Bug Fixes
+
+* update meshgrid argument validation to check for directory ([1a9e1ee](https://github.com/NaokiHamada/pytorch-bsf/commit/1a9e1ee94715f19c85362dc89c5abee57a747787))
+
 ## [0.13.4](https://github.com/NaokiHamada/pytorch-bsf/compare/v0.13.3...v0.13.4) (2026-03-15)
 
 
