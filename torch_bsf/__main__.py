@@ -44,7 +44,7 @@ if args.degree is None and args.init is None:
 if args.degree is not None and args.init is not None:
     raise ValueError("Either --degree or --init must be specified, not both")
 
-meshgrid: Path = args.params if (args.meshgrid is None or args.meshgrid == Path(".")) else args.meshgrid
+meshgrid: Path = args.params if (args.meshgrid is None or args.meshgrid.is_dir()) else args.meshgrid
 
 autolog(
     log_input_examples=(args.loglevel >= 2),
