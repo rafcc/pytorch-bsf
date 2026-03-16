@@ -108,10 +108,15 @@ See the :doc:`advanced` section for a code example.
 Can I verify whether my problem is weakly simplicial before fitting?
 --------------------------------------------------------------------
 
-Yes. A data-driven statistical test exists for this purpose (see [4] in the :doc:`whatis` references).
+For a broad and practically important class of problems, no verification is needed: it is known that **all unconstrained strongly convex optimization problems are weakly simplicial** [3].
+This covers, for example, elastic net regression and many other regularized empirical risk minimization problems.
+
+For problems outside this class, a data-driven statistical test exists (see [4] in the :doc:`whatis` references).
 The test checks whether the topology of the empirical Pareto set is consistent with a simplex structure.
 If the test rejects the simplicial hypothesis, a Bézier simplex model may not be appropriate, and you should consider a more general surrogate model.
 If the test does not reject, you have statistical evidence supporting the use of PyTorch-BSF.
+
+.. [3] Mizota, Y., Hamada, N., & Ichiki, S. (2021). *All unconstrained strongly convex problems are weakly simplicial.* arXiv:2106.12704. https://arxiv.org/abs/2106.12704
 
 
 What kinds of shapes can a Bézier simplex represent beyond Pareto fronts?
