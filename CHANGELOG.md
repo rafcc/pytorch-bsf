@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.14.1](https://github.com/NaokiHamada/pytorch-bsf/compare/v0.14.0...v0.14.1) (2026-03-16)
+
+
+### Dependencies
+
+* Python 3.14 ([#229](https://github.com/NaokiHamada/pytorch-bsf/issues/229)) ([b15dc5e](https://github.com/NaokiHamada/pytorch-bsf/commit/b15dc5e335b4e0ebb6b5652ba81b1c4ed97d06bf))
+
 ## [0.14.0](https://github.com/NaokiHamada/pytorch-bsf/compare/v0.13.4...v0.14.0) (2026-03-16)
 
 
