@@ -137,7 +137,7 @@ Then, install the package:
 Train a model by ``fit()``, and call the model to predict.
 
 .. testcode::
-   :pyversion: >= 3.10, < 3.14
+   :pyversion: >= 3.10, < 3.15
 
    import torch
    import torch_bsf
