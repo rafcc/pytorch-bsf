@@ -59,7 +59,6 @@ Run the following command:
 mlflow run https://github.com/NaokiHamada/pytorch-bsf \
   -P params=params.csv \
   -P values=values.csv \
-  -P meshgrid=params.csv \
   -P degree=3
 ```
 
@@ -73,6 +72,7 @@ which automatically sets up the environment and runs an experiment:
 | -------------------- | -------------------------------- | -------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
 | params               | path                             | required | The parameter data file, which contains input observations for training a Bezier simplex. The file must be of CSV (`.csv`) or TSV (`.tsv`). Each line in the file represents an input observation, corresponding to an output observation in the same line in the value data file.                                                                                                                                             |
 | values               | path                             | required | The value data file, which contains output observations for training a Bezier simplex. The file must be of CSV (`.csv`) or TSV (`.tsv`). Each line in the file represents an output observation, corresponding to an input observation in the same line in the parameter data file.                                                                                                                                           |
+| meshgrid             | path                             | `None`   | The meshgrid data file used for prediction after training. The file format is the same as `params`. If omitted, `params` is used as the meshgrid.                                                                                                                                                                                                                                                                             |
 | init                 | path                             | `None`   | Load initial control points from a file. The file must be of pickled PyTorch (`.pt`), CSV (`.csv`), TSV (`.tsv`), JSON (`.json`), or YAML (`.yml` or `.yaml`). Either this option or `--degree` must be specified, but not both.                                                                                                                                                                                               |
 | degree               | int $(x \ge 1)$                  | `None`   | Generate initial control points at random with specified degree. Either this option or `--init` must be specified, but not both.                                                                                                                                                                                                                                                                                               |
 | fix                  | list[list[int]]                  | `None`   | Indices of control points to exclude from training. By default, all control points are trained.                                                                                                                                                                                                                                                                                                                                |
@@ -106,7 +106,6 @@ Execute the `torch_bsf` module:
 python -m torch_bsf \
   --params=params.csv \
   --values=values.csv \
-  --meshgrid=params.csv \
   --degree=3
 ```
 

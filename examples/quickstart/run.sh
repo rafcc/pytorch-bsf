@@ -52,7 +52,6 @@ echo "Train a Bezier Simplex Model with a package running."
 python -m torch_bsf \
   --params params.csv \
   --values values.csv \
-  --meshgrid params.csv \
   --degree 3
 # [TAG:RunPackageTraining_End]
 
@@ -61,7 +60,6 @@ echo "Train a Bezier Simplex Model with MLflow."
 mlflow run https://github.com/NaokiHamada/pytorch-bsf \
   -P params=params.csv \
   -P values=values.csv \
-  -P meshgrid=params.csv \
   -P degree=3
 # [TAG:RunMLflowTraining_End]
 
