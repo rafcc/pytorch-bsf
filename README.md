@@ -1,3 +1,3 @@
 GitHub Pages of [NaokiHamada/pytorch-bsf](https://github.com/NaokiHamada/pytorch-bsf)
 ===
-Sphinx html documentation of [b15dc5e335b4e0ebb6b5652ba81b1c4ed97d06bf](https://github.com/NaokiHamada/pytorch-bsf/tree/b15dc5e335b4e0ebb6b5652ba81b1c4ed97d06bf)
+Sphinx html documentation of [493821a87cf9dfdde5bda3257c5a87a445a21005](https://github.com/NaokiHamada/pytorch-bsf/tree/493821a87cf9dfdde5bda3257c5a87a445a21005)
