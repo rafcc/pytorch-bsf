@@ -1,9 +1,10 @@
 import csv
 import json
+from ast import literal_eval
 from functools import lru_cache
 from math import factorial
 from pathlib import Path
-from typing import cast, Any, Iterable, Literal
+from typing import Any, Iterable, Literal, cast
 
 import lightning.pytorch as L
 import numpy as np
@@ -374,9 +375,9 @@ def zeros(n_params: int, n_values: int, degree: int) -> BezierSimplex:
     >>> print(bs)
     BezierSimplex(
       (control_points): ControlPoints(
-          ([0, 2]): Parameter containing: [torch.FloatTensor of size 3]
-          ([1, 1]): Parameter containing: [torch.FloatTensor of size 3]
-          ([2, 0]): Parameter containing: [torch.FloatTensor of size 3]
+          ((0, 2)): Parameter containing: [torch.FloatTensor of size 3]
+          ((1, 1)): Parameter containing: [torch.FloatTensor of size 3]
+          ((2, 0)): Parameter containing: [torch.FloatTensor of size 3]
       )
     )
     >>> print(bs(torch.tensor([[0.2, 0.8]])))
@@ -426,9 +427,9 @@ def rand(n_params: int, n_values: int, degree: int) -> BezierSimplex:
     >>> print(bs)
     BezierSimplex(
       (control_points): ControlPoints(
-          ([0, 2]): Parameter containing: [torch.FloatTensor of size 3]
-          ([1, 1]): Parameter containing: [torch.FloatTensor of size 3]
-          ([2, 0]): Parameter containing: [torch.FloatTensor of size 3]
+          ((0, 2)): Parameter containing: [torch.FloatTensor of size 3]
+          ((1, 1)): Parameter containing: [torch.FloatTensor of size 3]
+          ((2, 0)): Parameter containing: [torch.FloatTensor of size 3]
       )
     )
     >>> print(bs(torch.tensor([[0.2, 0.8]])))  # doctest: +ELLIPSIS
@@ -478,9 +479,9 @@ def randn(n_params: int, n_values: int, degree: int) -> BezierSimplex:
     >>> print(bs)
     BezierSimplex(
       (control_points): ControlPoints(
-          ([0, 2]): Parameter containing: [torch.FloatTensor of size 3]
-          ([1, 1]): Parameter containing: [torch.FloatTensor of size 3]
-          ([2, 0]): Parameter containing: [torch.FloatTensor of size 3]
+          ((0, 2)): Parameter containing: [torch.FloatTensor of size 3]
+          ((1, 1)): Parameter containing: [torch.FloatTensor of size 3]
+          ((2, 0)): Parameter containing: [torch.FloatTensor of size 3]
       )
     )
     >>> print(bs(torch.tensor([[0.2, 0.8]])))  # doctest: +ELLIPSIS
@@ -545,7 +546,8 @@ def save(path: str | Path, data: BezierSimplex) -> None:
         json.dump(dic, open(path, "w", encoding="utf-8"))
 
     elif path.suffix in (".yml", ".yaml"):
-        yaml.dump(data.control_points, open(path, "w", encoding="utf-8"))
+        dic = {to_parameterdict_key(index): value.tolist() for index, value in data.control_points.items()}
+        yaml.dump(dic, open(path, "w", encoding="utf-8"))
 
     else:
         raise ValueError(f"Unknown file type: {path}")
@@ -636,10 +638,10 @@ def validate_control_points(data: dict[str, list[float]]):
     """
     validate(instance=data, schema=CONTROLPOINTS_JSONSCHEMA)
     index, value = next(iter(data.items()))
-    n_params = len(eval(index))
+    n_params = len(literal_eval(index))
     n_values = len(value)
     for index, value in data.items():
-        if len(eval(index)) != n_params:
+        if len(literal_eval(index)) != n_params:
             raise ValidationError(f"Dimension mismatch: {index}")
         if len(value) != n_values:
             raise ValidationError(f"Dimension mismatch: {value}")
@@ -671,9 +673,9 @@ def load(path: str | Path) -> BezierSimplex:
     >>> print(bs)
     BezierSimplex(
       (control_points): ControlPoints(
-          ([0, 2]): Parameter containing: [torch.FloatTensor of size 3]
-          ([1, 1]): Parameter containing: [torch.FloatTensor of size 3]
-          ([2, 0]): Parameter containing: [torch.FloatTensor of size 3]
+          ((0, 2)): Parameter containing: [torch.FloatTensor of size 3]
+          ((1, 1)): Parameter containing: [torch.FloatTensor of size 3]
+          ((2, 0)): Parameter containing: [torch.FloatTensor of size 3]
       )
     )
     >>> print(bs(torch.tensor([[0.2, 0.8]])))
@@ -689,7 +691,7 @@ def load(path: str | Path) -> BezierSimplex:
 
     elif path.suffix == ".csv":
         cpdata = {
-            row[0]: [float(v) for v in row[1:]]
+            to_parameterdict_key(row[0]): [float(v) for v in row[1:]]
             for row in csv.reader(open(path, encoding="utf-8"))
         }
         validate_control_points(cpdata)
@@ -697,23 +699,25 @@ def load(path: str | Path) -> BezierSimplex:
 
     elif path.suffix == ".tsv":
         cpdata = {
-            row[0]: [float(v) for v in row[1:]]
+            to_parameterdict_key(row[0]): [float(v) for v in row[1:]]
             for row in csv.reader(open(path, encoding="utf-8"), delimiter="\t")
         }
         validate_control_points(cpdata)
         return BezierSimplex(cpdata)
 
     elif path.suffix == ".json":
-        cpdata = json.load(open(path, encoding="utf-8"))
-        for index, value in cpdata.items():
-            cpdata[index] = [float(v) for v in value]
+        cpdata = {
+            to_parameterdict_key(index): [float(v) for v in value]
+            for index, value in json.load(open(path, encoding="utf-8")).items()
+        }
         validate_control_points(cpdata)
         return BezierSimplex(cpdata)
 
     elif path.suffix in (".yml", ".yaml"):
-        cpdata = yaml.safe_load(open(path, encoding="utf-8"))
-        for index, value in cpdata.items():
-            cpdata[index] = [float(v) for v in value]
+        cpdata = {
+            to_parameterdict_key(index): [float(v) for v in value]
+            for index, value in yaml.safe_load(open(path, encoding="utf-8")).items()
+        }
         validate_control_points(cpdata)
         return BezierSimplex(cpdata)
 

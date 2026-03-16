@@ -1,4 +1,5 @@
-from typing import cast, Iterable, Sequence, TypeAlias
+from ast import literal_eval
+from typing import Iterable, Sequence, TypeAlias, cast
 
 import torch
 import torch.nn as nn
@@ -66,13 +67,16 @@ def to_parameterdict_key(index: Index) -> str:
         str: A key of a ParameterDict.
     """
     if isinstance(index, str):
-        # If index is a string, it is already a key of a ParameterDict.
-        return index.replace("(", "[").replace(")", "]").replace(",]", "]")
+        obj = literal_eval(index)
+        if isinstance(obj, int):
+            return f"({obj},)"  # str(tuple(obj)) will be error because obj is not iterable.
+        # remove non-required trailing comma (one in 2 or more sized tuple) and square brackets.
+        return str(tuple(obj))
     if hasattr(index, "tolist"):
         # If index is a tensor or array, convert it to a string.
-        return str(index.tolist())
+        return str(tuple(index.tolist()))
     # If index is a tuple, convert it to a string.
-    return str(list(index))
+    return str(tuple(index))
 
 
 def to_parameterdict_value(value: Value) -> torch.Tensor:
@@ -162,7 +166,7 @@ class ControlPoints(nn.ParameterDict):
                 next(iter(data.items())),
             )
             if isinstance(index, str):
-                index = cast(list[int], eval(index))
+                index = cast(list[int], literal_eval(index))
             self.degree = sum(index)
             self.n_params = len(index)
             self.n_values = len(value)
