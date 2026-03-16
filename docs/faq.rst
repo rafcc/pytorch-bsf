@@ -4,16 +4,20 @@ Frequently asked questions
 There are already many tools for hyperparameter search in ML. Why propose yet another one?
 -------------------------------------------------------------------------------------------
 
-PyTorch-BSF differs from other hyperparameter search tools in two key ways.
+The key difference is that PyTorch-BSF **exploits problem structure** rather than treating the objective as a black box.
 
-First, the domain of a Bézier simplex is a bounded simplex, whereas other tools assume an unbounded Euclidean space.
-This allows the Bézier simplex to represent a compact subspace of the ambient space.
+**Dramatically fewer evaluations.**
+Black-box methods such as Bayesian optimization make no assumptions about the objective and must explore the search space from scratch.
+Approximating a Pareto front to reasonable accuracy can require hundreds of evaluations with such methods.
+Because PyTorch-BSF assumes the problem is *weakly simplicial* — meaning the Pareto set has a simplex structure — it can recover the entire Pareto front from as few as 50 points, often with higher accuracy.
 
-Second, the Bézier simplex only optimizes coefficients in the objective function — a significant constraint compared to general-purpose tools.
-However, this limitation comes with a major advantage in speed.
-Unlike black-box optimization algorithms, which treat the objective function as opaque, the Bézier simplex exploits its structure directly.
-As a result, fitting a Bézier simplex requires far fewer evaluations to recover the entire Pareto set and front.
-This trade-off between generality and efficiency makes the approach well-suited for hyperparameter search, where objective coefficients are a surprisingly common type of tunable parameter.
+**Dimension-free convergence in the manifold setting.**
+When the data lie along a low-dimensional simplex embedded in a high-dimensional ambient space (analogous to manifold learning), the asymptotic risk of Bézier simplex fitting depends only on the **intrinsic dimension** of the simplex, not on the ambient space dimension.
+This gives extremely fast statistical convergence in settings where black-box methods would suffer from the curse of dimensionality.
+
+**The weakly simplicial assumption is broadly applicable.**
+While the assumption may sound restrictive, it in fact covers a wide class of practical problems — including all unconstrained strongly convex problems such as elastic net regression.
+If you are unsure whether your problem qualifies, it can be verified with a statistical test; see `Can I verify whether my problem is weakly simplicial before fitting?`_ below.
 
 
 Are approximation results always reliable?
