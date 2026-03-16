@@ -45,7 +45,7 @@
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="quickstart.html">Quickstart</a></li>
 <li class="toctree-l1"><a class="reference internal" href="advanced.html">Advanced Topics</a></li>
-<li class="toctree-l1"><a class="reference internal" href="whatis.html">What is Bezier simplex fitting?</a></li>
+<li class="toctree-l1"><a class="reference internal" href="whatis.html">What is Bézier simplex fitting?</a></li>
 <li class="toctree-l1"><a class="reference internal" href="faq.html">Frequently asked questions</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">API reference</span></p>
@@ -79,8 +79,11 @@
              
   <section id="welcome-to-pytorch-bsf">
 <h1>Welcome to PyTorch-BSF!<a class="headerlink" href="#welcome-to-pytorch-bsf" title="Link to this heading"></a></h1>
-<p>PyTorch-BSF is a PyTorch implementation of Bezier simplex fitting.
-The project is on <a class="reference external" href="https://github.com/NaokiHamada/pytorch-bsf">GitHub</a>.</p>
+<p><strong>Fit smooth, high-dimensional manifolds to your data — from a single GPU to a multi-node cluster.</strong></p>
+<p>PyTorch-BSF brings <a class="reference external" href="whatis.html">Bézier simplex fitting</a> to PyTorch.
+A Bézier simplex is a high-dimensional generalization of the Bézier curve: it can model an arbitrarily complex point cloud as a smooth parametric hyper-surface in any number of dimensions.
+This makes it a natural tool for representing <strong>Pareto fronts</strong> in multi-objective optimization, interpolating scattered observations, and fitting geometric structures in high-dimensional spaces.</p>
+<p>The project is on <a class="reference external" href="https://github.com/NaokiHamada/pytorch-bsf">GitHub</a>.</p>
 <a class="reference internal image-reference" href="_images/bezier-simplex.png"><img alt="A Bezier simplex and its control points" src="_images/bezier-simplex.png" style="width: 49%;" />
 </a>
 <a class="reference internal image-reference" href="_images/bezier-simplex-fitting.png"><img alt="A Bezier simplex that fits to a dataset" src="_images/bezier-simplex-fitting.png" style="width: 49%;" />
@@ -99,19 +102,27 @@ The project is on <a class="reference external" href="https://github.com/NaokiHa
 <li class="toctree-l2"><a class="reference internal" href="advanced.html#partial-training">Partial training</a></li>
 </ul>
 </li>
-<li class="toctree-l1"><a class="reference internal" href="whatis.html">What is Bezier simplex fitting?</a><ul>
+<li class="toctree-l1"><a class="reference internal" href="whatis.html">What is Bézier simplex fitting?</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="whatis.html#bezier-simplex">Bezier simplex</a></li>
 <li class="toctree-l2"><a class="reference internal" href="whatis.html#fitting-a-bezier-simplex-to-a-dataset">Fitting a Bezier simplex to a dataset</a></li>
-<li class="toctree-l2"><a class="reference internal" href="whatis.html#why-does-bezier-simplex-fitting-matter">Why does Bezier simplex fitting matter?</a></li>
+<li class="toctree-l2"><a class="reference internal" href="whatis.html#why-does-bezier-simplex-fitting-matter">Why does Bézier simplex fitting matter?</a></li>
 <li class="toctree-l2"><a class="reference internal" href="whatis.html#application-1-elastic-net">Application 1: Elastic net</a></li>
 <li class="toctree-l2"><a class="reference internal" href="whatis.html#application-2-deep-neural-networks">Application 2: Deep neural networks</a></li>
 <li class="toctree-l2"><a class="reference internal" href="whatis.html#references">References</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="faq.html">Frequently asked questions</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="faq.html#there-are-too-many-tools-for-hyperparameter-search-of-ml-why-do-you-propose-yet-another-one">There are too many tools for hyperparameter search of ML. Why do you propose yet another one?</a></li>
+<li class="toctree-l2"><a class="reference internal" href="faq.html#there-are-already-many-tools-for-hyperparameter-search-in-ml-why-propose-yet-another-one">There are already many tools for hyperparameter search in ML. Why propose yet another one?</a></li>
 <li class="toctree-l2"><a class="reference internal" href="faq.html#are-approximation-results-always-reliable">Are approximation results always reliable?</a></li>
 <li class="toctree-l2"><a class="reference internal" href="faq.html#are-there-any-applications-other-than-multiobjective-optimization">Are there any applications other than multiobjective optimization?</a></li>
+<li class="toctree-l2"><a class="reference internal" href="faq.html#how-do-i-choose-the-degree-of-the-bezier-simplex">How do I choose the degree of the Bézier simplex?</a></li>
+<li class="toctree-l2"><a class="reference internal" href="faq.html#how-many-training-samples-do-i-need">How many training samples do I need?</a></li>
+<li class="toctree-l2"><a class="reference internal" href="faq.html#what-if-my-input-parameters-do-not-lie-on-a-simplex">What if my input parameters do not lie on a simplex?</a></li>
+<li class="toctree-l2"><a class="reference internal" href="faq.html#can-i-train-on-a-gpu">Can I train on a GPU?</a></li>
+<li class="toctree-l2"><a class="reference internal" href="faq.html#what-should-i-do-if-fitting-does-not-converge-or-the-accuracy-is-poor">What should I do if fitting does not converge or the accuracy is poor?</a></li>
+<li class="toctree-l2"><a class="reference internal" href="faq.html#when-should-i-use-partial-training-the-fix-argument">When should I use partial training (the <code class="docutils literal notranslate"><span class="pre">fix</span></code> argument)?</a></li>
+<li class="toctree-l2"><a class="reference internal" href="faq.html#can-i-verify-whether-my-problem-is-weakly-simplicial-before-fitting">Can I verify whether my problem is weakly simplicial before fitting?</a></li>
+<li class="toctree-l2"><a class="reference internal" href="faq.html#what-kinds-of-shapes-can-a-bezier-simplex-represent-beyond-pareto-fronts">What kinds of shapes can a Bézier simplex represent beyond Pareto fronts?</a></li>
 </ul>
 </li>
 </ul>
@@ -183,6 +194,7 @@ The project is on <a class="reference external" href="https://github.com/NaokiHa
             <dd><a href="../v0.13.2/index.html">v0.13.2</a></dd>
             <dd><a href="../v0.13.3/index.html">v0.13.3</a></dd>
             <dd><a href="../v0.13.4/index.html">v0.13.4</a></dd>
+            <dd><a href="../v0.14.0/index.html">v0.14.0</a></dd>
             <dd><a href="../v0.2.0/index.html">v0.2.0</a></dd>
             <dd><a href="../v0.3.0/index.html">v0.3.0</a></dd>
             <dd><a href="../v0.3.1/index.html">v0.3.1</a></dd>

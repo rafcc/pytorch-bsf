@@ -1,9 +1,12 @@
-What is Bezier simplex fitting?
-===============================
+What is Bézier simplex fitting?
+================================
 
-The Bezier simplex is a high-dimensional generalization of the Bezier curve and Bezier triangle with which we are familiar in computer graphics and computer-aided design.
-As such 1D and 2D instances of Bezier simplices have a great success in those fields, Bezier simplices of general dimension have excellent flexibility to represent various shapes in arbitrary dimensions.
-This page introduces the basics of Bezier simplices and their fitting algorithm, along with illustrative applications.
+You are probably familiar with Bézier curves (1-D) and Bézier triangles (2-D) from computer graphics and CAD software.
+A **Bézier simplex** is their natural generalization to any number of dimensions: the same elegant polynomial construction, extended to an :math:`(M-1)`-dimensional surface defined over a standard simplex.
+
+Just as a Bézier curve smoothly interpolates or approximates a 1-D point cloud using a small set of *control points*, a Bézier simplex can approximate a high-dimensional point cloud with excellent flexibility and mathematical guarantees.
+
+This page introduces the formal definition of Bézier simplices, the least-squares fitting algorithm used by PyTorch-BSF, and motivating real-world applications.
 
 
 Bezier simplex
@@ -46,12 +49,14 @@ PyTorch-BSF provides an algorithm for solving this optimization problem with the
    :alt: A Bezier simplex that fits to a dataset
 
 
-Why does Bezier simplex fitting matter?
----------------------------------------
-The Bezier simplex can approximate the solution set of "good" multiobjective optimization problems.
-More precisely, for the weighted sum scalarization problem of any multiobjective strongly convex problem, the map from a simplex of weight vectors to the solution set of weighted sum problems can be approximated by a Bezier simplex.
-If we find few solutions to such a problem, the entire solution set can be approximated by Bezier simplex fitting.
-An important application is hyperparameter search of the elastic net.
+Why does Bézier simplex fitting matter?
+----------------------------------------
+
+In multi-objective optimization the **Pareto front** — the set of all trade-off-optimal solutions — is rarely a single point; it is a surface.
+For a broad class of problems (see *weakly simplicial problems* below), that surface is well-approximated by a Bézier simplex.
+
+This has a powerful practical consequence: instead of solving the optimization problem exhaustively for every possible weight vector, you can solve it for a small number of carefully chosen weights, fit a Bézier simplex to those solutions, and then *read off* the entire Pareto front by evaluating the fitted surface.
+A canonical application is hyperparameter search for the elastic net, where the two regularization coefficients :math:`\lambda` and :math:`\alpha` span exactly such a simplex.
 
 
 Approximation theorem
@@ -73,8 +78,11 @@ See [3].
 Application 1: Elastic net
 --------------------------
 
-Hyper-parameter search.
-See [3] for technical details.
+The elastic net objective combines L1 and L2 regularization with two coefficients, :math:`\lambda` (overall strength) and :math:`\alpha` (L1/L2 balance).
+Together they define a point on a 2-simplex, making the elastic net a natural fit for Bézier simplex methods.
+
+Rather than running a grid search over all :math:`(\lambda, \alpha)` combinations, you can solve the elastic net for a small set of simplex-structured weight vectors, fit a Bézier simplex to the resulting (solution, loss) pairs, and evaluate the surface densely at negligible cost.
+See [3] for the theoretical guarantees.
 
 
 Strongly convex problems
@@ -99,9 +107,13 @@ See [3] for technical details.
 
 
 Application 2: Deep neural networks
------------------------------------
+------------------------------------
 
-The loss function for the generator is
+Training a GAN involves balancing multiple competing losses.
+For consistency-regularized GANs (bCR / zCR), the generator and discriminator objectives combine several loss terms whose relative weights form a simplex structure.
+Fitting a Bézier simplex to solutions sampled across this simplex reveals the full trade-off surface without re-training from scratch for each configuration.
+
+Concretely, the discriminator and generator losses are defined as
 
 .. math::
 
@@ -127,8 +139,9 @@ The loss function for the generator is
 Statistical test for weakly simpliciality
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-When problem class is unknown.
-See [4] for technical details.
+When the problem class is not known in advance, it is not clear whether the Pareto set admits a simplex structure.
+A data-driven statistical test [4] can determine whether this assumption is warranted before committing to a Bézier simplex model.
+See [4] for the methodology and test statistics.
 
 
 References
