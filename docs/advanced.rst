@@ -1,7 +1,8 @@
 Advanced Topics
 ===============
 
-Advanced topics for more customized training.
+This section covers customization options beyond the basic ``fit()`` call: loading pre-computed control points as an initialization, pinning specific control points during training, and more.
+These features are useful when you have prior knowledge about the shape of the Bézier simplex or want to perform incremental refinement.
 
 
 Initial control points
@@ -69,7 +70,7 @@ Partial training
 Function ``fit()`` provides some arguments for partial training, i.e., train some of control points while the others are fixed.
 
 .. testcode::
-   :pyversion: >= 3.10, < 3.14
+   :pyversion: >= 3.10, < 3.15
 
    import torch
    import torch_bsf

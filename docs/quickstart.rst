@@ -1,7 +1,8 @@
 Quickstart
 ==========
 
-There are several ways to use PyTorch-BSF.
+PyTorch-BSF can be used in three ways depending on your workflow: as a zero-install **MLflow project** (great for one-off experiments), as a **CLI module** (scriptable, no Python required), or as a **Python library** (for full programmatic control).
+Pick the option that best fits your setup.
 
 
 Run as an MLflow project
@@ -137,7 +138,7 @@ Then, install the package:
 Train a model by ``fit()``, and call the model to predict.
 
 .. testcode::
-   :pyversion: >= 3.10, < 3.14
+   :pyversion: >= 3.10, < 3.15
 
    import torch
    import torch_bsf

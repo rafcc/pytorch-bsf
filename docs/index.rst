@@ -6,8 +6,15 @@
 Welcome to PyTorch-BSF!
 =======================
 
-PyTorch-BSF is a PyTorch implementation of Bezier simplex fitting.
+**Fit smooth, high-dimensional manifolds to your data — from a single GPU to a multi-node cluster.**
+
+PyTorch-BSF brings `Bézier simplex fitting`_ to PyTorch.
+A Bézier simplex is a high-dimensional generalization of the Bézier curve: it can model an arbitrarily complex point cloud as a smooth parametric hyper-surface in any number of dimensions.
+This makes it a natural tool for representing **Pareto fronts** in multi-objective optimization, interpolating scattered observations, and fitting geometric structures in high-dimensional spaces.
+
 The project is on `GitHub`_.
+
+.. _Bézier simplex fitting: whatis.html
 
 .. image:: _static/bezier-simplex.png
    :width: 49%
