@@ -4,5 +4,5 @@
 
 from torch_bsf.bezier_simplex import BezierSimplex, BezierSimplexDataModule, fit
 
-__version__ = "0.14.0"
+__version__ = "0.14.1"
 __all__ = ["BezierSimplex", "BezierSimplexDataModule", "fit"]
