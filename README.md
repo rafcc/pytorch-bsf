@@ -7,12 +7,16 @@
 [![GHPages](https://github.com/NaokiHamada/pytorch-bsf/actions/workflows/sphinx-pages.yml/badge.svg)](https://github.com/NaokiHamada/pytorch-bsf/actions/workflows/sphinx-pages.yml)
 [![PyPI Downloads](https://static.pepy.tech/badge/pytorch-bsf)](https://pepy.tech/projects/pytorch-bsf)
 
-A PyTorch implementation of Bezier simplex fitting.
+**Fit smooth, high-dimensional manifolds to your data — from a single GPU to a multi-node cluster.**
 
-The Bezier simplex is a high-dimensional generalization of the Bezier curve.
-It enables us to model a complex-shaped point cloud as a parametric hyper-surface in high-dimensional spaces.
-This package provides an algorithm to fit a Bezier simplex to given data points.
-To process terabyte-scale data, this package supports distributed training, realtime progress reporting, and checkpointing on top of [PyTorch Lightning](https://www.pytorchlightning.ai/) and [MLflow](https://mlflow.org/).
+`pytorch-bsf` brings Bézier simplex fitting to PyTorch. A Bézier simplex is a high-dimensional generalization of the Bézier curve: where a curve models a 1-D path, a Bézier simplex can model an arbitrarily complex point cloud as a smooth parametric hyper-surface in any number of dimensions. This makes it a natural tool for representing **Pareto fronts** in multi-objective optimization, interpolating scattered observations, and fitting geometric structures in high-dimensional spaces.
+
+Key features:
+- **Simple API** — train a model in one line with `torch_bsf.fit()`, then call it like any PyTorch module.
+- **Production-ready scale** — built on [PyTorch Lightning](https://www.pytorchlightning.ai/) for distributed training across GPUs and nodes, with real-time progress reporting and automatic checkpointing.
+- **MLflow integration** — experiments, metrics, and trained models are logged out of the box via [MLflow](https://mlflow.org/).
+- **Flexible I/O** — load and save control points in `.pt`, `.csv`, `.tsv`, `.json`, or `.yaml` formats.
+- **Batteries included** — CLI entry points, k-fold cross-validation, and elastic net grid search are ready to use without writing any code.
 
 <img src="https://NaokiHamada.github.io/pytorch-bsf/master/_images/bezier-simplex.png" width="49%" alt="A Bezier simplex and its control points"><img src="https://NaokiHamada.github.io/pytorch-bsf/master/_images/bezier-simplex-fitting.png" width="49%" alt="A Bezier simplex that fits to a dataset">
 
