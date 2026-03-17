@@ -709,7 +709,9 @@ def load(
 
         # PyTorch 2.6 defaults to True, but our models contain Lightning's AttributeDict
         # which fails under weights_only=True due to PyTorch's SETITEM restrictions.
-        # Therefore, we default to False to maintain usability.
+        # Therefore, we currently default to False to maintain usability.
+        # The safe_globals implementation below is retained as a forward-compatible
+        # foundation for when upstream support improves.
         if pt_weights_only is None:
             pt_weights_only = False
 
