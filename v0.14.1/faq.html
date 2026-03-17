@@ -1,0 +1,286 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="./">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Frequently asked questions &mdash; PyTorch-BSF 0.14.0 documentation</title>
+      <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=b86133f3" />
+      <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=9edc463e" />
+
+  
+      <script src="_static/jquery.js?v=5d32c60e"></script>
+      <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="_static/documentation_options.js?v=9e420a66"></script>
+      <script src="_static/doctools.js?v=9bcbadda"></script>
+      <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+      <script async="async" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <script src="_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="torch_bsf" href="modules.html" />
+    <link rel="prev" title="What is Bézier simplex fitting?" href="whatis.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="index.html" class="icon icon-home">
+            PyTorch-BSF
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">User guide</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="quickstart.html">Quickstart</a></li>
+<li class="toctree-l1"><a class="reference internal" href="advanced.html">Advanced Topics</a></li>
+<li class="toctree-l1"><a class="reference internal" href="whatis.html">What is Bézier simplex fitting?</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Frequently asked questions</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#there-are-already-many-tools-for-hyperparameter-search-in-ml-why-propose-yet-another-one">There are already many tools for hyperparameter search in ML. Why propose yet another one?</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#are-approximation-results-always-reliable">Are approximation results always reliable?</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#are-there-any-applications-other-than-multiobjective-optimization">Are there any applications other than multiobjective optimization?</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#how-do-i-choose-the-degree-of-the-bezier-simplex">How do I choose the degree of the Bézier simplex?</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#how-many-training-samples-do-i-need">How many training samples do I need?</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#what-if-my-input-parameters-do-not-lie-on-a-simplex">What if my input parameters do not lie on a simplex?</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#can-i-train-on-a-gpu">Can I train on a GPU?</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#what-should-i-do-if-fitting-does-not-converge-or-the-accuracy-is-poor">What should I do if fitting does not converge or the accuracy is poor?</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#when-should-i-use-partial-training-the-fix-argument">When should I use partial training (the <code class="docutils literal notranslate"><span class="pre">fix</span></code> argument)?</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#can-i-verify-whether-my-problem-is-weakly-simplicial-before-fitting">Can I verify whether my problem is weakly simplicial before fitting?</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#what-kinds-of-shapes-can-a-bezier-simplex-represent-beyond-pareto-fronts">What kinds of shapes can a Bézier simplex represent beyond Pareto fronts?</a></li>
+</ul>
+</li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">API reference</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="modules.html">torch_bsf</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">PyTorch-BSF</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="index.html" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active">Frequently asked questions</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="_sources/faq.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="frequently-asked-questions">
+<h1>Frequently asked questions<a class="headerlink" href="#frequently-asked-questions" title="Link to this heading"></a></h1>
+<section id="there-are-already-many-tools-for-hyperparameter-search-in-ml-why-propose-yet-another-one">
+<h2>There are already many tools for hyperparameter search in ML. Why propose yet another one?<a class="headerlink" href="#there-are-already-many-tools-for-hyperparameter-search-in-ml-why-propose-yet-another-one" title="Link to this heading"></a></h2>
+<p>The key difference is that PyTorch-BSF <strong>exploits problem structure</strong> rather than treating the objective as a black box.</p>
+<p><strong>Dramatically fewer evaluations.</strong>
+Black-box methods such as Bayesian optimization make no assumptions about the objective and must explore the search space from scratch.
+Approximating a Pareto front to reasonable accuracy can require hundreds of evaluations with such methods.
+Because PyTorch-BSF assumes the problem is <em>weakly simplicial</em> — meaning the Pareto set has a simplex structure — it can recover the entire Pareto front from as few as 50 points, often with higher accuracy.</p>
+<p><strong>Dimension-free convergence in the manifold setting.</strong>
+When the data lie along a low-dimensional simplex embedded in a high-dimensional ambient space (analogous to manifold learning), the asymptotic risk of Bézier simplex fitting depends only on the <strong>intrinsic dimension</strong> of the simplex, not on the ambient space dimension.
+This gives extremely fast statistical convergence in settings where black-box methods would suffer from the curse of dimensionality.</p>
+<p><strong>The weakly simplicial assumption is broadly applicable.</strong>
+While the assumption may sound restrictive, it in fact covers a wide class of practical problems — including all unconstrained strongly convex problems such as elastic net regression.
+If you are unsure whether your problem qualifies, it can be verified with a statistical test; see <a class="reference internal" href="#can-i-verify-whether-my-problem-is-weakly-simplicial-before-fitting">Can I verify whether my problem is weakly simplicial before fitting?</a> below.</p>
+</section>
+<section id="are-approximation-results-always-reliable">
+<h2>Are approximation results always reliable?<a class="headerlink" href="#are-approximation-results-always-reliable" title="Link to this heading"></a></h2>
+<p>Not always.
+The approximation theorem makes no guarantees about the accuracy of a Bézier simplex of <strong>fixed</strong> degree.
+After fitting, you should assess the goodness of fit using domain knowledge appropriate to your problem.</p>
+</section>
+<section id="are-there-any-applications-other-than-multiobjective-optimization">
+<h2>Are there any applications other than multiobjective optimization?<a class="headerlink" href="#are-there-any-applications-other-than-multiobjective-optimization" title="Link to this heading"></a></h2>
+<p>Not yet documented, but quite possibly yes.
+Bézier simplices are likely to arise wherever high-dimensional shape representation is needed.
+If you discover a new application, please share it — it will be added to the applications section.</p>
+</section>
+<section id="how-do-i-choose-the-degree-of-the-bezier-simplex">
+<h2>How do I choose the degree of the Bézier simplex?<a class="headerlink" href="#how-do-i-choose-the-degree-of-the-bezier-simplex" title="Link to this heading"></a></h2>
+<p>There is no single rule, but the following guidelines are helpful:</p>
+<ul class="simple">
+<li><p><strong>Start low.</strong> A degree-2 or degree-3 simplex is a good default. Low-degree models are less prone to overfitting and faster to fit.</p></li>
+<li><p><strong>Check the residuals.</strong> If the fit is visibly poor, increase the degree by one and refit. Repeat until the residuals are acceptable.</p></li>
+<li><p><strong>Mind the sample size.</strong> A Bézier simplex of degree <span class="math notranslate nohighlight">\(D\)</span> over an <span class="math notranslate nohighlight">\((M-1)\)</span>-dimensional simplex has <span class="math notranslate nohighlight">\(\binom{D+M-1}{M-1}\)</span> control points. You need at least that many training samples for the problem to be well-determined.</p></li>
+<li><p><strong>Avoid over-fitting.</strong> If the model interpolates training points but predicts poorly elsewhere, the degree is too high for the available data.</p></li>
+</ul>
+</section>
+<section id="how-many-training-samples-do-i-need">
+<h2>How many training samples do I need?<a class="headerlink" href="#how-many-training-samples-do-i-need" title="Link to this heading"></a></h2>
+<p>At minimum, you need as many samples as there are control points.
+A Bézier simplex of degree <span class="math notranslate nohighlight">\(D\)</span> with <span class="math notranslate nohighlight">\(M\)</span>-dimensional parameters has <span class="math notranslate nohighlight">\(\binom{D+M-1}{M-1}\)</span> control points.
+For example, a degree-3 model with 2-dimensional parameters (a Bézier curve) has 4 control points, while the same degree with 3-dimensional parameters (a Bézier triangle) has 10.</p>
+<p>In practice, having two to three times as many samples as control points tends to give stable fits.
+If you have fewer samples than control points, consider reducing the degree.</p>
+</section>
+<section id="what-if-my-input-parameters-do-not-lie-on-a-simplex">
+<h2>What if my input parameters do not lie on a simplex?<a class="headerlink" href="#what-if-my-input-parameters-do-not-lie-on-a-simplex" title="Link to this heading"></a></h2>
+<p>The <code class="docutils literal notranslate"><span class="pre">fit()</span></code> function requires that each row of the <code class="docutils literal notranslate"><span class="pre">params</span></code> tensor sums to 1 (i.e., lies on the standard simplex <span class="math notranslate nohighlight">\(\Delta^{M-1}\)</span>).
+If your raw hyperparameters do not satisfy this constraint, you need to normalize them first.
+For two parameters <span class="math notranslate nohighlight">\(a\)</span> and <span class="math notranslate nohighlight">\(b\)</span>, a common approach is to set <span class="math notranslate nohighlight">\(t_1 = a / (a + b)\)</span> and <span class="math notranslate nohighlight">\(t_2 = b / (a + b)\)</span>.
+More generally, divide each parameter vector by its <span class="math notranslate nohighlight">\(\ell_1\)</span> norm.</p>
+</section>
+<section id="can-i-train-on-a-gpu">
+<h2>Can I train on a GPU?<a class="headerlink" href="#can-i-train-on-a-gpu" title="Link to this heading"></a></h2>
+<p>Yes. PyTorch-BSF is built on PyTorch, so GPU acceleration works in the standard way.
+Move your tensors to the target device before calling <code class="docutils literal notranslate"><span class="pre">fit()</span></code>:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">torch</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">torch_bsf</span>
+
+<span class="n">device</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">device</span><span class="p">(</span><span class="s2">&quot;cuda&quot;</span> <span class="k">if</span> <span class="n">torch</span><span class="o">.</span><span class="n">cuda</span><span class="o">.</span><span class="n">is_available</span><span class="p">()</span> <span class="k">else</span> <span class="s2">&quot;cpu&quot;</span><span class="p">)</span>
+<span class="n">ts</span> <span class="o">=</span> <span class="n">ts</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="n">device</span><span class="p">)</span>
+<span class="n">xs</span> <span class="o">=</span> <span class="n">xs</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="n">device</span><span class="p">)</span>
+<span class="n">bs</span> <span class="o">=</span> <span class="n">torch_bsf</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">params</span><span class="o">=</span><span class="n">ts</span><span class="p">,</span> <span class="n">values</span><span class="o">=</span><span class="n">xs</span><span class="p">,</span> <span class="n">degree</span><span class="o">=</span><span class="mi">3</span><span class="p">)</span>
+</pre></div>
+</div>
+</section>
+<section id="what-should-i-do-if-fitting-does-not-converge-or-the-accuracy-is-poor">
+<h2>What should I do if fitting does not converge or the accuracy is poor?<a class="headerlink" href="#what-should-i-do-if-fitting-does-not-converge-or-the-accuracy-is-poor" title="Link to this heading"></a></h2>
+<p>Try the following steps in order:</p>
+<ol class="arabic simple">
+<li><p><strong>Check your data.</strong> Verify that <code class="docutils literal notranslate"><span class="pre">params</span></code> rows sum to 1 and that the number of samples is at least as large as the number of control points.</p></li>
+<li><p><strong>Adjust the degree.</strong> If the fit is underdetermined, reduce the degree. If the Pareto front has high curvature, increase it.</p></li>
+<li><p><strong>Provide a better initialization.</strong> Use the <code class="docutils literal notranslate"><span class="pre">init</span></code> argument of <code class="docutils literal notranslate"><span class="pre">fit()</span></code> to supply initial control points derived from domain knowledge or a coarser prior fit.</p></li>
+<li><p><strong>Increase training iterations.</strong> The underlying L-BFGS optimizer may need more steps for complex surfaces.</p></li>
+<li><p><strong>Inspect the residuals.</strong> Large residuals concentrated at specific parameter values suggest that more training samples are needed in that region.</p></li>
+</ol>
+</section>
+<section id="when-should-i-use-partial-training-the-fix-argument">
+<h2>When should I use partial training (the <code class="docutils literal notranslate"><span class="pre">fix</span></code> argument)?<a class="headerlink" href="#when-should-i-use-partial-training-the-fix-argument" title="Link to this heading"></a></h2>
+<p>The <code class="docutils literal notranslate"><span class="pre">fix</span></code> argument lets you hold specific control points constant while optimizing the rest.
+This is useful in several situations:</p>
+<ul class="simple">
+<li><p><strong>Boundary constraints.</strong> If you know the values at the vertices of the simplex exactly (e.g., single-objective optima), fix those control points and fit only the interior.</p></li>
+<li><p><strong>Incremental refinement.</strong> Fit a coarse model first, then fix the already-well-estimated control points and refine the rest with additional data.</p></li>
+<li><p><strong>Prior knowledge.</strong> If physical or theoretical considerations pin down part of the surface, encoding that as fixed control points prevents the optimizer from moving away from known-good values.</p></li>
+</ul>
+<p>See the <a class="reference internal" href="advanced.html"><span class="doc">Advanced Topics</span></a> section for a code example.</p>
+</section>
+<section id="can-i-verify-whether-my-problem-is-weakly-simplicial-before-fitting">
+<h2>Can I verify whether my problem is weakly simplicial before fitting?<a class="headerlink" href="#can-i-verify-whether-my-problem-is-weakly-simplicial-before-fitting" title="Link to this heading"></a></h2>
+<p>For a broad and practically important class of problems, no verification is needed: it is known that <strong>all unconstrained strongly convex optimization problems are weakly simplicial</strong> [3].
+This covers, for example, elastic net regression and many other regularized empirical risk minimization problems.</p>
+<p>For problems outside this class, a data-driven statistical test exists (see [4] in the <a class="reference internal" href="whatis.html"><span class="doc">What is Bézier simplex fitting?</span></a> references).
+The test checks whether the topology of the empirical Pareto set is consistent with a simplex structure.
+If the test rejects the simplicial hypothesis, a Bézier simplex model may not be appropriate, and you should consider a more general surrogate model.
+If the test does not reject, you have statistical evidence supporting the use of PyTorch-BSF.</p>
+<aside class="footnote-list brackets">
+<aside class="footnote brackets" id="id1" role="doc-footnote">
+<span class="label"><span class="fn-bracket">[</span>3<span class="fn-bracket">]</span></span>
+<p>Mizota, Y., Hamada, N., &amp; Ichiki, S. (2021). <em>All unconstrained strongly convex problems are weakly simplicial.</em> arXiv:2106.12704. https://arxiv.org/abs/2106.12704</p>
+</aside>
+</aside>
+</section>
+<section id="what-kinds-of-shapes-can-a-bezier-simplex-represent-beyond-pareto-fronts">
+<h2>What kinds of shapes can a Bézier simplex represent beyond Pareto fronts?<a class="headerlink" href="#what-kinds-of-shapes-can-a-bezier-simplex-represent-beyond-pareto-fronts" title="Link to this heading"></a></h2>
+<p>Any continuous map from a simplex to a Euclidean space can be approximated by a Bézier simplex (approximation theorem).
+Beyond Pareto fronts, potential applications include:</p>
+<ul class="simple">
+<li><p><strong>Interpolation of parametric families.</strong> When a model’s behavior varies continuously with a set of coefficients that live on a simplex (e.g., mixture weights, regularization strengths), a Bézier simplex can compactly represent the entire family.</p></li>
+<li><p><strong>Shape modeling.</strong> Bézier simplices generalize Bézier triangles used in surface modeling; they can represent smooth curved surfaces of any dimension.</p></li>
+<li><p><strong>Solution manifolds.</strong> Any problem whose solution set forms a continuous simplex-structured manifold — not just multiobjective optimization — is a candidate.</p></li>
+</ul>
+<p>If you find a new application, please share it so it can be documented in the applications section.</p>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="whatis.html" class="btn btn-neutral float-left" title="What is Bézier simplex fitting?" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="modules.html" class="btn btn-neutral float-right" title="torch_bsf" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2021, FUJITSU LIMITED and Naoki Hamada.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  
+<div class="rst-versions" data-toggle="rst-versions" role="note" aria-label="versions">
+    <span class="rst-current-version" data-toggle="rst-current-version">
+        <span class="fa fa-book"> Other Versions</span>
+        v: v0.14.1
+        <span class="fa fa-caret-down"></span>
+    </span>
+    <div class="rst-other-versions">
+        <dl>
+            <dt>Tags</dt>
+            <dd><a href="../v0.0.1/faq.html">v0.0.1</a></dd>
+            <dd><a href="../v0.0.2/faq.html">v0.0.2</a></dd>
+            <dd><a href="../v0.1.0/faq.html">v0.1.0</a></dd>
+            <dd><a href="../v0.10.0/faq.html">v0.10.0</a></dd>
+            <dd><a href="../v0.11.0/faq.html">v0.11.0</a></dd>
+            <dd><a href="../v0.11.1/faq.html">v0.11.1</a></dd>
+            <dd><a href="../v0.11.2/faq.html">v0.11.2</a></dd>
+            <dd><a href="../v0.11.3/faq.html">v0.11.3</a></dd>
+            <dd><a href="../v0.12.0/faq.html">v0.12.0</a></dd>
+            <dd><a href="../v0.12.1/faq.html">v0.12.1</a></dd>
+            <dd><a href="../v0.13.0/faq.html">v0.13.0</a></dd>
+            <dd><a href="../v0.13.1/faq.html">v0.13.1</a></dd>
+            <dd><a href="../v0.13.2/faq.html">v0.13.2</a></dd>
+            <dd><a href="../v0.13.3/faq.html">v0.13.3</a></dd>
+            <dd><a href="../v0.13.4/faq.html">v0.13.4</a></dd>
+            <dd><a href="../v0.14.0/faq.html">v0.14.0</a></dd>
+            <dd><a href="faq.html">v0.14.1</a></dd>
+            <dd><a href="../v0.2.0/faq.html">v0.2.0</a></dd>
+            <dd><a href="../v0.3.0/faq.html">v0.3.0</a></dd>
+            <dd><a href="../v0.3.1/faq.html">v0.3.1</a></dd>
+            <dd><a href="../v0.4.0/faq.html">v0.4.0</a></dd>
+            <dd><a href="../v0.5.0/faq.html">v0.5.0</a></dd>
+            <dd><a href="../v0.5.1/faq.html">v0.5.1</a></dd>
+            <dd><a href="../v0.6.0/faq.html">v0.6.0</a></dd>
+            <dd><a href="../v0.7.0/faq.html">v0.7.0</a></dd>
+            <dd><a href="../v0.8.0/faq.html">v0.8.0</a></dd>
+            <dd><a href="../v0.9.0/faq.html">v0.9.0</a></dd>
+        </dl>
+        <dl>
+            <dt>Branches</dt>
+            <dd><a href="../fix/Befier_simplex_load_with_yml_and_pt/faq.html">fix/Befier_simplex_load_with_yml_and_pt</a></dd>
+        </dl>
+    </div>
+</div><script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>
