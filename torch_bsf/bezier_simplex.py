@@ -27,6 +27,7 @@ from torch_bsf.validator import validate_simplex_indices
 
 NormalizeType = Literal["max", "std", "quantile", "none"]
 
+
 class BezierSimplexDataModule(L.LightningDataModule):
     r"""A data module for training a Bezier simplex.
 
@@ -542,7 +543,7 @@ def save(path: str | Path, data: BezierSimplex) -> None:
                 writer.writerow([index] + value.tolist())
 
     elif path.suffix == ".json":
-        dic = {index:value.tolist() for index,value in data.control_points.items()}
+        dic = {index: value.tolist() for index, value in data.control_points.items()}
         json.dump(dic, open(path, "w", encoding="utf-8"))
 
     elif path.suffix in (".yml", ".yaml"):

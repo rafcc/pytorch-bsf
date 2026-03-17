@@ -60,7 +60,12 @@ def reverse_logspace(num: int = 50, base: float = 10) -> np.ndarray:
         raise ValueError("base must be > 0, but given: {base}")
 
 
-def elastic_net_grid(n_lambdas: int = 102, n_alphas: int = 12, n_vertex_copies: int = 1, base: float = 10) -> np.ndarray:
+def elastic_net_grid(
+    n_lambdas: int = 102,
+    n_alphas: int = 12,
+    n_vertex_copies: int = 1,
+    base: float = 10
+) -> np.ndarray:
     """Return an array of 3D grid points on the standard 2-simplex, which is suitable for grid search for elastic net's hyperparameters.
 
     The returned array is of shape ``((n_lambdas - 1) * n_alphas + 3 * n_copy_vertices - 2, 3)``.
