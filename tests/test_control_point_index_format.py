@@ -40,10 +40,30 @@ def test_backward_compatibility(tmp_path):
     assert "(1, 0)" in bs.control_points
     assert torch.allclose(bs.control_points["(1, 0)"], torch.tensor([1.0, 2.0]))
 
+    # 4. PT with old [] keys
+    bs_pt = BezierSimplex({(1, 0): [1.0, 2.0], (0, 1): [3.0, 4.0]})
+    # Hack internal dictionary to simulate old saved format
+    p1 = bs_pt.control_points._parameters.pop("(1, 0)")
+    p2 = bs_pt.control_points._parameters.pop("(0, 1)")
+    bs_pt.control_points._parameters["[1, 0]"] = p1
+    bs_pt.control_points._parameters["[0, 1]"] = p2
+    bs_pt.control_points._keys["[1, 0]"] = None
+    bs_pt.control_points._keys["[0, 1]"] = None
+    del bs_pt.control_points._keys["(1, 0)"]
+    del bs_pt.control_points._keys["(0, 1)"]
+
+    pt_path = tmp_path / "old.pt"
+    torch.save(bs_pt, pt_path)
+
+    bs_loaded = load(pt_path, pt_weights_only=False)
+    assert "(1, 0)" in bs_loaded.control_points
+    assert "(0, 1)" in bs_loaded.control_points
+    assert torch.allclose(bs_loaded.control_points["(1, 0)"], torch.tensor([1.0, 2.0]))
+
 
 def test_save_load_cycle(tmp_path):
     bs = torch_bsf.bezier_simplex.randn(n_params=2, n_values=2, degree=2)
-    formats = [".json", ".yml", ".csv"]
+    formats = [".json", ".yml", ".csv", ".pt"]
     for ext in formats:
         path = tmp_path / f"cycle{ext}"
         save(path, bs)

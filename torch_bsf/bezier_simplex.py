@@ -648,13 +648,21 @@ def validate_control_points(data: dict[str, list[float]]):
             raise ValidationError(f"Dimension mismatch: {value}")
 
 
-def load(path: str | Path) -> BezierSimplex:
+def load(
+    path: str | Path,
+    *,
+    pt_weights_only: bool | None = None,
+) -> BezierSimplex:
     r"""Loads a Bezier simplex from a file.
 
     Parameters
     ----------
     path
         The path to a file.
+    pt_weights_only
+        Whether to load weights only. This parameter is only effective when loading PyTorch (``.pt``) files.
+        For other formats (e.g., ``.json``, ``.yml``), data loading is inherently safe and this parameter is ignored.
+        If ``None``, it defaults to ``False``.
 
     Returns
     -------
@@ -666,6 +674,12 @@ def load(path: str | Path) -> BezierSimplex:
         If the file type is unknown.
     ValidationError
         If the control points are invalid.
+
+    Notes
+    -----
+    Setting ``pt_weights_only=True`` will fail if the model contains
+    classes not allowed by PyTorch's ``WeightsUnpickler`` (like lightning's
+    ``AttributeDict``), even if they are in the safe globals list.
 
     Examples
     --------
@@ -685,8 +699,61 @@ def load(path: str | Path) -> BezierSimplex:
     cpdata: dict[str, list[float]]
     path = Path(path)
     if path.suffix == ".pt":
-        data = torch.load(path)
+        has_safe_globals = hasattr(torch.serialization, "safe_globals")
+
+        kwargs: dict[str, Any] = {}
+        import inspect
+
+        has_weights_only = "weights_only" in inspect.signature(torch.load).parameters
+        assert not (has_safe_globals and not has_weights_only)
+
+        # PyTorch 2.6 defaults to True, but our models contain Lightning's AttributeDict
+        # which fails under weights_only=True due to PyTorch's SETITEM restrictions.
+        # Therefore, we default to False to maintain usability.
+        if pt_weights_only is None:
+            pt_weights_only = False
+
+        if has_weights_only:
+            kwargs["weights_only"] = pt_weights_only
+
+        if has_safe_globals and pt_weights_only:
+            safe_classes = [
+                BezierSimplex,
+                ControlPoints,
+                MinMaxScaler,
+                StdScaler,
+                QuantileScaler,
+                NoneScaler,
+            ]
+            try:
+                from lightning.fabric.utilities.data import AttributeDict
+
+                safe_classes.append(AttributeDict)
+            except (ImportError, AttributeError):
+                pass
+
+            with torch.serialization.safe_globals(safe_classes):
+                data = torch.load(path, **kwargs)
+        else:
+            data = torch.load(path, **kwargs)
+
         if isinstance(data, BezierSimplex):
+            # Backward compatibility for old string format like "[1, 0]" in .pt files
+            needs_update = False
+            new_params = {}
+            for k, v in data.control_points._parameters.items():
+                new_k = to_parameterdict_key(k)
+                if new_k != k:
+                    needs_update = True
+                new_params[new_k] = v
+
+            if needs_update:
+                data.control_points._parameters.clear()
+                data.control_points._keys.clear()
+                for k, v in new_params.items():
+                    data.control_points._parameters[k] = v
+                    data.control_points._keys[k] = None
+
             return data
         raise ValueError(f"Unknown data type: {type(data)}")
 
