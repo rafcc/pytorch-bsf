@@ -47,4 +47,4 @@ Indices and tables
 * :ref:`modindex`
 * :ref:`search`
 
-.. _GitHub: https://github.com/NaokiHamada/pytorch-bsf
+.. _GitHub: https://github.com/opthub-org/pytorch-bsf

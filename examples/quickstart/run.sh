@@ -57,7 +57,7 @@ python -m torch_bsf \
 
 echo "Train a Bezier Simplex Model with MLflow."
 # [TAG:RunMLflowTraining]
-mlflow run https://github.com/NaokiHamada/pytorch-bsf \
+mlflow run https://github.com/opthub-org/pytorch-bsf \
   -P params=params.csv \
   -P values=values.csv \
   -P degree=3
