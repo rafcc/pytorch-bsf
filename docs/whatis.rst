@@ -64,16 +64,21 @@ Approximation theorem
 ^^^^^^^^^^^^^^^^^^^^^
 
 Any continuous map from a simplex to a Euclidean space can be approximated by a Bezier simplex.
-More precisely, the following theorem holds.
-See [1] for technical details.
+More precisely, the following theorem holds [1]:
+
+**Theorem (Approximation by Bézier Simplex):**
+For any continuous map :math:`f: \Delta^{M-1} \to \mathbb{R}^N` and any :math:`\epsilon > 0`, there exists a degree :math:`D` and control points :math:`\mathbf{p}` such that the Bézier simplex :math:`\mathbf{b}(\mathbf{t} \mid \mathbf{p})` satisfies :math:`\max_{\mathbf{t} \in \Delta^{M-1}} \| f(\mathbf{t}) - \mathbf{b}(\mathbf{t} \mid \mathbf{p}) \| < \epsilon`.
+
+This guarantees that Bézier simplices are universal approximators for any continuous simplex-domain function.
 
 
 Weakly simplicial problems and Strongly convex problems
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Such a continuous map :math:`\Phi` uniquely arises in multi-objective optimization.
-A problem is weakly simplicial if there exists a continuous map mapping from a simplex to the Pareto set and Pareto front such that the map sends a subsimplex to the Pareto set/front of a subproblem [3].
+**Definition (Weakly Simplicial Problem):**
+A multi-objective optimization problem is called *weakly simplicial* if there exists a continuous surjective map from a standard simplex onto the Pareto set and Pareto front, such that the image of any subsimplex (a lower-dimensional face of the simplex) exactly coincides with the Pareto set and Pareto front of the corresponding subproblem [3].
 
+Such a well-structured continuous map uniquely arises in continuous multi-objective optimization.
 A profound theoretical result is that **all unconstrained strongly convex problems are weakly simplicial** [3]. This guarantees that for strongly convex models, their Pareto fronts admit a simplex structure and can be efficiently reconstructed using Bézier simplex fitting.
 
 
