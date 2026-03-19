@@ -1,10 +1,10 @@
 # pytorch-bsf
 
-[![CodeQL](https://github.com/NaokiHamada/pytorch-bsf/actions/workflows/codeql-analysis.yml/badge.svg)](https://github.com/NaokiHamada/pytorch-bsf/actions/workflows/codeql-analysis.yml)
-[![PyTest](https://github.com/NaokiHamada/pytorch-bsf/actions/workflows/python-package.yml/badge.svg)](https://github.com/NaokiHamada/pytorch-bsf/actions/workflows/python-package.yml)
-[![Release](https://github.com/NaokiHamada/pytorch-bsf/actions/workflows/release-please-action.yml/badge.svg)](https://github.com/NaokiHamada/pytorch-bsf/actions/workflows/release-please-action.yml)
-[![Conda](https://github.com/NaokiHamada/pytorch-bsf/actions/workflows/python-package-conda.yml/badge.svg)](https://github.com/NaokiHamada/pytorch-bsf/actions/workflows/python-package-conda.yml)
-[![GHPages](https://github.com/NaokiHamada/pytorch-bsf/actions/workflows/sphinx-pages.yml/badge.svg)](https://github.com/NaokiHamada/pytorch-bsf/actions/workflows/sphinx-pages.yml)
+[![CodeQL](https://github.com/opthub-org/pytorch-bsf/actions/workflows/codeql-analysis.yml/badge.svg)](https://github.com/opthub-org/pytorch-bsf/actions/workflows/codeql-analysis.yml)
+[![PyTest](https://github.com/opthub-org/pytorch-bsf/actions/workflows/python-package.yml/badge.svg)](https://github.com/opthub-org/pytorch-bsf/actions/workflows/python-package.yml)
+[![Release](https://github.com/opthub-org/pytorch-bsf/actions/workflows/release-please-action.yml/badge.svg)](https://github.com/opthub-org/pytorch-bsf/actions/workflows/release-please-action.yml)
+[![Conda](https://github.com/opthub-org/pytorch-bsf/actions/workflows/python-package-conda.yml/badge.svg)](https://github.com/opthub-org/pytorch-bsf/actions/workflows/python-package-conda.yml)
+[![GHPages](https://github.com/opthub-org/pytorch-bsf/actions/workflows/sphinx-pages.yml/badge.svg)](https://github.com/opthub-org/pytorch-bsf/actions/workflows/sphinx-pages.yml)
 [![PyPI Downloads](https://static.pepy.tech/badge/pytorch-bsf)](https://pepy.tech/projects/pytorch-bsf)
 
 **Fit smooth, high-dimensional manifolds to your data — from a single GPU to a multi-node cluster.**
@@ -60,7 +60,7 @@ EOS
 Run the following command:
 
 ```bash
-mlflow run https://github.com/NaokiHamada/pytorch-bsf \
+mlflow run https://github.com/opthub-org/pytorch-bsf \
   -P params=params.csv \
   -P values=values.csv \
   -P degree=3
@@ -216,11 +216,11 @@ The output is printed to stdout as CSV with three columns (one row per grid poin
 ## Documents
 
 See documents for more details.
-<https://NaokiHamada.github.io/pytorch-bsf/>
+<https://opthub-org.github.io/pytorch-bsf/>
 
 ## Author
 
-FUJITSU LIMITED and Naoki Hamada
+OptHub Inc. and FUJITSU LIMITED
 
 ## License
 
