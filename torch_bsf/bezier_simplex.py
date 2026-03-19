@@ -110,7 +110,10 @@ class BezierSimplexDataModule(L.LightningDataModule):
             self.trainset, self.valset = random_split(xy, [n_train, size - n_train])
 
         index_set = torch.arange(params.shape[1])
-        labels = np.array([str(index_set[v]) for v in params[self.trainset.indices] > 0])
+        labels = np.array(
+            [tuple(index_set[v].tolist()) for v in params[self.trainset.indices] > 0],
+            dtype=object,
+        )
         self.trainset.labels = labels
 
     def load_data(self, path) -> torch.Tensor:

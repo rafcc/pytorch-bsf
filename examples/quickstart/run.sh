@@ -58,11 +58,13 @@ python -m torch_bsf \
 echo "Train a Bezier Simplex Model with MLflow."
 # [TAG:MLflowURLDefine]
 MLFLOW_PROJECT_URL=https://github.com/opthub-org/pytorch-bsf
+MLFLOW_ENV_MANAGER=conda
 # [TAG:MLflowURLDefine_End]
 
 # github action uses local repository to test pushed code
 if [ "${MLFLOW_RUN_LOCAL:-}" = "1" ]; then
     MLFLOW_PROJECT_URL=.
+    MLFLOW_ENV_MANAGER=local
 fi
 
 # [TAG:RunMLflowTraining]
@@ -81,7 +83,7 @@ echo "Tested Run ID: ${LATEST_RUN_ID}"
 echo "Local Prediction."
 # [TAG:MakePrediction]
 mlflow models predict \
-  --env-manager=conda \
+  --env-manager=$MLFLOW_ENV_MANAGER \
   --model-uri "runs:/${LATEST_RUN_ID}/model" \
   --content-type csv \
   --input-path params.csv \
@@ -94,7 +96,7 @@ cat test_values.json
 echo "Web API Prediciton."
 # [TAG:ServeAPI]
 mlflow models serve \
-  --env-manager=conda \
+  --env-manager=$MLFLOW_ENV_MANAGER \
   --model-uri "runs:/${LATEST_RUN_ID}/model" \
   --host localhost \
   --port 5001 &
