@@ -4,9 +4,9 @@ What is Bézier simplex fitting?
 You are probably familiar with Bézier curves (1-D) and Bézier triangles (2-D) from computer graphics and CAD software.
 A **Bézier simplex** is their natural generalization to any number of dimensions: the same elegant polynomial construction, extended to an :math:`(M-1)`-dimensional surface defined over a standard simplex.
 
-Just as a Bézier curve smoothly interpolates or approximates a 1-D point cloud using a small set of *control points*, a Bézier simplex can approximate a high-dimensional point cloud with excellent flexibility and mathematical guarantees.
+At its core, **Bézier simplex fitting is a general-purpose regression technique**. Just as a regular Bézier curve smoothly interpolates or approximates a 1-D point cloud using a small set of *control points*, a Bézier simplex can approximate any continuous map from a standard simplex to a high-dimensional Euclidean space. Given a point cloud dataset defined over simplex coordinates, it can fit a highly flexible and mathematically well-behaved parametric surface to the data.
 
-This page introduces the formal definition of Bézier simplices, the least-squares fitting algorithm used by PyTorch-BSF, and motivating real-world applications.
+This page introduces the formal definition of Bézier simplices, the least-squares fitting algorithm used by PyTorch-BSF, and its most prominent real-world applications.
 
 
 Bezier simplex
@@ -52,11 +52,12 @@ PyTorch-BSF provides an algorithm for solving this optimization problem with the
 Why does Bézier simplex fitting matter?
 ----------------------------------------
 
-In multi-objective optimization the **Pareto front** — the set of all trade-off-optimal solutions — is rarely a single point; it is a surface.
-For a broad class of problems (see *weakly simplicial problems* below), that surface is well-approximated by a Bézier simplex.
+While Bézier simplex fitting serves as a general-purpose tool to approximate any continuous mapping defined on a simplex, one of its most transformative applications lies in **multi-objective optimization**.
 
-This has a powerful practical consequence: instead of solving the optimization problem exhaustively for every possible weight vector, you can solve it for a small number of carefully chosen weights, fit a Bézier simplex to those solutions, and then *read off* the entire Pareto front by evaluating the fitted surface.
-A canonical application is hyperparameter search for the elastic net, where the two regularization coefficients :math:`\lambda` and :math:`\alpha` span exactly such a simplex.
+In multi-objective optimization, the **Pareto front** — the set of all optimal trade-off solutions — is rarely a single point; it is a continuous surface. 
+Crucially, for a broad and theoretically grounded class of problems known as **weakly simplicial problems**, the Pareto set and Pareto front are topologically equivalent to a simplex and can be accurately approximated by a Bézier simplex.
+
+This leads to a powerful practical methodology: instead of attempting an exhaustive and computationally expensive grid search over all possible weight configurations, you can solve the optimization problem for a very small, structurally chosen set of weights. By applying Bézier simplex fitting to those few exact solutions, you can extrapolate and evaluate the continuous parametric surface to *read off* the entire Pareto front at negligible computational cost.
 
 
 Approximation theorem
@@ -67,28 +68,23 @@ More precisely, the following theorem holds.
 See [1] for technical details.
 
 
-Weakly simplicial problems
-^^^^^^^^^^^^^^^^^^^^^^^^^^
+Weakly simplicial problems and Strongly convex problems
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Such a map :math:`\Phi` arises in, e.g., multiobjective optimization.
-There exists a continuous map from a simplex to the Pareto set and Pareto front such that the map sends a subsimplex to the Pareto set/front of a subproblem.
-See [3].
+Such a continuous map :math:`\Phi` uniquely arises in multi-objective optimization.
+A problem is weakly simplicial if there exists a continuous map mapping from a simplex to the Pareto set and Pareto front such that the map sends a subsimplex to the Pareto set/front of a subproblem [3].
 
-
-Application 1: Elastic net
---------------------------
-
-The elastic net objective combines L1 and L2 regularization with two coefficients, :math:`\lambda` (overall strength) and :math:`\alpha` (L1/L2 balance).
-Together they define a point on a 2-simplex, making the elastic net a natural fit for Bézier simplex methods.
-
-Rather than running a grid search over all :math:`(\lambda, \alpha)` combinations, you can solve the elastic net for a small set of simplex-structured weight vectors, fit a Bézier simplex to the resulting (solution, loss) pairs, and evaluate the surface densely at negligible cost.
-See [3] for the theoretical guarantees.
+A profound theoretical result is that **all unconstrained strongly convex problems are weakly simplicial** [3]. This guarantees that for strongly convex models, their Pareto fronts admit a simplex structure and can be efficiently reconstructed using Bézier simplex fitting.
 
 
-Strongly convex problems
-^^^^^^^^^^^^^^^^^^^^^^^^
+Application 1: Elastic net model selection
+------------------------------------------
 
-All unconstrained strongly convex problems are weakly simplicial [3].
+A canonical and highly practical application of this theory is hyperparameter optimization for the **Elastic Net**.
+The elastic net objective combines L1 and L2 regularization parameterized by two coefficients: :math:`\lambda` (overall strength) and :math:`\alpha` (L1/L2 balance). When appropriately parameterized, these coefficients span a 2-simplex.
+
+Because the elastic net problem is unconstrained and strongly convex, it is guaranteed to be weakly simplicial [3].
+Rather than training thousands of models in a grid search over all :math:`(\lambda, \alpha)` combinations, you can train the Elastic Net on a sparse subset of simplex-structured weight vectors. Fitting a Bézier simplex to the resulting trained models yields a continuous performance surface. This allows practitioners to instantly explore the full continuous spectrum of model hyperparameters and locate the statistically optimal model analytically, without any further retraining.
 
 
 Weighted-sum scalarization and solution map
