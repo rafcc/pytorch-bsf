@@ -1,5 +1,6 @@
 import torch
 
+
 class MinMaxScaler:
     mins: torch.Tensor
     scales: torch.Tensor

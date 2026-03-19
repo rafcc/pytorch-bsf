@@ -1,9 +1,10 @@
 import csv
 import json
+from ast import literal_eval
 from functools import lru_cache
 from math import factorial
 from pathlib import Path
-from typing import cast, Any, Iterable, Literal
+from typing import Any, Iterable, Literal, cast
 
 import lightning.pytorch as L
 import numpy as np
@@ -25,6 +26,7 @@ from torch_bsf.preprocessing import MinMaxScaler, NoneScaler, QuantileScaler, St
 from torch_bsf.validator import validate_simplex_indices
 
 NormalizeType = Literal["max", "std", "quantile", "none"]
+
 
 class BezierSimplexDataModule(L.LightningDataModule):
     r"""A data module for training a Bezier simplex.
@@ -374,9 +376,9 @@ def zeros(n_params: int, n_values: int, degree: int) -> BezierSimplex:
     >>> print(bs)
     BezierSimplex(
       (control_points): ControlPoints(
-          ([0, 2]): Parameter containing: [torch.FloatTensor of size 3]
-          ([1, 1]): Parameter containing: [torch.FloatTensor of size 3]
-          ([2, 0]): Parameter containing: [torch.FloatTensor of size 3]
+          ((0, 2)): Parameter containing: [torch.FloatTensor of size 3]
+          ((1, 1)): Parameter containing: [torch.FloatTensor of size 3]
+          ((2, 0)): Parameter containing: [torch.FloatTensor of size 3]
       )
     )
     >>> print(bs(torch.tensor([[0.2, 0.8]])))
@@ -426,9 +428,9 @@ def rand(n_params: int, n_values: int, degree: int) -> BezierSimplex:
     >>> print(bs)
     BezierSimplex(
       (control_points): ControlPoints(
-          ([0, 2]): Parameter containing: [torch.FloatTensor of size 3]
-          ([1, 1]): Parameter containing: [torch.FloatTensor of size 3]
-          ([2, 0]): Parameter containing: [torch.FloatTensor of size 3]
+          ((0, 2)): Parameter containing: [torch.FloatTensor of size 3]
+          ((1, 1)): Parameter containing: [torch.FloatTensor of size 3]
+          ((2, 0)): Parameter containing: [torch.FloatTensor of size 3]
       )
     )
     >>> print(bs(torch.tensor([[0.2, 0.8]])))  # doctest: +ELLIPSIS
@@ -478,9 +480,9 @@ def randn(n_params: int, n_values: int, degree: int) -> BezierSimplex:
     >>> print(bs)
     BezierSimplex(
       (control_points): ControlPoints(
-          ([0, 2]): Parameter containing: [torch.FloatTensor of size 3]
-          ([1, 1]): Parameter containing: [torch.FloatTensor of size 3]
-          ([2, 0]): Parameter containing: [torch.FloatTensor of size 3]
+          ((0, 2)): Parameter containing: [torch.FloatTensor of size 3]
+          ((1, 1)): Parameter containing: [torch.FloatTensor of size 3]
+          ((2, 0)): Parameter containing: [torch.FloatTensor of size 3]
       )
     )
     >>> print(bs(torch.tensor([[0.2, 0.8]])))  # doctest: +ELLIPSIS
@@ -541,11 +543,12 @@ def save(path: str | Path, data: BezierSimplex) -> None:
                 writer.writerow([index] + value.tolist())
 
     elif path.suffix == ".json":
-        dic = {index:value.tolist() for index,value in data.control_points.items()}
+        dic = {index: value.tolist() for index, value in data.control_points.items()}
         json.dump(dic, open(path, "w", encoding="utf-8"))
 
     elif path.suffix in (".yml", ".yaml"):
-        yaml.dump(data.control_points, open(path, "w", encoding="utf-8"))
+        dic = {to_parameterdict_key(index): value.tolist() for index, value in data.control_points.items()}
+        yaml.dump(dic, open(path, "w", encoding="utf-8"))
 
     else:
         raise ValueError(f"Unknown file type: {path}")
@@ -636,22 +639,30 @@ def validate_control_points(data: dict[str, list[float]]):
     """
     validate(instance=data, schema=CONTROLPOINTS_JSONSCHEMA)
     index, value = next(iter(data.items()))
-    n_params = len(eval(index))
+    n_params = len(literal_eval(index))
     n_values = len(value)
     for index, value in data.items():
-        if len(eval(index)) != n_params:
+        if len(literal_eval(index)) != n_params:
             raise ValidationError(f"Dimension mismatch: {index}")
         if len(value) != n_values:
             raise ValidationError(f"Dimension mismatch: {value}")
 
 
-def load(path: str | Path) -> BezierSimplex:
+def load(
+    path: str | Path,
+    *,
+    pt_weights_only: bool | None = None,
+) -> BezierSimplex:
     r"""Loads a Bezier simplex from a file.
 
     Parameters
     ----------
     path
         The path to a file.
+    pt_weights_only
+        Whether to load weights only. This parameter is only effective when loading PyTorch (``.pt``) files.
+        For other formats (e.g., ``.json``, ``.yml``), data loading is inherently safe and this parameter is ignored.
+        If ``None``, it defaults to ``False``.
 
     Returns
     -------
@@ -664,6 +675,12 @@ def load(path: str | Path) -> BezierSimplex:
     ValidationError
         If the control points are invalid.
 
+    Notes
+    -----
+    Setting ``pt_weights_only=True`` will fail if the model contains
+    classes not allowed by PyTorch's ``WeightsUnpickler`` (like lightning's
+    ``AttributeDict``), even if they are in the safe globals list.
+
     Examples
     --------
     >>> from torch_bsf import bezier_simplex
@@ -671,9 +688,9 @@ def load(path: str | Path) -> BezierSimplex:
     >>> print(bs)
     BezierSimplex(
       (control_points): ControlPoints(
-          ([0, 2]): Parameter containing: [torch.FloatTensor of size 3]
-          ([1, 1]): Parameter containing: [torch.FloatTensor of size 3]
-          ([2, 0]): Parameter containing: [torch.FloatTensor of size 3]
+          ((0, 2)): Parameter containing: [torch.FloatTensor of size 3]
+          ((1, 1)): Parameter containing: [torch.FloatTensor of size 3]
+          ((2, 0)): Parameter containing: [torch.FloatTensor of size 3]
       )
     )
     >>> print(bs(torch.tensor([[0.2, 0.8]])))
@@ -682,14 +699,69 @@ def load(path: str | Path) -> BezierSimplex:
     cpdata: dict[str, list[float]]
     path = Path(path)
     if path.suffix == ".pt":
-        data = torch.load(path)
+        has_safe_globals = hasattr(torch.serialization, "safe_globals")
+
+        kwargs: dict[str, Any] = {}
+        import inspect
+
+        has_weights_only = "weights_only" in inspect.signature(torch.load).parameters
+        assert not (has_safe_globals and not has_weights_only)
+
+        # PyTorch 2.6 defaults to True, but our models contain Lightning's AttributeDict
+        # which fails under weights_only=True due to PyTorch's SETITEM restrictions.
+        # Therefore, we currently default to False to maintain usability.
+        # The safe_globals implementation below is retained as a forward-compatible
+        # foundation for when upstream support improves.
+        if pt_weights_only is None:
+            pt_weights_only = False
+
+        if has_weights_only:
+            kwargs["weights_only"] = pt_weights_only
+
+        if has_safe_globals and pt_weights_only:
+            safe_classes = [
+                BezierSimplex,
+                ControlPoints,
+                MinMaxScaler,
+                StdScaler,
+                QuantileScaler,
+                NoneScaler,
+            ]
+            try:
+                from lightning.fabric.utilities.data import AttributeDict
+
+                safe_classes.append(AttributeDict)
+            except (ImportError, AttributeError):
+                pass
+
+            with torch.serialization.safe_globals(safe_classes):
+                data = torch.load(path, **kwargs)
+        else:
+            data = torch.load(path, **kwargs)
+
         if isinstance(data, BezierSimplex):
+            # Backward compatibility for old string format like "[1, 0]" in .pt files
+            needs_update = False
+            new_params = {}
+            for k, v in data.control_points._parameters.items():
+                new_k = to_parameterdict_key(k)
+                if new_k != k:
+                    needs_update = True
+                new_params[new_k] = v
+
+            if needs_update:
+                data.control_points._parameters.clear()
+                data.control_points._keys.clear()
+                for k, v in new_params.items():
+                    data.control_points._parameters[k] = v
+                    data.control_points._keys[k] = None
+
             return data
         raise ValueError(f"Unknown data type: {type(data)}")
 
     elif path.suffix == ".csv":
         cpdata = {
-            row[0]: [float(v) for v in row[1:]]
+            to_parameterdict_key(row[0]): [float(v) for v in row[1:]]
             for row in csv.reader(open(path, encoding="utf-8"))
         }
         validate_control_points(cpdata)
@@ -697,23 +769,25 @@ def load(path: str | Path) -> BezierSimplex:
 
     elif path.suffix == ".tsv":
         cpdata = {
-            row[0]: [float(v) for v in row[1:]]
+            to_parameterdict_key(row[0]): [float(v) for v in row[1:]]
             for row in csv.reader(open(path, encoding="utf-8"), delimiter="\t")
         }
         validate_control_points(cpdata)
         return BezierSimplex(cpdata)
 
     elif path.suffix == ".json":
-        cpdata = json.load(open(path, encoding="utf-8"))
-        for index, value in cpdata.items():
-            cpdata[index] = [float(v) for v in value]
+        cpdata = {
+            to_parameterdict_key(index): [float(v) for v in value]
+            for index, value in json.load(open(path, encoding="utf-8")).items()
+        }
         validate_control_points(cpdata)
         return BezierSimplex(cpdata)
 
     elif path.suffix in (".yml", ".yaml"):
-        cpdata = yaml.safe_load(open(path, encoding="utf-8"))
-        for index, value in cpdata.items():
-            cpdata[index] = [float(v) for v in value]
+        cpdata = {
+            to_parameterdict_key(index): [float(v) for v in value]
+            for index, value in yaml.safe_load(open(path, encoding="utf-8")).items()
+        }
         validate_control_points(cpdata)
         return BezierSimplex(cpdata)
 

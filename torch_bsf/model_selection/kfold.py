@@ -115,7 +115,7 @@ for k in range(args.num_folds):
     fn = f"{args.params.name},{args.values.name},{args.num_folds}fold,meshgrid,d_{args.degree},r_{args.split_ratio},{k}.csv"
     np.savetxt(fn, x)
 
-x = xs.mean(dim=0)  ## mean over folds
+x = xs.mean(dim=0)  # mean over folds
 x = dm.inverse_transform(x).to("cpu").detach().numpy()
 fn = f"{args.params.name},{args.values.name},{args.num_folds}fold,meshgrid,d_{args.degree},r_{args.split_ratio}.csv"
 np.savetxt(fn, x)
