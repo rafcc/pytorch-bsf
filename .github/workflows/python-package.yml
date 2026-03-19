@@ -44,5 +44,7 @@ jobs:
       run: |
         sphinx-build -b doctest docs docs/_build/doctest
     - name: Test CLI samples
+      env:
+        MLFLOW_RUN_LOCAL: 1
       run: |
         bash examples/quickstart/run.sh
