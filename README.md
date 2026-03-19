@@ -19,7 +19,7 @@ Key features:
 - **Flexible I/O** — load and save control points in `.pt`, `.csv`, `.tsv`, `.json`, or `.yaml` formats.
 - **Batteries included** — CLI entry points, k-fold cross-validation, and elastic net grid search are ready to use without writing any code.
 
-<img src="https://NaokiHamada.github.io/pytorch-bsf/master/_images/bezier-simplex.png" width="49%" alt="A Bezier simplex and its control points"><img src="https://NaokiHamada.github.io/pytorch-bsf/master/_images/bezier-simplex-fitting.png" width="49%" alt="A Bezier simplex that fits to a dataset">
+<img src="https://opthub-org.github.io/pytorch-bsf/master/_images/bezier-simplex.png" width="49%" alt="A Bezier simplex and its control points"><img src="https://opthub-org.github.io/pytorch-bsf/master/_images/bezier-simplex-fitting.png" width="49%" alt="A Bezier simplex that fits to a dataset">
 
 See the following papers for technical details.
 
