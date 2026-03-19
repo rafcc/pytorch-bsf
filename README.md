@@ -26,20 +26,19 @@ See the following papers for technical details.
 - Kobayashi, K., Hamada, N., Sannai, A., Tanaka, A., Bannai, K., & Sugiyama, M. (2019). Bézier Simplex Fitting: Describing Pareto Fronts of´ Simplicial Problems with Small Samples in Multi-Objective Optimization. Proceedings of the AAAI Conference on Artificial Intelligence, 33(01), 2304-2313. <https://doi.org/10.1609/aaai.v33i01.33012304>
 - Tanaka, A., Sannai, A., Kobayashi, K., & Hamada, N. (2020). Asymptotic Risk of Bézier Simplex Fitting. Proceedings of the AAAI Conference on Artificial Intelligence, 34(03), 2416-2424. <https://doi.org/10.1609/aaai.v34i03.5622>
 
+[Full Documentation](https://opthub-org.github.io/pytorch-bsf/)
+
 ## Requirements
 
 Python >=3.10, <3.15.
 
 ## Quickstart
 
-Download the latest [Miniconda](https://docs.conda.io/en/latest/miniconda.html) and install it.
-Then, install MLflow on your conda environment:
+### 1. via MLflow (No Installation Required)
 
-```bash
-conda install -c conda-forge mlflow
-```
+This is the easiest method as it requires no installation. If you have MLflow installed (e.g., via `conda install -c conda-forge mlflow`), you can run `pytorch-bsf` directly from the repository without manually installing it.
 
-Prepare data:
+First, prepare your data:
 
 ```bash
 cat <<EOS > params.csv
@@ -58,7 +57,7 @@ cat <<EOS > values.csv
 EOS
 ```
 
-Run the following command:
+Then, run the experiment:
 
 ```bash
 mlflow run https://github.com/opthub-org/pytorch-bsf \
@@ -67,11 +66,29 @@ mlflow run https://github.com/opthub-org/pytorch-bsf \
   -P degree=3
 ```
 
-which automatically sets up the environment and runs an experiment:
+This will automatically create a temporary conda environment, install dependencies, and run the training process.
 
-1. Download the latest pytorch-bsf into a temporary directory.
-2. Create a new conda environment and install dependencies in it.
-3. Run an experiment on the temporary directory and environment.
+### 2. via CLI (After Installation)
+
+This method is suitable when you do not need experiment tracking. If you prefer to install the package, you can run it via the command line interface.
+
+Installation:
+
+```bash
+pip install pytorch-bsf
+```
+
+Execution:
+
+```bash
+python -m torch_bsf \
+  --params=params.csv \
+  --values=values.csv \
+  --degree=3
+```
+
+<details>
+<summary>Click to see all MLflow / CLI parameters</summary>
 
 | Parameter            | Type                                                         | Default      | Description                                                                                                                                                                                                                                                                                                                                                                                                                                       |
 | -------------------- | ------------------------------------------------------------ | ------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
@@ -95,28 +112,11 @@ which automatically sets up the environment and runs an experiment:
 | enable_checkpointing | flag                                                         | `False`      | With this flag, model files will be stored every epoch during training.                                                                                                                                                                                                                                                                                                                                                                           |
 | log_every_n_steps    | int $(x \ge 1)$                                              | `1`          | The interval of training steps when training loss is logged.                                                                                                                                                                                                                                                                                                                                                                                      |
 
-## Installation
+</details>
 
-```bash
-pip install pytorch-bsf
-```
+### 3. via Python Script
 
-## Fitting via CLI
-
-This package provides a command line interface to train a Bezier simplex with a dataset file.
-
-Execute the `torch_bsf` module:
-
-```bash
-python -m torch_bsf \
-  --params=params.csv \
-  --values=values.csv \
-  --degree=3
-```
-
-## Fitting via Script
-
-Train a model by `fit()`, and call the model to predict.
+This is the most flexible method, allowing you to use custom data loaders to read large-scale data and finely control logging. Train a model using the Python API `fit()`, and call the resulting model to predict.
 
 ```python
 import torch
@@ -213,11 +213,6 @@ python -m torch_bsf.model_selection.elastic_net_grid \
 | base             | float | `10`    | Base of the log space.                                                            |
 
 The output is printed to stdout as CSV with three columns (one row per grid point).
-
-## Documents
-
-See documents for more details.
-<https://opthub-org.github.io/pytorch-bsf/>
 
 ## Author
 
