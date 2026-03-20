@@ -2,9 +2,10 @@ What is Bézier simplex fitting?
 ================================
 
 You are probably familiar with Bézier curves (1-D) and Bézier triangles (2-D) from computer graphics and CAD software.
-A **Bézier simplex** is their natural generalization to any number of dimensions: the same elegant polynomial construction, extended to an :math:`(M-1)`-dimensional surface defined over a standard simplex.
+A Bézier simplex is their natural generalization to any number of dimensions: the same elegant polynomial construction, extended to an :math:`(M-1)`-dimensional surface defined over a standard simplex.
 
-At its core, **Bézier simplex fitting is a general-purpose regression technique**. Just as a regular Bézier curve smoothly interpolates or approximates a 1-D point cloud using a small set of *control points*, a Bézier simplex can approximate any continuous map from a standard simplex to a high-dimensional Euclidean space. Given a point cloud dataset defined over simplex coordinates, it can fit a highly flexible and mathematically well-behaved parametric surface to the data.
+At its core, **Bézier simplex fitting is a general-purpose regression technique**.
+Just as a regular Bézier curve smoothly interpolates or approximates a 1-D point cloud using a small set of *control points*, a Bézier simplex can approximate any continuous map from a standard simplex to a high-dimensional Euclidean space. Given a point cloud dataset defined over simplex coordinates, it can fit a highly flexible and mathematically well-behaved parametric surface to the data.
 
 This page introduces the formal definition of Bézier simplices, the least-squares fitting algorithm used by PyTorch-BSF, and its most prominent real-world applications.
 
@@ -57,7 +58,7 @@ Approximation theorem
 Any continuous map from a simplex to a Euclidean space can be approximated by a Bezier simplex.
 More precisely, the following theorem holds [1]:
 
-**Theorem (Approximation by Bézier Simplex):**
+**Theorem (Universal Approximation Theorem):**
 For any continuous map :math:`f: \Delta^{M-1} \to \mathbb{R}^N` and any :math:`\epsilon > 0`, there exists a degree :math:`D` and control points :math:`\mathbf{p}` such that the Bézier simplex :math:`\mathbf{b}(\mathbf{t} \mid \mathbf{p})` satisfies :math:`\max_{\mathbf{t} \in \Delta^{M-1}} \| f(\mathbf{t}) - \mathbf{b}(\mathbf{t} \mid \mathbf{p}) \| < \epsilon`.
 
 This guarantees that Bézier simplices are universal approximators for any continuous simplex-domain function.
@@ -73,6 +74,8 @@ Such data can be regarded as samples from the solution set of a specific class o
 Multi-objective optimization
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+In many real-world applications, from engineering design to machine learning, we often need to optimize multiple conflicting criteria simultaneously (e.g., maximizing performance while minimizing cost). Because these objectives naturally compete with one another, it is generally impossible to find a single perfect solution. Instead, multi-objective optimization seeks to find a set of optimal trade-offs, providing the mathematical foundation to explore and select the best compromise.
+
 **Definition (Multi-Objective Optimization Problem):**
 Let :math:`X` be a feasible decision space. A multi-objective optimization problem with :math:`M` objectives aims to minimize a vector-valued function:
 
@@ -83,14 +86,16 @@ Since the objectives typically conflict with one another, there is rarely a sing
 **Definition (Pareto Set and Pareto Front):**
 A solution :math:`x \in X` is said to *dominate* another solution :math:`x' \in X` if :math:`f_m(x) \le f_m(x')` for all :math:`m \in \{1, \ldots, M\}` and :math:`f_j(x) < f_j(x')` for at least one index :math:`j`.
 
-A solution :math:`x^* \in X` is **Pareto optimal** if no other solution within :math:`X` dominates it.
+A solution :math:`x^* \in X` is *Pareto optimal* if no other solution within :math:`X` dominates it.
 
-* The **Pareto set** is the set of all Pareto optimal solutions in the decision space :math:`X`.
-* The **Pareto front** is the image of the Pareto set in the objective space :math:`f(X) \subset \mathbb{R}^M`.
+* The *Pareto set* is the set of all Pareto optimal solutions in the decision space :math:`X`.
+* The *Pareto front* is the image of the Pareto set in the objective space :math:`f(X) \subset \mathbb{R}^M`.
 
 
 Weakly simplicial problems
 ^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+In many real-world multi-objective optimization problems, the Pareto set and Pareto front exhibit a highly structured, continuous shape. Specifically, they often mirror the topological structure of a standard simplex (e.g., a curve for a two-objective problem, a curved triangle for a three-objective problem, and so on). The concept of a *weakly simplicial problem* formally captures this property, ensuring that the optimal trade-off surfaces are well-behaved and can be elegantly approximated by Bézier simplices.
 
 **Definition (Weakly Simplicial Problem):**
 A multi-objective optimization problem is called *weakly simplicial* if there exists a continuous surjective map from a standard simplex onto the Pareto set and Pareto front, such that the image of any subsimplex (a lower-dimensional face of the simplex) exactly coincides with the Pareto set and Pareto front of the corresponding subproblem [3].
@@ -124,6 +129,7 @@ Formally, a function :math:`f_m` is strongly convex with parameter :math:`\mu > 
 Let :math:`f: \mathbb{R}^n \to \mathbb{R}^m` be a :math:`C^r`-strongly convex mapping (:math:`0 \ge r \le \infty`).
 Then, the problem of minimizing :math:`f` is :math:`C^{r-1}`-weakly simplicial for :math:`r > 0` and :math:`C^0`-weakly simplicial for :math:`r = 0`.
 
+
 **Theorem (Proposition 1 of [3]):**
 Let :math:`f: \mathbb{R}^n \to \mathbb{R}^m` be a strongly convex mapping.
 Then, the mapping :math:`x^*: \Delta^{m-1} \to X^*(f)` defined by
@@ -131,6 +137,7 @@ Then, the mapping :math:`x^*: \Delta^{m-1} \to X^*(f)` defined by
 .. math:: x^*(w) = \arg\min_x \sum_{i=1}^m w_i f_i(x)
 
 is surjective and continuous.
+
 
 This guarantees that for strongly convex models, their Pareto fronts admit a simplex structure and can be efficiently reconstructed using Bézier simplex fitting.
 
