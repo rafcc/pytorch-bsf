@@ -45,7 +45,10 @@ extensions = [
     "sphinx_rtd_theme",
     "sphinx_multiversion",
     "sphinx_proof",
+    "sphinxcontrib.bibtex",
 ]
+
+bibtex_bibfiles = ["refs.bib"]
 
 # -- autodoc -----------------------------------------------------------------
 autodoc_type_aliases = {

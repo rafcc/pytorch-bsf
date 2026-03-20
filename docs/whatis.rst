@@ -56,7 +56,7 @@ Approximation theorem
 ---------------------
 
 Any continuous map from a simplex to a Euclidean space can be approximated by a Bezier simplex.
-More precisely, the following theorem holds [1]:
+More precisely, the following theorem holds :cite:p:`kobayashi2019bezier`:
 
 .. prf:theorem:: Universal Approximation Theorem
 
@@ -102,7 +102,7 @@ In many real-world multi-objective optimization problems, the Pareto set and Par
 
 .. prf:definition:: Weakly Simplicial Problem
 
-   A multi-objective optimization problem is called *weakly simplicial* if there exists a continuous surjective map from a standard simplex onto the Pareto set and Pareto front, such that the image of any subsimplex (a lower-dimensional face of the simplex) exactly coincides with the Pareto set and Pareto front of the corresponding subproblem [3].
+   A multi-objective optimization problem is called *weakly simplicial* if there exists a continuous surjective map from a standard simplex onto the Pareto set and Pareto front, such that the image of any subsimplex (a lower-dimensional face of the simplex) exactly coincides with the Pareto set and Pareto front of the corresponding subproblem :cite:p:`mizota2021unconstrained`.
 
 .. figure:: _static/simplicial-problem.png
    :width: 100%
@@ -130,13 +130,13 @@ Strongly convex problems
    .. math:: f_m(tx + (1-t)y) \le t f_m(x) + (1-t)f_m(y) - \frac{\mu}{2} t(1-t) \|x - y\|^2.
 
 
-.. prf:theorem:: Theorems 1 and 2 in [3]
+.. prf:theorem:: Theorems 1 and 2 in :cite:p:`mizota2021unconstrained`
 
-   Let :math:`f: \mathbb{R}^n \to \mathbb{R}^m` be a :math:`C^r`-strongly convex mapping (:math:`0 \ge r \le \infty`).
+   Let :math:`f: \mathbb{R}^n \to \mathbb{R}^m` be a :math:`C^r`-strongly convex mapping (:math:`0 \le r \le \infty`).
    Then, the problem of minimizing :math:`f` is :math:`C^{r-1}`-weakly simplicial for :math:`r > 0` and :math:`C^0`-weakly simplicial for :math:`r = 0`.
 
 
-.. prf:theorem:: Proposition 1 of [3]
+.. prf:theorem:: Proposition 1 of :cite:p:`mizota2021unconstrained`
 
    Let :math:`f: \mathbb{R}^n \to \mathbb{R}^m` be a strongly convex mapping.
    Then, the mapping :math:`x^*: \Delta^{m-1} \to X^*(f)` defined by
@@ -155,7 +155,7 @@ Application 1: Elastic net model selection
 A canonical and highly practical application of this theory is hyperparameter optimization for the **Elastic Net**.
 The elastic net objective combines L1 and L2 regularization parameterized by two coefficients: :math:`\lambda` (overall strength) and :math:`\alpha` (L1/L2 balance). When appropriately parameterized, these coefficients span a 2-simplex.
 
-Because the elastic net problem is unconstrained and strongly convex, it is guaranteed to be weakly simplicial [3].
+Because the elastic net problem is unconstrained and strongly convex, it is guaranteed to be weakly simplicial :cite:p:`mizota2021unconstrained`.
 Rather than training thousands of models in a grid search over all :math:`(\lambda, \alpha)` combinations, you can train the Elastic Net on a sparse subset of simplex-structured weight vectors. Fitting a Bézier simplex to the resulting trained models yields a continuous performance surface. This allows practitioners to instantly explore the full continuous spectrum of model hyperparameters and locate the statistically optimal model analytically, without any further retraining.
 
 
@@ -171,7 +171,7 @@ We define the *solution map* :math:`(x^*,f\circ x^*):\Delta^{M-1}\to G^*(f)` by
 .. math:: (x^*,f\circ x^*)(w)=(x^*(w),f(x^*(x))).
 
 The solution map is continuous and surjective.
-See [3] for technical details.
+See :cite:p:`mizota2021unconstrained` for technical details.
 
 
 Application 2: Deep neural networks
@@ -208,13 +208,12 @@ Statistical test for weakly simpliciality
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 When the problem class is not known in advance, it is not clear whether the Pareto set admits a simplex structure.
-A data-driven statistical test [4] can determine whether this assumption is warranted before committing to a Bézier simplex model.
-See [4] for the methodology and test statistics.
+A data-driven statistical test :cite:p:`hamada2018data` can determine whether this assumption is warranted before committing to a Bézier simplex model.
+See :cite:p:`hamada2018data` for the methodology and test statistics.
 
 
 References
 ----------
-1. Kobayashi, K., Hamada, N., Sannai, A., Tanaka, A., Bannai, K., & Sugiyama, M. (2019). Bézier Simplex Fitting: Describing Pareto Fronts of Simplicial Problems with Small Samples in Multi-Objective Optimization. Proceedings of the AAAI Conference on Artificial Intelligence, 33(01), 2304-2313. https://doi.org/10.1609/aaai.v33i01.33012304
-2. Tanaka, A., Sannai, A., Kobayashi, K., & Hamada, N. (2020). Asymptotic Risk of Bézier Simplex Fitting. Proceedings of the AAAI Conference on Artificial Intelligence, 34(03), 2416-2424. https://doi.org/10.1609/aaai.v34i03.5622
-3. Mizota, Y., Hamada, N., & Ichiki, S. (2021). All unconstrained strongly convex problems are weakly simplicial. arXiv:2106.12704 [math.OC]. https://arxiv.org/abs/2106.12704
-4. Hamada, N. & Goto, K. (2018). Data-Driven Analysis of Pareto Set Topology. Proceedings of the Genetic and Evolutionary Computation Conference, 657-664. https://doi.org/10.1145/3205455.3205613
+
+.. bibliography:: refs.bib
+   :all:
