@@ -31,7 +31,7 @@ where :math:`\mathbf t^{\mathbf d} = t_1^{d_1} t_2^{d_2}\cdots t_M^{d_M}`, :math
    :width: 33%
    :align: center
 
-   A Bezier simplex and its control points
+   A Bezier simplex and its control points. The shape of the simplex is determined by the control points.
 
 
 Fitting a Bezier simplex to a dataset
@@ -48,7 +48,7 @@ PyTorch-BSF provides an algorithm for solving this optimization problem with the
    :width: 66%
    :align: center
 
-   A Bezier simplex that fits to a dataset
+   A Bezier simplex fitted to a dataset. The control points are determined by the least squares fitting algorithm.
 
 
 Why does Bézier simplex fitting matter?
