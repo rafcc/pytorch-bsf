@@ -147,6 +147,10 @@ For any continuous map <span class="math notranslate nohighlight">\(f: \Delta^{M
 <h3>Weakly simplicial problems and Strongly convex problems<a class="headerlink" href="#weakly-simplicial-problems-and-strongly-convex-problems" title="Link to this heading"></a></h3>
 <p><strong>Definition (Weakly Simplicial Problem):</strong>
 A multi-objective optimization problem is called <em>weakly simplicial</em> if there exists a continuous surjective map from a standard simplex onto the Pareto set and Pareto front, such that the image of any subsimplex (a lower-dimensional face of the simplex) exactly coincides with the Pareto set and Pareto front of the corresponding subproblem [3].</p>
+<a class="reference internal image-reference" href="_images/simplicial-problem.png"><img alt="A simplicial problem: the Pareto set and Pareto front are homeomorphic to a simplex, i.e., they have no pinched topology." class="align-center" src="_images/simplicial-problem.png" style="width: 66%;" />
+</a>
+<a class="reference internal image-reference" href="_images/weakly-simplicial-problem.png"><img alt="A weakly simplicial problem: the Pareto set and Pareto front are a continuous image of a simplex, i.e., they may have a pinched topology." class="align-center" src="_images/weakly-simplicial-problem.png" style="width: 66%;" />
+</a>
 <p>Such a well-structured continuous map uniquely arises in continuous multi-objective optimization.
 A profound theoretical result is that <strong>all unconstrained strongly convex problems are weakly simplicial</strong> [3]. This guarantees that for strongly convex models, their Pareto fronts admit a simplex structure and can be efficiently reconstructed using Bézier simplex fitting.</p>
 </section>

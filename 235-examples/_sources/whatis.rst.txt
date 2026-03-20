@@ -78,6 +78,16 @@ Weakly simplicial problems and Strongly convex problems
 **Definition (Weakly Simplicial Problem):**
 A multi-objective optimization problem is called *weakly simplicial* if there exists a continuous surjective map from a standard simplex onto the Pareto set and Pareto front, such that the image of any subsimplex (a lower-dimensional face of the simplex) exactly coincides with the Pareto set and Pareto front of the corresponding subproblem [3].
 
+.. image:: _static/simplicial-problem.png
+   :width: 66%
+   :align: center
+   :alt: A simplicial problem: the Pareto set and Pareto front are homeomorphic to a simplex, i.e., they have no pinched topology.
+
+.. image:: _static/weakly-simplicial-problem.png
+   :width: 66%
+   :align: center
+   :alt: A weakly simplicial problem: the Pareto set and Pareto front are a continuous image of a simplex, i.e., they may have a pinched topology.
+
 Such a well-structured continuous map uniquely arises in continuous multi-objective optimization.
 A profound theoretical result is that **all unconstrained strongly convex problems are weakly simplicial** [3]. This guarantees that for strongly convex models, their Pareto fronts admit a simplex structure and can be efficiently reconstructed using Bézier simplex fitting.
 
