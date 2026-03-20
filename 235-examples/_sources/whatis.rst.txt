@@ -27,10 +27,11 @@ An :math:`(M-1)`-dimensional *Bezier simplex* of degree :math:`D` in :math:`\mat
 
 where :math:`\mathbf t^{\mathbf d} = t_1^{d_1} t_2^{d_2}\cdots t_M^{d_M}`, :math:`\binom{D}{\mathbf d}=D! / (d_1!d_2!\cdots d_M!)`, and :math:`\mathbf p_{\mathbf d}\in\mathbb R^N\ (\mathbf d\in\mathbb N_D^M)` are parameters called the *control points*.
 
-.. image:: _static/bezier-simplex.png
+.. figure:: _static/bezier-simplex.png
    :width: 33%
    :align: center
-   :alt: A Bezier simplex and its control points
+
+   A Bezier simplex and its control points
 
 
 Fitting a Bezier simplex to a dataset
@@ -43,10 +44,11 @@ What we are trying can be formulated as a problem of finding the best vector of 
 
 PyTorch-BSF provides an algorithm for solving this optimization problem with the L-BFGS algorithm.
 
-.. image:: _static/bezier-simplex-fitting.png
+.. figure:: _static/bezier-simplex-fitting.png
    :width: 66%
    :align: center
-   :alt: A Bezier simplex that fits to a dataset
+
+   A Bezier simplex that fits to a dataset
 
 
 Why does Bézier simplex fitting matter?
@@ -78,15 +80,17 @@ Weakly simplicial problems and Strongly convex problems
 **Definition (Weakly Simplicial Problem):**
 A multi-objective optimization problem is called *weakly simplicial* if there exists a continuous surjective map from a standard simplex onto the Pareto set and Pareto front, such that the image of any subsimplex (a lower-dimensional face of the simplex) exactly coincides with the Pareto set and Pareto front of the corresponding subproblem [3].
 
-.. image:: _static/simplicial-problem.png
-   :width: 66%
+.. figure:: _static/simplicial-problem.png
+   :width: 100%
    :align: center
-   :alt: A simplicial problem: the Pareto set and Pareto front are homeomorphic to a simplex, i.e., they have no pinched topology.
 
-.. image:: _static/weakly-simplicial-problem.png
-   :width: 66%
+   A simplicial problem: the Pareto set and Pareto front are homeomorphic to a simplex, i.e., they have no pinched topology.
+
+.. figure:: _static/weakly-simplicial-problem.png
+   :width: 33%
    :align: center
-   :alt: A weakly simplicial problem: the Pareto set and Pareto front are a continuous image of a simplex, i.e., they may have a pinched topology.
+
+   A weakly simplicial problem: the Pareto set and Pareto front are a continuous image of a simplex, i.e., they may have a pinched topology.
 
 Such a well-structured continuous map uniquely arises in continuous multi-objective optimization.
 A profound theoretical result is that **all unconstrained strongly convex problems are weakly simplicial** [3]. This guarantees that for strongly convex models, their Pareto fronts admit a simplex structure and can be efficiently reconstructed using Bézier simplex fitting.

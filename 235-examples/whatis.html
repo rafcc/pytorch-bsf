@@ -116,8 +116,13 @@ We define the <em>index set</em> by</p>
 <div class="math notranslate nohighlight">
 \[\mathbf b(\mathbf t\mid\mathbf p) = \sum_{\mathbf d\in\mathbb N_D^M} \binom{D}{\mathbf d} \mathbf t^{\mathbf d} \mathbf p_{\mathbf d},\]</div>
 <p>where <span class="math notranslate nohighlight">\(\mathbf t^{\mathbf d} = t_1^{d_1} t_2^{d_2}\cdots t_M^{d_M}\)</span>, <span class="math notranslate nohighlight">\(\binom{D}{\mathbf d}=D! / (d_1!d_2!\cdots d_M!)\)</span>, and <span class="math notranslate nohighlight">\(\mathbf p_{\mathbf d}\in\mathbb R^N\ (\mathbf d\in\mathbb N_D^M)\)</span> are parameters called the <em>control points</em>.</p>
-<a class="reference internal image-reference" href="_images/bezier-simplex.png"><img alt="A Bezier simplex and its control points" class="align-center" src="_images/bezier-simplex.png" style="width: 33%;" />
+<figure class="align-center" id="id1">
+<a class="reference internal image-reference" href="_images/bezier-simplex.png"><img alt="_images/bezier-simplex.png" src="_images/bezier-simplex.png" style="width: 33%;" />
 </a>
+<figcaption>
+<p><span class="caption-text">A Bezier simplex and its control points</span><a class="headerlink" href="#id1" title="Link to this image"></a></p>
+</figcaption>
+</figure>
 </section>
 <section id="fitting-a-bezier-simplex-to-a-dataset">
 <h2>Fitting a Bezier simplex to a dataset<a class="headerlink" href="#fitting-a-bezier-simplex-to-a-dataset" title="Link to this heading"></a></h2>
@@ -126,8 +131,13 @@ What we are trying can be formulated as a problem of finding the best vector of 
 <div class="math notranslate nohighlight">
 \[\arg\min_{\mathbf p} \sum_{(\mathbf t,\mathbf x)\in B}\|\mathbf b(\mathbf t\mid\mathbf p)-\mathbf x\|^2.\]</div>
 <p>PyTorch-BSF provides an algorithm for solving this optimization problem with the L-BFGS algorithm.</p>
-<a class="reference internal image-reference" href="_images/bezier-simplex-fitting.png"><img alt="A Bezier simplex that fits to a dataset" class="align-center" src="_images/bezier-simplex-fitting.png" style="width: 66%;" />
+<figure class="align-center" id="id2">
+<a class="reference internal image-reference" href="_images/bezier-simplex-fitting.png"><img alt="_images/bezier-simplex-fitting.png" src="_images/bezier-simplex-fitting.png" style="width: 66%;" />
 </a>
+<figcaption>
+<p><span class="caption-text">A Bezier simplex that fits to a dataset</span><a class="headerlink" href="#id2" title="Link to this image"></a></p>
+</figcaption>
+</figure>
 </section>
 <section id="why-does-bezier-simplex-fitting-matter">
 <h2>Why does Bézier simplex fitting matter?<a class="headerlink" href="#why-does-bezier-simplex-fitting-matter" title="Link to this heading"></a></h2>
@@ -147,10 +157,20 @@ For any continuous map <span class="math notranslate nohighlight">\(f: \Delta^{M
 <h3>Weakly simplicial problems and Strongly convex problems<a class="headerlink" href="#weakly-simplicial-problems-and-strongly-convex-problems" title="Link to this heading"></a></h3>
 <p><strong>Definition (Weakly Simplicial Problem):</strong>
 A multi-objective optimization problem is called <em>weakly simplicial</em> if there exists a continuous surjective map from a standard simplex onto the Pareto set and Pareto front, such that the image of any subsimplex (a lower-dimensional face of the simplex) exactly coincides with the Pareto set and Pareto front of the corresponding subproblem [3].</p>
-<a class="reference internal image-reference" href="_images/simplicial-problem.png"><img alt="A simplicial problem: the Pareto set and Pareto front are homeomorphic to a simplex, i.e., they have no pinched topology." class="align-center" src="_images/simplicial-problem.png" style="width: 66%;" />
+<figure class="align-center" id="id3">
+<a class="reference internal image-reference" href="_images/simplicial-problem.png"><img alt="_images/simplicial-problem.png" src="_images/simplicial-problem.png" style="width: 100%;" />
 </a>
-<a class="reference internal image-reference" href="_images/weakly-simplicial-problem.png"><img alt="A weakly simplicial problem: the Pareto set and Pareto front are a continuous image of a simplex, i.e., they may have a pinched topology." class="align-center" src="_images/weakly-simplicial-problem.png" style="width: 66%;" />
+<figcaption>
+<p><span class="caption-text">A simplicial problem: the Pareto set and Pareto front are homeomorphic to a simplex, i.e., they have no pinched topology.</span><a class="headerlink" href="#id3" title="Link to this image"></a></p>
+</figcaption>
+</figure>
+<figure class="align-center" id="id4">
+<a class="reference internal image-reference" href="_images/weakly-simplicial-problem.png"><img alt="_images/weakly-simplicial-problem.png" src="_images/weakly-simplicial-problem.png" style="width: 33%;" />
 </a>
+<figcaption>
+<p><span class="caption-text">A weakly simplicial problem: the Pareto set and Pareto front are a continuous image of a simplex, i.e., they may have a pinched topology.</span><a class="headerlink" href="#id4" title="Link to this image"></a></p>
+</figcaption>
+</figure>
 <p>Such a well-structured continuous map uniquely arises in continuous multi-objective optimization.
 A profound theoretical result is that <strong>all unconstrained strongly convex problems are weakly simplicial</strong> [3]. This guarantees that for strongly convex models, their Pareto fronts admit a simplex structure and can be efficiently reconstructed using Bézier simplex fitting.</p>
 </section>
