@@ -44,6 +44,7 @@ extensions = [
     "sphinx.ext.napoleon",
     "sphinx_rtd_theme",
     "sphinx_multiversion",
+    "sphinx_proof",
 ]
 
 # -- autodoc -----------------------------------------------------------------
