@@ -49,10 +49,12 @@
 <li class="toctree-l1"><a class="reference internal" href="advanced.html">Advanced Topics</a></li>
 <li class="toctree-l1 current"><a class="current reference internal" href="#">What is Bézier simplex fitting?</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="#bezier-simplex">Bezier simplex</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#fitting-a-bezier-simplex-to-a-dataset">Fitting a Bézier simplex to a dataset</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#why-does-bezier-simplex-fitting-matter">Why does Bézier simplex fitting matter?</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="#approximation-theorem">Approximation theorem</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#weakly-simplicial-problems-and-strongly-convex-problems">Weakly simplicial problems and Strongly convex problems</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#bezier-simplex-fitting">Bézier simplex fitting</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#approximation-theorem">Approximation theorem</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#relation-to-multi-objective-optimization">Relation to multi-objective optimization</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#multi-objective-optimization">Multi-objective optimization</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#weakly-simplicial-problems">Weakly simplicial problems</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#strongly-convex-problems">Strongly convex problems</a></li>
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="#application-1-elastic-net-model-selection">Application 1: Elastic net model selection</a><ul>
@@ -124,8 +126,8 @@ We define the <em>index set</em> by</p>
 </figcaption>
 </figure>
 </section>
-<section id="fitting-a-bezier-simplex-to-a-dataset">
-<h2>Fitting a Bézier simplex to a dataset<a class="headerlink" href="#fitting-a-bezier-simplex-to-a-dataset" title="Link to this heading"></a></h2>
+<section id="bezier-simplex-fitting">
+<h2>Bézier simplex fitting<a class="headerlink" href="#bezier-simplex-fitting" title="Link to this heading"></a></h2>
 <p>Assume we have a finite dataset <span class="math notranslate nohighlight">\(B\subset\Delta^{M-1}\times\mathbb R^N\)</span> and want to fit a Bézier simplex to the dataset.
 What we are trying can be formulated as a problem of finding the best vector of control points <span class="math notranslate nohighlight">\(\mathbf p=(\mathbf p_{\mathbf d})_{\mathbf d\in\mathbb N_D^M}\)</span> that minimizes the least square error between the Bezier simplex and the dataset:</p>
 <div class="math notranslate nohighlight">
@@ -139,22 +141,35 @@ What we are trying can be formulated as a problem of finding the best vector of 
 </figcaption>
 </figure>
 </section>
-<section id="why-does-bezier-simplex-fitting-matter">
-<h2>Why does Bézier simplex fitting matter?<a class="headerlink" href="#why-does-bezier-simplex-fitting-matter" title="Link to this heading"></a></h2>
-<p>While Bézier simplex fitting serves as a general-purpose tool to approximate any continuous mapping defined on a simplex, one of its most transformative applications lies in <strong>multi-objective optimization</strong>.</p>
-<p>In multi-objective optimization, the <strong>Pareto front</strong> — the set of all optimal trade-off solutions — is rarely a single point; it is a continuous surface.
-Crucially, for a broad and theoretically grounded class of problems known as <strong>weakly simplicial problems</strong>, the Pareto set and Pareto front are topologically equivalent to a simplex and can be accurately approximated by a Bézier simplex.</p>
-<p>This leads to a powerful practical methodology: instead of attempting an exhaustive and computationally expensive grid search over all possible weight configurations, you can solve the optimization problem for a very small, structurally chosen set of weights. By applying Bézier simplex fitting to those few exact solutions, you can extrapolate and evaluate the continuous parametric surface to <em>read off</em> the entire Pareto front at negligible computational cost.</p>
 <section id="approximation-theorem">
-<h3>Approximation theorem<a class="headerlink" href="#approximation-theorem" title="Link to this heading"></a></h3>
+<h2>Approximation theorem<a class="headerlink" href="#approximation-theorem" title="Link to this heading"></a></h2>
 <p>Any continuous map from a simplex to a Euclidean space can be approximated by a Bezier simplex.
 More precisely, the following theorem holds [1]:</p>
 <p><strong>Theorem (Approximation by Bézier Simplex):</strong>
 For any continuous map <span class="math notranslate nohighlight">\(f: \Delta^{M-1} \to \mathbb{R}^N\)</span> and any <span class="math notranslate nohighlight">\(\epsilon &gt; 0\)</span>, there exists a degree <span class="math notranslate nohighlight">\(D\)</span> and control points <span class="math notranslate nohighlight">\(\mathbf{p}\)</span> such that the Bézier simplex <span class="math notranslate nohighlight">\(\mathbf{b}(\mathbf{t} \mid \mathbf{p})\)</span> satisfies <span class="math notranslate nohighlight">\(\max_{\mathbf{t} \in \Delta^{M-1}} \| f(\mathbf{t}) - \mathbf{b}(\mathbf{t} \mid \mathbf{p}) \| &lt; \epsilon\)</span>.</p>
 <p>This guarantees that Bézier simplices are universal approximators for any continuous simplex-domain function.</p>
 </section>
-<section id="weakly-simplicial-problems-and-strongly-convex-problems">
-<h3>Weakly simplicial problems and Strongly convex problems<a class="headerlink" href="#weakly-simplicial-problems-and-strongly-convex-problems" title="Link to this heading"></a></h3>
+<section id="relation-to-multi-objective-optimization">
+<h2>Relation to multi-objective optimization<a class="headerlink" href="#relation-to-multi-objective-optimization" title="Link to this heading"></a></h2>
+<p>Data suitable for modeling with a Bézier simplex are point clouds distributed along a low-dimensional (e.g., 1 to 10 dimensions) curved simplex lying within a high-dimensional ambient space (e.g., tens to thousands of dimensions).
+Such data can be regarded as samples from the solution set of a specific class of multi-objective optimization problems.</p>
+<section id="multi-objective-optimization">
+<h3>Multi-objective optimization<a class="headerlink" href="#multi-objective-optimization" title="Link to this heading"></a></h3>
+<p><strong>Definition (Multi-Objective Optimization Problem):</strong>
+Let <span class="math notranslate nohighlight">\(X\)</span> be a feasible decision space. A multi-objective optimization problem with <span class="math notranslate nohighlight">\(M\)</span> objectives aims to minimize a vector-valued function:</p>
+<div class="math notranslate nohighlight">
+\[\min_{x \in X} f(x) = (f_1(x), \ldots, f_M(x))^\top.\]</div>
+<p>Since the objectives typically conflict with one another, there is rarely a single solution that minimizes all <span class="math notranslate nohighlight">\(M\)</span> objectives simultaneously. Instead, optimality is defined in terms of trade-offs.</p>
+<p><strong>Definition (Pareto Set and Pareto Front):</strong>
+A solution <span class="math notranslate nohighlight">\(x \in X\)</span> is said to <em>dominate</em> another solution <span class="math notranslate nohighlight">\(x' \in X\)</span> if <span class="math notranslate nohighlight">\(f_m(x) \le f_m(x')\)</span> for all <span class="math notranslate nohighlight">\(m \in \{1, \ldots, M\}\)</span> and <span class="math notranslate nohighlight">\(f_j(x) &lt; f_j(x')\)</span> for at least one index <span class="math notranslate nohighlight">\(j\)</span>.</p>
+<p>A solution <span class="math notranslate nohighlight">\(x^* \in X\)</span> is <strong>Pareto optimal</strong> if no other solution within <span class="math notranslate nohighlight">\(X\)</span> dominates it.</p>
+<ul class="simple">
+<li><p>The <strong>Pareto set</strong> is the set of all Pareto optimal solutions in the decision space <span class="math notranslate nohighlight">\(X\)</span>.</p></li>
+<li><p>The <strong>Pareto front</strong> is the image of the Pareto set in the objective space <span class="math notranslate nohighlight">\(f(X) \subset \mathbb{R}^M\)</span>.</p></li>
+</ul>
+</section>
+<section id="weakly-simplicial-problems">
+<h3>Weakly simplicial problems<a class="headerlink" href="#weakly-simplicial-problems" title="Link to this heading"></a></h3>
 <p><strong>Definition (Weakly Simplicial Problem):</strong>
 A multi-objective optimization problem is called <em>weakly simplicial</em> if there exists a continuous surjective map from a standard simplex onto the Pareto set and Pareto front, such that the image of any subsimplex (a lower-dimensional face of the simplex) exactly coincides with the Pareto set and Pareto front of the corresponding subproblem [3].</p>
 <figure class="align-center" id="id3">
@@ -171,8 +186,17 @@ A multi-objective optimization problem is called <em>weakly simplicial</em> if t
 <p><span class="caption-text">A weakly simplicial problem: the Pareto set and Pareto front are a continuous image of a simplex, i.e., they may have a pinched topology.</span><a class="headerlink" href="#id4" title="Link to this image"></a></p>
 </figcaption>
 </figure>
-<p>Such a well-structured continuous map uniquely arises in continuous multi-objective optimization.
-A profound theoretical result is that <strong>all unconstrained strongly convex problems are weakly simplicial</strong> [3]. This guarantees that for strongly convex models, their Pareto fronts admit a simplex structure and can be efficiently reconstructed using Bézier simplex fitting.</p>
+<p>In weakly simplicial problems, there exists a continuous map from a simplex to the Pareto set and Pareto front, which is guaranteed to be approximable by the Approximation theorem.</p>
+</section>
+<section id="strongly-convex-problems">
+<h3>Strongly convex problems<a class="headerlink" href="#strongly-convex-problems" title="Link to this heading"></a></h3>
+<p><strong>Definition (Strongly Convex Problem):</strong>
+A multi-objective optimization problem is <em>strongly convex</em> if its feasible decision space <span class="math notranslate nohighlight">\(X\)</span> is convex, and every objective function <span class="math notranslate nohighlight">\(f_m\)</span> (<span class="math notranslate nohighlight">\(m=1,\ldots,M\)</span>) is strongly convex.
+Formally, a function <span class="math notranslate nohighlight">\(f_m\)</span> is strongly convex with parameter <span class="math notranslate nohighlight">\(\mu &gt; 0\)</span> if for all <span class="math notranslate nohighlight">\(x, y \in X\)</span> and <span class="math notranslate nohighlight">\(t \in [0, 1]\)</span>:</p>
+<div class="math notranslate nohighlight">
+\[f_m(tx + (1-t)y) \le t f_m(x) + (1-t)f_m(y) - \frac{\mu}{2} t(1-t) \|x - y\|^2.\]</div>
+<p>A profound theoretical result is that <strong>all unconstrained strongly convex problems are weakly simplicial</strong> [3].
+This guarantees that for strongly convex models, their Pareto fronts admit a simplex structure and can be efficiently reconstructed using Bézier simplex fitting.</p>
 </section>
 </section>
 <section id="application-1-elastic-net-model-selection">
