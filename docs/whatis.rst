@@ -119,7 +119,19 @@ Formally, a function :math:`f_m` is strongly convex with parameter :math:`\mu > 
 
 .. math:: f_m(tx + (1-t)y) \le t f_m(x) + (1-t)f_m(y) - \frac{\mu}{2} t(1-t) \|x - y\|^2.
 
-A profound theoretical result is that **all unconstrained strongly convex problems are weakly simplicial** [3].
+
+**Theorem (Theorems 1 and 2 in [3]):**
+Let :math:`f: \mathbb{R}^n \to \mathbb{R}^m` be a :math:`C^r`-strongly convex mapping (:math:`0 \ge r \le \infty`).
+Then, the problem of minimizing :math:`f` is :math:`C^{r-1}`-weakly simplicial for :math:`r > 0` and :math:`C^0`-weakly simplicial for :math:`r = 0`.
+
+**Theorem (Proposition 1 of [3]):**
+Let :math:`f: \mathbb{R}^n \to \mathbb{R}^m` be a strongly convex mapping.
+Then, the mapping :math:`x^*: \Delta^{m-1} \to X^*(f)` defined by
+
+.. math:: x^*(w) = \arg\min_x \sum_{i=1}^m w_i f_i(x)
+
+is surjective and continuous.
+
 This guarantees that for strongly convex models, their Pareto fronts admit a simplex structure and can be efficiently reconstructed using Bézier simplex fitting.
 
 
