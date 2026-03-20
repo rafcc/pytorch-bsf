@@ -195,8 +195,16 @@ A multi-objective optimization problem is <em>strongly convex</em> if its feasib
 Formally, a function <span class="math notranslate nohighlight">\(f_m\)</span> is strongly convex with parameter <span class="math notranslate nohighlight">\(\mu &gt; 0\)</span> if for all <span class="math notranslate nohighlight">\(x, y \in X\)</span> and <span class="math notranslate nohighlight">\(t \in [0, 1]\)</span>:</p>
 <div class="math notranslate nohighlight">
 \[f_m(tx + (1-t)y) \le t f_m(x) + (1-t)f_m(y) - \frac{\mu}{2} t(1-t) \|x - y\|^2.\]</div>
-<p>A profound theoretical result is that <strong>all unconstrained strongly convex problems are weakly simplicial</strong> [3].
-This guarantees that for strongly convex models, their Pareto fronts admit a simplex structure and can be efficiently reconstructed using Bézier simplex fitting.</p>
+<p><strong>Theorem (Theorems 1 and 2 in [3]):</strong>
+Let <span class="math notranslate nohighlight">\(f: \mathbb{R}^n \to \mathbb{R}^m\)</span> be a <span class="math notranslate nohighlight">\(C^r\)</span>-strongly convex mapping (<span class="math notranslate nohighlight">\(0 \ge r \le \infty\)</span>).
+Then, the problem of minimizing <span class="math notranslate nohighlight">\(f\)</span> is <span class="math notranslate nohighlight">\(C^{r-1}\)</span>-weakly simplicial for <span class="math notranslate nohighlight">\(r &gt; 0\)</span> and <span class="math notranslate nohighlight">\(C^0\)</span>-weakly simplicial for <span class="math notranslate nohighlight">\(r = 0\)</span>.</p>
+<p><strong>Theorem (Proposition 1 of [3]):</strong>
+Let <span class="math notranslate nohighlight">\(f: \mathbb{R}^n \to \mathbb{R}^m\)</span> be a strongly convex mapping.
+Then, the mapping <span class="math notranslate nohighlight">\(x^*: \Delta^{m-1} \to X^*(f)\)</span> defined by</p>
+<div class="math notranslate nohighlight">
+\[x^*(w) = \arg\min_x \sum_{i=1}^m w_i f_i(x)\]</div>
+<p>is surjective and continuous.</p>
+<p>This guarantees that for strongly convex models, their Pareto fronts admit a simplex structure and can be efficiently reconstructed using Bézier simplex fitting.</p>
 </section>
 </section>
 <section id="application-1-elastic-net-model-selection">
