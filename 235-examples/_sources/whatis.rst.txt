@@ -58,8 +58,9 @@ Approximation theorem
 Any continuous map from a simplex to a Euclidean space can be approximated by a Bezier simplex.
 More precisely, the following theorem holds [1]:
 
-**Theorem (Universal Approximation Theorem):**
-For any continuous map :math:`f: \Delta^{M-1} \to \mathbb{R}^N` and any :math:`\epsilon > 0`, there exists a degree :math:`D` and control points :math:`\mathbf{p}` such that the Bézier simplex :math:`\mathbf{b}(\mathbf{t} \mid \mathbf{p})` satisfies :math:`\max_{\mathbf{t} \in \Delta^{M-1}} \| f(\mathbf{t}) - \mathbf{b}(\mathbf{t} \mid \mathbf{p}) \| < \epsilon`.
+.. prf:theorem:: Universal Approximation Theorem
+
+   For any continuous map :math:`f: \Delta^{M-1} \to \mathbb{R}^N` and any :math:`\epsilon > 0`, there exists a degree :math:`D` and control points :math:`\mathbf{p}` such that the Bézier simplex :math:`\mathbf{b}(\mathbf{t} \mid \mathbf{p})` satisfies :math:`\max_{\mathbf{t} \in \Delta^{M-1}} \| f(\mathbf{t}) - \mathbf{b}(\mathbf{t} \mid \mathbf{p}) \| < \epsilon`.
 
 This guarantees that Bézier simplices are universal approximators for any continuous simplex-domain function.
 
@@ -76,20 +77,22 @@ Multi-objective optimization
 
 In many real-world applications, from engineering design to machine learning, we often need to optimize multiple conflicting criteria simultaneously (e.g., maximizing performance while minimizing cost). Because these objectives naturally compete with one another, it is generally impossible to find a single perfect solution. Instead, multi-objective optimization seeks to find a set of optimal trade-offs, providing the mathematical foundation to explore and select the best compromise.
 
-**Definition (Multi-Objective Optimization Problem):**
-Let :math:`X` be a feasible decision space. A multi-objective optimization problem with :math:`M` objectives aims to minimize a vector-valued function:
+.. prf:definition:: Multi-Objective Optimization Problem
 
-.. math:: \min_{x \in X} f(x) = (f_1(x), \ldots, f_M(x))^\top.
+   Let :math:`X` be a feasible decision space. A multi-objective optimization problem with :math:`M` objectives aims to minimize a vector-valued function:
+
+   .. math:: \min_{x \in X} f(x) = (f_1(x), \ldots, f_M(x))^\top.
 
 Since the objectives typically conflict with one another, there is rarely a single solution that minimizes all :math:`M` objectives simultaneously. Instead, optimality is defined in terms of trade-offs.
 
-**Definition (Pareto Set and Pareto Front):**
-A solution :math:`x \in X` is said to *dominate* another solution :math:`x' \in X` if :math:`f_m(x) \le f_m(x')` for all :math:`m \in \{1, \ldots, M\}` and :math:`f_j(x) < f_j(x')` for at least one index :math:`j`.
+.. prf:definition:: Pareto Set and Pareto Front
 
-A solution :math:`x^* \in X` is *Pareto optimal* if no other solution within :math:`X` dominates it.
+   A solution :math:`x \in X` is said to *dominate* another solution :math:`x' \in X` if :math:`f_m(x) \le f_m(x')` for all :math:`m \in \{1, \ldots, M\}` and :math:`f_j(x) < f_j(x')` for at least one index :math:`j`.
 
-* The *Pareto set* is the set of all Pareto optimal solutions in the decision space :math:`X`.
-* The *Pareto front* is the image of the Pareto set in the objective space :math:`f(X) \subset \mathbb{R}^M`.
+   A solution :math:`x^* \in X` is *Pareto optimal* if no other solution within :math:`X` dominates it.
+
+   * The *Pareto set* is the set of all Pareto optimal solutions in the decision space :math:`X`.
+   * The *Pareto front* is the image of the Pareto set in the objective space :math:`f(X) \subset \mathbb{R}^M`.
 
 
 Weakly simplicial problems
@@ -97,8 +100,9 @@ Weakly simplicial problems
 
 In many real-world multi-objective optimization problems, the Pareto set and Pareto front exhibit a highly structured, continuous shape. Specifically, they often mirror the topological structure of a standard simplex (e.g., a curve for a two-objective problem, a curved triangle for a three-objective problem, and so on). The concept of a *weakly simplicial problem* formally captures this property, ensuring that the optimal trade-off surfaces are well-behaved and can be elegantly approximated by Bézier simplices.
 
-**Definition (Weakly Simplicial Problem):**
-A multi-objective optimization problem is called *weakly simplicial* if there exists a continuous surjective map from a standard simplex onto the Pareto set and Pareto front, such that the image of any subsimplex (a lower-dimensional face of the simplex) exactly coincides with the Pareto set and Pareto front of the corresponding subproblem [3].
+.. prf:definition:: Weakly Simplicial Problem
+
+   A multi-objective optimization problem is called *weakly simplicial* if there exists a continuous surjective map from a standard simplex onto the Pareto set and Pareto front, such that the image of any subsimplex (a lower-dimensional face of the simplex) exactly coincides with the Pareto set and Pareto front of the corresponding subproblem [3].
 
 .. figure:: _static/simplicial-problem.png
    :width: 100%
@@ -118,25 +122,28 @@ In weakly simplicial problems, there exists a continuous map from a simplex to t
 Strongly convex problems
 ^^^^^^^^^^^^^^^^^^^^^^^^
 
-**Definition (Strongly Convex Problem):**
-A multi-objective optimization problem is *strongly convex* if its feasible decision space :math:`X` is convex, and every objective function :math:`f_m` (:math:`m=1,\ldots,M`) is strongly convex. 
-Formally, a function :math:`f_m` is strongly convex with parameter :math:`\mu > 0` if for all :math:`x, y \in X` and :math:`t \in [0, 1]`:
+.. prf:definition:: Strongly Convex Problem
 
-.. math:: f_m(tx + (1-t)y) \le t f_m(x) + (1-t)f_m(y) - \frac{\mu}{2} t(1-t) \|x - y\|^2.
+   A multi-objective optimization problem is *strongly convex* if its feasible decision space :math:`X` is convex, and every objective function :math:`f_m` (:math:`m=1,\ldots,M`) is strongly convex. 
+   Formally, a function :math:`f_m` is strongly convex with parameter :math:`\mu > 0` if for all :math:`x, y \in X` and :math:`t \in [0, 1]`:
 
-
-**Theorem (Theorems 1 and 2 in [3]):**
-Let :math:`f: \mathbb{R}^n \to \mathbb{R}^m` be a :math:`C^r`-strongly convex mapping (:math:`0 \ge r \le \infty`).
-Then, the problem of minimizing :math:`f` is :math:`C^{r-1}`-weakly simplicial for :math:`r > 0` and :math:`C^0`-weakly simplicial for :math:`r = 0`.
+   .. math:: f_m(tx + (1-t)y) \le t f_m(x) + (1-t)f_m(y) - \frac{\mu}{2} t(1-t) \|x - y\|^2.
 
 
-**Theorem (Proposition 1 of [3]):**
-Let :math:`f: \mathbb{R}^n \to \mathbb{R}^m` be a strongly convex mapping.
-Then, the mapping :math:`x^*: \Delta^{m-1} \to X^*(f)` defined by
+.. prf:theorem:: Theorems 1 and 2 in [3]
 
-.. math:: x^*(w) = \arg\min_x \sum_{i=1}^m w_i f_i(x)
+   Let :math:`f: \mathbb{R}^n \to \mathbb{R}^m` be a :math:`C^r`-strongly convex mapping (:math:`0 \ge r \le \infty`).
+   Then, the problem of minimizing :math:`f` is :math:`C^{r-1}`-weakly simplicial for :math:`r > 0` and :math:`C^0`-weakly simplicial for :math:`r = 0`.
 
-is surjective and continuous.
+
+.. prf:theorem:: Proposition 1 of [3]
+
+   Let :math:`f: \mathbb{R}^n \to \mathbb{R}^m` be a strongly convex mapping.
+   Then, the mapping :math:`x^*: \Delta^{m-1} \to X^*(f)` defined by
+
+   .. math:: x^*(w) = \arg\min_x \sum_{i=1}^m w_i f_i(x)
+
+   is surjective and continuous.
 
 
 This guarantees that for strongly convex models, their Pareto fronts admit a simplex structure and can be efficiently reconstructed using Bézier simplex fitting.
