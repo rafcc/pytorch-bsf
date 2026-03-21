@@ -70,7 +70,24 @@ The resulting Bézier simplex provides a continuous surrogate of the performance
 2. **One Standard Error Rule (1se profile rule)**: Selects the most parsimonious (sparsest) model whose mean error is within one standard error of the minimum. This heuristic is widely used in tools like `glmnet` to gain stability and interpretability.
 3. **AICc Profile Rule**: Balances goodness-of-fit and model complexity using the **Akaike Information Criterion with Finite Sample Correction**. This allows for selecting models with a theoretically grounded trade-off without the noise of fold-wise cross-validation variability.
 
-.. list-table:: Model selection on the regularization map.
+
+Interactive Exploration and Insights
+------------------------------------
+
+The Bézier simplex approximation of the regularization map provides more than just a tool for optimization. It offers a **face structure** that naturally reflects the combinations of subsets of loss and regularization terms. By observing the solutions on each face of the simplex, users can:
+
+* **Obtain Insights**: Gain a deep understanding of the trade-offs between different modeling assumptions, such as :math:`L_1` vs :math:`L_2` regularization.
+* **Perform Exploratory Analysis**: Test how sensitive the optimal model is to changes in hyperparameters without the trial-and-error of retraining.
+* **Support Model Selection**: Make better decisions *a posteriori* by seeing the entire landscape of potential models, rather than relying on a single fixed structure chosen *a priori*.
+
+Empirical Evaluation
+--------------------
+
+The effectiveness of PyTorch-BSF for Elastic Net is demonstrated using the **Wine** dataset from the UCI Machine Learning Repository. Experiments show that even with a limited number of training points (e.g., 51 points for a degree-6 simplex), the Bézier simplex accurately approximates the entire solution map, maintaining low Mean Squared Error (MSE) across the continuous hyperparameter space.
+
+The following tables compare the results obtained through an exhaustive grid search (ground truth) and the Bézier simplex approximation. The high similarity between the performance surfaces confirms the fidelity of the surrogate model.
+
+.. list-table:: Ground truth results from exhaustive grid search (102x102 grid).
    :widths: 50 50
    :header-rows: 0
 
@@ -90,28 +107,6 @@ The resulting Bézier simplex provides a continuous surrogate of the performance
           :width: 100%
 
           Number of nonzero coefficients
-
-
-Interactive Exploration and Insights
-------------------------------------
-
-The Bézier simplex approximation of the regularization map provides more than just a tool for optimization. It offers a **face structure** that naturally reflects the combinations of subsets of loss and regularization terms. By observing the solutions on each face of the simplex, users can:
-
-* **Obtain Insights**: Gain a deep understanding of the trade-offs between different modeling assumptions, such as :math:`L_1` vs :math:`L_2` regularization.
-* **Perform Exploratory Analysis**: Test how sensitive the optimal model is to changes in hyperparameters without the trial-and-error of retraining.
-* **Support Model Selection**: Make better decisions *a posteriori* by seeing the entire landscape of potential models, rather than relying on a single fixed structure chosen *a priori*.
-
-Empirical Validation
---------------------
-
-The effectiveness of PyTorch-BSF for Elastic Net has been validated on various benchmark datasets from the UCI Machine Learning Repository, including:
-
-* **Blog Feedback**: Regression task with high-dimensional features.
-* **QSAR Fish Toxicity**: Predicting aquatic toxicity.
-* **Slice Localization**: Estimating the relative location of CT slices.
-* **Wine / Residential Building**: Predicting physical properties or prices.
-
-Experiments show that even with a limited number of training points (e.g., 51 points for a degree-3 simplex), the Bézier simplex accurately approximates the entire solution map, maintaining low Mean Squared Error (MSE) across the continuous hyperparameter space.
 
 .. list-table:: Approximation results for the Wine dataset with a Bézier simplex of degree :math:`d = 6`.
    :widths: 50 50
