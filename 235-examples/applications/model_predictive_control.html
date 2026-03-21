@@ -21,7 +21,7 @@
     <script src="../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
-    <link rel="next" title="Communication systems" href="communications.html" />
+    <link rel="next" title="Communication systems and routing" href="communications.html" />
     <link rel="prev" title="Multi-task and federated learning" href="federated_learning.html" /> 
 </head>
 
@@ -52,10 +52,10 @@
 <li class="toctree-l1 current"><a class="reference internal" href="../applications.html">Applications</a><ul class="current">
 <li class="toctree-l2"><a class="reference internal" href="elastic_net.html">Elastic net model selection</a></li>
 <li class="toctree-l2"><a class="reference internal" href="portfolio.html">Robust portfolio management</a></li>
-<li class="toctree-l2"><a class="reference internal" href="smart_grids.html">Distributed smart grids</a></li>
+<li class="toctree-l2"><a class="reference internal" href="smart_grids.html">Distributed smart grids and energy operations</a></li>
 <li class="toctree-l2"><a class="reference internal" href="federated_learning.html">Multi-task and federated learning</a></li>
 <li class="toctree-l2 current"><a class="current reference internal" href="#">Multi-objective model predictive control</a></li>
-<li class="toctree-l2"><a class="reference internal" href="communications.html">Communication systems</a></li>
+<li class="toctree-l2"><a class="reference internal" href="communications.html">Communication systems and routing</a></li>
 <li class="toctree-l2"><a class="reference internal" href="supply_chain.html">Supply chain and logistics optimization</a></li>
 <li class="toctree-l2"><a class="reference internal" href="medical_imaging.html">Medical imaging and radiation therapy</a></li>
 <li class="toctree-l2"><a class="reference internal" href="facility_location.html">Facility location and continuous approximations</a></li>
@@ -95,11 +95,15 @@
              
   <section id="multi-objective-model-predictive-control">
 <h1>Multi-objective model predictive control<a class="headerlink" href="#multi-objective-model-predictive-control" title="Link to this heading"></a></h1>
-<p>Autonomous systems like self-driving cars, drones, and industrial robots rely on Model Predictive Control (MPC) and Linear Quadratic Regulators (LQR) to optimize future behavior in real-time. In complex scenarios, these systems face competing goals such as precise trajectory tracking, energy efficiency (minimizing control effort/power), and motion smoothness (minimizing jerk). When these objectives are framed as positive-definite quadratic forms, the resulting stage cost function is strictly strongly convex:</p>
+<p>In industrial automation and robotics, Model Predictive Control (MPC) and Linear Quadratic Regulators (LQR) are foundational algorithms used to optimize future behavior in real-time. Operating chemical plants processes, for instance, requires rigorously balancing product quality tracking (setpoint proximity) against the suppression of abrupt heater and valve modifications (machinery wear).</p>
+<p>Similarly, omnidirectional mobile robots traversing complex environments (e.g., hospitals or warehouses) must optimize trajectory tracking while minimizing energy consumption and avoiding collisions. However, they face significant physical constraints like non-linear friction modes. Over a predictive horizon <span class="math notranslate nohighlight">\(H\)</span>, these systems evaluate competing objectives to find the strictly optimal control sequence <span class="math notranslate nohighlight">\(U\)</span>:</p>
 <div class="math notranslate nohighlight">
-\[l(x, u) = x^T Q x + u^T R u\]</div>
-<p>Where <span class="math notranslate nohighlight">\(Q\)</span> and <span class="math notranslate nohighlight">\(R\)</span> are positive definite matrices. Even though the set of stabilizing controllers might be non-convex, the multi-objective LQR’s Pareto front can be completely characterized by linear scalarization due to these strongly convex quadratic structures. This strong convexity guarantees that the underlying Quadratic Programming (QP) problem has a unique optimal solution that can be solved extremely rapidly at each time step. Furthermore, it inherently ensures the stability, safety (recursive feasibility), and collision-avoidance of distributed multi-agent formations (like drone swarms), acting as a stabilizing anchor in highly uncertain physical environments <span id="id1">[<a class="reference internal" href="../whatis.html#id22" title="Siddharth H. Nair, Charlott Vallon, and Francesco Borrelli. Multi-objective learning model predictive control. arXiv preprint arXiv:2405.11698, 2024. URL: https://arxiv.org/abs/2405.11698.">NVB24</a>, <a class="reference internal" href="../whatis.html#id21" title="Olalekan Shorinwa, Ravi Haksar, and Mac Schwager. Distributed model predictive control via separable optimization. IEEE Transactions on Control of Network Systems, 2022. URL: https://msl.stanford.edu/papers/shorinwa_distributed_2022.pdf.">SHS22</a>]</span>.</p>
-<p>These principles are widely deployed in the chemical process industry via Predictive Functional Control (PFC), where plant operators balance quality tracking with the suppression of abrupt heater/valve operations <span id="id2">[<a class="reference internal" href="../whatis.html#id27" title="Society of Instrument and Control Engineers (SICE). Model predictive control in chemical process industries. 2023.">oISICE23</a>]</span>. Similarly, in robotics, the continuous trajectory generation for omni-directional warehouse robots is modeled as a strongly convex QP. Factoring in discrete decisions like friction mode switching transforms the control task into an MIQP, yet the strong convexity of the continuous domain dramatically stabilizes the branch-and-bound optimization nodes <span id="id3">[<a class="reference internal" href="../whatis.html#id26" title="Japan Society of Mechanical Engineers (JSME). Miqp-based mpc for omni-directional mobile robots. 2023.">oMEJSME23</a>]</span>.</p>
+\[\begin{split}f_{track}(U) &amp;= \sum_{k=1}^H \|y_k - r_k\|_Q^2 \\
+f_{smooth}(U) &amp;= \sum_{k=0}^{H-1} \|\Delta u_k\|_R^2 \\
+f_{energy}(U) &amp;= \sum_{k=0}^{H-1} \|u_k\|_S^2\end{split}\]</div>
+<p>where <span class="math notranslate nohighlight">\(y_k\)</span> denotes system states/outputs, <span class="math notranslate nohighlight">\(r_k\)</span> the target setpoints, <span class="math notranslate nohighlight">\(u_k\)</span> the operational inputs, and <span class="math notranslate nohighlight">\(\Delta u_k\)</span> the input change rates.</p>
+<p>Crucially, as long as the weighting matrices (e.g., <span class="math notranslate nohighlight">\(R\)</span>) acting on the independent control inputs are uniformly positive definite (<span class="math notranslate nohighlight">\(R \succ 0\)</span>), the resulting multi-objective performance stage cost is strongly convex with respect to the continuous input decisions <span class="math notranslate nohighlight">\(U\)</span>. Even in complex scenarios where discrete mode switching (like robot friction statuses) transforms the formulation into a Mixed-Integer Quadratic Program (MIQP), the continuous sub-component remains undeniably strongly convex, stabilizing bounded-node optimization searches.</p>
+<p>In practice, resolving these multi-objective QP or MIQP problems during an active millisecond control loop requires prohibitive amounts of computational power. Because the strong convexity naturally spans a continuous simplicial Pareto front, controllers equipped with a Bézier simplex representation can bypass the online QP solver entirely. The polynomial evaluation provides an analytic, instantaneous multi-objective control response, enabling ultra-fast, high-frequency continuous re-optimization in highly unstable physical environments.</p>
 </section>
 
 
@@ -107,7 +111,7 @@
           </div>
           <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
         <a href="federated_learning.html" class="btn btn-neutral float-left" title="Multi-task and federated learning" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
-        <a href="communications.html" class="btn btn-neutral float-right" title="Communication systems" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+        <a href="communications.html" class="btn btn-neutral float-right" title="Communication systems and routing" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
     </div>
 
   <hr/>

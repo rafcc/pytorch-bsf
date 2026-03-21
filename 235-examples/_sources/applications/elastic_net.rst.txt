@@ -1,11 +1,23 @@
 Elastic net model selection
 ===========================
 
-A canonical and highly practical application of this theory is hyperparameter optimization for the **Elastic Net**. The elastic net objective combines L1 and L2 regularization parameterized by two coefficients: :math:`\lambda` (overall strength) and :math:`\alpha` (L1/L2 balance). When appropriately parameterized, these coefficients span a 2-simplex.
+A canonical and highly practical application of this theory is hyperparameter optimization for the **Elastic Net**. In machine learning and statistics, selecting the correct regularization parameters is critical to balancing data fidelity, model sparsity, and numerical stability. 
 
-Because the elastic net problem is unconstrained and strongly convex, it is guaranteed to be weakly simplicial :cite:p:`mizota2021unconstrained`. Furthermore, as established by :cite:t:`bonnel2019post`, optimal parameter tuning for the Elastic Net can be rigorously formulated as optimization over the Pareto set of a convex multi-objective problem. The L2 penalty enforces strong convexity, guaranteeing that the underlying solution is unique for each parameter combination, enabling well-defined sensitivity analysis and path-following algorithms.
+By formulating optimal parameter tuning for the Elastic Net as optimization over the Pareto set of a convex multi-objective problem :cite:p:`bonnel2019post`, practitioners eliminate the need for exhaustive and computationally expensive grid searches over all hyperparameter combinations. 
 
-Rather than training thousands of models in a grid search over all :math:`(\lambda, \alpha)` combinations, you can train the Elastic Net on a sparse subset of simplex-structured weight vectors. Fitting a Bézier simplex to the resulting trained models yields a continuous performance surface. This allows practitioners to instantly explore the full continuous spectrum of model hyperparameters and locate the statistically optimal model analytically, without any further retraining.
+The underlying multi-objective problem involves simultaneously minimizing the least-squares data fidelity, the :math:`L_1` sparsity penalty, and the :math:`L_2` smoothness penalty over the model weights :math:`\beta`:
+
+.. math:: 
+   
+   f_{data}(\beta) &= \frac{1}{2}\|y - X\beta\|^2 \\
+   f_{sparse}(\beta) &= \|\beta\|_1 \\
+   f_{smooth}(\beta) &= \frac{1}{2}\|\beta\|_2^2
+
+Typically, these are scalarized as :math:`\min_\beta \frac{1}{2}\|y - X\beta\|^2 + \lambda_1\|\beta\|_1 + \lambda_2\|\beta\|_2^2`. 
+
+Because of the :math:`L_2` penalty term, the overall objective is strongly convex. Specifically, the addition of :math:`\lambda_2\|\beta\|_2^2` ensures that the Hessian of the smooth component is lower bounded by :math:`\lambda_2 I \succ 0`. This guarantees that the underlying solution is unique for each parameter combination, enabling well-defined sensitivity analysis and path-following algorithms. Consequently, the problem is guaranteed to be weakly simplicial :cite:p:`mizota2021unconstrained`.
+
+Rather than training thousands of models discretely, you can train the Elastic Net on a sparse subset of simplex-structured weight vectors. Fitting a Bézier simplex to the resulting trained models yields a continuous performance surface. This analytic surrogate allows practitioners to instantly explore the full continuous spectrum of model hyperparameters and locate the statistically optimal model analytically, without any further retraining.
 
 
 Weighted-sum scalarization and solution map

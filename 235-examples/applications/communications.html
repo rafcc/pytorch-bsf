@@ -6,7 +6,7 @@
   <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Communication systems &mdash; PyTorch-BSF 0.14.1 documentation</title>
+  <title>Communication systems and routing &mdash; PyTorch-BSF 0.14.1 documentation</title>
       <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=b86133f3" />
       <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=9edc463e" />
       <link rel="stylesheet" type="text/css" href="../_static/proof.css" />
@@ -52,10 +52,10 @@
 <li class="toctree-l1 current"><a class="reference internal" href="../applications.html">Applications</a><ul class="current">
 <li class="toctree-l2"><a class="reference internal" href="elastic_net.html">Elastic net model selection</a></li>
 <li class="toctree-l2"><a class="reference internal" href="portfolio.html">Robust portfolio management</a></li>
-<li class="toctree-l2"><a class="reference internal" href="smart_grids.html">Distributed smart grids</a></li>
+<li class="toctree-l2"><a class="reference internal" href="smart_grids.html">Distributed smart grids and energy operations</a></li>
 <li class="toctree-l2"><a class="reference internal" href="federated_learning.html">Multi-task and federated learning</a></li>
 <li class="toctree-l2"><a class="reference internal" href="model_predictive_control.html">Multi-objective model predictive control</a></li>
-<li class="toctree-l2 current"><a class="current reference internal" href="#">Communication systems</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">Communication systems and routing</a></li>
 <li class="toctree-l2"><a class="reference internal" href="supply_chain.html">Supply chain and logistics optimization</a></li>
 <li class="toctree-l2"><a class="reference internal" href="medical_imaging.html">Medical imaging and radiation therapy</a></li>
 <li class="toctree-l2"><a class="reference internal" href="facility_location.html">Facility location and continuous approximations</a></li>
@@ -83,7 +83,7 @@
   <ul class="wy-breadcrumbs">
       <li><a href="../index.html" class="icon icon-home" aria-label="Home"></a></li>
           <li class="breadcrumb-item"><a href="../applications.html">Applications</a></li>
-      <li class="breadcrumb-item active">Communication systems</li>
+      <li class="breadcrumb-item active">Communication systems and routing</li>
       <li class="wy-breadcrumbs-aside">
             <a href="../_sources/applications/communications.rst.txt" rel="nofollow"> View page source</a>
       </li>
@@ -93,10 +93,16 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
              
-  <section id="communication-systems">
-<h1>Communication systems<a class="headerlink" href="#communication-systems" title="Link to this heading"></a></h1>
-<p>In wireless communication systems, transmit beamforming often seeks to minimize transmit power <span class="math notranslate nohighlight">\(\|\mathbf{w}\|^2\)</span> (which is strongly convex) while satisfying specific Signal-to-Interference-plus-Noise Ratio (SINR) constraints for multiple users. Similarly, in MIMO (Multiple-Input Multiple-Output) multi-user systems, individual Minimum Mean Square Error (MMSE) objectives are often augmented with Tikhonov regularization, making each objective strongly convex.</p>
-<p>Distributed resource allocation among network agents can be framed as minimizing the sum of strongly convex local cost functions. Utilizing consensus ADMM or QoS-constrained convex optimization algorithms on these strongly convex objectives ensures highly scalable, linearly convergent solutions that continuously adapt to fluctuating network topologies and interference conditions without requiring centralized computation overhead.</p>
+  <section id="communication-systems-and-routing">
+<h1>Communication systems and routing<a class="headerlink" href="#communication-systems-and-routing" title="Link to this heading"></a></h1>
+<p>In modern communication networks, backbone infrastructure must dynamically adjust routes to accommodate wildly fluctuating traffic demands from streaming services, cloud computing, and IoT devices. Traffic Engineering (TE) utilizing Model Predictive Control (MPC) resolves these complex allocations but faces competing demands: operators must route packets efficiently to strictly avoid bandwidth congestion, yet they must also suppress erratic, sudden changes to the routing policies to maintain overall network stability.</p>
+<p>This routing challenge is frequently framed as a strongly convex multi-objective optimization problem over a predictive time horizon.</p>
+<div class="math notranslate nohighlight">
+\[\begin{split}\text{Congestion Excess: } &amp; f_1(R) = \sum_{k=t+1}^{t+h} \|\zeta(k)\|_2^2 \\
+\text{Route Volatility: }  &amp; f_2(R) = \sum_{k=t+1}^{t+h} \|\Delta R(k)\|_2^2\end{split}\]</div>
+<p>Where <span class="math notranslate nohighlight">\(R(k)\)</span> is the routing allocation matrix at time step <span class="math notranslate nohighlight">\(k\)</span>, <span class="math notranslate nohighlight">\(\zeta(k)\)</span> represents the bandwidth excess above target capacity, and <span class="math notranslate nohighlight">\(\Delta R(k)\)</span> denotes the modifications applied to the traffic routing.</p>
+<p>Simultaneously minimizing both objectives heavily relies on strong convexity. Even if the network flow constraints are piece-wise linear or broadly just convex, the explicit <span class="math notranslate nohighlight">\(L_2\)</span> penalty on the route changes (<span class="math notranslate nohighlight">\(\|\Delta R(k)\|_2^2\)</span>) injects a mathematically strict positive-definite curvature into the optimization landscape. This uniformly bounds the Hessian away from zero, enforcing the strong convexity of the routing matrix modifications.</p>
+<p>For real-time network controllers, instantly reacting to traffic bursts while balancing these tradeoffs using standard Quadratic Programming solvers at every microsecond is computationally prohibitive. By fitting a Bézier simplex to the Pareto front of the sub-games, operators unlock an instantaneous, purely arithmetic continuous mapping of the exact tradeoffs between congestion and routing modifications. The network can then dynamically, and safely, slide along the Pareto front using continuous polynomial evaluations rather than reiterating heavy optimization loops, ensuring uninterrupted low-latency services.</p>
 </section>
 
 
