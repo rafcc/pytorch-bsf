@@ -132,7 +132,11 @@ cat<span class="w"> </span><span class="s">&lt;&lt; EOS &gt; values.csv</span>
 <p>The parameters file and the values file must have the same number of lines.</p>
 </div>
 <p>Now, you can fit a Bezier simplex model using the latest version of PyTorch-BSF directly from its GitHub repository:</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>mlflow<span class="w"> </span>run<span class="w"> </span>https://github.com/opthub-org/pytorch-bsf<span class="w"> </span><span class="se">\</span>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nv">MLFLOW_PROJECT_URL</span><span class="o">=</span>https://github.com/opthub-org/pytorch-bsf
+<span class="nv">MLFLOW_ENV_MANAGER</span><span class="o">=</span>conda
+</pre></div>
+</div>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>mlflow<span class="w"> </span>run<span class="w"> </span><span class="s2">&quot;</span><span class="nv">$MLFLOW_PROJECT_URL</span><span class="s2">&quot;</span><span class="w"> </span><span class="se">\</span>
 <span class="w">  </span>-P<span class="w"> </span><span class="nv">params</span><span class="o">=</span>params.csv<span class="w"> </span><span class="se">\</span>
 <span class="w">  </span>-P<span class="w"> </span><span class="nv">values</span><span class="o">=</span>values.csv<span class="w"> </span><span class="se">\</span>
 <span class="w">  </span>-P<span class="w"> </span><span class="nv">degree</span><span class="o">=</span><span class="m">3</span>
@@ -151,7 +155,7 @@ Note the <strong>Run ID</strong> automatically set to the command execution, as 
 </div>
 <p>Next, you can predict with the model and output the results to a specified file (in this example, <cite>test_values.json</cite>).</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>mlflow<span class="w"> </span>models<span class="w"> </span>predict<span class="w"> </span><span class="se">\</span>
-<span class="w">  </span>--env-manager<span class="o">=</span>conda<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>--env-manager<span class="o">=</span><span class="nv">$MLFLOW_ENV_MANAGER</span><span class="w"> </span><span class="se">\</span>
 <span class="w">  </span>--model-uri<span class="w"> </span><span class="s2">&quot;runs:/</span><span class="si">${</span><span class="nv">LATEST_RUN_ID</span><span class="si">}</span><span class="s2">/model&quot;</span><span class="w"> </span><span class="se">\</span>
 <span class="w">  </span>--content-type<span class="w"> </span>csv<span class="w"> </span><span class="se">\</span>
 <span class="w">  </span>--input-path<span class="w"> </span>params.csv<span class="w"> </span><span class="se">\</span>
@@ -172,7 +176,7 @@ cat<span class="w"> </span>test_values.json
 </div>
 <p>Then, start a prediction server using the Run ID.</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>mlflow<span class="w"> </span>models<span class="w"> </span>serve<span class="w"> </span><span class="se">\</span>
-<span class="w">  </span>--env-manager<span class="o">=</span>conda<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>--env-manager<span class="o">=</span><span class="nv">$MLFLOW_ENV_MANAGER</span><span class="w"> </span><span class="se">\</span>
 <span class="w">  </span>--model-uri<span class="w"> </span><span class="s2">&quot;runs:/</span><span class="si">${</span><span class="nv">LATEST_RUN_ID</span><span class="si">}</span><span class="s2">/model&quot;</span><span class="w"> </span><span class="se">\</span>
 <span class="w">  </span>--host<span class="w"> </span>localhost<span class="w"> </span><span class="se">\</span>
 <span class="w">  </span>--port<span class="w"> </span><span class="m">5001</span><span class="w"> </span><span class="p">&amp;</span>
