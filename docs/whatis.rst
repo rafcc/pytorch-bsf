@@ -189,8 +189,10 @@ This formulation effectively creates a three-objective optimization problem:
 .. math::
 
    \text{Expected Return: } & f_1(w) = -\mu^T w \\
-   \text{Risk (Variance): } & f_2(w) = \frac{1}{2} w^T \Sigma w \\
+   \text{Risk (Variance): } & f_2(w) = w^T \Sigma w \\
    \text{Stability (Regularization): } & f_3(w) = \lambda \|w\|_2^2
+
+Subject to the classical constraints :math:`\mathbf{1}^T w = 1` and :math:`w \ge 0` :cite:p:`markowitz1952portfolio`.
 
 Because the regularization term is strongly convex, the resulting scalarized objective function becomes strictly strongly convex. According to the theorems in :cite:p:`mizota2021unconstrained`, this strongly convex problem is guaranteed to be weakly simplicial. Fitting a Bézier simplex to this problem allows practitioners to continuously map the entire robust Pareto front—namely, the efficient frontier—guaranteeing unique solutions. Utilizing sensitivity-based Newton path-following, the full Pareto front can be computed with an extremely efficient iteration complexity of :math:`O(p \log(1/\varepsilon))` :cite:p:`bergou2021complexity`. 
 Solvers like MOSEK, Gurobi, and CVXPY are widely used to efficiently sweep across these parameters. In real-world deployments such as institutional pension fund management (e.g., GPIF), these frameworks accommodate budget limits, long-only constraints, and turnover restrictions. When cardinality constraints are added, the problem escalates to a Mixed-Integer Quadratic Program (MIQP), but the continuous relaxation remains strongly convex, allowing dedicated solvers like OSQP to execute high-frequency rebalancing robustly. Modern extensions also include CVaR (Conditional Value-at-Risk) portfolio optimization and robust multi-objective portfolio frameworks under data uncertainty.
@@ -204,7 +206,9 @@ In modern energy management systems, the Multi-Objective Optimal Power Flow (MO-
 .. math:: C_i(P_i) = \alpha_i P_i^2 + \beta_i P_i + \gamma_i \quad (\alpha_i > 0)
 
 Moreover, environmental constraints such as minimizing emissions (NOx/SOx) and minimizing transmission losses (using B-coefficient matrices) transform this into an Economic Emission Dispatch (EED) multi-objective problem, where all core objectives are quadratic and strongly convex.
-Because the objectives are strongly convex, advanced decentralized frameworks (like distributed Lagrangian methods or ADMM) can achieve linear convergence across the geographic network :cite:p:`performing2025accelerated,multi2026economic`. For instance, in multi-agent microgrid networks, predefined-time distributed algorithms exploit this strong convexity and smoothness to achieve exponential convergence to the Pareto optimum within a strict time horizon, utilizing Zeno-free event-triggered communication :cite:p:`zhang2023predefined`. This robust mathematical property guarantees that even in unstable communication environments with latency or differential privacy additions, the network can securely and optimally coordinate energy distribution. Similar principles apply to microgrid energy management, balancing generator fuel costs against battery degradation (both modeled as strongly convex quadratic functions).
+Because the objectives are strongly convex, advanced decentralized frameworks (like distributed Lagrangian methods or ADMM) can achieve linear convergence across the geographic network :cite:p:`performing2025accelerated,multi2026economic`. For instance, in multi-agent microgrid networks, predefined-time distributed algorithms exploit this strong convexity and smoothness to achieve exponential convergence to the Pareto optimum within a strict time horizon, utilizing Zeno-free event-triggered communication :cite:p:`zhang2023predefined`. This robust mathematical property guarantees that even in unstable communication environments with latency or differential privacy additions, the network can securely and optimally coordinate energy distribution. 
+
+Furthermore, in integrated photovoltaic and battery EV charging stations, the demand mismatch penalty is commonly modeled as a strongly convex quadratic utility function :math:`u_l = -\frac{1}{2}(p_l - p_l^*)^2`, enabling multi-agent game-theoretic frameworks to rapidly coordinate distributed power allocation via Nash equilibria :cite:p:`yan2021two`. Similar principles apply to microgrid energy management, balancing generator fuel costs against battery degradation.
 
 
 Application 4: Multi-task and federated learning
@@ -255,9 +259,13 @@ Because the overarching LQR formulation is inherently governed by positive defin
 Application 8: Medical imaging and radiation therapy
 ----------------------------------------------------
 
-In the medical field, strongly convex optimization heavily supports diagnostic imaging and therapeutic planning. For Computed Tomography (CT) image reconstruction, the task is posed as an inverse problem minimizing a data fidelity term (squared error) alongside a Tikhonov-style quadratic regularization term. Even if the projection matrix is ill-posed or rank-deficient, the quadratic regularization guarantees that the objective function is strictly strongly convex (:math:`\nabla^2 f \succeq \lambda I`), permitting massive-scale voxel optimizations via proximal gradient methods or ADMM :cite:p:`jsmrm_ct_recon`.
+In the medical field, strongly convex optimization heavily supports diagnostic imaging and therapeutic planning. For Computed Tomography (CT) image reconstruction, the task is posed as an inverse problem minimizing a data fidelity term (squared error) alongside a Tikhonov-style quadratic regularization term. This is classically formulated as :math:`\min_x \{ \|Kx-y\|_2^2 + \lambda^2\|x\|_2^2 \}`. By analyzing the L-curve, practitioners sweep the scalarization weight :math:`\lambda` to balance residual and solution size :cite:p:`hansen1993use`. Even if the projection matrix is ill-posed or rank-deficient, the quadratic regularization guarantees that the objective function is strictly strongly convex (:math:`\nabla^2 f \succeq \lambda I`), permitting massive-scale voxel optimizations via proximal gradient methods or ADMM.
 
-Similarly, Intensity-Modulated Radiation Therapy (IMRT) utilizes inverse planning to determine spatial radiation doses. The multi-objective problem minimizes the squared deviation from target tumor doses, penalizes doses to Organs At Risk (OAR), and applies quadratic regularization to the irradiation beamlet intensities (to reduce machine load and ensure a unique solution). This strongly convex formulation allows treatment planners to securely navigate the complex Pareto trade-offs of patient safety and tumor eradication using QP/QCQP solvers :cite:p:`jsmp_imrt_report`.
+Similarly, Intensity-Modulated Radiation Therapy (IMRT) utilizes highly constrained multi-criteria inverse planning to determine spatial radiation doses :cite:p:`breedveld2007novel`. The continuous sub-optimizations minimize the target tumor dose errors while prioritizing Organs At Risk (OAR) limits, formulated with spatial smoothing components as:
+
+.. math:: s(f) = \sum_{v \in V} \xi_v (Hf - d_v^p)^T \tilde{\eta}_v (Hf - d_v^p) + \kappa (Mf)^T (Mf)
+
+Because the Hessian :math:`\nabla^2 s(f) = 2(H^T \tilde{\eta} H + \kappa M^T M)` is positive-definite, this strongly convex structure allows treatment planners to securely navigate the complex Pareto trade-offs of patient safety and tumor eradication via high-speed QP solver iterations.
 
 
 Application 9: Facility location and continuous approximations
@@ -265,7 +273,9 @@ Application 9: Facility location and continuous approximations
 
 Strongly convex multi-objective frameworks naturally accommodate classic spatial and physical challenges. In Weber-type facility location problems with squared Euclidean distances :math:`f_k(x) = \|x - a_k\|^2`, the modulus-2 strong convexity of each distance objective translates directly into a simplicial Pareto set topology :cite:p:`hamada2020topology`.
 
-Likewise, in engineering design optimizing for structural compliance or minimum energy, the objectives inherently manifest as positive-definite quadratic costs. The strong convexity ensures that descent methods, such as the multi-objective Newton's method, achieve superlinear or even quadratic local convergence along the Pareto front :cite:p:`fliege2009newton`. Even in complex biological systems, such as competitive Lotka-Volterra models, transformations of the quadratic interaction terms yield strongly convex models that exhibit identically stable simplicial Pareto behavior.
+Likewise, in engineering design optimizing for structural compliance or minimum energy, the objectives inherently manifest as positive-definite quadratic costs. The strong convexity ensures that descent methods, such as the multi-objective Newton's method, achieve superlinear or even quadratic local convergence along the Pareto front :cite:p:`fliege2009newton`. 
+
+These properties are explicitly leveraged by Adaptive Weighted Sum (AWS) methods in structural multidisciplinary optimization, where successive boundary-constrained strongly-convex QPs smoothly and uniformly map the Pareto front :cite:p:`deweck2004adaptive`. Even in complex biological systems, such as competitive Lotka-Volterra models, transformations of the quadratic interaction terms yield strongly convex models that exhibit identically stable simplicial Pareto behavior.
 
 
 Statistical test for weakly simpliciality
