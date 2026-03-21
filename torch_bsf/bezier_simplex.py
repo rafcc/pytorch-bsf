@@ -111,8 +111,7 @@ class BezierSimplexDataModule(L.LightningDataModule):
 
         index_set = torch.arange(params.shape[1])
         labels = np.array(
-            [tuple(index_set[v].tolist()) for v in params[self.trainset.indices] > 0],
-            dtype=object,
+            [to_parameterdict_key(index_set[v]) for v in params[self.trainset.indices] > 0]
         )
         self.trainset.labels = labels
 
