@@ -45,6 +45,11 @@ Now, you can fit a Bezier simplex model using the latest version of PyTorch-BSF 
 
 .. literalinclude:: ../examples/quickstart/run.sh
    :language: bash
+   :start-after: [TAG:MLflowURLDefine]
+   :end-before: [TAG:MLflowURLDefine_End]
+
+.. literalinclude:: ../examples/quickstart/run.sh
+   :language: bash
    :start-after: [TAG:RunMLflowTraining]
    :end-before: [TAG:RunMLflowTraining_End]
 
