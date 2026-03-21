@@ -13,7 +13,7 @@ The optimization generally maps out three tightly competing operational objectiv
    f_2(U) &= \sum_{k=0}^{H-1} \|U_k\|_R^2 \quad \text{(Financial/operational inputs)} \\
    f_3(U) &= \sum_{k=0}^{H-1} \|\Delta U_k\|_S^2 \quad \text{(Policy change instability)}
 
-Where :math:`X_k` are the aggregate cash and inventory states, constrained to hug target targets without causing disruptive shortages, and :math:`U_k` are the direct financial interventions or operational accelerations.
+Where :math:`X_k` are the aggregate cash and inventory states, constrained to remain close to their targets without causing disruptive shortages, and :math:`U_k` are the direct financial interventions or operational accelerations.
 
 For manufacturing processes and logistics, abrupt disruptions in financing inputs or delivery capacities incur massive overheads, making the penalization of policy volatility (:math:`\|\Delta U_k\|_S^2`) practically vital for securing stable operational margins. 
 

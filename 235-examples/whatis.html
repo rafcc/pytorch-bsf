@@ -96,7 +96,7 @@
              
   <section id="what-is-bezier-simplex-fitting">
 <h1>What is Bézier simplex fitting?<a class="headerlink" href="#what-is-bezier-simplex-fitting" title="Link to this heading"></a></h1>
-<p>You are probably familiar with Bézier curves (1-D) and Bézier triangles (2-D) from computer graphics and CAD software. A Bézier simplex is their natural generalization to any number of dimensions: the same elegant polynomial construction, extended to hyper-surface of an arbitrary dimension defined over a standard simplex.</p>
+<p>You are probably familiar with Bézier curves (1-D) and Bézier triangles (2-D) from computer graphics and CAD software. A Bézier simplex is their natural generalization to any number of dimensions: the same elegant polynomial construction, extended to a hypersurface of arbitrary dimension defined over a standard simplex.</p>
 <p>At its core, <strong>Bézier simplex fitting is a general-purpose regression technique</strong>. Just as a regular Bézier curve smoothly interpolates or approximates a 1-D point cloud using a small set of <em>control points</em>, a Bézier simplex can approximate any continuous map from a standard simplex to a high-dimensional Euclidean space. Given a point cloud dataset defined over simplex coordinates, it can fit a highly flexible and mathematically well-behaved parametric surface to the data.</p>
 <p>This page introduces the formal definition of Bézier simplices, the least-squares fitting algorithm used by PyTorch-BSF, and its most prominent real-world applications.</p>
 <section id="bezier-simplex">

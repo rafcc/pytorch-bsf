@@ -13,6 +13,6 @@ Equally, in multi-agent microgrids integrating photovoltaic systems (PV), energy
 
 From a mathematical perspective, modifying the power allocations to maximize the utility :math:`u_l` is mathematically identical to minimizing the positive-definite squared deviation between allocated and requested charge. Because the error metrics natively employ bounded quadratic structures (with the positive coefficient :math:`a_i > 0`), the resulting system cost matrix is structurally strongly convex across the sub-groups.
 
-These strongly convex definitions enable massive decentralized networking algorithms—like accelerated Alternate Direction Method of Multipliers (ADMM)—to secure linear convergence uniformly across geographically vast nodes.
+These strongly convex definitions enable massive decentralized networking algorithms—like accelerated Alternating Direction Method of Multipliers (ADMM)—to secure linear convergence uniformly across geographically vast nodes.
 
 Additionally, as weather profiles and market electricity pricing constantly fluctuate, network operators must instantaneously reroute their balance policies. Equipping a distributed smart grid operator with a pre-computed Bézier simplex mapping allows the grid to frictionlessly evaluate these high-dimensional, competitive variables in real-time, executing continuous equilibrium adjustments across millions of endpoints securely.
