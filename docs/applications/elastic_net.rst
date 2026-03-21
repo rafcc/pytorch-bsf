@@ -43,6 +43,24 @@ where :math:`n` is the number of observations and :math:`\epsilon > 0` is a smal
 
 By training the model on a sparse subset of weight vectors :math:`w` and fitting a Bézier simplex, we obtain a continuous **solution map** :math:`(x^*, f \circ x^*): \Delta^{M-1} \to G^*(f)` that maps any weight :math:`w` to the optimal weights :math:`\beta` and the corresponding objective values.
 
+.. list-table:: Regularization map of the elastic net.
+   :widths: 33 33 33
+   :header-rows: 0
+
+   * - .. figure:: ../_static/figure1/wine,weight_102_102_1_1000,W.png
+          :width: 100%
+
+          Weight space :math:`\Delta^{2}`
+     - .. figure:: ../_static/figure1/wine,weight_102_102_1_1000,X123.png
+          :width: 100%
+
+          Parameter space :math:`\Theta^*(f)`
+     - .. figure:: ../_static/figure1/wine,weight_102_102_1_1000,F.png
+          :width: 100%
+
+          Objective space :math:`f(\Theta^*(f))`
+
+
 Model Selection on the Regularization Map
 -----------------------------------------
 
@@ -51,6 +69,28 @@ The resulting Bézier simplex provides a continuous surrogate of the performance
 1. **Minimum Cross-Validation Error (min profile rule)**: Locates the model :math:`w` that minimizes the mean cross-validation error across folds, prioritizing predictive accuracy.
 2. **One Standard Error Rule (1se profile rule)**: Selects the most parsimonious (sparsest) model whose mean error is within one standard error of the minimum. This heuristic is widely used in tools like `glmnet` to gain stability and interpretability.
 3. **AICc Profile Rule**: Balances goodness-of-fit and model complexity using the **Akaike Information Criterion with Finite Sample Correction**. This allows for selecting models with a theoretically grounded trade-off without the noise of fold-wise cross-validation variability.
+
+.. list-table:: Model selection on the regularization map.
+   :widths: 50 50
+   :header-rows: 0
+
+   * - .. figure:: ../_static/grid/wine,weight_102_102_1_1000,mean,F.png
+          :width: 100%
+
+          Mean CV error
+     - .. figure:: ../_static/grid/wine,weight_102_102_1_1000,std,F.png
+          :width: 100%
+
+          Std dev of CV error
+   * - .. figure:: ../_static/grid/wine,weight_102_102_1_1000,aicc,F.png
+          :width: 100%
+
+          AICc
+     - .. figure:: ../_static/grid/wine,weight_102_102_1_1000,nonzero,F.png
+          :width: 100%
+
+          Number of nonzero coefficients
+
 
 Interactive Exploration and Insights
 ------------------------------------
@@ -72,3 +112,25 @@ The effectiveness of PyTorch-BSF for Elastic Net has been validated on various b
 * **Wine / Residential Building**: Predicting physical properties or prices.
 
 Experiments show that even with a limited number of training points (e.g., 51 points for a degree-3 simplex), the Bézier simplex accurately approximates the entire solution map, maintaining low Mean Squared Error (MSE) across the continuous hyperparameter space.
+
+.. list-table:: Approximation results for the Wine dataset with a Bézier simplex of degree :math:`d = 6`.
+   :widths: 50 50
+   :header-rows: 0
+
+   * - .. figure:: ../_static/mesh/wine,weight_7_7_1_1000,meshgrid,d_6,f,mean,std,nonzero,aicc,x1-6.tsv,mean,F.png
+          :width: 100%
+
+          Mean CV error
+     - .. figure:: ../_static/mesh/wine,weight_7_7_1_1000,meshgrid,d_6,f,mean,std,nonzero,aicc,x1-6.tsv,std,F.png
+          :width: 100%
+
+          Std dev of CV error
+   * - .. figure:: ../_static/mesh/wine,weight_7_7_1_1000,meshgrid,d_6,f,mean,std,nonzero,aicc,x1-6.tsv,aicc,F.png
+          :width: 100%
+
+          AICc
+     - .. figure:: ../_static/mesh/wine,weight_7_7_1_1000,meshgrid,d_6,f,mean,std,nonzero,aicc,x1-6.tsv,nonzero,F.png
+          :width: 100%
+
+          Nonzero coefficients
+
