@@ -186,7 +186,7 @@ This formulation effectively creates a three-objective optimization problem:
    \text{Risk (Variance): } & f_2(w) = \frac{1}{2} w^T \Sigma w \\
    \text{Stability (Regularization): } & f_3(w) = \lambda \|w\|_2^2
 
-The risk objective's Hessian is proportional to :math:`\Sigma`. Since the covariance matrix is positive definite in appropriately constructed asset pools, the risk objective is inherently strongly convex, and adding proper regularization further ensures strict strong convexity. According to the theorems in :cite:p:`mizota2021unconstrained`, this strongly convex problem is guaranteed to be weakly simplicial. Fitting a Bézier simplex to this problem allows practitioners to continuously map the entire robust Pareto front—namely, the efficient frontier—guaranteeing unique solutions. Solvers like MOSEK, Gurobi, and CVXPY are widely used to efficiently sweep across these parameters. Modern extensions include CVaR (Conditional Value-at-Risk) portfolio optimization and robust multi-objective portfolio frameworks under data uncertainty.
+Because the regularization term is strongly convex, the resulting scalarized objective function becomes strictly strongly convex. According to the theorems in :cite:p:`mizota2021unconstrained`, this strongly convex problem is guaranteed to be weakly simplicial. Fitting a Bézier simplex to this problem allows practitioners to continuously map the entire robust Pareto front—namely, the efficient frontier—guaranteeing unique solutions. Solvers like MOSEK, Gurobi, and CVXPY are widely used to efficiently sweep across these parameters. In real-world deployments such as institutional pension fund management (e.g., GPIF), these frameworks accommodate budget limits, long-only constraints, and turnover restrictions. When cardinality constraints are added, the problem escalates to a Mixed-Integer Quadratic Program (MIQP), but the continuous relaxation remains strongly convex, allowing dedicated solvers like OSQP to execute high-frequency rebalancing robustly. Modern extensions also include CVaR (Conditional Value-at-Risk) portfolio optimization and robust multi-objective portfolio frameworks under data uncertainty.
 
 
 Application 3: Distributed smart grids
@@ -221,6 +221,8 @@ Autonomous systems like self-driving cars, drones, and industrial robots rely on
 
 Where :math:`Q` and :math:`R` are positive definite matrices. Even though the set of stabilizing controllers might be non-convex, the multi-objective LQR's Pareto front can be completely characterized by linear scalarization due to these strongly convex quadratic structures. This strong convexity guarantees that the underlying Quadratic Programming (QP) problem has a unique optimal solution that can be solved extremely rapidly at each time step. Furthermore, it inherently ensures the stability, safety (recursive feasibility), and collision-avoidance of distributed multi-agent formations (like drone swarms), acting as a stabilizing anchor in highly uncertain physical environments :cite:p:`distributed2022model,multi2024learning`.
 
+These principles are widely deployed in the chemical process industry via Predictive Functional Control (PFC), where plant operators balance quality tracking with the suppression of abrupt heater/valve operations :cite:p:`sice_process_mpc`. Similarly, in robotics, the continuous trajectory generation for omni-directional warehouse robots is modeled as a strongly convex QP. Factoring in discrete decisions like friction mode switching transforms the control task into an MIQP, yet the strong convexity of the continuous domain dramatically stabilizes the branch-and-bound optimization nodes :cite:p:`jsme_robotics_miqp`.
+
 
 Application 6: Communication systems
 ------------------------------------
@@ -228,6 +230,27 @@ Application 6: Communication systems
 In wireless communication systems, transmit beamforming often seeks to minimize transmit power :math:`\|\mathbf{w}\|^2` (which is strongly convex) while satisfying specific Signal-to-Interference-plus-Noise Ratio (SINR) constraints for multiple users. Similarly, in MIMO (Multiple-Input Multiple-Output) multi-user systems, individual Minimum Mean Square Error (MMSE) objectives are often augmented with Tikhonov regularization, making each objective strongly convex.
 
 Distributed resource allocation among network agents can be framed as minimizing the sum of strongly convex local cost functions. Utilizing consensus ADMM or QoS-constrained convex optimization algorithms on these strongly convex objectives ensures highly scalable, linearly convergent solutions that continuously adapt to fluctuating network topologies and interference conditions without requiring centralized computation overhead.
+
+
+Application 7: Supply chain and logistics optimization
+------------------------------------------------------
+
+In logistics and supply chain management (SCM), integrating physical material flows with monetary information (Supply Chain Finance) is critical for maximizing overall profitability. Recent formulations model this as a constrained finite-horizon Linear Quadratic Regulator (LQR) problem, solving it as a convex Quadratic Program (QP) :cite:p:`mdpi_sc_finance`. 
+
+The optimization simultaneously minimizes three strongly convex objectives:
+1. Deviation from target profit/cash states.
+2. Excessive external financing or operational inputs.
+3. Abrupt policy changes (operational stability).
+
+Because the overarching LQR formulation is inherently governed by positive definite penalty matrices, the entire supply chain network optimization is globally strongly convex. This permits off-the-shelf interior-point solvers to efficiently resolve optimal strategies across complex multi-node production flows.
+
+
+Application 8: Medical imaging and radiation therapy
+----------------------------------------------------
+
+In the medical field, strongly convex optimization heavily supports diagnostic imaging and therapeutic planning. For Computed Tomography (CT) image reconstruction, the task is posed as an inverse problem minimizing a data fidelity term (squared error) alongside a Tikhonov-style quadratic regularization term. Even if the projection matrix is ill-posed or rank-deficient, the quadratic regularization guarantees that the objective function is strictly strongly convex (:math:`\nabla^2 f \succeq \lambda I`), permitting massive-scale voxel optimizations via proximal gradient methods or ADMM :cite:p:`jsmrm_ct_recon`.
+
+Similarly, Intensity-Modulated Radiation Therapy (IMRT) utilizes inverse planning to determine spatial radiation doses. The multi-objective problem minimizes the squared deviation from target tumor doses, penalizes doses to Organs At Risk (OAR), and applies quadratic regularization to the irradiation beamlet intensities (to reduce machine load and ensure a unique solution). This strongly convex formulation allows treatment planners to securely navigate the complex Pareto trade-offs of patient safety and tumor eradication using QP/QCQP solvers :cite:p:`jsmp_imrt_report`.
 
 
 Statistical test for weakly simpliciality
