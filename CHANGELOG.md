@@ -1,5 +1,17 @@
 # Changelog
 
+## [0.14.2](https://github.com/opthub-org/pytorch-bsf/compare/v0.14.1...v0.14.2) (2026-03-21)
+
+
+### Bug Fixes
+
+* resolve UnpicklingError in PyTorch 2.6+ and YAML loading failures ([#232](https://github.com/opthub-org/pytorch-bsf/issues/232)) ([439e5ee](https://github.com/opthub-org/pytorch-bsf/commit/439e5eea1383ef2544ba7d94c4bef4082c881292))
+
+
+### Documentation
+
+* add comprehensive documentation explaining Bézier simplex fitting and its relation to multi-objective optimization ([#237](https://github.com/opthub-org/pytorch-bsf/issues/237)) ([53d6e8a](https://github.com/opthub-org/pytorch-bsf/commit/53d6e8a5cc8a1de889e36840f4068e7c2275a581))
+
 ## [0.14.1](https://github.com/opthub-org/pytorch-bsf/compare/v0.14.0...v0.14.1) (2026-03-16)
 
 
