@@ -175,7 +175,7 @@ See :cite:p:`mizota2021unconstrained` for technical details.
 Application 2: Robust portfolio management
 ------------------------------------------
 
-In financial engineering, a foundational multi-objective optimization problem is the mean-variance portfolio optimization, where investors seek to simultaneously maximize expected returns and minimize risk (variance of return). 
+In financial engineering, the most classical real-world application is Markowitz's mean-variance portfolio optimization, where investors seek to simultaneously maximize expected returns and minimize risk (variance of return). 
 In practice, estimating the covariance matrix from limited observations often leads to numerical instability. To resolve this, it is common to introduce a strongly convex regularization term, such as an :math:`L_2` norm penalty, on the asset allocation weights :cite:p:`qi2026optimal`.
 
 This formulation effectively creates a three-objective optimization problem: 
@@ -186,57 +186,48 @@ This formulation effectively creates a three-objective optimization problem:
    \text{Risk (Variance): } & f_2(w) = \frac{1}{2} w^T \Sigma w \\
    \text{Stability (Regularization): } & f_3(w) = \lambda \|w\|_2^2
 
-Because the regularization term is strongly convex, the resulting scalarized objective function becomes strictly strongly convex. According to the theorems in :cite:p:`mizota2021unconstrained`, this strongly convex problem is guaranteed to be weakly simplicial. Fitting a Bézier simplex to this problem allows practitioners to continuously map the entire robust Pareto front, guaranteeing unique solutions and numerical stability without manually re-solving for every trade-off preference.
+The risk objective's Hessian is proportional to :math:`\Sigma`. Since the covariance matrix is positive definite in appropriately constructed asset pools, the risk objective is inherently strongly convex, and adding proper regularization further ensures strict strong convexity. According to the theorems in :cite:p:`mizota2021unconstrained`, this strongly convex problem is guaranteed to be weakly simplicial. Fitting a Bézier simplex to this problem allows practitioners to continuously map the entire robust Pareto front—namely, the efficient frontier—guaranteeing unique solutions. Solvers like MOSEK, Gurobi, and CVXPY are widely used to efficiently sweep across these parameters. Modern extensions include CVaR (Conditional Value-at-Risk) portfolio optimization and robust multi-objective portfolio frameworks under data uncertainty.
 
 
 Application 3: Distributed smart grids
 --------------------------------------
 
-In modern energy management systems, the Economic Dispatch Problem (EDP) aims to minimize fuel costs while precisely matching power supply and demand. For traditional generators, the fuel cost is typically formulated as a quadratic function of power output :math:`P_i`, which is inherently strongly convex:
+In modern energy management systems, the Multi-Objective Optimal Power Flow (MO-OPF) problem aims to minimize operating costs while precisely matching power supply and demand. For traditional generators, the fuel cost is typically formulated as a quadratic function of power output :math:`P_i`, which is inherently strongly convex:
 
 .. math:: C_i(P_i) = \alpha_i P_i^2 + \beta_i P_i + \gamma_i \quad (\alpha_i > 0)
 
-Moreover, environmental constraints such as minimizing emissions transform this into an Economic Emission Dispatch (EED) multi-objective problem. 
-Because the objectives are strongly convex, advanced decentralized frameworks (like distributed Lagrangian methods or ADMM) can achieve linear convergence across the geographic network. This robust mathematical property guarantees that even in unstable communication environments with latency or differential privacy additions, the network can securely and optimally coordinate energy distribution.
+Moreover, environmental constraints such as minimizing emissions (NOx/SOx) and minimizing transmission losses (using B-coefficient matrices) transform this into an Economic Emission Dispatch (EED) multi-objective problem, where all core objectives are quadratic and strongly convex.
+Because the objectives are strongly convex, advanced decentralized frameworks (like distributed Lagrangian methods or ADMM) can achieve linear convergence across the geographic network :cite:p:`performing2025accelerated,multi2026economic`. This robust mathematical property guarantees that even in unstable communication environments with latency or differential privacy additions, the network can securely and optimally coordinate energy distribution. Similar principles apply to microgrid energy management, balancing generator fuel costs against battery degradation (both modeled as strongly convex quadratic functions).
 
 
 Application 4: Multi-task and federated learning
 ------------------------------------------------
 
-In multi-task learning (MTL), a single model must simultaneously optimize losses across different tasks, often leading to "gradient conflict" where improving one task degrades another. However, if the combined loss function is strongly convex (e.g., via regularization), recent methodologies demonstrate that dynamically re-weighting gradients can dramatically improve convergence speed and generalization.
+In multi-task learning (MTL), a single model must simultaneously optimize losses across different tasks, often leading to "gradient conflict" where improving one task degrades another. However, if the combined loss function is strongly convex (e.g., via L2 regularization), methodologies such as MGDA-UB (Multiple Gradient Descent Algorithm) demonstrate that dynamically re-weighting gradients can dramatically improve convergence speed and generalization. A similar strong convexity setup applies to balancing fairness and accuracy in machine learning models via smooth proxy constraints.
+
 This principle is particularly powerful in Federated Learning, such as the MOCHA framework, where data is distributed across millions of edge devices. By imposing strongly convex regularizations on the model matrix :math:`W` alongside the local losses :math:`L_t`, the optimization objective becomes:
 
 .. math:: \min_{W, \Omega} \sum_{t=1}^m L_t(w_t, X_t) + \lambda_1 \mathrm{Tr}(W \Omega W^T) + \lambda_2 \|W\|_F^2
 
-Because the squared Frobenius norm :math:`\|W\|_F^2` provides strong convexity, researchers can guarantee that the global model converges to an optimal shared knowledge state despite restricted communication and incomplete local computations. Similar strategies are being explored in Aligned Multi-Objective Optimization (AMOO) for large-language models (LLMs), where adaptive weighting based on the strongly convex Hessian accelerates training.
+Because the squared Frobenius norm :math:`\|W\|_F^2` provides strong convexity, researchers can guarantee that the global model converges to an optimal shared knowledge state with linear convergence rate :math:`O(\exp(-\mu T))` despite restricted communication and incomplete local computations. Similar strategies are being explored in Aligned Multi-Objective Optimization (AMOO) for large-language models (LLMs), where adaptive weighting based on the strongly convex Hessian accelerates training :cite:p:`aligned2025multi,federated2017multi`.
 
 
 Application 5: Multi-objective model predictive control
 -------------------------------------------------------
 
-Autonomous systems like self-driving cars, drones, and industrial robots rely on Model Predictive Control (MPC) to optimize future behavior in real-time. In complex scenarios, these systems face competing goals such as precise trajectory tracking, energy efficiency (minimizing control effort), and motion smoothness (minimizing jerk). When these objectives are framed as positive-definite quadratic forms, the resulting stage cost function is strictly strongly convex:
+Autonomous systems like self-driving cars, drones, and industrial robots rely on Model Predictive Control (MPC) and Linear Quadratic Regulators (LQR) to optimize future behavior in real-time. In complex scenarios, these systems face competing goals such as precise trajectory tracking, energy efficiency (minimizing control effort/power), and motion smoothness (minimizing jerk). When these objectives are framed as positive-definite quadratic forms, the resulting stage cost function is strictly strongly convex:
 
 .. math:: l(x, u) = x^T Q x + u^T R u
 
-Where :math:`Q` and :math:`R` are positive definite matrices. This strong convexity guarantees that the underlying Quadratic Programming (QP) problem has a unique optimal solution that can be solved extremely rapidly at each time step. Furthermore, it inherently ensures the stability, safety (recursive feasibility), and collision-avoidance of distributed multi-agent formations (like drone swarms), acting as a stabilizing anchor in highly uncertain physical environments.
+Where :math:`Q` and :math:`R` are positive definite matrices. Even though the set of stabilizing controllers might be non-convex, the multi-objective LQR's Pareto front can be completely characterized by linear scalarization due to these strongly convex quadratic structures. This strong convexity guarantees that the underlying Quadratic Programming (QP) problem has a unique optimal solution that can be solved extremely rapidly at each time step. Furthermore, it inherently ensures the stability, safety (recursive feasibility), and collision-avoidance of distributed multi-agent formations (like drone swarms), acting as a stabilizing anchor in highly uncertain physical environments :cite:p:`distributed2022model,multi2024learning`.
 
 
-Application 6: Structural topology optimization
------------------------------------------------
+Application 6: Communication systems
+------------------------------------
 
-In mechanical and civil engineering, topology optimization determines the most efficient material distribution within a given design space. Engineers frequently aim to maximize stiffness (i.e., minimize compliance) while simultaneously minimizing structural weight.
-The foundation of these calculations is the "Principle of Minimum Potential Energy," which naturally provides a strongly convex quadratic objective for linear elastic materials. Due to the multi-objective nature of structural design, the Pareto front often contains distinct non-convexities or sharp trade-off "knees." Formulating a strongly convex "compromise function" to minimize distance to an ideal mathematical point enables practitioners to reliably locate the most stable and superior structural designs across these complex trade-off spaces.
+In wireless communication systems, transmit beamforming often seeks to minimize transmit power :math:`\|\mathbf{w}\|^2` (which is strongly convex) while satisfying specific Signal-to-Interference-plus-Noise Ratio (SINR) constraints for multiple users. Similarly, in MIMO (Multiple-Input Multiple-Output) multi-user systems, individual Minimum Mean Square Error (MMSE) objectives are often augmented with Tikhonov regularization, making each objective strongly convex.
 
-
-Application 7: Macroeconomic policy optimization
-------------------------------------------------
-
-The principles of multi-objective optimization extend far beyond physical engineering into the stabilization of socioeconomic systems. Central banks must continually balance competing mandates, most notably stabilizing prices (controlling inflation) and maximizing employment. 
-These objectives are unified into a centralized "loss function," which is often formulated using squared deviations from target values:
-
-.. math:: \mathcal{L} = w_\pi (\pi_t - \pi^*)^2 + w_y (y_t - y^*)^2
-
-Where :math:`\pi_t` and :math:`y_t` are the current inflation rate and output gap, and the asterisk denotes their respective targets. The inclusion of these quadratic terms assures the strong convexity of the objective function. By running macroeconomic simulations (such as DSGE models) against this strongly convex loss function, policymakers can uniquely and deterministically derive the optimal interest rate path, guaranteeing a mathematically optimal equilibrium. Similar strongly convex models are used in microeconomics to model consumer demand and utility maximization under strict budget constraints.
+Distributed resource allocation among network agents can be framed as minimizing the sum of strongly convex local cost functions. Utilizing consensus ADMM or QoS-constrained convex optimization algorithms on these strongly convex objectives ensures highly scalable, linearly convergent solutions that continuously adapt to fluctuating network topologies and interference conditions without requiring centralized computation overhead.
 
 
 Statistical test for weakly simpliciality
