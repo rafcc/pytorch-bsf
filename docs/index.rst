@@ -31,6 +31,7 @@ The project is on `GitHub`_.
    quickstart
    advanced
    whatis
+   applications
    faq
 
 .. toctree::
