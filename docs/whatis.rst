@@ -172,38 +172,75 @@ The solution map is continuous and surjective.
 See :cite:p:`mizota2021unconstrained` for technical details.
 
 
-Application 2: Deep neural networks
-------------------------------------
+Application 2: Robust portfolio management
+------------------------------------------
 
-Training a GAN involves balancing multiple competing losses.
-For consistency-regularized GANs (bCR / zCR), the generator and discriminator objectives combine several loss terms whose relative weights form a simplex structure.
-Fitting a Bézier simplex to solutions sampled across this simplex reveals the full trade-off surface without re-training from scratch for each configuration.
+In financial engineering, a foundational multi-objective optimization problem is the mean-variance portfolio optimization, where investors seek to simultaneously maximize expected returns and minimize risk (variance of return). 
+In practice, estimating the covariance matrix from limited observations often leads to numerical instability. To resolve this, it is common to introduce a strongly convex regularization term, such as an :math:`L_2` norm penalty, on the asset allocation weights :cite:p:`qi2026optimal`.
 
-Concretely, the discriminator and generator losses are defined as
+This formulation effectively creates a three-objective optimization problem: 
 
 .. math::
 
-   L_D^\mathrm{bCR}&=L_D+\lambda_\mathrm{real}L_\mathrm{real}+\lambda_\mathrm{fake}L_\mathrm{fake},
+   \text{Expected Return: } & f_1(w) = -\mu^T w \\
+   \text{Risk (Variance): } & f_2(w) = \frac{1}{2} w^T \Sigma w \\
+   \text{Stability (Regularization): } & f_3(w) = \lambda \|w\|_2^2
 
-   L_D&=D(G(z))-D(x),
+Because the regularization term is strongly convex, the resulting scalarized objective function becomes strictly strongly convex. According to the theorems in :cite:p:`mizota2021unconstrained`, this strongly convex problem is guaranteed to be weakly simplicial. Fitting a Bézier simplex to this problem allows practitioners to continuously map the entire robust Pareto front, guaranteeing unique solutions and numerical stability without manually re-solving for every trade-off preference.
 
-   L_\mathrm{real}&=\|D(x)-D(T(x))\|^2,
 
-   L_\mathrm{fake}&=\|D(G(z))-D(T(G(z)))\|^2,
+Application 3: Distributed smart grids
+--------------------------------------
 
-   L_D^\mathrm{zCR}&=L_D+\lambda_\mathrm{dis}L_\mathrm{dis},
+In modern energy management systems, the Economic Dispatch Problem (EDP) aims to minimize fuel costs while precisely matching power supply and demand. For traditional generators, the fuel cost is typically formulated as a quadratic function of power output :math:`P_i`, which is inherently strongly convex:
 
-   L_G^\mathrm{zCR}&=L_G+\lambda_\mathrm{gen}L_\mathrm{gen},
+.. math:: C_i(P_i) = \alpha_i P_i^2 + \beta_i P_i + \gamma_i \quad (\alpha_i > 0)
 
-   L_G&=-D(G(z)),
+Moreover, environmental constraints such as minimizing emissions transform this into an Economic Emission Dispatch (EED) multi-objective problem. 
+Because the objectives are strongly convex, advanced decentralized frameworks (like distributed Lagrangian methods or ADMM) can achieve linear convergence across the geographic network. This robust mathematical property guarantees that even in unstable communication environments with latency or differential privacy additions, the network can securely and optimally coordinate energy distribution.
 
-   L_\mathrm{dis}&=\|D(G(z))-D(G(T(z)))\|^2,
 
-   L_\mathrm{gen}&=\|G(z)-G(T(z))\|^2.
+Application 4: Multi-task and federated learning
+------------------------------------------------
+
+In multi-task learning (MTL), a single model must simultaneously optimize losses across different tasks, often leading to "gradient conflict" where improving one task degrades another. However, if the combined loss function is strongly convex (e.g., via regularization), recent methodologies demonstrate that dynamically re-weighting gradients can dramatically improve convergence speed and generalization.
+This principle is particularly powerful in Federated Learning, such as the MOCHA framework, where data is distributed across millions of edge devices. By imposing strongly convex regularizations on the model matrix :math:`W` alongside the local losses :math:`L_t`, the optimization objective becomes:
+
+.. math:: \min_{W, \Omega} \sum_{t=1}^m L_t(w_t, X_t) + \lambda_1 \mathrm{Tr}(W \Omega W^T) + \lambda_2 \|W\|_F^2
+
+Because the squared Frobenius norm :math:`\|W\|_F^2` provides strong convexity, researchers can guarantee that the global model converges to an optimal shared knowledge state despite restricted communication and incomplete local computations. Similar strategies are being explored in Aligned Multi-Objective Optimization (AMOO) for large-language models (LLMs), where adaptive weighting based on the strongly convex Hessian accelerates training.
+
+
+Application 5: Multi-objective model predictive control
+-------------------------------------------------------
+
+Autonomous systems like self-driving cars, drones, and industrial robots rely on Model Predictive Control (MPC) to optimize future behavior in real-time. In complex scenarios, these systems face competing goals such as precise trajectory tracking, energy efficiency (minimizing control effort), and motion smoothness (minimizing jerk). When these objectives are framed as positive-definite quadratic forms, the resulting stage cost function is strictly strongly convex:
+
+.. math:: l(x, u) = x^T Q x + u^T R u
+
+Where :math:`Q` and :math:`R` are positive definite matrices. This strong convexity guarantees that the underlying Quadratic Programming (QP) problem has a unique optimal solution that can be solved extremely rapidly at each time step. Furthermore, it inherently ensures the stability, safety (recursive feasibility), and collision-avoidance of distributed multi-agent formations (like drone swarms), acting as a stabilizing anchor in highly uncertain physical environments.
+
+
+Application 6: Structural topology optimization
+-----------------------------------------------
+
+In mechanical and civil engineering, topology optimization determines the most efficient material distribution within a given design space. Engineers frequently aim to maximize stiffness (i.e., minimize compliance) while simultaneously minimizing structural weight.
+The foundation of these calculations is the "Principle of Minimum Potential Energy," which naturally provides a strongly convex quadratic objective for linear elastic materials. Due to the multi-objective nature of structural design, the Pareto front often contains distinct non-convexities or sharp trade-off "knees." Formulating a strongly convex "compromise function" to minimize distance to an ideal mathematical point enables practitioners to reliably locate the most stable and superior structural designs across these complex trade-off spaces.
+
+
+Application 7: Macroeconomic policy optimization
+------------------------------------------------
+
+The principles of multi-objective optimization extend far beyond physical engineering into the stabilization of socioeconomic systems. Central banks must continually balance competing mandates, most notably stabilizing prices (controlling inflation) and maximizing employment. 
+These objectives are unified into a centralized "loss function," which is often formulated using squared deviations from target values:
+
+.. math:: \mathcal{L} = w_\pi (\pi_t - \pi^*)^2 + w_y (y_t - y^*)^2
+
+Where :math:`\pi_t` and :math:`y_t` are the current inflation rate and output gap, and the asterisk denotes their respective targets. The inclusion of these quadratic terms assures the strong convexity of the objective function. By running macroeconomic simulations (such as DSGE models) against this strongly convex loss function, policymakers can uniquely and deterministically derive the optimal interest rate path, guaranteeing a mathematically optimal equilibrium. Similar strongly convex models are used in microeconomics to model consumer demand and utility maximization under strict budget constraints.
 
 
 Statistical test for weakly simpliciality
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+-----------------------------------------
 
 When the problem class is not known in advance, it is not clear whether the Pareto set admits a simplex structure.
 A data-driven statistical test :cite:p:`hamada2018data` can determine whether this assumption is warranted before committing to a Bézier simplex model.
