@@ -51,7 +51,11 @@
 <li class="toctree-l1"><a class="reference internal" href="../whatis.html">What is Bézier simplex fitting?</a></li>
 <li class="toctree-l1 current"><a class="reference internal" href="../applications.html">Applications</a><ul class="current">
 <li class="toctree-l2 current"><a class="current reference internal" href="#">Elastic net model selection</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="#weighted-sum-scalarization-and-solution-map">Weighted-sum scalarization and solution map</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#unified-framework-for-sparse-modeling">Unified Framework for Sparse Modeling</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#elastic-net-formulation">Elastic Net Formulation</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#model-selection-on-the-regularization-map">Model Selection on the Regularization Map</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#interactive-exploration-and-insights">Interactive Exploration and Insights</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#empirical-validation">Empirical Validation</a></li>
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="portfolio.html">Robust portfolio management</a></li>
@@ -99,25 +103,63 @@
   <section id="elastic-net-model-selection">
 <h1>Elastic net model selection<a class="headerlink" href="#elastic-net-model-selection" title="Link to this heading"></a></h1>
 <p>A canonical and highly practical application of this theory is hyperparameter optimization for the <strong>Elastic Net</strong>. In machine learning and statistics, selecting the correct regularization parameters is critical to balancing data fidelity, model sparsity, and numerical stability.</p>
-<p>By formulating optimal parameter tuning for the Elastic Net as optimization over the Pareto set of a convex multi-objective problem <span id="id1">[<a class="reference internal" href="../whatis.html#id30" title="Henri Bonnel and Corinne Schneider. Post-pareto analysis and a new algorithm for the optimal parameter tuning of the elastic net. Journal of Optimization Theory and Applications, 183(3):993–1027, 2019. doi:10.1007/s10957-019-01592-x.">BS19</a>]</span>, practitioners eliminate the need for exhaustive and computationally expensive grid searches over all hyperparameter combinations.</p>
-<p>The underlying multi-objective problem involves simultaneously minimizing the least-squares data fidelity, the <span class="math notranslate nohighlight">\(L_1\)</span> sparsity penalty, and the <span class="math notranslate nohighlight">\(L_2\)</span> smoothness penalty over the model weights <span class="math notranslate nohighlight">\(\beta\)</span>:</p>
+<p>Traditional approaches rely on exhaustive grid searches or cross-validation over a discrete set of hyperparameter combinations <span class="math notranslate nohighlight">\((\alpha, \lambda)\)</span>. This process is computationally expensive. By formulating the hyperparameter tuning as a multi-objective optimization problem over a <strong>regularization map</strong> <span id="id1">[<a class="reference internal" href="../whatis.html#id30" title="Henri Bonnel and Corinne Schneider. Post-pareto analysis and a new algorithm for the optimal parameter tuning of the elastic net. Journal of Optimization Theory and Applications, 183(3):993–1027, 2019. doi:10.1007/s10957-019-01592-x.">BS19</a>]</span>, PyTorch-BSF allows for a continuous exploration of the model space, often reducing the computational cost by orders of magnitude (e.g., achieving speeds up to 2,000 times faster than exhaustive search for a 3-objective problem).</p>
+<section id="unified-framework-for-sparse-modeling">
+<h2>Unified Framework for Sparse Modeling<a class="headerlink" href="#unified-framework-for-sparse-modeling" title="Link to this heading"></a></h2>
+<p>The Elastic Net example is part of a broader framework for <strong>generalized sparse modeling</strong>. Any optimization problem expressed as a convex combination of several strongly convex functions can be analyzed using this approach:</p>
 <div class="math notranslate nohighlight">
-\[\begin{split}f_{data}(\beta) &amp;= \frac{1}{2}\|y - X\beta\|^2 \\
-f_{sparse}(\beta) &amp;= \|\beta\|_1 \\
-f_{smooth}(\beta) &amp;= \frac{1}{2}\|\beta\|_2^2\end{split}\]</div>
-<p>Typically, these are scalarized as <span class="math notranslate nohighlight">\(\min_\beta \frac{1}{2}\|y - X\beta\|^2 + \lambda_1\|\beta\|_1 + \lambda_2\|\beta\|_2^2\)</span>.</p>
-<p>Because of the <span class="math notranslate nohighlight">\(L_2\)</span> penalty term, the overall objective is strongly convex. Specifically, the addition of <span class="math notranslate nohighlight">\(\lambda_2\|\beta\|_2^2\)</span> ensures that the Hessian of the smooth component is lower bounded by <span class="math notranslate nohighlight">\(\lambda_2 I \succ 0\)</span>. This guarantees that the underlying solution is unique for each parameter combination, enabling well-defined sensitivity analysis and path-following algorithms. Consequently, the problem is guaranteed to be weakly simplicial <span id="id2">[<a class="reference internal" href="../whatis.html#id14" title="Yuto Mizota, Naoki Hamada, and Shunsuke Ichiki. All unconstrained strongly convex problems are weakly simplicial. 2021. URL: https://arxiv.org/abs/2106.12704, arXiv:2106.12704.">MHI21</a>]</span>.</p>
-<p>Rather than training thousands of models discretely, you can train the Elastic Net on a sparse subset of simplex-structured weight vectors. Fitting a Bézier simplex to the resulting trained models yields a continuous performance surface. This analytic surrogate allows practitioners to instantly explore the full continuous spectrum of model hyperparameters and locate the statistically optimal model analytically, without any further retraining.</p>
-<section id="weighted-sum-scalarization-and-solution-map">
-<h2>Weighted-sum scalarization and solution map<a class="headerlink" href="#weighted-sum-scalarization-and-solution-map" title="Link to this heading"></a></h2>
-<p>The <em>weighted-sum scalarization</em> <span class="math notranslate nohighlight">\(x^*: \Delta^{M-1}\to\mathbb R^N\)</span> defined by</p>
+\[\min_{\beta \in \mathbb{R}^N} f_w(\beta) = \sum_{m=1}^M w_m f_m(\beta), \quad w \in \Delta^{M-1}\]</div>
+<p>where <span class="math notranslate nohighlight">\(f_m\)</span> represent different aspects of the model, such as data fidelity (loss functions) or structural priors (regularization terms). By ensuring each <span class="math notranslate nohighlight">\(f_m\)</span> is strongly convex (e.g., by adding a small <span class="math notranslate nohighlight">\(L_2\)</span> penalty <span class="math notranslate nohighlight">\(\frac{\epsilon}{2} \|\beta\|_2^2\)</span>), the resulting solution map <span class="math notranslate nohighlight">\(x^*(w)\)</span> is guaranteed to be weakly simplicial <span id="id2">[<a class="reference internal" href="../whatis.html#id14" title="Yuto Mizota, Naoki Hamada, and Shunsuke Ichiki. All unconstrained strongly convex problems are weakly simplicial. 2021. URL: https://arxiv.org/abs/2106.12704, arXiv:2106.12704.">MHI21</a>]</span>, allowing for high-quality approximation via Bézier simplices.</p>
+<p>This unified framework extends far beyond the standard Elastic Net:</p>
+<ul class="simple">
+<li><p><strong>Generalized Linear Models (GLMs)</strong>: The loss term can be any negative log-likelihood with a canonical link function (e.g., Logistic, Poisson, or Gamma regression).</p></li>
+<li><p><strong>Structural Regularization</strong>: Practitioners can incorporate structural priors like <strong>Group Lasso</strong> <span id="id3">[<a class="reference internal" href="../whatis.html#id41" title="Ming Yuan and Yi Lin. Model selection and estimation in regression with grouped variables. Journal of the Royal Statistical Society: Series B (Statistical Methodology), 68(1):49–67, 2006.">YL06</a>]</span>, <strong>Fused Lasso</strong> <span id="id4">[<a class="reference internal" href="../whatis.html#id42" title="Robert Tibshirani, Michael Saunders, Saharon Rosset, Ji Zhu, and Keith Knight. Sparsity and smoothness via the fused lasso. Journal of the Royal Statistical Society: Series B (Statistical Methodology), 67(1):91–108, 2005.">TSR+05</a>]</span>, or <strong>Smoothed Lasso</strong> to encode spatial or group relationships between features.</p></li>
+<li><p><strong>Transfer Learning and Covariate Shift</strong>: By using importance-weighted empirical risk as the loss function, the framework can handle scenarios where the training and test data distributions differ (covariate shift).</p></li>
+<li><p><strong>Robust Estimation</strong>: Replacing the standard squared error with robust loss functions like the <strong>Huber loss</strong> allows for model selection that is resilient to outliers.</p></li>
+</ul>
+</section>
+<section id="elastic-net-formulation">
+<h2>Elastic Net Formulation<a class="headerlink" href="#elastic-net-formulation" title="Link to this heading"></a></h2>
+<p>For the standard Elastic Net, the underlying multi-objective problem involves simultaneously minimizing three objectives over the model weights <span class="math notranslate nohighlight">\(\beta \in \mathbb{R}^N\)</span>:</p>
 <div class="math notranslate nohighlight">
-\[x^*(w)=\arg\min_x \sum_{m=1}^M w_m f_m(x).\]</div>
-<p>We define the <em>solution map</em> <span class="math notranslate nohighlight">\((x^*,f\circ x^*):\Delta^{M-1}\to G^*(f)\)</span> by</p>
+\[\begin{split}f_{data}(\beta) &amp;= \frac{1}{2n}\|y - X\beta\|^2 + \frac{\epsilon}{2}\|\beta\|^2 \\
+f_{sparse}(\beta) &amp;= \|\beta\|_1 + \frac{\epsilon}{2}\|\beta\|^2 \\
+f_{smooth}(\beta) &amp;= \frac{1+\epsilon}{2}\|\beta\|_2^2\end{split}\]</div>
+<p>where <span class="math notranslate nohighlight">\(n\)</span> is the number of observations and <span class="math notranslate nohighlight">\(\epsilon &gt; 0\)</span> is a small constant ensuring strong convexity. These correspond to the hyperparameter mapping <span class="math notranslate nohighlight">\(w = (w_1, w_2, w_3)\)</span> where:</p>
 <div class="math notranslate nohighlight">
-\[(x^*,f\circ x^*)(w)=(x^*(w),f(x^*(x))).\]</div>
-<p>The solution map is continuous and surjective.
-See <span id="id3">[<a class="reference internal" href="../whatis.html#id14" title="Yuto Mizota, Naoki Hamada, and Shunsuke Ichiki. All unconstrained strongly convex problems are weakly simplicial. 2021. URL: https://arxiv.org/abs/2106.12704, arXiv:2106.12704.">MHI21</a>]</span> for technical details.</p>
+\[\begin{split}w_1 &amp;= \frac{1}{1 + \lambda} \\
+w_2 &amp;= \frac{\lambda \alpha}{1 + \lambda} \\
+w_3 &amp;= \frac{\lambda (1-\alpha)}{1 + \lambda}\end{split}\]</div>
+<p>By training the model on a sparse subset of weight vectors <span class="math notranslate nohighlight">\(w\)</span> and fitting a Bézier simplex, we obtain a continuous <strong>solution map</strong> <span class="math notranslate nohighlight">\((x^*, f \circ x^*): \Delta^{M-1} \to G^*(f)\)</span> that maps any weight <span class="math notranslate nohighlight">\(w\)</span> to the optimal weights <span class="math notranslate nohighlight">\(\beta\)</span> and the corresponding objective values.</p>
+</section>
+<section id="model-selection-on-the-regularization-map">
+<h2>Model Selection on the Regularization Map<a class="headerlink" href="#model-selection-on-the-regularization-map" title="Link to this heading"></a></h2>
+<p>The resulting Bézier simplex provides a continuous surrogate of the performance surface, enabling users to apply various statistical model selection criteria analytically:</p>
+<ol class="arabic simple">
+<li><p><strong>Minimum Cross-Validation Error (min profile rule)</strong>: Locates the model <span class="math notranslate nohighlight">\(w\)</span> that minimizes the mean cross-validation error across folds, prioritizing predictive accuracy.</p></li>
+<li><p><strong>One Standard Error Rule (1se profile rule)</strong>: Selects the most parsimonious (sparsest) model whose mean error is within one standard error of the minimum. This heuristic is widely used in tools like <cite>glmnet</cite> to gain stability and interpretability.</p></li>
+<li><p><strong>AICc Profile Rule</strong>: Balances goodness-of-fit and model complexity using the <strong>Akaike Information Criterion with Finite Sample Correction</strong>. This allows for selecting models with a theoretically grounded trade-off without the noise of fold-wise cross-validation variability.</p></li>
+</ol>
+</section>
+<section id="interactive-exploration-and-insights">
+<h2>Interactive Exploration and Insights<a class="headerlink" href="#interactive-exploration-and-insights" title="Link to this heading"></a></h2>
+<p>The Bézier simplex approximation of the regularization map provides more than just a tool for optimization. It offers a <strong>face structure</strong> that naturally reflects the combinations of subsets of loss and regularization terms. By observing the solutions on each face of the simplex, users can:</p>
+<ul class="simple">
+<li><p><strong>Obtain Insights</strong>: Gain a deep understanding of the trade-offs between different modeling assumptions, such as <span class="math notranslate nohighlight">\(L_1\)</span> vs <span class="math notranslate nohighlight">\(L_2\)</span> regularization.</p></li>
+<li><p><strong>Perform Exploratory Analysis</strong>: Test how sensitive the optimal model is to changes in hyperparameters without the trial-and-error of retraining.</p></li>
+<li><p><strong>Support Model Selection</strong>: Make better decisions <em>a posteriori</em> by seeing the entire landscape of potential models, rather than relying on a single fixed structure chosen <em>a priori</em>.</p></li>
+</ul>
+</section>
+<section id="empirical-validation">
+<h2>Empirical Validation<a class="headerlink" href="#empirical-validation" title="Link to this heading"></a></h2>
+<p>The effectiveness of PyTorch-BSF for Elastic Net has been validated on various benchmark datasets from the UCI Machine Learning Repository, including:</p>
+<ul class="simple">
+<li><p><strong>Blog Feedback</strong>: Regression task with high-dimensional features.</p></li>
+<li><p><strong>QSAR Fish Toxicity</strong>: Predicting aquatic toxicity.</p></li>
+<li><p><strong>Slice Localization</strong>: Estimating the relative location of CT slices.</p></li>
+<li><p><strong>Wine / Residential Building</strong>: Predicting physical properties or prices.</p></li>
+</ul>
+<p>Experiments show that even with a limited number of training points (e.g., 51 points for a degree-3 simplex), the Bézier simplex accurately approximates the entire solution map, maintaining low Mean Squared Error (MSE) across the continuous hyperparameter space.</p>
 </section>
 </section>
 
