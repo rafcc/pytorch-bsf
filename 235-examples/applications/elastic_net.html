@@ -1,0 +1,199 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Elastic net model selection &mdash; PyTorch-BSF 0.14.1 documentation</title>
+      <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=b86133f3" />
+      <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=9edc463e" />
+      <link rel="stylesheet" type="text/css" href="../_static/proof.css" />
+
+  
+      <script src="../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../_static/documentation_options.js?v=3a3a8e7f"></script>
+      <script src="../_static/doctools.js?v=9bcbadda"></script>
+      <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+      <script async="async" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="Robust portfolio management" href="portfolio.html" />
+    <link rel="prev" title="What is Bézier simplex fitting?" href="../whatis.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../index.html" class="icon icon-home">
+            PyTorch-BSF
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">User guide</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../quickstart.html">Quickstart</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../advanced.html">Advanced Topics</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="../whatis.html">What is Bézier simplex fitting?</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="../whatis.html#bezier-simplex">Bezier simplex</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../whatis.html#bezier-simplex-fitting">Bézier simplex fitting</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../whatis.html#approximation-theorem">Approximation theorem</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../whatis.html#relation-to-multi-objective-optimization">Relation to multi-objective optimization</a></li>
+<li class="toctree-l2 current"><a class="reference internal" href="../whatis.html#applications">Applications</a><ul class="current">
+<li class="toctree-l3 current"><a class="current reference internal" href="#">Elastic net model selection</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#weighted-sum-scalarization-and-solution-map">Weighted-sum scalarization and solution map</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="portfolio.html">Robust portfolio management</a></li>
+<li class="toctree-l3"><a class="reference internal" href="smart_grids.html">Distributed smart grids</a></li>
+<li class="toctree-l3"><a class="reference internal" href="federated_learning.html">Multi-task and federated learning</a></li>
+<li class="toctree-l3"><a class="reference internal" href="model_predictive_control.html">Multi-objective model predictive control</a></li>
+<li class="toctree-l3"><a class="reference internal" href="communications.html">Communication systems</a></li>
+<li class="toctree-l3"><a class="reference internal" href="supply_chain.html">Supply chain and logistics optimization</a></li>
+<li class="toctree-l3"><a class="reference internal" href="medical_imaging.html">Medical imaging and radiation therapy</a></li>
+<li class="toctree-l3"><a class="reference internal" href="facility_location.html">Facility location and continuous approximations</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../whatis.html#statistical-test-for-simplicial-topology">Statistical test for simplicial topology</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../whatis.html#references">References</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../faq.html">Frequently asked questions</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">API reference</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../modules.html">torch_bsf</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">PyTorch-BSF</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../whatis.html">What is Bézier simplex fitting?</a></li>
+      <li class="breadcrumb-item active">Elastic net model selection</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../_sources/applications/elastic_net.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="elastic-net-model-selection">
+<h1>Elastic net model selection<a class="headerlink" href="#elastic-net-model-selection" title="Link to this heading"></a></h1>
+<p>A canonical and highly practical application of this theory is hyperparameter optimization for the <strong>Elastic Net</strong>. The elastic net objective combines L1 and L2 regularization parameterized by two coefficients: <span class="math notranslate nohighlight">\(\lambda\)</span> (overall strength) and <span class="math notranslate nohighlight">\(\alpha\)</span> (L1/L2 balance). When appropriately parameterized, these coefficients span a 2-simplex.</p>
+<p>Because the elastic net problem is unconstrained and strongly convex, it is guaranteed to be weakly simplicial <span id="id1">[<a class="reference internal" href="../whatis.html#id14" title="Yuto Mizota, Naoki Hamada, and Shunsuke Ichiki. All unconstrained strongly convex problems are weakly simplicial. 2021. URL: https://arxiv.org/abs/2106.12704, arXiv:2106.12704.">MHI21</a>]</span>. Furthermore, as established by <span id="id2">Bonnel and Schneider [<a class="reference internal" href="../whatis.html#id30" title="Henri Bonnel and Corinne Schneider. Post-pareto analysis and a new algorithm for the optimal parameter tuning of the elastic net. Journal of Optimization Theory and Applications, 183(3):993–1027, 2019. doi:10.1007/s10957-019-01592-x.">BS19</a>]</span>, optimal parameter tuning for the Elastic Net can be rigorously formulated as optimization over the Pareto set of a convex multi-objective problem. The L2 penalty enforces strong convexity, guaranteeing that the underlying solution is unique for each parameter combination, enabling well-defined sensitivity analysis and path-following algorithms.</p>
+<p>Rather than training thousands of models in a grid search over all <span class="math notranslate nohighlight">\((\lambda, \alpha)\)</span> combinations, you can train the Elastic Net on a sparse subset of simplex-structured weight vectors. Fitting a Bézier simplex to the resulting trained models yields a continuous performance surface. This allows practitioners to instantly explore the full continuous spectrum of model hyperparameters and locate the statistically optimal model analytically, without any further retraining.</p>
+<section id="weighted-sum-scalarization-and-solution-map">
+<h2>Weighted-sum scalarization and solution map<a class="headerlink" href="#weighted-sum-scalarization-and-solution-map" title="Link to this heading"></a></h2>
+<p>The <em>weighted-sum scalarization</em> <span class="math notranslate nohighlight">\(x^*: \Delta^{M-1}\to\mathbb R^N\)</span> defined by</p>
+<div class="math notranslate nohighlight">
+\[x^*(w)=\arg\min_x \sum_{m=1}^M w_m f_m(x).\]</div>
+<p>We define the <em>solution map</em> <span class="math notranslate nohighlight">\((x^*,f\circ x^*):\Delta^{M-1}\to G^*(f)\)</span> by</p>
+<div class="math notranslate nohighlight">
+\[(x^*,f\circ x^*)(w)=(x^*(w),f(x^*(x))).\]</div>
+<p>The solution map is continuous and surjective.
+See <span id="id3">[<a class="reference internal" href="../whatis.html#id14" title="Yuto Mizota, Naoki Hamada, and Shunsuke Ichiki. All unconstrained strongly convex problems are weakly simplicial. 2021. URL: https://arxiv.org/abs/2106.12704, arXiv:2106.12704.">MHI21</a>]</span> for technical details.</p>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="../whatis.html" class="btn btn-neutral float-left" title="What is Bézier simplex fitting?" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="portfolio.html" class="btn btn-neutral float-right" title="Robust portfolio management" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2021, OptHub Inc. and FUJITSU LIMITED.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  
+<div class="rst-versions" data-toggle="rst-versions" role="note" aria-label="versions">
+    <span class="rst-current-version" data-toggle="rst-current-version">
+        <span class="fa fa-book"> Other Versions</span>
+        v: 235-examples
+        <span class="fa fa-caret-down"></span>
+    </span>
+    <div class="rst-other-versions">
+        <dl>
+            <dt>Tags</dt>
+            <dd><a href="../../v0.0.1/index.html">v0.0.1</a></dd>
+            <dd><a href="../../v0.0.2/index.html">v0.0.2</a></dd>
+            <dd><a href="../../v0.1.0/index.html">v0.1.0</a></dd>
+            <dd><a href="../../v0.10.0/index.html">v0.10.0</a></dd>
+            <dd><a href="../../v0.11.0/index.html">v0.11.0</a></dd>
+            <dd><a href="../../v0.11.1/index.html">v0.11.1</a></dd>
+            <dd><a href="../../v0.11.2/index.html">v0.11.2</a></dd>
+            <dd><a href="../../v0.11.3/index.html">v0.11.3</a></dd>
+            <dd><a href="../../v0.12.0/index.html">v0.12.0</a></dd>
+            <dd><a href="../../v0.12.1/index.html">v0.12.1</a></dd>
+            <dd><a href="../../v0.13.0/index.html">v0.13.0</a></dd>
+            <dd><a href="../../v0.13.1/index.html">v0.13.1</a></dd>
+            <dd><a href="../../v0.13.2/index.html">v0.13.2</a></dd>
+            <dd><a href="../../v0.13.3/index.html">v0.13.3</a></dd>
+            <dd><a href="../../v0.13.4/index.html">v0.13.4</a></dd>
+            <dd><a href="../../v0.14.0/index.html">v0.14.0</a></dd>
+            <dd><a href="../../v0.14.1/index.html">v0.14.1</a></dd>
+            <dd><a href="../../v0.2.0/index.html">v0.2.0</a></dd>
+            <dd><a href="../../v0.3.0/index.html">v0.3.0</a></dd>
+            <dd><a href="../../v0.3.1/index.html">v0.3.1</a></dd>
+            <dd><a href="../../v0.4.0/index.html">v0.4.0</a></dd>
+            <dd><a href="../../v0.5.0/index.html">v0.5.0</a></dd>
+            <dd><a href="../../v0.5.1/index.html">v0.5.1</a></dd>
+            <dd><a href="../../v0.6.0/index.html">v0.6.0</a></dd>
+            <dd><a href="../../v0.7.0/index.html">v0.7.0</a></dd>
+            <dd><a href="../../v0.8.0/index.html">v0.8.0</a></dd>
+            <dd><a href="../../v0.9.0/index.html">v0.9.0</a></dd>
+        </dl>
+        <dl>
+            <dt>Branches</dt>
+            <dd><a href="elastic_net.html">235-examples</a></dd>
+        </dl>
+    </div>
+</div><script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

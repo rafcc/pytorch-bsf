@@ -1,0 +1,187 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Multi-task and federated learning &mdash; PyTorch-BSF 0.14.1 documentation</title>
+      <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=b86133f3" />
+      <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=9edc463e" />
+      <link rel="stylesheet" type="text/css" href="../_static/proof.css" />
+
+  
+      <script src="../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../_static/documentation_options.js?v=3a3a8e7f"></script>
+      <script src="../_static/doctools.js?v=9bcbadda"></script>
+      <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+      <script async="async" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="Multi-objective model predictive control" href="model_predictive_control.html" />
+    <link rel="prev" title="Distributed smart grids" href="smart_grids.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../index.html" class="icon icon-home">
+            PyTorch-BSF
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">User guide</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../quickstart.html">Quickstart</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../advanced.html">Advanced Topics</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="../whatis.html">What is Bézier simplex fitting?</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="../whatis.html#bezier-simplex">Bezier simplex</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../whatis.html#bezier-simplex-fitting">Bézier simplex fitting</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../whatis.html#approximation-theorem">Approximation theorem</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../whatis.html#relation-to-multi-objective-optimization">Relation to multi-objective optimization</a></li>
+<li class="toctree-l2 current"><a class="reference internal" href="../whatis.html#applications">Applications</a><ul class="current">
+<li class="toctree-l3"><a class="reference internal" href="elastic_net.html">Elastic net model selection</a></li>
+<li class="toctree-l3"><a class="reference internal" href="portfolio.html">Robust portfolio management</a></li>
+<li class="toctree-l3"><a class="reference internal" href="smart_grids.html">Distributed smart grids</a></li>
+<li class="toctree-l3 current"><a class="current reference internal" href="#">Multi-task and federated learning</a></li>
+<li class="toctree-l3"><a class="reference internal" href="model_predictive_control.html">Multi-objective model predictive control</a></li>
+<li class="toctree-l3"><a class="reference internal" href="communications.html">Communication systems</a></li>
+<li class="toctree-l3"><a class="reference internal" href="supply_chain.html">Supply chain and logistics optimization</a></li>
+<li class="toctree-l3"><a class="reference internal" href="medical_imaging.html">Medical imaging and radiation therapy</a></li>
+<li class="toctree-l3"><a class="reference internal" href="facility_location.html">Facility location and continuous approximations</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../whatis.html#statistical-test-for-simplicial-topology">Statistical test for simplicial topology</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../whatis.html#references">References</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../faq.html">Frequently asked questions</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">API reference</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../modules.html">torch_bsf</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">PyTorch-BSF</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../whatis.html">What is Bézier simplex fitting?</a></li>
+      <li class="breadcrumb-item active">Multi-task and federated learning</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../_sources/applications/federated_learning.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="multi-task-and-federated-learning">
+<h1>Multi-task and federated learning<a class="headerlink" href="#multi-task-and-federated-learning" title="Link to this heading"></a></h1>
+<p>In multi-task learning (MTL), a single model must simultaneously optimize losses across different tasks, often leading to “gradient conflict” where improving one task degrades another. However, if the combined loss function is strongly convex (e.g., via L2 regularization), methodologies such as MGDA-UB (Multiple Gradient Descent Algorithm) demonstrate that dynamically re-weighting gradients can dramatically improve convergence speed and generalization. A similar strong convexity setup applies to balancing fairness and accuracy in machine learning models via smooth proxy constraints. For subgroup fairness, formulating each expected subgroup loss with L2 regularization guarantees that the Stochastic Multi-Gradient (SMG) algorithm achieves an <span class="math notranslate nohighlight">\(O(1/k)\)</span> convergence rate to a Pareto-optimal point, matching the best known single-objective stochastic rates <span id="id1">[<a class="reference internal" href="../whatis.html#id29" title="Suyun Liu and Luís N Vicente. The stochastic multi-gradient algorithm for multi-objective optimization and its application to supervised machine learning. Annals of Operations Research, 339(3):1119–1148, 2024. doi:10.1007/s10479-021-04033-z.">LV24</a>]</span>. Furthermore, for composite sparse learning scenarios like multi-objective LASSO, proximal gradient methods dramatically upgrade their convergence speed from sublinear to linear <span class="math notranslate nohighlight">\(O(r^k)\)</span> rates, solely due to the underlying strong convexity of the L2-regularized smooth term <span id="id2">[<a class="reference internal" href="../whatis.html#id32" title="Hiroki Tanabe, Ellen H Fukuda, and Nobuo Yamashita. Convergence rates analysis of a multiobjective proximal gradient method. Optimization Letters, 17(2):333–350, 2023. doi:10.1007/s11590-022-01877-7.">TFY23</a>]</span>.</p>
+<p>This principle is particularly powerful in Federated Learning, such as the MOCHA framework, where data is distributed across millions of edge devices. By imposing strongly convex regularizations on the model matrix <span class="math notranslate nohighlight">\(W\)</span> alongside the local losses <span class="math notranslate nohighlight">\(L_t\)</span>, the optimization objective becomes:</p>
+<div class="math notranslate nohighlight">
+\[\min_{W, \Omega} \sum_{t=1}^m L_t(w_t, X_t) + \lambda_1 \mathrm{Tr}(W \Omega W^T) + \lambda_2 \|W\|_F^2\]</div>
+<p>Because the squared Frobenius norm <span class="math notranslate nohighlight">\(\|W\|_F^2\)</span> provides strong convexity, researchers can guarantee that the global model converges to an optimal shared knowledge state with linear convergence rate <span class="math notranslate nohighlight">\(O(\exp(-\mu T))\)</span> despite restricted communication and incomplete local computations. Similar strategies are being explored in Aligned Multi-Objective Optimization (AMOO) for large-language models (LLMs), where adaptive weighting based on the strongly convex Hessian accelerates training <span id="id3">[<a class="reference internal" href="../whatis.html#id19" title="Yonathan Efroni, Ben Kretzu, Daniel Jiang, Jalaj Bhandari, Zhu Zheqing, and Karen Ullrich. Aligned multi objective optimization. In Proceedings of the 42nd International Conference on Machine Learning. 2025. URL: https://arxiv.org/abs/2502.14096.">EKJ+25</a>, <a class="reference internal" href="../whatis.html#id20" title="Virginia Smith, Chao-Kai Chiang, Maziar Sanjabi, and Ameet Talwalkar. Federated multi-task learning. In Advances in Neural Information Processing Systems, volume 30. 2017. URL: https://proceedings.neurips.cc/paper_files/paper/2017/file/6211080f4f7831969efdd6c99cde327e-Paper.pdf.">SCST17</a>]</span>.</p>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="smart_grids.html" class="btn btn-neutral float-left" title="Distributed smart grids" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="model_predictive_control.html" class="btn btn-neutral float-right" title="Multi-objective model predictive control" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2021, OptHub Inc. and FUJITSU LIMITED.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  
+<div class="rst-versions" data-toggle="rst-versions" role="note" aria-label="versions">
+    <span class="rst-current-version" data-toggle="rst-current-version">
+        <span class="fa fa-book"> Other Versions</span>
+        v: 235-examples
+        <span class="fa fa-caret-down"></span>
+    </span>
+    <div class="rst-other-versions">
+        <dl>
+            <dt>Tags</dt>
+            <dd><a href="../../v0.0.1/index.html">v0.0.1</a></dd>
+            <dd><a href="../../v0.0.2/index.html">v0.0.2</a></dd>
+            <dd><a href="../../v0.1.0/index.html">v0.1.0</a></dd>
+            <dd><a href="../../v0.10.0/index.html">v0.10.0</a></dd>
+            <dd><a href="../../v0.11.0/index.html">v0.11.0</a></dd>
+            <dd><a href="../../v0.11.1/index.html">v0.11.1</a></dd>
+            <dd><a href="../../v0.11.2/index.html">v0.11.2</a></dd>
+            <dd><a href="../../v0.11.3/index.html">v0.11.3</a></dd>
+            <dd><a href="../../v0.12.0/index.html">v0.12.0</a></dd>
+            <dd><a href="../../v0.12.1/index.html">v0.12.1</a></dd>
+            <dd><a href="../../v0.13.0/index.html">v0.13.0</a></dd>
+            <dd><a href="../../v0.13.1/index.html">v0.13.1</a></dd>
+            <dd><a href="../../v0.13.2/index.html">v0.13.2</a></dd>
+            <dd><a href="../../v0.13.3/index.html">v0.13.3</a></dd>
+            <dd><a href="../../v0.13.4/index.html">v0.13.4</a></dd>
+            <dd><a href="../../v0.14.0/index.html">v0.14.0</a></dd>
+            <dd><a href="../../v0.14.1/index.html">v0.14.1</a></dd>
+            <dd><a href="../../v0.2.0/index.html">v0.2.0</a></dd>
+            <dd><a href="../../v0.3.0/index.html">v0.3.0</a></dd>
+            <dd><a href="../../v0.3.1/index.html">v0.3.1</a></dd>
+            <dd><a href="../../v0.4.0/index.html">v0.4.0</a></dd>
+            <dd><a href="../../v0.5.0/index.html">v0.5.0</a></dd>
+            <dd><a href="../../v0.5.1/index.html">v0.5.1</a></dd>
+            <dd><a href="../../v0.6.0/index.html">v0.6.0</a></dd>
+            <dd><a href="../../v0.7.0/index.html">v0.7.0</a></dd>
+            <dd><a href="../../v0.8.0/index.html">v0.8.0</a></dd>
+            <dd><a href="../../v0.9.0/index.html">v0.9.0</a></dd>
+        </dl>
+        <dl>
+            <dt>Branches</dt>
+            <dd><a href="federated_learning.html">235-examples</a></dd>
+        </dl>
+    </div>
+</div><script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>
