@@ -62,10 +62,13 @@
 <li class="toctree-l3"><a class="reference internal" href="#weighted-sum-scalarization-and-solution-map">Weighted-sum scalarization and solution map</a></li>
 </ul>
 </li>
-<li class="toctree-l2"><a class="reference internal" href="#application-2-deep-neural-networks">Application 2: Deep neural networks</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="#statistical-test-for-weakly-simpliciality">Statistical test for weakly simpliciality</a></li>
-</ul>
-</li>
+<li class="toctree-l2"><a class="reference internal" href="#application-2-robust-portfolio-management">Application 2: Robust portfolio management</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#application-3-distributed-smart-grids">Application 3: Distributed smart grids</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#application-4-multi-task-and-federated-learning">Application 4: Multi-task and federated learning</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#application-5-multi-objective-model-predictive-control">Application 5: Multi-objective model predictive control</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#application-6-structural-topology-optimization">Application 6: Structural topology optimization</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#application-7-macroeconomic-policy-optimization">Application 7: Macroeconomic policy optimization</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#statistical-test-for-weakly-simpliciality">Statistical test for weakly simpliciality</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#references">References</a></li>
 </ul>
 </li>
@@ -118,11 +121,11 @@ We define the <em>index set</em> by</p>
 <div class="math notranslate nohighlight">
 \[\mathbf b(\mathbf t\mid\mathbf p) = \sum_{\mathbf d\in\mathbb N_D^M} \binom{D}{\mathbf d} \mathbf t^{\mathbf d} \mathbf p_{\mathbf d},\]</div>
 <p>where <span class="math notranslate nohighlight">\(\mathbf t^{\mathbf d} = t_1^{d_1} t_2^{d_2}\cdots t_M^{d_M}\)</span>, <span class="math notranslate nohighlight">\(\binom{D}{\mathbf d}=D! / (d_1!d_2!\cdots d_M!)\)</span>, and <span class="math notranslate nohighlight">\(\mathbf p_{\mathbf d}\in\mathbb R^N\ (\mathbf d\in\mathbb N_D^M)\)</span> are parameters called the <em>control points</em>.</p>
-<figure class="align-center" id="id14">
+<figure class="align-center" id="id17">
 <a class="reference internal image-reference" href="_images/bezier-simplex.png"><img alt="_images/bezier-simplex.png" src="_images/bezier-simplex.png" style="width: 33%;" />
 </a>
 <figcaption>
-<p><span class="caption-number">Fig. 1 </span><span class="caption-text">A 2-D Bézier simplex of degree 3 in <span class="math notranslate nohighlight">\(\mathbb R^3\)</span> and its control points. The shape of the simplex is determined by the control points <span class="math notranslate nohighlight">\(\mathbf p_{(3,0,0)}, \mathbf p_{(2,1,0)}, \ldots, \mathbf p_{(0,0,3)}\)</span>.</span><a class="headerlink" href="#id14" title="Link to this image"></a></p>
+<p><span class="caption-number">Fig. 1 </span><span class="caption-text">A 2-D Bézier simplex of degree 3 in <span class="math notranslate nohighlight">\(\mathbb R^3\)</span> and its control points. The shape of the simplex is determined by the control points <span class="math notranslate nohighlight">\(\mathbf p_{(3,0,0)}, \mathbf p_{(2,1,0)}, \ldots, \mathbf p_{(0,0,3)}\)</span>.</span><a class="headerlink" href="#id17" title="Link to this image"></a></p>
 </figcaption>
 </figure>
 </section>
@@ -132,17 +135,17 @@ We define the <em>index set</em> by</p>
 <div class="math notranslate nohighlight">
 \[\arg\min_{\mathbf p} \sum_{(\mathbf t,\mathbf x)\in B}\|\mathbf b(\mathbf t\mid\mathbf p)-\mathbf x\|^2.\]</div>
 <p>PyTorch-BSF provides an algorithm for solving this optimization problem with the L-BFGS algorithm.</p>
-<figure class="align-center" id="id15">
+<figure class="align-center" id="id18">
 <a class="reference internal image-reference" href="_images/bezier-simplex-fitting.png"><img alt="_images/bezier-simplex-fitting.png" src="_images/bezier-simplex-fitting.png" style="width: 66%;" />
 </a>
 <figcaption>
-<p><span class="caption-number">Fig. 2 </span><span class="caption-text">A Bezier simplex fitted to a dataset. The control points are determined by the least squares fitting algorithm.</span><a class="headerlink" href="#id15" title="Link to this image"></a></p>
+<p><span class="caption-number">Fig. 2 </span><span class="caption-text">A Bezier simplex fitted to a dataset. The control points are determined by the least squares fitting algorithm.</span><a class="headerlink" href="#id18" title="Link to this image"></a></p>
 </figcaption>
 </figure>
 </section>
 <section id="approximation-theorem">
 <h2>Approximation theorem<a class="headerlink" href="#approximation-theorem" title="Link to this heading"></a></h2>
-<p>Any continuous map from a simplex to a Euclidean space can be approximated by a Bezier simplex. More precisely, the following theorem holds <span id="id1">[<a class="reference internal" href="#id10" title="Ken Kobayashi, Naoki Hamada, Akiyoshi Sannai, Aiko Tanaka, Kenichi Bannai, and Masashi Sugiyama. Bézier simplex fitting: describing pareto fronts of simplicial problems with small samples in multi-objective optimization. In Proceedings of the AAAI Conference on Artificial Intelligence, volume 33, 2304–2313. 2019. URL: https://doi.org/10.1609/aaai.v33i01.33012304.">KHS+19</a>]</span>:</p>
+<p>Any continuous map from a simplex to a Euclidean space can be approximated by a Bezier simplex. More precisely, the following theorem holds <span id="id1">[<a class="reference internal" href="#id12" title="Ken Kobayashi, Naoki Hamada, Akiyoshi Sannai, Aiko Tanaka, Kenichi Bannai, and Masashi Sugiyama. Bézier simplex fitting: describing pareto fronts of simplicial problems with small samples in multi-objective optimization. In Proceedings of the AAAI Conference on Artificial Intelligence, volume 33, 2304–2313. 2019. URL: https://doi.org/10.1609/aaai.v33i01.33012304.">KHS+19</a>]</span>:</p>
 <div class="proof theorem admonition" id="theorem-0">
 <p class="admonition-title"><span class="caption-number">Theorem 1 </span> (Universal Approximation Theorem)</p>
 <section class="theorem-content" id="proof-content">
@@ -179,22 +182,22 @@ We define the <em>index set</em> by</p>
 <h3>Weakly simplicial problems<a class="headerlink" href="#weakly-simplicial-problems" title="Link to this heading"></a></h3>
 <p>In many real-world multi-objective optimization problems, the Pareto set and Pareto front exhibit a highly structured, continuous shape. Specifically, they often mirror the topological structure of a standard simplex (e.g., a curve for a two-objective problem, a curved triangle for a three-objective problem, and so on). The concept of a <em>weakly simplicial problem</em> formally captures this property, ensuring that the optimal trade-off surfaces are well-behaved and can be elegantly approximated by Bézier simplices.</p>
 <div class="proof definition admonition" id="definition-3">
-<p class="admonition-title"><span class="caption-number">Definition 3 </span> (Weakly Simplicial Problem <span id="id2">[<a class="reference internal" href="#id12" title="Yuto Mizota, Naoki Hamada, and Shunsuke Ichiki. All unconstrained strongly convex problems are weakly simplicial. 2021. URL: https://arxiv.org/abs/2106.12704, arXiv:2106.12704.">MHI21</a>]</span>)</p>
+<p class="admonition-title"><span class="caption-number">Definition 3 </span> (Weakly Simplicial Problem <span id="id2">[<a class="reference internal" href="#id14" title="Yuto Mizota, Naoki Hamada, and Shunsuke Ichiki. All unconstrained strongly convex problems are weakly simplicial. 2021. URL: https://arxiv.org/abs/2106.12704, arXiv:2106.12704.">MHI21</a>]</span>)</p>
 <section class="definition-content" id="proof-content">
 <p>Let <span class="math notranslate nohighlight">\(f:X\to\mathbb R^M\)</span> be a mapping, where <span class="math notranslate nohighlight">\(X\)</span> is a subset of <span class="math notranslate nohighlight">\(\mathbb R^N\)</span>. The problem of minimizing <span class="math notranslate nohighlight">\(f\)</span> is <span class="math notranslate nohighlight">\(C^r\)</span><em>-simplicial</em> if there exists a <span class="math notranslate nohighlight">\(C^r\)</span>-mapping <span class="math notranslate nohighlight">\(\Phi:\Delta^{M-1} \to X^\star(f)\)</span> such that both the mappings <span class="math notranslate nohighlight">\(\Phi|_{\Delta_I}:\Delta_I\to X^\star(f_I)\)</span> and <span class="math notranslate nohighlight">\(f|_{X^\star(f_I)}:X^\star(f_I)\to f(X^\star(f_I))\)</span> are <span class="math notranslate nohighlight">\(C^r\)</span>-diffeomorphisms for any nonempty subset <span class="math notranslate nohighlight">\(I\)</span> of <span class="math notranslate nohighlight">\(\{1,\ldots,M\}\)</span>, where <span class="math notranslate nohighlight">\(0\le r\le\infty\)</span>. The problem of minimizing <span class="math notranslate nohighlight">\(f\)</span> is <span class="math notranslate nohighlight">\(C^r\)</span><em>-weakly simplicial</em> if there exists a <span class="math notranslate nohighlight">\(C^r\)</span>-mapping <span class="math notranslate nohighlight">\(\phi:\Delta^{M-1}\to X^\star(f)\)</span> such that <span class="math notranslate nohighlight">\(\phi(\Delta_I)=X^\star(f_I)\)</span> for any nonempty subset <span class="math notranslate nohighlight">\(I\)</span> of <span class="math notranslate nohighlight">\(\{1,\ldots,M\}\)</span>, where <span class="math notranslate nohighlight">\(0\le r\le\infty\)</span>.</p>
 </section>
-</div><figure class="align-center" id="id16">
+</div><figure class="align-center" id="id19">
 <a class="reference internal image-reference" href="_images/simplicial-problem.png"><img alt="_images/simplicial-problem.png" src="_images/simplicial-problem.png" style="width: 100%;" />
 </a>
 <figcaption>
-<p><span class="caption-number">Fig. 3 </span><span class="caption-text">A simplicial problem: the Pareto set and Pareto front are homeomorphic to a simplex, i.e., they have no pinched topology.</span><a class="headerlink" href="#id16" title="Link to this image"></a></p>
+<p><span class="caption-number">Fig. 3 </span><span class="caption-text">A simplicial problem: the Pareto set and Pareto front are homeomorphic to a simplex, i.e., they have no pinched topology.</span><a class="headerlink" href="#id19" title="Link to this image"></a></p>
 </figcaption>
 </figure>
-<figure class="align-center" id="id17">
+<figure class="align-center" id="id20">
 <a class="reference internal image-reference" href="_images/weakly-simplicial-problem.png"><img alt="_images/weakly-simplicial-problem.png" src="_images/weakly-simplicial-problem.png" style="width: 33%;" />
 </a>
 <figcaption>
-<p><span class="caption-number">Fig. 4 </span><span class="caption-text">A weakly simplicial problem: the Pareto set and Pareto front are a continuous image of a simplex, i.e., they may have a pinched topology.</span><a class="headerlink" href="#id17" title="Link to this image"></a></p>
+<p><span class="caption-number">Fig. 4 </span><span class="caption-text">A weakly simplicial problem: the Pareto set and Pareto front are a continuous image of a simplex, i.e., they may have a pinched topology.</span><a class="headerlink" href="#id20" title="Link to this image"></a></p>
 </figcaption>
 </figure>
 <p>In weakly simplicial problems, there exists a continuous map from a simplex to the Pareto set and Pareto front, which is guaranteed to be approximable by the Approximation theorem.</p>
@@ -212,13 +215,13 @@ Formally, a function <span class="math notranslate nohighlight">\(f_m\)</span> i
 </section>
 </div><p>The formal mathematical foundation for this connection is given by the following theorems, which prove that strongly convex problems are inherently weakly simplicial and that their optimal solutions can be continuously parameterized by a standard simplex.</p>
 <div class="proof theorem admonition" id="theorem-5">
-<p class="admonition-title"><span class="caption-number">Theorem 2 </span> (Theorems 1 and 2 in <span id="id3">[<a class="reference internal" href="#id12" title="Yuto Mizota, Naoki Hamada, and Shunsuke Ichiki. All unconstrained strongly convex problems are weakly simplicial. 2021. URL: https://arxiv.org/abs/2106.12704, arXiv:2106.12704.">MHI21</a>]</span>)</p>
+<p class="admonition-title"><span class="caption-number">Theorem 2 </span> (Theorems 1 and 2 in <span id="id3">[<a class="reference internal" href="#id14" title="Yuto Mizota, Naoki Hamada, and Shunsuke Ichiki. All unconstrained strongly convex problems are weakly simplicial. 2021. URL: https://arxiv.org/abs/2106.12704, arXiv:2106.12704.">MHI21</a>]</span>)</p>
 <section class="theorem-content" id="proof-content">
 <p>Let <span class="math notranslate nohighlight">\(f: \mathbb{R}^n \to \mathbb{R}^m\)</span> be a <span class="math notranslate nohighlight">\(C^r\)</span>-strongly convex mapping (<span class="math notranslate nohighlight">\(0 \le r \le \infty\)</span>).
 Then, the problem of minimizing <span class="math notranslate nohighlight">\(f\)</span> is <span class="math notranslate nohighlight">\(C^{r-1}\)</span>-weakly simplicial for <span class="math notranslate nohighlight">\(r &gt; 0\)</span> and <span class="math notranslate nohighlight">\(C^0\)</span>-weakly simplicial for <span class="math notranslate nohighlight">\(r = 0\)</span>.</p>
 </section>
 </div><div class="proof theorem admonition" id="theorem-6">
-<p class="admonition-title"><span class="caption-number">Theorem 3 </span> (Proposition 1 of <span id="id4">[<a class="reference internal" href="#id12" title="Yuto Mizota, Naoki Hamada, and Shunsuke Ichiki. All unconstrained strongly convex problems are weakly simplicial. 2021. URL: https://arxiv.org/abs/2106.12704, arXiv:2106.12704.">MHI21</a>]</span>)</p>
+<p class="admonition-title"><span class="caption-number">Theorem 3 </span> (Proposition 1 of <span id="id4">[<a class="reference internal" href="#id14" title="Yuto Mizota, Naoki Hamada, and Shunsuke Ichiki. All unconstrained strongly convex problems are weakly simplicial. 2021. URL: https://arxiv.org/abs/2106.12704, arXiv:2106.12704.">MHI21</a>]</span>)</p>
 <section class="theorem-content" id="proof-content">
 <p>Let <span class="math notranslate nohighlight">\(f: \mathbb{R}^n \to \mathbb{R}^m\)</span> be a strongly convex mapping.
 Then, the mapping <span class="math notranslate nohighlight">\(x^*: \Delta^{m-1} \to X^*(f)\)</span> defined by</p>
@@ -232,7 +235,7 @@ Then, the mapping <span class="math notranslate nohighlight">\(x^*: \Delta^{m-1}
 <section id="application-1-elastic-net-model-selection">
 <h2>Application 1: Elastic net model selection<a class="headerlink" href="#application-1-elastic-net-model-selection" title="Link to this heading"></a></h2>
 <p>A canonical and highly practical application of this theory is hyperparameter optimization for the <strong>Elastic Net</strong>. The elastic net objective combines L1 and L2 regularization parameterized by two coefficients: <span class="math notranslate nohighlight">\(\lambda\)</span> (overall strength) and <span class="math notranslate nohighlight">\(\alpha\)</span> (L1/L2 balance). When appropriately parameterized, these coefficients span a 2-simplex.</p>
-<p>Because the elastic net problem is unconstrained and strongly convex, it is guaranteed to be weakly simplicial <span id="id5">[<a class="reference internal" href="#id12" title="Yuto Mizota, Naoki Hamada, and Shunsuke Ichiki. All unconstrained strongly convex problems are weakly simplicial. 2021. URL: https://arxiv.org/abs/2106.12704, arXiv:2106.12704.">MHI21</a>]</span>. Rather than training thousands of models in a grid search over all <span class="math notranslate nohighlight">\((\lambda, \alpha)\)</span> combinations, you can train the Elastic Net on a sparse subset of simplex-structured weight vectors. Fitting a Bézier simplex to the resulting trained models yields a continuous performance surface. This allows practitioners to instantly explore the full continuous spectrum of model hyperparameters and locate the statistically optimal model analytically, without any further retraining.</p>
+<p>Because the elastic net problem is unconstrained and strongly convex, it is guaranteed to be weakly simplicial <span id="id5">[<a class="reference internal" href="#id14" title="Yuto Mizota, Naoki Hamada, and Shunsuke Ichiki. All unconstrained strongly convex problems are weakly simplicial. 2021. URL: https://arxiv.org/abs/2106.12704, arXiv:2106.12704.">MHI21</a>]</span>. Rather than training thousands of models in a grid search over all <span class="math notranslate nohighlight">\((\lambda, \alpha)\)</span> combinations, you can train the Elastic Net on a sparse subset of simplex-structured weight vectors. Fitting a Bézier simplex to the resulting trained models yields a continuous performance surface. This allows practitioners to instantly explore the full continuous spectrum of model hyperparameters and locate the statistically optimal model analytically, without any further retraining.</p>
 <section id="weighted-sum-scalarization-and-solution-map">
 <h3>Weighted-sum scalarization and solution map<a class="headerlink" href="#weighted-sum-scalarization-and-solution-map" title="Link to this heading"></a></h3>
 <p>The <em>weighted-sum scalarization</em> <span class="math notranslate nohighlight">\(x^*: \Delta^{M-1}\to\mathbb R^N\)</span> defined by</p>
@@ -242,43 +245,85 @@ Then, the mapping <span class="math notranslate nohighlight">\(x^*: \Delta^{m-1}
 <div class="math notranslate nohighlight">
 \[(x^*,f\circ x^*)(w)=(x^*(w),f(x^*(x))).\]</div>
 <p>The solution map is continuous and surjective.
-See <span id="id6">[<a class="reference internal" href="#id12" title="Yuto Mizota, Naoki Hamada, and Shunsuke Ichiki. All unconstrained strongly convex problems are weakly simplicial. 2021. URL: https://arxiv.org/abs/2106.12704, arXiv:2106.12704.">MHI21</a>]</span> for technical details.</p>
+See <span id="id6">[<a class="reference internal" href="#id14" title="Yuto Mizota, Naoki Hamada, and Shunsuke Ichiki. All unconstrained strongly convex problems are weakly simplicial. 2021. URL: https://arxiv.org/abs/2106.12704, arXiv:2106.12704.">MHI21</a>]</span> for technical details.</p>
 </section>
 </section>
-<section id="application-2-deep-neural-networks">
-<h2>Application 2: Deep neural networks<a class="headerlink" href="#application-2-deep-neural-networks" title="Link to this heading"></a></h2>
-<p>Training a GAN involves balancing multiple competing losses.
-For consistency-regularized GANs (bCR / zCR), the generator and discriminator objectives combine several loss terms whose relative weights form a simplex structure.
-Fitting a Bézier simplex to solutions sampled across this simplex reveals the full trade-off surface without re-training from scratch for each configuration.</p>
-<p>Concretely, the discriminator and generator losses are defined as</p>
+<section id="application-2-robust-portfolio-management">
+<h2>Application 2: Robust portfolio management<a class="headerlink" href="#application-2-robust-portfolio-management" title="Link to this heading"></a></h2>
+<p>In financial engineering, a foundational multi-objective optimization problem is the mean-variance portfolio optimization, where investors seek to simultaneously maximize expected returns and minimize risk (variance of return).
+In practice, estimating the covariance matrix from limited observations often leads to numerical instability. To resolve this, it is common to introduce a strongly convex regularization term, such as an <span class="math notranslate nohighlight">\(L_2\)</span> norm penalty, on the asset allocation weights <span id="id7">[<a class="reference internal" href="#id16" title="Houduo Qi. Optimal portfolio selections via l1,2-norm regularization. URL: https://eprints.soton.ac.uk/451606/1/mvpl12_for_PURE.pdf.">Qi</a>]</span>.</p>
+<p>This formulation effectively creates a three-objective optimization problem:</p>
 <div class="math notranslate nohighlight">
-\[ \begin{align}\begin{aligned}L_D^\mathrm{bCR}&amp;=L_D+\lambda_\mathrm{real}L_\mathrm{real}+\lambda_\mathrm{fake}L_\mathrm{fake},\\L_D&amp;=D(G(z))-D(x),\\L_\mathrm{real}&amp;=\|D(x)-D(T(x))\|^2,\\L_\mathrm{fake}&amp;=\|D(G(z))-D(T(G(z)))\|^2,\\L_D^\mathrm{zCR}&amp;=L_D+\lambda_\mathrm{dis}L_\mathrm{dis},\\L_G^\mathrm{zCR}&amp;=L_G+\lambda_\mathrm{gen}L_\mathrm{gen},\\L_G&amp;=-D(G(z)),\\L_\mathrm{dis}&amp;=\|D(G(z))-D(G(T(z)))\|^2,\\L_\mathrm{gen}&amp;=\|G(z)-G(T(z))\|^2.\end{aligned}\end{align} \]</div>
-<section id="statistical-test-for-weakly-simpliciality">
-<h3>Statistical test for weakly simpliciality<a class="headerlink" href="#statistical-test-for-weakly-simpliciality" title="Link to this heading"></a></h3>
-<p>When the problem class is not known in advance, it is not clear whether the Pareto set admits a simplex structure.
-A data-driven statistical test <span id="id7">[<a class="reference internal" href="#id13" title="Naoki Hamada and Keisuke Goto. Data-driven analysis of pareto set topology. In Proceedings of the Genetic and Evolutionary Computation Conference, 657–664. 2018. URL: https://doi.org/10.1145/3205455.3205613.">HG18</a>]</span> can determine whether this assumption is warranted before committing to a Bézier simplex model.
-See <span id="id8">[<a class="reference internal" href="#id13" title="Naoki Hamada and Keisuke Goto. Data-driven analysis of pareto set topology. In Proceedings of the Genetic and Evolutionary Computation Conference, 657–664. 2018. URL: https://doi.org/10.1145/3205455.3205613.">HG18</a>]</span> for the methodology and test statistics.</p>
+\[\begin{split}\text{Expected Return: } &amp; f_1(w) = -\mu^T w \\
+\text{Risk (Variance): } &amp; f_2(w) = \frac{1}{2} w^T \Sigma w \\
+\text{Stability (Regularization): } &amp; f_3(w) = \lambda \|w\|_2^2\end{split}\]</div>
+<p>Because the regularization term is strongly convex, the resulting scalarized objective function becomes strictly strongly convex. According to the theorems in <span id="id8">[<a class="reference internal" href="#id14" title="Yuto Mizota, Naoki Hamada, and Shunsuke Ichiki. All unconstrained strongly convex problems are weakly simplicial. 2021. URL: https://arxiv.org/abs/2106.12704, arXiv:2106.12704.">MHI21</a>]</span>, this strongly convex problem is guaranteed to be weakly simplicial. Fitting a Bézier simplex to this problem allows practitioners to continuously map the entire robust Pareto front, guaranteeing unique solutions and numerical stability without manually re-solving for every trade-off preference.</p>
 </section>
+<section id="application-3-distributed-smart-grids">
+<h2>Application 3: Distributed smart grids<a class="headerlink" href="#application-3-distributed-smart-grids" title="Link to this heading"></a></h2>
+<p>In modern energy management systems, the Economic Dispatch Problem (EDP) aims to minimize fuel costs while precisely matching power supply and demand. For traditional generators, the fuel cost is typically formulated as a quadratic function of power output <span class="math notranslate nohighlight">\(P_i\)</span>, which is inherently strongly convex:</p>
+<div class="math notranslate nohighlight">
+\[C_i(P_i) = \alpha_i P_i^2 + \beta_i P_i + \gamma_i \quad (\alpha_i &gt; 0)\]</div>
+<p>Moreover, environmental constraints such as minimizing emissions transform this into an Economic Emission Dispatch (EED) multi-objective problem.
+Because the objectives are strongly convex, advanced decentralized frameworks (like distributed Lagrangian methods or ADMM) can achieve linear convergence across the geographic network. This robust mathematical property guarantees that even in unstable communication environments with latency or differential privacy additions, the network can securely and optimally coordinate energy distribution.</p>
+</section>
+<section id="application-4-multi-task-and-federated-learning">
+<h2>Application 4: Multi-task and federated learning<a class="headerlink" href="#application-4-multi-task-and-federated-learning" title="Link to this heading"></a></h2>
+<p>In multi-task learning (MTL), a single model must simultaneously optimize losses across different tasks, often leading to “gradient conflict” where improving one task degrades another. However, if the combined loss function is strongly convex (e.g., via regularization), recent methodologies demonstrate that dynamically re-weighting gradients can dramatically improve convergence speed and generalization.
+This principle is particularly powerful in Federated Learning, such as the MOCHA framework, where data is distributed across millions of edge devices. By imposing strongly convex regularizations on the model matrix <span class="math notranslate nohighlight">\(W\)</span> alongside the local losses <span class="math notranslate nohighlight">\(L_t\)</span>, the optimization objective becomes:</p>
+<div class="math notranslate nohighlight">
+\[\min_{W, \Omega} \sum_{t=1}^m L_t(w_t, X_t) + \lambda_1 \mathrm{Tr}(W \Omega W^T) + \lambda_2 \|W\|_F^2\]</div>
+<p>Because the squared Frobenius norm <span class="math notranslate nohighlight">\(\|W\|_F^2\)</span> provides strong convexity, researchers can guarantee that the global model converges to an optimal shared knowledge state despite restricted communication and incomplete local computations. Similar strategies are being explored in Aligned Multi-Objective Optimization (AMOO) for large-language models (LLMs), where adaptive weighting based on the strongly convex Hessian accelerates training.</p>
+</section>
+<section id="application-5-multi-objective-model-predictive-control">
+<h2>Application 5: Multi-objective model predictive control<a class="headerlink" href="#application-5-multi-objective-model-predictive-control" title="Link to this heading"></a></h2>
+<p>Autonomous systems like self-driving cars, drones, and industrial robots rely on Model Predictive Control (MPC) to optimize future behavior in real-time. In complex scenarios, these systems face competing goals such as precise trajectory tracking, energy efficiency (minimizing control effort), and motion smoothness (minimizing jerk). When these objectives are framed as positive-definite quadratic forms, the resulting stage cost function is strictly strongly convex:</p>
+<div class="math notranslate nohighlight">
+\[l(x, u) = x^T Q x + u^T R u\]</div>
+<p>Where <span class="math notranslate nohighlight">\(Q\)</span> and <span class="math notranslate nohighlight">\(R\)</span> are positive definite matrices. This strong convexity guarantees that the underlying Quadratic Programming (QP) problem has a unique optimal solution that can be solved extremely rapidly at each time step. Furthermore, it inherently ensures the stability, safety (recursive feasibility), and collision-avoidance of distributed multi-agent formations (like drone swarms), acting as a stabilizing anchor in highly uncertain physical environments.</p>
+</section>
+<section id="application-6-structural-topology-optimization">
+<h2>Application 6: Structural topology optimization<a class="headerlink" href="#application-6-structural-topology-optimization" title="Link to this heading"></a></h2>
+<p>In mechanical and civil engineering, topology optimization determines the most efficient material distribution within a given design space. Engineers frequently aim to maximize stiffness (i.e., minimize compliance) while simultaneously minimizing structural weight.
+The foundation of these calculations is the “Principle of Minimum Potential Energy,” which naturally provides a strongly convex quadratic objective for linear elastic materials. Due to the multi-objective nature of structural design, the Pareto front often contains distinct non-convexities or sharp trade-off “knees.” Formulating a strongly convex “compromise function” to minimize distance to an ideal mathematical point enables practitioners to reliably locate the most stable and superior structural designs across these complex trade-off spaces.</p>
+</section>
+<section id="application-7-macroeconomic-policy-optimization">
+<h2>Application 7: Macroeconomic policy optimization<a class="headerlink" href="#application-7-macroeconomic-policy-optimization" title="Link to this heading"></a></h2>
+<p>The principles of multi-objective optimization extend far beyond physical engineering into the stabilization of socioeconomic systems. Central banks must continually balance competing mandates, most notably stabilizing prices (controlling inflation) and maximizing employment.
+These objectives are unified into a centralized “loss function,” which is often formulated using squared deviations from target values:</p>
+<div class="math notranslate nohighlight">
+\[\mathcal{L} = w_\pi (\pi_t - \pi^*)^2 + w_y (y_t - y^*)^2\]</div>
+<p>Where <span class="math notranslate nohighlight">\(\pi_t\)</span> and <span class="math notranslate nohighlight">\(y_t\)</span> are the current inflation rate and output gap, and the asterisk denotes their respective targets. The inclusion of these quadratic terms assures the strong convexity of the objective function. By running macroeconomic simulations (such as DSGE models) against this strongly convex loss function, policymakers can uniquely and deterministically derive the optimal interest rate path, guaranteeing a mathematically optimal equilibrium. Similar strongly convex models are used in microeconomics to model consumer demand and utility maximization under strict budget constraints.</p>
+</section>
+<section id="statistical-test-for-weakly-simpliciality">
+<h2>Statistical test for weakly simpliciality<a class="headerlink" href="#statistical-test-for-weakly-simpliciality" title="Link to this heading"></a></h2>
+<p>When the problem class is not known in advance, it is not clear whether the Pareto set admits a simplex structure.
+A data-driven statistical test <span id="id9">[<a class="reference internal" href="#id15" title="Naoki Hamada and Keisuke Goto. Data-driven analysis of pareto set topology. In Proceedings of the Genetic and Evolutionary Computation Conference, 657–664. 2018. URL: https://doi.org/10.1145/3205455.3205613.">HG18</a>]</span> can determine whether this assumption is warranted before committing to a Bézier simplex model.
+See <span id="id10">[<a class="reference internal" href="#id15" title="Naoki Hamada and Keisuke Goto. Data-driven analysis of pareto set topology. In Proceedings of the Genetic and Evolutionary Computation Conference, 657–664. 2018. URL: https://doi.org/10.1145/3205455.3205613.">HG18</a>]</span> for the methodology and test statistics.</p>
 </section>
 <section id="references">
 <h2>References<a class="headerlink" href="#references" title="Link to this heading"></a></h2>
-<div class="docutils container" id="id9">
+<div class="docutils container" id="id11">
 <div role="list" class="citation-list">
-<div class="citation" id="id13" role="doc-biblioentry">
+<div class="citation" id="id15" role="doc-biblioentry">
 <span class="label"><span class="fn-bracket">[</span>HG18<span class="fn-bracket">]</span></span>
-<span class="backrefs">(<a role="doc-backlink" href="#id7">1</a>,<a role="doc-backlink" href="#id8">2</a>)</span>
+<span class="backrefs">(<a role="doc-backlink" href="#id9">1</a>,<a role="doc-backlink" href="#id10">2</a>)</span>
 <p>Naoki Hamada and Keisuke Goto. Data-driven analysis of pareto set topology. In <em>Proceedings of the Genetic and Evolutionary Computation Conference</em>, 657–664. 2018. URL: <a class="reference external" href="https://doi.org/10.1145/3205455.3205613">https://doi.org/10.1145/3205455.3205613</a>.</p>
 </div>
-<div class="citation" id="id10" role="doc-biblioentry">
+<div class="citation" id="id12" role="doc-biblioentry">
 <span class="label"><span class="fn-bracket">[</span><a role="doc-backlink" href="#id1">KHS+19</a><span class="fn-bracket">]</span></span>
 <p>Ken Kobayashi, Naoki Hamada, Akiyoshi Sannai, Aiko Tanaka, Kenichi Bannai, and Masashi Sugiyama. Bézier simplex fitting: describing pareto fronts of simplicial problems with small samples in multi-objective optimization. In <em>Proceedings of the AAAI Conference on Artificial Intelligence</em>, volume 33, 2304–2313. 2019. URL: <a class="reference external" href="https://doi.org/10.1609/aaai.v33i01.33012304">https://doi.org/10.1609/aaai.v33i01.33012304</a>.</p>
 </div>
-<div class="citation" id="id12" role="doc-biblioentry">
+<div class="citation" id="id14" role="doc-biblioentry">
 <span class="label"><span class="fn-bracket">[</span>MHI21<span class="fn-bracket">]</span></span>
-<span class="backrefs">(<a role="doc-backlink" href="#id2">1</a>,<a role="doc-backlink" href="#id3">2</a>,<a role="doc-backlink" href="#id4">3</a>,<a role="doc-backlink" href="#id5">4</a>,<a role="doc-backlink" href="#id6">5</a>)</span>
+<span class="backrefs">(<a role="doc-backlink" href="#id2">1</a>,<a role="doc-backlink" href="#id3">2</a>,<a role="doc-backlink" href="#id4">3</a>,<a role="doc-backlink" href="#id5">4</a>,<a role="doc-backlink" href="#id6">5</a>,<a role="doc-backlink" href="#id8">6</a>)</span>
 <p>Yuto Mizota, Naoki Hamada, and Shunsuke Ichiki. All unconstrained strongly convex problems are weakly simplicial. 2021. URL: <a class="reference external" href="https://arxiv.org/abs/2106.12704">https://arxiv.org/abs/2106.12704</a>, <a class="reference external" href="https://arxiv.org/abs/2106.12704">arXiv:2106.12704</a>.</p>
 </div>
-<div class="citation" id="id11" role="doc-biblioentry">
+<div class="citation" id="id16" role="doc-biblioentry">
+<span class="label"><span class="fn-bracket">[</span><a role="doc-backlink" href="#id7">Qi</a><span class="fn-bracket">]</span></span>
+<p>Houduo Qi. Optimal portfolio selections via l1,2-norm regularization. URL: <a class="reference external" href="https://eprints.soton.ac.uk/451606/1/mvpl12_for_PURE.pdf">https://eprints.soton.ac.uk/451606/1/mvpl12_for_PURE.pdf</a>.</p>
+</div>
+<div class="citation" id="id13" role="doc-biblioentry">
 <span class="label"><span class="fn-bracket">[</span>TSKH20<span class="fn-bracket">]</span></span>
 <p>Aiko Tanaka, Akiyoshi Sannai, Ken Kobayashi, and Naoki Hamada. Asymptotic risk of bézier simplex fitting. In <em>Proceedings of the AAAI Conference on Artificial Intelligence</em>, volume 34, 2416–2424. 2020. URL: <a class="reference external" href="https://doi.org/10.1609/aaai.v34i03.5622">https://doi.org/10.1609/aaai.v34i03.5622</a>.</p>
 </div>
