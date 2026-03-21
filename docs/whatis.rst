@@ -175,11 +175,21 @@ Statistical test for simplicial topology
 
 When the underlying problem class is not analytically known in advance (e.g., in complex real-world designs using simulations), it is not immediately clear whether the Pareto set admits a simplex structure. In such cases, data-driven statistical tests based on persistent homology can determine whether this assumption is warranted before committing to a Bézier simplex model.
 
-Earlier work :cite:p:`hamada2018data` formally defined a *simple problem* as satisfying two conditions:
-(S1) The Pareto set is homeomorphic to a standard simplex, and 
-(S2) the objective mapping restricted to the Pareto set is a topological embedding.
+Earlier work introduced the formal concept of a *simple problem*:
 
-It is mathematically known that if a simple problem further satisfies the condition that the interiors of the Pareto sets of any two subproblems do not intersect, then the problem is equivalent to being :math:`C^0`-simplicial. Furthermore, it is conjectured that "simple" and "simplicial" are equivalent even without this extra condition. Therefore, testing whether a problem is simple serves as a practical test for whether a problem is simplicial. Notably, the non-intersection condition itself can also be tested statistically.
+.. prf:definition:: Simple Problem :cite:p:`hamada2018data`
+
+   A problem is *simple* if it satisfies two conditions:
+   
+   | (S1) The Pareto set is homeomorphic to a standard simplex, and 
+   | (S2) the objective mapping restricted to the Pareto set is a :math:`C^0`-embedding.
+
+
+.. prf:theorem:: Equivalence of Simple and Simplicial Problems
+
+   All :math:`C^r`-simplicial problems are simple (:math:`0\le r \le \infty`). A simple problem is :math:`C^0`-simplicial if the interiors of the Pareto sets of any two subproblems do not intersect.
+
+Furthermore, it is conjectured that "simple" and "simplicial" are equivalent even without this extra condition. Therefore, testing whether a problem is simple serves as a practical test for whether a problem is simplicial. Notably, the non-intersection condition itself can also be tested statistically.
 
 To strictly determine whether a problem is simple, two complementary statistical tests are required. In standard statistical testing, failing to reject a null hypothesis does not allow one to affirmatively adopt it. Therefore, we need both a test to reject simplicity and a test to affirmatively confirm it.
 
