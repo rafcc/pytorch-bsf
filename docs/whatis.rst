@@ -278,12 +278,23 @@ Likewise, in engineering design optimizing for structural compliance or minimum 
 These properties are explicitly leveraged by Adaptive Weighted Sum (AWS) methods in structural multidisciplinary optimization, where successive boundary-constrained strongly-convex QPs smoothly and uniformly map the Pareto front :cite:p:`deweck2004adaptive`. Even in complex biological systems, such as competitive Lotka-Volterra models, transformations of the quadratic interaction terms yield strongly convex models that exhibit identically stable simplicial Pareto behavior.
 
 
-Statistical test for weakly simpliciality
------------------------------------------
+Statistical test for simplicial topology
+----------------------------------------
 
-When the problem class is not known in advance, it is not clear whether the Pareto set admits a simplex structure.
-A data-driven statistical test :cite:p:`hamada2018data` can determine whether this assumption is warranted before committing to a Bézier simplex model.
-See :cite:p:`hamada2018data` for the methodology and test statistics.
+When the underlying problem class is not analytically known in advance (e.g., in complex real-world designs using simulations), it is not immediately clear whether the Pareto set admits a simplex structure. In such cases, a data-driven statistical test based on persistent homology can determine whether this assumption is warranted before committing to a Bézier simplex model.
+
+Earlier work :cite:p:`hamada2018data` introduced a method utilizing confidence sets of persistence diagrams to statistically reject the hypothesis that a problem is simplicial. Building upon this, :cite:t:`hamada2020test` demonstrated that this homology-based approach can also be used to affirmatively test whether a problem *is* simplicial. By leveraging the h-cobordism theorem from algebraic topology, they established a mathematical characterization showing that if the Pareto set (modeled as a compact smooth manifold) and its boundary are simply connected, and its estimated homology matches that of a standard simplex, then the Pareto set is guaranteed to be homeomorphic to a simplex.
+This allows practitioners to verify the simpliciality of a multi-objective optimization problem strictly from sampled Pareto solutions before applying Bézier simplex fitting.
+
+.. prf:theorem:: Theorem 3 in :cite:p:`hamada2020test`
+
+   Let :math:`M` be an :math:`n`-dimensional compact :math:`C^\infty` manifold. If both :math:`M` and its boundary :math:`\partial M` are simply connected, and its homology groups satisfy:
+
+   .. math::
+
+      H_q(M) \cong H_q(\Delta^n) \cong \begin{cases} \mathbb{Z} & (q=0) \\ 0 & (q \neq 0) \end{cases}
+
+   then :math:`M` is homeomorphic to the standard simplex :math:`\Delta^n`.
 
 
 References
