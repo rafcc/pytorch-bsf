@@ -153,23 +153,6 @@ The formal mathematical foundation for this connection is given by the following
 This guarantees that for strongly convex models, their Pareto fronts admit a simplex structure and can be efficiently reconstructed using Bézier simplex fitting.
 
 
-Applications
-------------
-
-.. toctree::
-   :maxdepth: 1
-
-   applications/elastic_net
-   applications/portfolio
-   applications/smart_grids
-   applications/federated_learning
-   applications/model_predictive_control
-   applications/communications
-   applications/supply_chain
-   applications/medical_imaging
-   applications/facility_location
-
-
 Statistical test for simplicial topology
 ----------------------------------------
 
