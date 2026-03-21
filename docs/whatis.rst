@@ -163,7 +163,7 @@ Applications
    applications/portfolio
    applications/smart_grids
    applications/federated_learning
-   applications/mpc
+   applications/model_predictive_control
    applications/communications
    applications/supply_chain
    applications/medical_imaging
