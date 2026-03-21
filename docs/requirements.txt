@@ -2,3 +2,5 @@
 sphinx<9
 sphinx-rtd-theme
 sphinx-multiversion
+sphinx-proof
+sphinxcontrib-bibtex
