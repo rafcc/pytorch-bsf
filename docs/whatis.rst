@@ -281,10 +281,33 @@ These properties are explicitly leveraged by Adaptive Weighted Sum (AWS) methods
 Statistical test for simplicial topology
 ----------------------------------------
 
-When the underlying problem class is not analytically known in advance (e.g., in complex real-world designs using simulations), it is not immediately clear whether the Pareto set admits a simplex structure. In such cases, a data-driven statistical test based on persistent homology can determine whether this assumption is warranted before committing to a Bézier simplex model.
+When the underlying problem class is not analytically known in advance (e.g., in complex real-world designs using simulations), it is not immediately clear whether the Pareto set admits a simplex structure. In such cases, data-driven statistical tests based on persistent homology can determine whether this assumption is warranted before committing to a Bézier simplex model.
 
-Earlier work :cite:p:`hamada2018data` introduced a method utilizing confidence sets of persistence diagrams to statistically reject the hypothesis that a problem is simplicial. Building upon this, :cite:t:`hamada2020test` demonstrated that this homology-based approach can also be used to affirmatively test whether a problem *is* simplicial. By leveraging the h-cobordism theorem from algebraic topology, they established a mathematical characterization showing that if the Pareto set (modeled as a compact smooth manifold) and its boundary are simply connected, and its estimated homology matches that of a standard simplex, then the Pareto set is guaranteed to be homeomorphic to a simplex.
-This allows practitioners to verify the simpliciality of a multi-objective optimization problem strictly from sampled Pareto solutions before applying Bézier simplex fitting.
+Earlier work :cite:p:`hamada2018data` formally defined a *simple problem* as satisfying two conditions:
+(S1) The Pareto set is homeomorphic to a standard simplex, and 
+(S2) the objective mapping restricted to the Pareto set is a topological embedding.
+
+It is mathematically known that if a simple problem further satisfies the condition that the interiors of the Pareto sets of any two subproblems do not intersect, then the problem is equivalent to being :math:`C^0`-simplicial. Furthermore, it is conjectured that "simple" and "simplicial" are equivalent even without this extra condition. Therefore, testing whether a problem is simple serves as a practical test for whether a problem is simplicial. Notably, the non-intersection condition itself can also be tested statistically.
+
+To strictly determine whether a problem is simple, two complementary statistical tests are required. In standard statistical testing, failing to reject a null hypothesis does not allow one to affirmatively adopt it. Therefore, we need both a test to reject simplicity and a test to affirmatively confirm it.
+
+**1. Testing that a problem is not simple**
+
+:cite:t:`hamada2018data` introduced a data-driven method using persistent homology and its confidence sets to test for violations of the simplicity conditions. Specifically, we can reject the simplicity hypothesis if the estimated Betti numbers do not match those of a topological simplex:
+
+.. prf:theorem:: Theorem 3.1 in :cite:p:`hamada2018data` : Test for (S1) violation
+
+   Let :math:`K(\mathcal{F})` be a simplicial complex representing the approximated Pareto set. Assuming its geometric realization is homotopy equivalent to the true Pareto set, if one of the following homological conditions is satisfied:
+
+   * :math:`H_0(K(\mathcal{F})) \not\cong \mathbb{Z}`
+   * :math:`\exists i > 0 : H_i(K(\mathcal{F})) \not\cong 0`
+
+   then the problem does not satisfy the simplicity condition (S1).
+
+**2. Testing that a problem is simple**
+
+Building upon this, :cite:t:`hamada2020test` demonstrated that this homology-based approach can also be used to affirmatively test whether a problem *is* simple. By leveraging the h-cobordism theorem from algebraic topology, they established a mathematical characterization showing that if the Pareto set (modeled as a compact smooth manifold) and its boundary are simply connected, and its estimated homology matches that of a standard simplex, then the Pareto set is guaranteed to be homeomorphic to a simplex.
+This affirmative test complements the non-simpliciality test, allowing practitioners to strictly verify the simpliciality of a multi-objective optimization problem from sampled Pareto solutions before applying Bézier simplex fitting.
 
 .. prf:theorem:: Theorem 3 in :cite:p:`hamada2020test`
 
