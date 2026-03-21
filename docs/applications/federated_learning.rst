@@ -1,10 +1,19 @@
 Multi-task and federated learning
 =================================
 
-In multi-task learning (MTL), a single model must simultaneously optimize losses across different tasks, often leading to "gradient conflict" where improving one task degrades another. However, if the combined loss function is strongly convex (e.g., via L2 regularization), methodologies such as MGDA-UB (Multiple Gradient Descent Algorithm) demonstrate that dynamically re-weighting gradients can dramatically improve convergence speed and generalization. A similar strong convexity setup applies to balancing fairness and accuracy in machine learning models via smooth proxy constraints. For subgroup fairness, formulating each expected subgroup loss with L2 regularization guarantees that the Stochastic Multi-Gradient (SMG) algorithm achieves an :math:`O(1/k)` convergence rate to a Pareto-optimal point, matching the best known single-objective stochastic rates :cite:p:`liu2024stochastic`. Furthermore, for composite sparse learning scenarios like multi-objective LASSO, proximal gradient methods dramatically upgrade their convergence speed from sublinear to linear :math:`O(r^k)` rates, solely due to the underlying strong convexity of the L2-regularized smooth term :cite:p:`tanabe2023convergence`.
+In modern machine learning, models are frequently tasked with balancing strictly competing performance indicators. In multi-task learning (MTL), a single shared neural representation must simultaneously optimize losses across different tasks, often leading to "gradient conflict" where improving one task substantially degrades another. This same underlying tension appears when training models with explicit fairness constraints, where the expected loss over different population subgroups forms a multi-objective optimization problem. 
 
-This principle is particularly powerful in Federated Learning, such as the MOCHA framework, where data is distributed across millions of edge devices. By imposing strongly convex regularizations on the model matrix :math:`W` alongside the local losses :math:`L_t`, the optimization objective becomes:
+Furthermore, this principle is critically important in Federated Learning (FL), such as the MOCHA framework, where massive data is distributed across edge devices and a global model must balance diverse local losses against consensus.
 
-.. math:: \min_{W, \Omega} \sum_{t=1}^m L_t(w_t, X_t) + \lambda_1 \mathrm{Tr}(W \Omega W^T) + \lambda_2 \|W\|_F^2
+By imposing strongly convex regularizations (e.g., Tikhonov/Ridge) on the model parameters alongside the local losses, the optimization formulations become naturally resolvable:
 
-Because the squared Frobenius norm :math:`\|W\|_F^2` provides strong convexity, researchers can guarantee that the global model converges to an optimal shared knowledge state with linear convergence rate :math:`O(\exp(-\mu T))` despite restricted communication and incomplete local computations. Similar strategies are being explored in Aligned Multi-Objective Optimization (AMOO) for large-language models (LLMs), where adaptive weighting based on the strongly convex Hessian accelerates training :cite:p:`aligned2025multi,federated2017multi`.
+.. math:: 
+   
+   f_1(\theta) &= \mathcal{L}_1(\theta) + \lambda\|\theta\|^2 \\
+   f_2(\theta) &= \mathcal{L}_2(\theta) + \lambda\|\theta\|^2 \\
+               &\vdots \\
+   f_m(\theta) &= \mathcal{L}_m(\theta) + \lambda\|\theta\|^2
+
+The :math:`L_2` regularization penalty :math:`\lambda\|\theta\|^2` ensures that the Hessian incorporates a positive definite matrix :math:`2\lambda I \succ 0`. This global penalty forcefully transforms the generic convex loss landscapes (common in logistic/ridge regressions or SVMs) into strictly strongly convex objectives. Under strong convexity, algorithms like the Stochastic Multi-Gradient (SMG) descent achieve dramatic convergence accelerations, improving from sub-linear to linear :math:`O(1/n)` or :math:`O(\exp(-\mu T))` convergence rates :cite:p:`liu2024stochastic`.
+
+Rather than computing single compromised aggregations, the global model's Pareto front is modeled as a continuous Bézier simplex. This facilitates a "train once, customize anywhere" paradigm. A global Bézier simplex allows individual edge devices or network nodes to download the analytic continuous tradeoff surface, enabling them to instantly select an optimal model variant tailored precisely to their local power limits, fairness constraints, or inference needs, simply by navigating the simplex variables—a drastic improvement over constant network-wide retraining.

@@ -1,10 +1,18 @@
 Multi-objective model predictive control
 ========================================
 
-Autonomous systems like self-driving cars, drones, and industrial robots rely on Model Predictive Control (MPC) and Linear Quadratic Regulators (LQR) to optimize future behavior in real-time. In complex scenarios, these systems face competing goals such as precise trajectory tracking, energy efficiency (minimizing control effort/power), and motion smoothness (minimizing jerk). When these objectives are framed as positive-definite quadratic forms, the resulting stage cost function is strictly strongly convex:
+In industrial automation and robotics, Model Predictive Control (MPC) and Linear Quadratic Regulators (LQR) are foundational algorithms used to optimize future behavior in real-time. Operating chemical plants processes, for instance, requires rigorously balancing product quality tracking (setpoint proximity) against the suppression of abrupt heater and valve modifications (machinery wear). 
 
-.. math:: l(x, u) = x^T Q x + u^T R u
+Similarly, omnidirectional mobile robots traversing complex environments (e.g., hospitals or warehouses) must optimize trajectory tracking while minimizing energy consumption and avoiding collisions. However, they face significant physical constraints like non-linear friction modes. Over a predictive horizon :math:`H`, these systems evaluate competing objectives to find the strictly optimal control sequence :math:`U`:
 
-Where :math:`Q` and :math:`R` are positive definite matrices. Even though the set of stabilizing controllers might be non-convex, the multi-objective LQR's Pareto front can be completely characterized by linear scalarization due to these strongly convex quadratic structures. This strong convexity guarantees that the underlying Quadratic Programming (QP) problem has a unique optimal solution that can be solved extremely rapidly at each time step. Furthermore, it inherently ensures the stability, safety (recursive feasibility), and collision-avoidance of distributed multi-agent formations (like drone swarms), acting as a stabilizing anchor in highly uncertain physical environments :cite:p:`distributed2022model,multi2024learning`.
+.. math:: 
+   
+   f_{track}(U) &= \sum_{k=1}^H \|y_k - r_k\|_Q^2 \\
+   f_{smooth}(U) &= \sum_{k=0}^{H-1} \|\Delta u_k\|_R^2 \\
+   f_{energy}(U) &= \sum_{k=0}^{H-1} \|u_k\|_S^2
 
-These principles are widely deployed in the chemical process industry via Predictive Functional Control (PFC), where plant operators balance quality tracking with the suppression of abrupt heater/valve operations :cite:p:`sice_process_mpc`. Similarly, in robotics, the continuous trajectory generation for omni-directional warehouse robots is modeled as a strongly convex QP. Factoring in discrete decisions like friction mode switching transforms the control task into an MIQP, yet the strong convexity of the continuous domain dramatically stabilizes the branch-and-bound optimization nodes :cite:p:`jsme_robotics_miqp`.
+where :math:`y_k` denotes system states/outputs, :math:`r_k` the target setpoints, :math:`u_k` the operational inputs, and :math:`\Delta u_k` the input change rates.
+
+Crucially, as long as the weighting matrices (e.g., :math:`R`) acting on the independent control inputs are uniformly positive definite (:math:`R \succ 0`), the resulting multi-objective performance stage cost is strongly convex with respect to the continuous input decisions :math:`U`. Even in complex scenarios where discrete mode switching (like robot friction statuses) transforms the formulation into a Mixed-Integer Quadratic Program (MIQP), the continuous sub-component remains undeniably strongly convex, stabilizing bounded-node optimization searches.
+
+In practice, resolving these multi-objective QP or MIQP problems during an active millisecond control loop requires prohibitive amounts of computational power. Because the strong convexity naturally spans a continuous simplicial Pareto front, controllers equipped with a Bézier simplex representation can bypass the online QP solver entirely. The polynomial evaluation provides an analytic, instantaneous multi-objective control response, enabling ultra-fast, high-frequency continuous re-optimization in highly unstable physical environments.
