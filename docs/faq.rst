@@ -80,7 +80,7 @@ Please refer to the :doc:`advanced/acceleration` page for detailed instructions 
 How do I save and load a trained model?
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-You can save and load models using the ``torch_bsf.bezier_simplex`` module. Supported formats include ``.pt`` (PyTorch), ``.csv``, ``.json``, and ``.yaml``.
+You can save and load models using the ``torch_bsf.bezier_simplex`` module. Supported formats include ``.pt`` (PyTorch), ``.csv``, ``.tsv``, ``.json``, and ``.yaml``.
 
 .. code-block:: python
 
