@@ -6,7 +6,7 @@
   <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Supply chain and logistics optimization &mdash; PyTorch-BSF 0.14.2 documentation</title>
+  <title>Data Normalization &mdash; PyTorch-BSF 0.14.2 documentation</title>
       <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=b86133f3" />
       <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=9edc463e" />
       <link rel="stylesheet" type="text/css" href="../_static/proof.css" />
@@ -21,8 +21,8 @@
     <script src="../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
-    <link rel="next" title="Medical imaging and radiation therapy" href="medical_imaging.html" />
-    <link rel="prev" title="Communication systems and routing" href="communications.html" /> 
+    <link rel="next" title="What is Bézier simplex fitting?" href="../whatis.html" />
+    <link rel="prev" title="Hardware Acceleration" href="acceleration.html" /> 
 </head>
 
 <body class="wy-body-for-nav"> 
@@ -47,20 +47,19 @@
               <p class="caption" role="heading"><span class="caption-text">User guide</span></p>
 <ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="../quickstart.html">Quickstart</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../advanced.html">Advanced Topics</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../whatis.html">What is Bézier simplex fitting?</a></li>
-<li class="toctree-l1 current"><a class="reference internal" href="../applications.html">Applications</a><ul class="current">
-<li class="toctree-l2"><a class="reference internal" href="elastic_net.html">Elastic net model selection</a></li>
-<li class="toctree-l2"><a class="reference internal" href="portfolio.html">Robust portfolio management</a></li>
-<li class="toctree-l2"><a class="reference internal" href="smart_grids.html">Distributed smart grids and energy operations</a></li>
-<li class="toctree-l2"><a class="reference internal" href="federated_learning.html">Multi-task and federated learning</a></li>
-<li class="toctree-l2"><a class="reference internal" href="model_predictive_control.html">Multi-objective model predictive control</a></li>
-<li class="toctree-l2"><a class="reference internal" href="communications.html">Communication systems and routing</a></li>
-<li class="toctree-l2 current"><a class="current reference internal" href="#">Supply chain and logistics optimization</a></li>
-<li class="toctree-l2"><a class="reference internal" href="medical_imaging.html">Medical imaging and radiation therapy</a></li>
-<li class="toctree-l2"><a class="reference internal" href="facility_location.html">Facility location and continuous approximations</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="../advanced.html">Advanced Topics</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="initialization.html">Initial Control Points</a></li>
+<li class="toctree-l2"><a class="reference internal" href="partial.html">Partial Training</a></li>
+<li class="toctree-l2"><a class="reference internal" href="acceleration.html">Hardware Acceleration</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">Data Normalization</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#parameter-normalization">Parameter Normalization</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#value-normalization">Value Normalization</a></li>
 </ul>
 </li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../whatis.html">What is Bézier simplex fitting?</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../applications.html">Applications</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../faq.html">Frequently Asked Questions</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">API reference</span></p>
@@ -82,10 +81,10 @@
           <div role="navigation" aria-label="Page navigation">
   <ul class="wy-breadcrumbs">
       <li><a href="../index.html" class="icon icon-home" aria-label="Home"></a></li>
-          <li class="breadcrumb-item"><a href="../applications.html">Applications</a></li>
-      <li class="breadcrumb-item active">Supply chain and logistics optimization</li>
+          <li class="breadcrumb-item"><a href="../advanced.html">Advanced Topics</a></li>
+      <li class="breadcrumb-item active">Data Normalization</li>
       <li class="wy-breadcrumbs-aside">
-            <a href="../_sources/applications/supply_chain.rst.txt" rel="nofollow"> View page source</a>
+            <a href="../_sources/advanced/normalization.rst.txt" rel="nofollow"> View page source</a>
       </li>
   </ul>
   <hr/>
@@ -93,27 +92,34 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
              
-  <section id="supply-chain-and-logistics-optimization">
-<h1>Supply chain and logistics optimization<a class="headerlink" href="#supply-chain-and-logistics-optimization" title="Link to this heading"></a></h1>
-<p>In modern supply chain management (SCM) and operations research, isolating physical material logistics from global financial flows regularly causes massive inefficiencies. Supply Chain Finance algorithms attempt to computationally integrate factory outputs, inventory storage, and monetary streams to achieve a single unified, profitable coordination strategy.</p>
-<p>Recent operational formulations actively model this extensive corporate balancing act as a purely convex, constrained, finite-horizon Linear Quadratic Regulator (LQR) problem over discrete stages.</p>
-<p>The optimization generally maps out three tightly competing operational objectives across the logistics network:</p>
-<div class="math notranslate nohighlight">
-\[\begin{split}f_1(U) &amp;= \sum_{k=0}^{H} \|X_k - X_k^{\text{target}}\|_Q^2 \quad \text{(State deviations)} \\
-f_2(U) &amp;= \sum_{k=0}^{H-1} \|U_k\|_R^2 \quad \text{(Financial/operational inputs)} \\
-f_3(U) &amp;= \sum_{k=0}^{H-1} \|\Delta U_k\|_S^2 \quad \text{(Policy change instability)}\end{split}\]</div>
-<p>Where <span class="math notranslate nohighlight">\(X_k\)</span> are the aggregate cash and inventory states, constrained to remain close to their targets without causing disruptive shortages, and <span class="math notranslate nohighlight">\(U_k\)</span> are the direct financial interventions or operational accelerations.</p>
-<p>For manufacturing processes and logistics, abrupt disruptions in financing inputs or delivery capacities incur massive overheads, making the penalization of policy volatility (<span class="math notranslate nohighlight">\(\|\Delta U_k\|_S^2\)</span>) practically vital for securing stable operational margins.</p>
-<p>Because the entire LQR overarching formulation relies exclusively on positive definite penalty matrices (<span class="math notranslate nohighlight">\(Q, R, S \succ 0\)</span>), the extensive supply chain network optimization mathematically remains entirely and globally strongly convex.</p>
-<p>When corporate managers visualize these strategic relationships statically, they often suffer from disjointed discrete scenario planning. Implementing a Bézier simplex surrogate models the multi-objective continuous terrain flawlessly. This allows disparate corporate departments—ranging from financial officers to warehouse managers—to visually navigate through a single, continuous interactive Pareto topology in boardroom meetings, instantly resolving the optimal, stable path for navigating market supply shocks without requiring live, intensive QP solver re-computations.</p>
+  <section id="data-normalization">
+<h1>Data Normalization<a class="headerlink" href="#data-normalization" title="Link to this heading"></a></h1>
+<p>Proper normalization of your data is crucial for stable and accurate Bézier simplex fitting, as both the input parameters and the output values should ideally be within a well-defined range.</p>
+<section id="parameter-normalization">
+<h2>Parameter Normalization<a class="headerlink" href="#parameter-normalization" title="Link to this heading"></a></h2>
+<p>The <code class="docutils literal notranslate"><span class="pre">fit()</span></code> function expects each row of the <code class="docutils literal notranslate"><span class="pre">params</span></code> tensor to lie on the standard simplex <span class="math notranslate nohighlight">\(\Delta^{M-1}\)</span> (i.e., the elements must be non-negative and sum to 1). If your raw parameters do not satisfy this condition, you must normalize them manually before fitting.</p>
+<p>A common approach is <strong>L1 Normalization</strong>: divide each parameter vector by its <span class="math notranslate nohighlight">\(\ell_1\)</span> norm. For parameters <span class="math notranslate nohighlight">\(a, b \ge 0\)</span>, you can compute the simplex coordinates as <span class="math notranslate nohighlight">\(t_1 = a / (a + b)\)</span> and <span class="math notranslate nohighlight">\(t_2 = b / (a + b)\)</span>.</p>
+<p>While the best normalization method depends on your specific problem, the L1 approach is a solid default. If your parameter space does not naturally have a simplex structure and no intuitive normalization seems appropriate, it is possible that the problem is not well-suited for Bézier simplex fitting.</p>
+</section>
+<section id="value-normalization">
+<h2>Value Normalization<a class="headerlink" href="#value-normalization" title="Link to this heading"></a></h2>
+<p>Normalizing the output <code class="docutils literal notranslate"><span class="pre">values</span></code> (the targets) can help the optimizer converge faster by ensuring that different objectives are on a similar scale. In the CLI or MLflow interface, you can use the <code class="docutils literal notranslate"><span class="pre">--normalize</span></code> argument.</p>
+<p>Available options include:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">max</span></code>: Scales values to the range <code class="docutils literal notranslate"><span class="pre">[0,</span> <span class="pre">1]</span></code> based on the observed maximum. This is suitable when the training data covers the full expected range (upper and lower bounds) for all axes.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">std</span></code>: Standardizes values to have zero mean and unit variance. This is the most common choice for general datasets.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">quantile</span></code>: Transforms values based on quantiles. This is robust to outliers and is recommended when the training data contains significant extremes that might otherwise skew the scaling.</p></li>
+</ul>
+<p>While normalization can often improve prediction accuracy and training stability, it is not a guarantee. You should select the method that best aligns with your data distribution to achieve the best results.</p>
+</section>
 </section>
 
 
            </div>
           </div>
           <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
-        <a href="communications.html" class="btn btn-neutral float-left" title="Communication systems and routing" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
-        <a href="medical_imaging.html" class="btn btn-neutral float-right" title="Medical imaging and radiation therapy" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+        <a href="acceleration.html" class="btn btn-neutral float-left" title="Hardware Acceleration" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="../whatis.html" class="btn btn-neutral float-right" title="What is Bézier simplex fitting?" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
     </div>
 
   <hr/>
@@ -159,7 +165,7 @@ f_3(U) &amp;= \sum_{k=0}^{H-1} \|\Delta U_k\|_S^2 \quad \text{(Policy change ins
             <dd><a href="../../v0.13.4/index.html">v0.13.4</a></dd>
             <dd><a href="../../v0.14.0/index.html">v0.14.0</a></dd>
             <dd><a href="../../v0.14.1/index.html">v0.14.1</a></dd>
-            <dd><a href="../../v0.14.2/applications/supply_chain.html">v0.14.2</a></dd>
+            <dd><a href="../../v0.14.2/index.html">v0.14.2</a></dd>
             <dd><a href="../../v0.2.0/index.html">v0.2.0</a></dd>
             <dd><a href="../../v0.3.0/index.html">v0.3.0</a></dd>
             <dd><a href="../../v0.3.1/index.html">v0.3.1</a></dd>
@@ -173,7 +179,7 @@ f_3(U) &amp;= \sum_{k=0}^{H-1} \|\Delta U_k\|_S^2 \quad \text{(Policy change ins
         </dl>
         <dl>
             <dt>Branches</dt>
-            <dd><a href="supply_chain.html">238-faq</a></dd>
+            <dd><a href="normalization.html">238-faq</a></dd>
         </dl>
     </div>
 </div><script>
