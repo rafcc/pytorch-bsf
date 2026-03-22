@@ -1,7 +1,7 @@
 Partial Training
 ================
 
-Function ``fit()`` provides some arguments for partial training, i.e., train some of control points while the others are fixed.
+The ``fit()`` function provides parameters for partial training, i.e., training some control points while the others are fixed.
 
 .. testcode::
    :pyversion: >= 3.10, < 3.15
@@ -24,7 +24,7 @@ Function ``fit()`` provides some arguments for partial training, i.e., train som
    )
    xs = 1 - ts * ts  # values corresponding to the parameters
 
-   # Initialize 2D control points of a Bezier curve of degree 3
+   # Initialize 2D control points of a Bézier curve of degree 3
    init = {
       # index: value
       (3, 0): [0.0, 0.1],
@@ -39,15 +39,15 @@ Function ``fit()`` provides some arguments for partial training, i.e., train som
    # Or, load control points from a file
    init = torch_bsf.bezier_simplex.load("control_points.yml")
 
-   # Train the edge of a Bezier curve while its vertices are fixed
+   # Train the edge of a Bézier curve while its vertices are fixed
    bs = torch_bsf.fit(
       params=ts,  # input observations (training data)
       values=xs,  # output observations (training data)
       init=init,  # initial values of control points
-      fix=[[3, 0], [0, 3]],  # fix vertices of the Bezier curve
+      fix=[[3, 0], [0, 3]],  # fix vertices of the Bézier curve
    )
 
-   # Predict by the trained model
+   # Predict with the trained model
    t = [
       [0.2, 0.8],
       [0.7, 0.3],

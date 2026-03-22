@@ -8,8 +8,8 @@ Pick the option that best fits your setup.
 Run as an MLflow project
 ------------------------
 
-If you have parameters and values for training a Bezier simplex in common file formats such as CSV, JSON, etc., then the easiest way is to invoke PyTorch-BSF via `MLflow`_.
-In this way, some CUI commands for training and prediction are provided without installing PyTorch-BSF.
+If you have parameters and values for training a Bézier simplex in common file formats such as CSV, JSON, etc., then the easiest way is to invoke PyTorch-BSF via `MLflow`_.
+In this way, some CLI commands for training and prediction are provided without installing PyTorch-BSF.
 On each training and prediction, separation of runtime environment and installation of PyTorch-BSF are automatically handled by MLflow!
 
 .. _MLflow: https://www.mlflow.org/docs/latest/
@@ -41,7 +41,7 @@ Let's prepare sample parameters and values files for training:
 .. warning::
    The parameters file and the values file must have the same number of lines.
 
-Now, you can fit a Bezier simplex model using the latest version of PyTorch-BSF directly from its GitHub repository:
+Now, you can fit a Bézier simplex model using the latest version of PyTorch-BSF directly from its GitHub repository:
 
 .. literalinclude:: ../examples/quickstart/run.sh
    :language: bash
@@ -77,7 +77,7 @@ Next, you can predict with the model and output the results to a specified file 
    :start-after: [TAG:MakePrediction]
    :end-before: [TAG:MakePrediction_End]
 
-See for details https://mlflow.org/docs/latest/api_reference/cli.html#mlflow-models-predict
+See https://mlflow.org/docs/latest/api_reference/cli.html#mlflow-models-predict for details.
 
 
 Serve prediction API
@@ -109,7 +109,7 @@ Now, you can request a prediction with HTTP POST method:
    :end-before: [TAG:PredictWithHTTPPost_End]
 
 
-See for details https://mlflow.org/docs/latest/genai/serving/
+See https://mlflow.org/docs/latest/genai/serving/ for details.
 
 
 Run as a Python package
@@ -167,7 +167,7 @@ Train a model by ``fit()``, and call the model to predict.
    # Train a model
    bs = torch_bsf.fit(params=ts, values=xs, degree=3)
 
-   # Predict by the trained model
+   # Predict with the trained model
    t = [
       [0.2, 0.8],
       [0.7, 0.3],

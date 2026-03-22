@@ -89,7 +89,7 @@
              
   <section id="partial-training">
 <h1>Partial Training<a class="headerlink" href="#partial-training" title="Link to this heading"></a></h1>
-<p>Function <code class="docutils literal notranslate"><span class="pre">fit()</span></code> provides some arguments for partial training, i.e., train some of control points while the others are fixed.</p>
+<p>The <code class="docutils literal notranslate"><span class="pre">fit()</span></code> function provides parameters for partial training, i.e., training some control points while the others are fixed.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">torch</span>
 <span class="kn">import</span><span class="w"> </span><span class="nn">torch_bsf</span>
 
@@ -108,7 +108,7 @@
 <span class="p">)</span>
 <span class="n">xs</span> <span class="o">=</span> <span class="mi">1</span> <span class="o">-</span> <span class="n">ts</span> <span class="o">*</span> <span class="n">ts</span>  <span class="c1"># values corresponding to the parameters</span>
 
-<span class="c1"># Initialize 2D control points of a Bezier curve of degree 3</span>
+<span class="c1"># Initialize 2D control points of a Bézier curve of degree 3</span>
 <span class="n">init</span> <span class="o">=</span> <span class="p">{</span>
    <span class="c1"># index: value</span>
    <span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="mi">0</span><span class="p">):</span> <span class="p">[</span><span class="mf">0.0</span><span class="p">,</span> <span class="mf">0.1</span><span class="p">],</span>
@@ -123,15 +123,15 @@
 <span class="c1"># Or, load control points from a file</span>
 <span class="n">init</span> <span class="o">=</span> <span class="n">torch_bsf</span><span class="o">.</span><span class="n">bezier_simplex</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="s2">&quot;control_points.yml&quot;</span><span class="p">)</span>
 
-<span class="c1"># Train the edge of a Bezier curve while its vertices are fixed</span>
+<span class="c1"># Train the edge of a Bézier curve while its vertices are fixed</span>
 <span class="n">bs</span> <span class="o">=</span> <span class="n">torch_bsf</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span>
    <span class="n">params</span><span class="o">=</span><span class="n">ts</span><span class="p">,</span>  <span class="c1"># input observations (training data)</span>
    <span class="n">values</span><span class="o">=</span><span class="n">xs</span><span class="p">,</span>  <span class="c1"># output observations (training data)</span>
    <span class="n">init</span><span class="o">=</span><span class="n">init</span><span class="p">,</span>  <span class="c1"># initial values of control points</span>
-   <span class="n">fix</span><span class="o">=</span><span class="p">[[</span><span class="mi">3</span><span class="p">,</span> <span class="mi">0</span><span class="p">],</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">3</span><span class="p">]],</span>  <span class="c1"># fix vertices of the Bezier curve</span>
+   <span class="n">fix</span><span class="o">=</span><span class="p">[[</span><span class="mi">3</span><span class="p">,</span> <span class="mi">0</span><span class="p">],</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">3</span><span class="p">]],</span>  <span class="c1"># fix vertices of the Bézier curve</span>
 <span class="p">)</span>
 
-<span class="c1"># Predict by the trained model</span>
+<span class="c1"># Predict with the trained model</span>
 <span class="n">t</span> <span class="o">=</span> <span class="p">[</span>
    <span class="p">[</span><span class="mf">0.2</span><span class="p">,</span> <span class="mf">0.8</span><span class="p">],</span>
    <span class="p">[</span><span class="mf">0.7</span><span class="p">,</span> <span class="mf">0.3</span><span class="p">],</span>

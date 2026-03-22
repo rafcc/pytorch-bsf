@@ -204,7 +204,7 @@ python -m torch_bsf –params data.csv –values results.csv –accelerator gpu 
 </section>
 <section id="distributed-training-on-clusters">
 <h3>Distributed Training on Clusters<a class="headerlink" href="#distributed-training-on-clusters" title="Link to this heading"></a></h3>
-<p>If your dataset is massive or you are performing an extensive search over hyper-parameters, you can use multi-node training. PyTorch-BSF supports all distributed strategies provided by Lightning (DDP, FSDP, etc.).</p>
+<p>If your dataset is massive or you are performing an extensive search over hyperparameters, you can use multi-node training. PyTorch-BSF supports all distributed strategies provided by Lightning (DDP, FSDP, etc.).</p>
 <div class="admonition tip">
 <p class="admonition-title">Tip</p>
 <p>For most cases, <code class="docutils literal notranslate"><span class="pre">strategy=&quot;auto&quot;</span></code> is sufficient. If you encounter issues on specialized clusters, you might need to specify <code class="docutils literal notranslate"><span class="pre">strategy=&quot;ddp&quot;</span></code>.</p>

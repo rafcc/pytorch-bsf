@@ -1,9 +1,9 @@
 Distributed smart grids and energy operations
 =============================================
 
-Modern power management systems face uniquely high-stakes tradeoffs. The Multi-Objective Optimal Power Flow (MO-OPF) model mathematically formulates the challenges of simultaneously minimizing the economic costs of power generation, restricting environmental emission rates, and regulating line transmission losses or voltage deviations. 
+Modern power management systems face uniquely high-stakes trade-offs. The Multi-Objective Optimal Power Flow (MO-OPF) model mathematically formulates the challenges of simultaneously minimizing the economic costs of power generation, restricting environmental emission rates, and regulating line transmission losses or voltage deviations. 
 
-For traditional generators, the expected fuel and operating cost across an interconnected network is naturally modeled as a strongly convex quadratic function regarding power output :math:`P_i`:
+For traditional generators, the expected fuel and operating cost across an interconnected network is naturally modeled as a strongly convex quadratic function of power output :math:`P_i`:
 
 .. math:: C_i(P_i) = a_i P_i^2 + b_i P_i + c_i \quad (a_i > 0)
 

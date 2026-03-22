@@ -101,14 +101,14 @@
 <p>This page introduces the formal definition of Bézier simplices, the least-squares fitting algorithm used by PyTorch-BSF, and its most prominent real-world applications.</p>
 <section id="bezier-simplex">
 <h2>Bezier simplex<a class="headerlink" href="#bezier-simplex" title="Link to this heading"></a></h2>
-<p>Let <span class="math notranslate nohighlight">\(D, M, N\)</span> be nonnegative integers, <span class="math notranslate nohighlight">\(\mathbb N\)</span> the set of nonnegative integers (including zero!), and <span class="math notranslate nohighlight">\(\mathbb R^N\)</span> the <span class="math notranslate nohighlight">\(N\)</span>-dimensional Euclidean space.
+<p>Let <span class="math notranslate nohighlight">\(D, M, N\)</span> be non-negative integers, <span class="math notranslate nohighlight">\(\mathbb N\)</span> the set of non-negative integers (including zero), and <span class="math notranslate nohighlight">\(\mathbb R^N\)</span> the <span class="math notranslate nohighlight">\(N\)</span>-dimensional Euclidean space.
 We define the <em>index set</em> by</p>
 <div class="math notranslate nohighlight">
 \[\mathbb N_D^M = \left\{\mathbf d=(d_1,\ldots,d_M)\in\mathbb N^M\ \Bigg|\ \sum_{m=1}^M d_m=D\right\},\]</div>
 <p>and the <em>simplex</em> by</p>
 <div class="math notranslate nohighlight">
 \[\Delta^{M-1} = \left\{\mathbf t=(t_1,\ldots,t_M)\in[0,1]^M\ \Bigg|\ \sum_{m=1}^M t_m=1\right\}.\]</div>
-<p>An <span class="math notranslate nohighlight">\((M-1)\)</span>-dimensional <em>Bezier simplex</em> of degree <span class="math notranslate nohighlight">\(D\)</span> in <span class="math notranslate nohighlight">\(\mathbb R^N\)</span> is a polynomial map <span class="math notranslate nohighlight">\(\mathbf b: \Delta^{M-1}\to\mathbb R^N\)</span> defined by</p>
+<p>An <span class="math notranslate nohighlight">\((M-1)\)</span>-dimensional <em>Bézier simplex</em> of degree <span class="math notranslate nohighlight">\(D\)</span> in <span class="math notranslate nohighlight">\(\mathbb R^N\)</span> is a polynomial map <span class="math notranslate nohighlight">\(\mathbf b: \Delta^{M-1}\to\mathbb R^N\)</span> defined by</p>
 <div class="math notranslate nohighlight">
 \[\mathbf b(\mathbf t\mid\mathbf p) = \sum_{\mathbf d\in\mathbb N_D^M} \binom{D}{\mathbf d} \mathbf t^{\mathbf d} \mathbf p_{\mathbf d},\]</div>
 <p>where <span class="math notranslate nohighlight">\(\mathbf t^{\mathbf d} = t_1^{d_1} t_2^{d_2}\cdots t_M^{d_M}\)</span>, <span class="math notranslate nohighlight">\(\binom{D}{\mathbf d}=D! / (d_1!d_2!\cdots d_M!)\)</span>, and <span class="math notranslate nohighlight">\(\mathbf p_{\mathbf d}\in\mathbb R^N\ (\mathbf d\in\mathbb N_D^M)\)</span> are parameters called the <em>control points</em>.</p>
@@ -122,7 +122,7 @@ We define the <em>index set</em> by</p>
 </section>
 <section id="bezier-simplex-fitting">
 <h2>Bézier simplex fitting<a class="headerlink" href="#bezier-simplex-fitting" title="Link to this heading"></a></h2>
-<p>Assume we have a finite dataset <span class="math notranslate nohighlight">\(B\subset\Delta^{M-1}\times\mathbb R^N\)</span> and want to fit a Bézier simplex to the dataset. What we are trying can be formulated as a problem of finding the best vector of control points <span class="math notranslate nohighlight">\(\mathbf p=(\mathbf p_{\mathbf d})_{\mathbf d\in\mathbb N_D^M}\)</span> that minimizes the least square error between the Bezier simplex and the dataset:</p>
+<p>Assume we have a finite dataset <span class="math notranslate nohighlight">\(B\subset\Delta^{M-1}\times\mathbb R^N\)</span> and want to fit a Bézier simplex to the dataset. What we are trying can be formulated as a problem of finding the best vector of control points <span class="math notranslate nohighlight">\(\mathbf p=(\mathbf p_{\mathbf d})_{\mathbf d\in\mathbb N_D^M}\)</span> that minimizes the least squares error between the Bézier simplex and the dataset:</p>
 <div class="math notranslate nohighlight">
 \[\arg\min_{\mathbf p} \sum_{(\mathbf t,\mathbf x)\in B}\|\mathbf b(\mathbf t\mid\mathbf p)-\mathbf x\|^2.\]</div>
 <p>PyTorch-BSF provides an algorithm for solving this optimization problem with the L-BFGS algorithm.</p>
@@ -136,7 +136,7 @@ We define the <em>index set</em> by</p>
 </section>
 <section id="approximation-theorem">
 <h2>Approximation theorem<a class="headerlink" href="#approximation-theorem" title="Link to this heading"></a></h2>
-<p>Any continuous map from a simplex to a Euclidean space can be approximated by a Bezier simplex. More precisely, the following theorem holds <span id="id1">[<a class="reference internal" href="#id12" title="Ken Kobayashi, Naoki Hamada, Akiyoshi Sannai, Aiko Tanaka, Kenichi Bannai, and Masashi Sugiyama. Bézier simplex fitting: describing pareto fronts of simplicial problems with small samples in multi-objective optimization. In Proceedings of the AAAI Conference on Artificial Intelligence, volume 33, 2304–2313. 2019. URL: https://doi.org/10.1609/aaai.v33i01.33012304.">KHS+19</a>]</span>:</p>
+<p>Any continuous map from a simplex to a Euclidean space can be approximated by a Bézier simplex. More precisely, the following theorem holds <span id="id1">[<a class="reference internal" href="#id12" title="Ken Kobayashi, Naoki Hamada, Akiyoshi Sannai, Aiko Tanaka, Kenichi Bannai, and Masashi Sugiyama. Bézier simplex fitting: describing pareto fronts of simplicial problems with small samples in multi-objective optimization. In Proceedings of the AAAI Conference on Artificial Intelligence, volume 33, 2304–2313. 2019. URL: https://doi.org/10.1609/aaai.v33i01.33012304.">KHS+19</a>]</span>:</p>
 <div class="proof theorem admonition" id="theorem-0">
 <p class="admonition-title"><span class="caption-number">Theorem 1 </span> (Universal Approximation Theorem)</p>
 <section class="theorem-content" id="proof-content">
@@ -191,7 +191,7 @@ We define the <em>index set</em> by</p>
 <p><span class="caption-number">Fig. 5 </span><span class="caption-text">A weakly simplicial problem: the Pareto set and Pareto front are a continuous image of a simplex, i.e., they may have a pinched topology.</span><a class="headerlink" href="#id46" title="Link to this image"></a></p>
 </figcaption>
 </figure>
-<p>In weakly simplicial problems, there exists a continuous map from a simplex to the Pareto set and Pareto front, which is guaranteed to be approximable by the Approximation theorem.</p>
+<p>In weakly simplicial problems, there exists a continuous map from a simplex to the Pareto set and Pareto front, which is guaranteed to be approximable by the Universal Approximation Theorem.</p>
 </section>
 <section id="strongly-convex-problems">
 <h3>Strongly convex problems<a class="headerlink" href="#strongly-convex-problems" title="Link to this heading"></a></h3>
@@ -242,7 +242,7 @@ Then, the mapping <span class="math notranslate nohighlight">\(x^*: \Delta^{m-1}
 </div><div class="proof theorem admonition" id="theorem-8">
 <p class="admonition-title"><span class="caption-number">Theorem 4 </span> (Equivalence of Simple and Simplicial Problems)</p>
 <section class="theorem-content" id="proof-content">
-<p>All <span class="math notranslate nohighlight">\(C^r\)</span>-simplicial problems are simple (<span class="math notranslate nohighlight">\(0\le r \le \infty\)</span>). A simple problem is <span class="math notranslate nohighlight">\(C^0\)</span>-simplicial if the interiors of the Pareto sets of any two subproblems do not intersect.</p>
+<p>All <span class="math notranslate nohighlight">\(C^r\)</span>-simplicial problems are simple (<span class="math notranslate nohighlight">\(0\le r \le \infty\)</span>). A simple problem is <span class="math notranslate nohighlight">\(C^0\)</span>-simplicial if the interiors of Pareto sets for any two subproblems do not intersect.</p>
 </section>
 </div><p>Furthermore, it is conjectured that “simple” and “simplicial” are equivalent even without this extra condition. Therefore, testing whether a problem is simple serves as a practical test for whether a problem is simplicial. Notably, the non-intersection condition itself can also be tested statistically.</p>
 <p>To strictly determine whether a problem is simple, two complementary statistical tests are required. In standard statistical testing, failing to reject a null hypothesis does not allow one to affirmatively adopt it. Therefore, we need both a test to reject simplicity and a test to affirmatively confirm it.</p>

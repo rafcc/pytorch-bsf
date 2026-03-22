@@ -107,7 +107,7 @@ When dealing with thousands of Pareto optimal points and high-degree Bézier sim
 Distributed Training on Clusters
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-If your dataset is massive or you are performing an extensive search over hyper-parameters, you can use multi-node training. PyTorch-BSF supports all distributed strategies provided by Lightning (DDP, FSDP, etc.).
+If your dataset is massive or you are performing an extensive search over hyperparameters, you can use multi-node training. PyTorch-BSF supports all distributed strategies provided by Lightning (DDP, FSDP, etc.).
 
 .. tip::
    For most cases, ``strategy="auto"`` is sufficient. If you encounter issues on specialized clusters, you might need to specify ``strategy="ddp"``.

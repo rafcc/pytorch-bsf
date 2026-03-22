@@ -97,8 +97,8 @@
 Pick the option that best fits your setup.</p>
 <section id="run-as-an-mlflow-project">
 <h2>Run as an MLflow project<a class="headerlink" href="#run-as-an-mlflow-project" title="Link to this heading"></a></h2>
-<p>If you have parameters and values for training a Bezier simplex in common file formats such as CSV, JSON, etc., then the easiest way is to invoke PyTorch-BSF via <a class="reference external" href="https://www.mlflow.org/docs/latest/">MLflow</a>.
-In this way, some CUI commands for training and prediction are provided without installing PyTorch-BSF.
+<p>If you have parameters and values for training a Bézier simplex in common file formats such as CSV, JSON, etc., then the easiest way is to invoke PyTorch-BSF via <a class="reference external" href="https://www.mlflow.org/docs/latest/">MLflow</a>.
+In this way, some CLI commands for training and prediction are provided without installing PyTorch-BSF.
 On each training and prediction, separation of runtime environment and installation of PyTorch-BSF are automatically handled by MLflow!</p>
 <section id="installation">
 <h3>Installation<a class="headerlink" href="#installation" title="Link to this heading"></a></h3>
@@ -131,7 +131,7 @@ cat<span class="w"> </span><span class="s">&lt;&lt; EOS &gt; values.csv</span>
 <p class="admonition-title">Warning</p>
 <p>The parameters file and the values file must have the same number of lines.</p>
 </div>
-<p>Now, you can fit a Bezier simplex model using the latest version of PyTorch-BSF directly from its GitHub repository:</p>
+<p>Now, you can fit a Bézier simplex model using the latest version of PyTorch-BSF directly from its GitHub repository:</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nv">MLFLOW_PROJECT_URL</span><span class="o">=</span>https://github.com/opthub-org/pytorch-bsf
 <span class="nv">MLFLOW_ENV_MANAGER</span><span class="o">=</span>conda
 </pre></div>
@@ -164,7 +164,7 @@ cat<span class="w"> </span>test_values.json
 <span class="c1"># result will be shown like {&quot;predictions&quot;: [{&quot;0&quot;: 0.05797366052865982, ...}</span>
 </pre></div>
 </div>
-<p>See for details <a class="reference external" href="https://mlflow.org/docs/latest/api_reference/cli.html#mlflow-models-predict">https://mlflow.org/docs/latest/api_reference/cli.html#mlflow-models-predict</a></p>
+<p>See <a class="reference external" href="https://mlflow.org/docs/latest/api_reference/cli.html#mlflow-models-predict">https://mlflow.org/docs/latest/api_reference/cli.html#mlflow-models-predict</a> for details.</p>
 </section>
 <section id="serve-prediction-api">
 <h3>Serve prediction API<a class="headerlink" href="#serve-prediction-api" title="Link to this heading"></a></h3>
@@ -194,7 +194,7 @@ cat<span class="w"> </span>test_values.json
 <span class="s1">}&#39;</span>
 </pre></div>
 </div>
-<p>See for details <a class="reference external" href="https://mlflow.org/docs/latest/genai/serving/">https://mlflow.org/docs/latest/genai/serving/</a></p>
+<p>See <a class="reference external" href="https://mlflow.org/docs/latest/genai/serving/">https://mlflow.org/docs/latest/genai/serving/</a> for details.</p>
 </section>
 </section>
 <section id="run-as-a-python-package">
@@ -242,7 +242,7 @@ Then, install the package:</p>
 <span class="c1"># Train a model</span>
 <span class="n">bs</span> <span class="o">=</span> <span class="n">torch_bsf</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">params</span><span class="o">=</span><span class="n">ts</span><span class="p">,</span> <span class="n">values</span><span class="o">=</span><span class="n">xs</span><span class="p">,</span> <span class="n">degree</span><span class="o">=</span><span class="mi">3</span><span class="p">)</span>
 
-<span class="c1"># Predict by the trained model</span>
+<span class="c1"># Predict with the trained model</span>
 <span class="n">t</span> <span class="o">=</span> <span class="p">[</span>
    <span class="p">[</span><span class="mf">0.2</span><span class="p">,</span> <span class="mf">0.8</span><span class="p">],</span>
    <span class="p">[</span><span class="mf">0.7</span><span class="p">,</span> <span class="mf">0.3</span><span class="p">],</span>
