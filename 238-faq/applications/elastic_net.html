@@ -132,7 +132,7 @@ w_2 &amp;= \frac{\lambda \alpha}{1 + \lambda} \\
 w_3 &amp;= \frac{\lambda (1-\alpha)}{1 + \lambda}\end{split}\]</div>
 <p>By training the model on a sparse subset of weight vectors <span class="math notranslate nohighlight">\(w\)</span> and fitting a Bézier simplex, we obtain a continuous <strong>solution map</strong> <span class="math notranslate nohighlight">\((x^*, f \circ x^*): \Delta^{M-1} \to G^*(f)\)</span> that maps any weight <span class="math notranslate nohighlight">\(w\)</span> to the optimal weights <span class="math notranslate nohighlight">\(\beta\)</span> and the corresponding objective values.</p>
 <table class="docutils align-default" id="id5">
-<caption><span class="caption-number">Table 1 </span><span class="caption-text">Regularization map of the elastic net.</span><a class="headerlink" href="#id5" title="Link to this table"></a></caption>
+<caption><span class="caption-number">Table 2 </span><span class="caption-text">Regularization map of the elastic net.</span><a class="headerlink" href="#id5" title="Link to this table"></a></caption>
 <colgroup>
 <col style="width: 33.3%" />
 <col style="width: 33.3%" />
@@ -190,7 +190,7 @@ w_3 &amp;= \frac{\lambda (1-\alpha)}{1 + \lambda}\end{split}\]</div>
 <p>The effectiveness of PyTorch-BSF for Elastic Net is demonstrated using the <strong>Wine</strong> dataset from the UCI Machine Learning Repository. Experiments show that even with a limited number of training points (e.g., 51 points for a degree-6 simplex), the Bézier simplex accurately approximates the entire solution map, maintaining low Mean Squared Error (MSE) across the continuous hyperparameter space.</p>
 <p>The following tables compare the results obtained through an exhaustive grid search (ground truth) and the Bézier simplex approximation. The high similarity between the performance surfaces confirms the fidelity of the surrogate model.</p>
 <table class="docutils align-default" id="id9">
-<caption><span class="caption-number">Table 2 </span><span class="caption-text">Ground truth results from exhaustive grid search (102x102 grid).</span><a class="headerlink" href="#id9" title="Link to this table"></a></caption>
+<caption><span class="caption-number">Table 3 </span><span class="caption-text">Ground truth results from exhaustive grid search (102x102 grid).</span><a class="headerlink" href="#id9" title="Link to this table"></a></caption>
 <colgroup>
 <col style="width: 50.0%" />
 <col style="width: 50.0%" />
@@ -233,7 +233,7 @@ w_3 &amp;= \frac{\lambda (1-\alpha)}{1 + \lambda}\end{split}\]</div>
 </tbody>
 </table>
 <table class="docutils align-default" id="id14">
-<caption><span class="caption-number">Table 3 </span><span class="caption-text">Approximation results for the Wine dataset with a Bézier simplex of degree <span class="math notranslate nohighlight">\(d = 6\)</span>.</span><a class="headerlink" href="#id14" title="Link to this table"></a></caption>
+<caption><span class="caption-number">Table 4 </span><span class="caption-text">Approximation results for the Wine dataset with a Bézier simplex of degree <span class="math notranslate nohighlight">\(d = 6\)</span>.</span><a class="headerlink" href="#id14" title="Link to this table"></a></caption>
 <colgroup>
 <col style="width: 50.0%" />
 <col style="width: 50.0%" />
