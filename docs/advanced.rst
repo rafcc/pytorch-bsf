@@ -10,3 +10,4 @@ These features are useful when you have prior knowledge about the shape of the B
    advanced/initialization
    advanced/partial
    advanced/acceleration
+   advanced/normalization

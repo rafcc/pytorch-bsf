@@ -61,13 +61,14 @@ The complexity of a Bézier simplex is determined by its **degree** (:math:`D`) 
 *   **Sample size:** You need at least as many training samples as there are control points (:math:`N_{cp}`) for the problem to be well-determined. In practice, having **2 to 3 times as many samples** as control points leads to more stable and reliable fits.
 *   **Refine as needed:** If the residuals (fitting errors) are high, increase the degree. If the model overfits (low training error but poor generalization), increase the sample size or decrease the degree.
 
-What if my parameters do not lie on a simplex?
+How do I normalize my parameters or values?
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-The ``fit()`` function requires that each row of the ``params`` tensor sums to 1 (i.e., lies on the standard simplex :math:`\Delta^{M-1}`). If your raw parameters don't satisfy this, you must normalize them.
+The ``fit()`` function requires that each row of the ``params`` tensor sums to 1 (i.e., lies on the standard simplex :math:`\Delta^{M-1}`). If your raw parameters don't satisfy this, you must normalize them manually.
 
-*   **Manual Normalization:** Divide each parameter vector by its :math:`\ell_1` norm. For parameters :math:`a, b \ge 0`, set :math:`t_1 = a / (a + b)` and :math:`t_2 = b / (a + b)`.
-*   **Automatic Normalization:** In the CLI or MLflow interface, you can use the ``--normalize`` argument (options: ``max``, ``std``, ``quantile``) to scale your data appropriately before fitting.
+Additionally, normalizing the output ``values`` can improve fitting stability and accuracy. PyTorch-BSF provides several options for automatic value normalization in the CLI/MLflow interface.
+
+Please refer to the :doc:`advanced/normalization` page for detailed instructions on how to normalize your parameter and value tensors.
 
 Can I use GPU or multi-node training?
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
