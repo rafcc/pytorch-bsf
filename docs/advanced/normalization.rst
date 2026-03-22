@@ -10,6 +10,11 @@ The ``fit()`` function expects each row of the ``params`` tensor to lie on the s
 
 A common approach is **L1 Normalization**: divide each parameter vector by its :math:`\ell_1` norm. For parameters :math:`a, b \ge 0`, you can compute the simplex coordinates as :math:`t_1 = a / (a + b)` and :math:`t_2 = b / (a + b)`.
 
+.. code-block:: python
+
+   # Manual L1 normalization for parameter tensors
+   ts = ts / ts.sum(dim=1, keepdim=True)
+
 While the best normalization method depends on your specific problem, the L1 approach is a solid default. If your parameter space does not naturally have a simplex structure and no intuitive normalization seems appropriate, it is possible that the problem is not well-suited for Bézier simplex fitting.
 
 Value Normalization
@@ -22,5 +27,21 @@ Available options include:
 *   ``max``: Scales values to the range ``[0, 1]`` based on the observed maximum. This is suitable when the training data covers the full expected range (upper and lower bounds) for all axes.
 *   ``std``: Standardizes values to have zero mean and unit variance. This is the most common choice for general datasets.
 *   ``quantile``: Transforms values based on quantiles. This is robust to outliers and is recommended when the training data contains significant extremes that might otherwise skew the scaling.
+
+.. code-block:: python
+
+   from torch_bsf.preprocessing import StdScaler
+
+   # Normalize values using the internal StdScaler
+   scaler = StdScaler()
+   xs_normalized = scaler.fit_transform(xs)
+
+   # Fit the model (remember to use normalized values)
+   bs = torch_bsf.fit(params=ts, values=xs_normalized, degree=3)
+
+   # To predict and get results in the original scale
+   t_new = [[0.2, 0.3, 0.5]]
+   x_normalized = bs(t_new)
+   x_original = scaler.inverse_transform(x_normalized)
 
 While normalization can often improve prediction accuracy and training stability, it is not a guarantee. You should select the method that best aligns with your data distribution to achieve the best results.
