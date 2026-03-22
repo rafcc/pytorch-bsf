@@ -24,7 +24,7 @@ Function ``fit()`` provides some arguments for partial training, i.e., train som
    )
    xs = 1 - ts * ts  # values corresponding to the parameters
 
-   # Initialize 2D control points of a Bezier triangle of degree 3
+   # Initialize 2D control points of a Bezier curve of degree 3
    init = {
       # index: value
       (3, 0): [0.0, 0.1],
