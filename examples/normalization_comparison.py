@@ -1,0 +1,95 @@
+"""Comparison of Parameter Distribution and Value Scaling for Bézier Simplex Fitting.
+
+This script demonstrates two key concepts in Bézier Simplex Fitting (BSF):
+1. How parameter distribution (uniform vs skewed) affects fitting accuracy.
+2. How target value scaling affects the balance between multiple objectives.
+"""
+
+import torch
+import torch_bsf
+import logging
+import warnings
+from torch_bsf.model_selection.elastic_net_grid import elastic_net_grid
+
+# Suppress progress bars and unnecessary logs
+warnings.filterwarnings("ignore")
+logging.getLogger("lightning.pytorch").setLevel(logging.ERROR)
+
+def f_parameter_experiment(t: torch.Tensor) -> torch.Tensor:
+    """A non-linear target function for parameter distribution experiment."""
+    # Using a high-frequency sine wave to make fitting more difficult
+    return torch.sin(10 * t[:, 0]) * torch.cos(10 * t[:, 1])
+
+def f_value_experiment(t: torch.Tensor) -> torch.Tensor:
+    """A multi-objective target function with different scales."""
+    # y1: small scale (approx [0, 1]), high difficulty
+    y1 = torch.sin(10 * t[:, 0])
+    # y2: large scale (approx [0, 1000]), low difficulty (linear-like)
+    y2 = 1000 * (t[:, 1] + t[:, 2])
+    return torch.stack([y1, y2], dim=1)
+
+def run_parameter_experiment():
+    print("--- 1. Parameter Distribution Experiment ---")
+    torch.manual_seed(42)
+
+    # A: Uniformly distributed parameters on the 2-simplex
+    ts_uni = torch.rand(400, 3)
+    ts_uni /= ts_uni.sum(dim=1, keepdim=True)
+    xs_uni = f_parameter_experiment(ts_uni).unsqueeze(1)
+
+    # B: Skewed parameters (concentrated at one end, like in log-grid search)
+    ts_skew = torch.tensor(elastic_net_grid(n_lambdas=20, n_alphas=20, base=100), dtype=torch.float32)
+    xs_skew = f_parameter_experiment(ts_skew).unsqueeze(1)
+
+    # Fit using high epochs to ensure convergence
+    bs_uni = torch_bsf.fit(params=ts_uni, values=xs_uni, degree=3, max_epochs=200, enable_progress_bar=False, accelerator="cpu", enable_checkpointing=False)
+    bs_skew = torch_bsf.fit(params=ts_skew, values=xs_skew, degree=3, max_epochs=200, enable_progress_bar=False, accelerator="cpu", enable_checkpointing=False)
+
+    # Evaluate on a fine uniform test set
+    ts_test = torch.rand(2000, 3)
+    ts_test /= ts_test.sum(dim=1, keepdim=True)
+    xs_test = f_parameter_experiment(ts_test).unsqueeze(1)
+
+    mse_uni = torch.mean((bs_uni(ts_test) - xs_test)**2).item()
+    mse_skew = torch.mean((bs_skew(ts_test) - xs_test)**2).item()
+
+    print(f"MSE (from Uniform samples): {mse_uni:2.2e}")
+    print(f"MSE (from Skewed samples) : {mse_skew:2.2e}")
+    print(f"Bézier simplices perform best with uniform parameter coverage.")
+
+def run_value_experiment():
+    print("\n--- 2. Value Scaling Experiment ---")
+    torch.manual_seed(42)
+
+    ts = torch.rand(400, 3)
+    ts /= ts.sum(dim=1, keepdim=True)
+    xs = f_value_experiment(ts)
+
+    # Case A: Fit on raw values (optimizer will naturally prioritize the larger-scale y2)
+    bs_raw = torch_bsf.fit(params=ts, values=xs, degree=2, max_epochs=200, enable_progress_bar=False, accelerator="cpu", enable_checkpointing=False)
+
+    # Case B: Fit on normalized (standardized) values
+    means, stds = xs.mean(dim=0), xs.std(dim=0)
+    xs_norm = (xs - means) / stds
+    bs_norm = torch_bsf.fit(params=ts, values=xs_norm, degree=2, max_epochs=200, enable_progress_bar=False, accelerator="cpu", enable_checkpointing=False)
+
+    # Evaluate on original scale
+    ts_test = torch.rand(1000, 3)
+    ts_test /= ts_test.sum(dim=1, keepdim=True)
+    xs_test = f_value_experiment(ts_test)
+
+    # Raw fit result
+    pred_raw = bs_raw(ts_test)
+    mse_raw = torch.mean((pred_raw - xs_test)**2, dim=0)
+
+    # Scaled fit result (transform back for fair comparison)
+    pred_norm = bs_norm(ts_test) * stds + means
+    mse_norm = torch.mean((pred_norm - xs_test)**2, dim=0)
+
+    print(f"Raw Fit   MSE (y1, y2): {mse_raw[0].item():2.2e}, {mse_raw[1].item():2.2e}")
+    print(f"Scale Fit MSE (y1, y2): {mse_norm[0].item():2.2e}, {mse_norm[1].item():2.2e}")
+    print(f"Scaling balances the contribution of axes with different magnitudes.")
+
+if __name__ == "__main__":
+    run_parameter_experiment()
+    run_value_experiment()
