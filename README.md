@@ -21,12 +21,10 @@ Key features:
 
 <img src="https://opthub-org.github.io/pytorch-bsf/master/_images/bezier-simplex.png" width="49%" alt="A Bezier simplex and its control points"><img src="https://opthub-org.github.io/pytorch-bsf/master/_images/bezier-simplex-fitting.png" width="49%" alt="A Bezier simplex that fits to a dataset">
 
-See the following papers for technical details.
+See [Full Documentation](https://opthub-org.github.io/pytorch-bsf/) and the following papers for technical details.
 
 - Kobayashi, K., Hamada, N., Sannai, A., Tanaka, A., Bannai, K., & Sugiyama, M. (2019). Bézier Simplex Fitting: Describing Pareto Fronts of´ Simplicial Problems with Small Samples in Multi-Objective Optimization. Proceedings of the AAAI Conference on Artificial Intelligence, 33(01), 2304-2313. <https://doi.org/10.1609/aaai.v33i01.33012304>
 - Tanaka, A., Sannai, A., Kobayashi, K., & Hamada, N. (2020). Asymptotic Risk of Bézier Simplex Fitting. Proceedings of the AAAI Conference on Artificial Intelligence, 34(03), 2416-2424. <https://doi.org/10.1609/aaai.v34i03.5622>
-
-[Full Documentation](https://opthub-org.github.io/pytorch-bsf/)
 
 ## Requirements
 
