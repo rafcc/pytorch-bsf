@@ -74,10 +74,10 @@ In practice, when using such skewed grids, it is often more effective to perform
 
    * - Parameter Sampling Strategy
      - Test MSE
-   * - Uniformly Distributed
-     - 1.52e-03
-   * - Skewed (Log-grid style, base 100)
-     - 1.91e-02
+   * - Uniform Triangular Grid
+     - 1.92e-04
+   * - Skewed (Log-grid style, base 1000)
+     - 4.28e-03
 
 Preserving Physical Scales in Values
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^

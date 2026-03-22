@@ -1,6 +1,6 @@
-"""Comparison of Parameter Distribution and Value Scaling for Bézier Simplex Fitting.
+"""Comparison of Parameter Distribution and Value Scaling for Bezier Simplex Fitting.
 
-This script demonstrates two key concepts in Bézier Simplex Fitting (BSF):
+This script demonstrates two key concepts in Bezier Simplex Fitting (BSF):
 1. How parameter distribution (uniform vs skewed) affects fitting accuracy.
 2. How target value scaling affects the balance between multiple objectives.
 """
@@ -9,6 +9,7 @@ import torch
 import torch_bsf
 import logging
 import warnings
+from torch_bsf.sampling import simplex_grid
 from torch_bsf.model_selection.elastic_net_grid import elastic_net_grid
 
 # Suppress progress bars and unnecessary logs
@@ -16,9 +17,9 @@ warnings.filterwarnings("ignore")
 logging.getLogger("lightning.pytorch").setLevel(logging.ERROR)
 
 def f_parameter_experiment(t: torch.Tensor) -> torch.Tensor:
-    """A non-linear target function for parameter distribution experiment."""
-    # Using a high-frequency sine wave to make fitting more difficult
-    return torch.sin(10 * t[:, 0]) * torch.cos(10 * t[:, 1])
+    """A smooth target function for parameter distribution experiment."""
+    # A simple smooth function that a degree 3 Bézier simplex can fit well
+    return torch.sin(3 * t[:, 0])
 
 def f_value_experiment(t: torch.Tensor) -> torch.Tensor:
     """A multi-objective target function with different scales."""
@@ -32,12 +33,12 @@ def run_parameter_experiment():
     print("--- 1. Parameter Distribution Experiment ---")
     torch.manual_seed(42)
 
-    # A: Uniformly distributed parameters on the 2-simplex (Dirichlet(1,...,1) = uniform on simplex)
-    ts_uni = torch.distributions.Dirichlet(torch.ones(3)).sample((400,))
+    # A: Uniformly distributed parameters (Triangular grid, degree 9 -> 55 samples)
+    ts_uni = simplex_grid(n_params=3, degree=9)
     xs_uni = f_parameter_experiment(ts_uni).unsqueeze(1)
 
-    # B: Skewed parameters (concentrated at one end, like in log-grid search)
-    ts_skew = torch.tensor(elastic_net_grid(n_lambdas=20, n_alphas=20, base=100), dtype=torch.float32)
+    # B: Skewed parameters (Log-grid style, 55 samples, base 1000)
+    ts_skew = torch.tensor(elastic_net_grid(n_lambdas=10, n_alphas=6, base=1000), dtype=torch.float32)
     xs_skew = f_parameter_experiment(ts_skew).unsqueeze(1)
 
     # Fit using high epochs to ensure convergence
@@ -53,7 +54,7 @@ def run_parameter_experiment():
 
     print(f"MSE (from Uniform samples): {mse_uni:2.2e}")
     print(f"MSE (from Skewed samples) : {mse_skew:2.2e}")
-    print(f"Bézier simplices perform best with uniform parameter coverage.")
+    print(f"Bezier simplices perform best with uniform parameter coverage.")
 
 def run_value_experiment():
     print("\n--- 2. Value Scaling Experiment ---")
