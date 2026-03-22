@@ -32,9 +32,8 @@ def run_parameter_experiment():
     print("--- 1. Parameter Distribution Experiment ---")
     torch.manual_seed(42)
 
-    # A: Uniformly distributed parameters on the 2-simplex
-    ts_uni = torch.rand(400, 3)
-    ts_uni /= ts_uni.sum(dim=1, keepdim=True)
+    # A: Uniformly distributed parameters on the 2-simplex (Dirichlet(1,...,1) = uniform on simplex)
+    ts_uni = torch.distributions.Dirichlet(torch.ones(3)).sample((400,))
     xs_uni = f_parameter_experiment(ts_uni).unsqueeze(1)
 
     # B: Skewed parameters (concentrated at one end, like in log-grid search)
@@ -46,8 +45,7 @@ def run_parameter_experiment():
     bs_skew = torch_bsf.fit(params=ts_skew, values=xs_skew, degree=3, max_epochs=200, enable_progress_bar=False, accelerator="cpu", enable_checkpointing=False)
 
     # Evaluate on a fine uniform test set
-    ts_test = torch.rand(2000, 3)
-    ts_test /= ts_test.sum(dim=1, keepdim=True)
+    ts_test = torch.distributions.Dirichlet(torch.ones(3)).sample((2000,))
     xs_test = f_parameter_experiment(ts_test).unsqueeze(1)
 
     mse_uni = torch.mean((bs_uni(ts_test) - xs_test)**2).item()
@@ -61,8 +59,7 @@ def run_value_experiment():
     print("\n--- 2. Value Scaling Experiment ---")
     torch.manual_seed(42)
 
-    ts = torch.rand(400, 3)
-    ts /= ts.sum(dim=1, keepdim=True)
+    ts = torch.distributions.Dirichlet(torch.ones(3)).sample((400,))
     xs = f_value_experiment(ts)
 
     # Case A: Fit on raw values (optimizer will naturally prioritize the larger-scale y2)
@@ -74,8 +71,7 @@ def run_value_experiment():
     bs_norm = torch_bsf.fit(params=ts, values=xs_norm, degree=2, max_epochs=200, enable_progress_bar=False, accelerator="cpu", enable_checkpointing=False)
 
     # Evaluate on original scale
-    ts_test = torch.rand(1000, 3)
-    ts_test /= ts_test.sum(dim=1, keepdim=True)
+    ts_test = torch.distributions.Dirichlet(torch.ones(3)).sample((1000,))
     xs_test = f_value_experiment(ts_test)
 
     # Raw fit result
