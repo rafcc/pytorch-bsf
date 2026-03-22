@@ -72,10 +72,9 @@ The ``fit()`` function requires that each row of the ``params`` tensor sums to 1
 Can I use GPU or multi-node training?
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-**Yes.** Since PyTorch-BSF is built on PyTorch and PyTorch Lightning, it supports hardware acceleration out of the box.
+**Yes.** Since PyTorch-BSF is built on PyTorch and PyTorch Lightning, it supports hardware acceleration and distributed training out of the box.
 
-*   **Python API:** Move your tensors to the GPU device before calling ``fit()``.
-*   **CLI / MLflow:** Use the ``--accelerator gpu`` and ``--devices -1`` (to use all available GPUs) arguments. It also supports distributed training across multiple nodes via the ``--num_nodes`` argument.
+Please refer to the :doc:`advanced/acceleration` page for detailed instructions on using GPUs (single or multiple), multi-node clusters, and mixed-precision training.
 
 How do I save and load a trained model?
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
