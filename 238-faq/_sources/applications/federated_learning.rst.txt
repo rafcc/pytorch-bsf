@@ -17,3 +17,9 @@ By imposing strongly convex regularizations (e.g., Tikhonov/Ridge) on the model 
 The :math:`L_2` regularization penalty :math:`\lambda\|\theta\|^2` ensures that the Hessian incorporates a positive definite matrix :math:`2\lambda I \succ 0`. This global penalty forcefully transforms the generic convex loss landscapes (common in logistic/ridge regressions or SVMs) into strictly strongly convex objectives. Under strong convexity, algorithms like the Stochastic Multi-Gradient (SMG) descent achieve dramatic convergence accelerations, improving from sub-linear to linear :math:`O(1/n)` or :math:`O(\exp(-\mu T))` convergence rates :cite:p:`liu2024stochastic`.
 
 Rather than computing single compromised aggregations, the global model's Pareto front is modeled as a continuous Bézier simplex. This facilitates a "train once, customize anywhere" paradigm. A global Bézier simplex allows individual edge devices or network nodes to download the analytic continuous trade-off surface, enabling them to instantly select an optimal model variant tailored precisely to their local power limits, fairness constraints, or inference needs, simply by navigating the simplex variables—representing a drastic improvement over constant network-wide retraining.
+
+
+References
+----------
+
+.. bibliography::

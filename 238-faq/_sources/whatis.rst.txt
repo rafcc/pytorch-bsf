@@ -209,4 +209,3 @@ References
 ----------
 
 .. bibliography::
-   :all:
