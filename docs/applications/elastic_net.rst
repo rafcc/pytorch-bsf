@@ -129,3 +129,9 @@ The following tables compare the results obtained through an exhaustive grid sea
 
           Nonzero coefficients
 
+
+References
+----------
+
+.. bibliography::
+
