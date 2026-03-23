@@ -10,7 +10,7 @@ dependencies:
 - lightning
 - torchmetrics
 - mlflow
-- starlette < 1.0.0  # hotfix for mlflow's starlette 1.0.0 issue
+- starlette<1.0.0  # hotfix for mlflow's starlette 1.0.0 issue
 - jsonschema
 - pyyaml
 - pip
