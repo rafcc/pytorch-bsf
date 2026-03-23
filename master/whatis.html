@@ -22,7 +22,7 @@
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
     <link rel="next" title="Applications" href="applications.html" />
-    <link rel="prev" title="Advanced Topics" href="advanced.html" /> 
+    <link rel="prev" title="Hardware Acceleration" href="advanced/acceleration.html" /> 
 </head>
 
 <body class="wy-body-for-nav"> 
@@ -63,7 +63,7 @@
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="applications.html">Applications</a></li>
-<li class="toctree-l1"><a class="reference internal" href="faq.html">Frequently asked questions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="faq.html">Frequently Asked Questions</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">API reference</span></p>
 <ul>
@@ -101,14 +101,14 @@
 <p>This page introduces the formal definition of Bézier simplices, the least-squares fitting algorithm used by PyTorch-BSF, and its most prominent real-world applications.</p>
 <section id="bezier-simplex">
 <h2>Bezier simplex<a class="headerlink" href="#bezier-simplex" title="Link to this heading"></a></h2>
-<p>Let <span class="math notranslate nohighlight">\(D, M, N\)</span> be nonnegative integers, <span class="math notranslate nohighlight">\(\mathbb N\)</span> the set of nonnegative integers (including zero!), and <span class="math notranslate nohighlight">\(\mathbb R^N\)</span> the <span class="math notranslate nohighlight">\(N\)</span>-dimensional Euclidean space.
+<p>Let <span class="math notranslate nohighlight">\(D, M, N\)</span> be non-negative integers, <span class="math notranslate nohighlight">\(\mathbb N\)</span> the set of non-negative integers (including zero), and <span class="math notranslate nohighlight">\(\mathbb R^N\)</span> the <span class="math notranslate nohighlight">\(N\)</span>-dimensional Euclidean space.
 We define the <em>index set</em> by</p>
 <div class="math notranslate nohighlight">
 \[\mathbb N_D^M = \left\{\mathbf d=(d_1,\ldots,d_M)\in\mathbb N^M\ \Bigg|\ \sum_{m=1}^M d_m=D\right\},\]</div>
 <p>and the <em>simplex</em> by</p>
 <div class="math notranslate nohighlight">
 \[\Delta^{M-1} = \left\{\mathbf t=(t_1,\ldots,t_M)\in[0,1]^M\ \Bigg|\ \sum_{m=1}^M t_m=1\right\}.\]</div>
-<p>An <span class="math notranslate nohighlight">\((M-1)\)</span>-dimensional <em>Bezier simplex</em> of degree <span class="math notranslate nohighlight">\(D\)</span> in <span class="math notranslate nohighlight">\(\mathbb R^N\)</span> is a polynomial map <span class="math notranslate nohighlight">\(\mathbf b: \Delta^{M-1}\to\mathbb R^N\)</span> defined by</p>
+<p>An <span class="math notranslate nohighlight">\((M-1)\)</span>-dimensional <em>Bézier simplex</em> of degree <span class="math notranslate nohighlight">\(D\)</span> in <span class="math notranslate nohighlight">\(\mathbb R^N\)</span> is a polynomial map <span class="math notranslate nohighlight">\(\mathbf b: \Delta^{M-1}\to\mathbb R^N\)</span> defined by</p>
 <div class="math notranslate nohighlight">
 \[\mathbf b(\mathbf t\mid\mathbf p) = \sum_{\mathbf d\in\mathbb N_D^M} \binom{D}{\mathbf d} \mathbf t^{\mathbf d} \mathbf p_{\mathbf d},\]</div>
 <p>where <span class="math notranslate nohighlight">\(\mathbf t^{\mathbf d} = t_1^{d_1} t_2^{d_2}\cdots t_M^{d_M}\)</span>, <span class="math notranslate nohighlight">\(\binom{D}{\mathbf d}=D! / (d_1!d_2!\cdots d_M!)\)</span>, and <span class="math notranslate nohighlight">\(\mathbf p_{\mathbf d}\in\mathbb R^N\ (\mathbf d\in\mathbb N_D^M)\)</span> are parameters called the <em>control points</em>.</p>
@@ -116,13 +116,13 @@ We define the <em>index set</em> by</p>
 <a class="reference internal image-reference" href="_images/bezier-simplex.png"><img alt="_images/bezier-simplex.png" src="_images/bezier-simplex.png" style="width: 33%;" />
 </a>
 <figcaption>
-<p><span class="caption-number">Fig. 1 </span><span class="caption-text">A 2-D Bézier simplex of degree 3 in <span class="math notranslate nohighlight">\(\mathbb R^3\)</span> and its control points. The shape of the simplex is determined by the control points <span class="math notranslate nohighlight">\(\mathbf p_{(3,0,0)}, \mathbf p_{(2,1,0)}, \ldots, \mathbf p_{(0,0,3)}\)</span>.</span><a class="headerlink" href="#id43" title="Link to this image"></a></p>
+<p><span class="caption-number">Fig. 2 </span><span class="caption-text">A 2-D Bézier simplex of degree 3 in <span class="math notranslate nohighlight">\(\mathbb R^3\)</span> and its control points. The shape of the simplex is determined by the control points <span class="math notranslate nohighlight">\(\mathbf p_{(3,0,0)}, \mathbf p_{(2,1,0)}, \ldots, \mathbf p_{(0,0,3)}\)</span>.</span><a class="headerlink" href="#id43" title="Link to this image"></a></p>
 </figcaption>
 </figure>
 </section>
 <section id="bezier-simplex-fitting">
 <h2>Bézier simplex fitting<a class="headerlink" href="#bezier-simplex-fitting" title="Link to this heading"></a></h2>
-<p>Assume we have a finite dataset <span class="math notranslate nohighlight">\(B\subset\Delta^{M-1}\times\mathbb R^N\)</span> and want to fit a Bézier simplex to the dataset. What we are trying can be formulated as a problem of finding the best vector of control points <span class="math notranslate nohighlight">\(\mathbf p=(\mathbf p_{\mathbf d})_{\mathbf d\in\mathbb N_D^M}\)</span> that minimizes the least square error between the Bezier simplex and the dataset:</p>
+<p>Assume we have a finite dataset <span class="math notranslate nohighlight">\(B\subset\Delta^{M-1}\times\mathbb R^N\)</span> and want to fit a Bézier simplex to the dataset. What we are trying can be formulated as a problem of finding the best vector of control points <span class="math notranslate nohighlight">\(\mathbf p=(\mathbf p_{\mathbf d})_{\mathbf d\in\mathbb N_D^M}\)</span> that minimizes the least squares error between the Bézier simplex and the dataset:</p>
 <div class="math notranslate nohighlight">
 \[\arg\min_{\mathbf p} \sum_{(\mathbf t,\mathbf x)\in B}\|\mathbf b(\mathbf t\mid\mathbf p)-\mathbf x\|^2.\]</div>
 <p>PyTorch-BSF provides an algorithm for solving this optimization problem with the L-BFGS algorithm.</p>
@@ -130,13 +130,13 @@ We define the <em>index set</em> by</p>
 <a class="reference internal image-reference" href="_images/bezier-simplex-fitting.png"><img alt="_images/bezier-simplex-fitting.png" src="_images/bezier-simplex-fitting.png" style="width: 66%;" />
 </a>
 <figcaption>
-<p><span class="caption-number">Fig. 2 </span><span class="caption-text">A Bezier simplex fitted to a dataset. The control points are determined by the least squares fitting algorithm.</span><a class="headerlink" href="#id44" title="Link to this image"></a></p>
+<p><span class="caption-number">Fig. 3 </span><span class="caption-text">A Bezier simplex fitted to a dataset. The control points are determined by the least squares fitting algorithm.</span><a class="headerlink" href="#id44" title="Link to this image"></a></p>
 </figcaption>
 </figure>
 </section>
 <section id="approximation-theorem">
 <h2>Approximation theorem<a class="headerlink" href="#approximation-theorem" title="Link to this heading"></a></h2>
-<p>Any continuous map from a simplex to a Euclidean space can be approximated by a Bezier simplex. More precisely, the following theorem holds <span id="id1">[<a class="reference internal" href="#id12" title="Ken Kobayashi, Naoki Hamada, Akiyoshi Sannai, Aiko Tanaka, Kenichi Bannai, and Masashi Sugiyama. Bézier simplex fitting: describing pareto fronts of simplicial problems with small samples in multi-objective optimization. In Proceedings of the AAAI Conference on Artificial Intelligence, volume 33, 2304–2313. 2019. URL: https://doi.org/10.1609/aaai.v33i01.33012304.">KHS+19</a>]</span>:</p>
+<p>Any continuous map from a simplex to a Euclidean space can be approximated by a Bézier simplex. More precisely, the following theorem holds <span id="id1">[<a class="reference internal" href="#id12" title="Ken Kobayashi, Naoki Hamada, Akiyoshi Sannai, Aiko Tanaka, Kenichi Bannai, and Masashi Sugiyama. Bézier simplex fitting: describing pareto fronts of simplicial problems with small samples in multi-objective optimization. In Proceedings of the AAAI Conference on Artificial Intelligence, volume 33, 2304–2313. 2019. URL: https://doi.org/10.1609/aaai.v33i01.33012304.">KHS+19</a>]</span>:</p>
 <div class="proof theorem admonition" id="theorem-0">
 <p class="admonition-title"><span class="caption-number">Theorem 1 </span> (Universal Approximation Theorem)</p>
 <section class="theorem-content" id="proof-content">
@@ -181,17 +181,17 @@ We define the <em>index set</em> by</p>
 <a class="reference internal image-reference" href="_images/simplicial-problem.png"><img alt="_images/simplicial-problem.png" src="_images/simplicial-problem.png" style="width: 100%;" />
 </a>
 <figcaption>
-<p><span class="caption-number">Fig. 3 </span><span class="caption-text">A simplicial problem: the Pareto set and Pareto front are homeomorphic to a simplex, i.e., they have no pinched topology.</span><a class="headerlink" href="#id45" title="Link to this image"></a></p>
+<p><span class="caption-number">Fig. 4 </span><span class="caption-text">A simplicial problem: the Pareto set and Pareto front are homeomorphic to a simplex, i.e., they have no pinched topology.</span><a class="headerlink" href="#id45" title="Link to this image"></a></p>
 </figcaption>
 </figure>
 <figure class="align-center" id="id46">
 <a class="reference internal image-reference" href="_images/weakly-simplicial-problem.png"><img alt="_images/weakly-simplicial-problem.png" src="_images/weakly-simplicial-problem.png" style="width: 33%;" />
 </a>
 <figcaption>
-<p><span class="caption-number">Fig. 4 </span><span class="caption-text">A weakly simplicial problem: the Pareto set and Pareto front are a continuous image of a simplex, i.e., they may have a pinched topology.</span><a class="headerlink" href="#id46" title="Link to this image"></a></p>
+<p><span class="caption-number">Fig. 5 </span><span class="caption-text">A weakly simplicial problem: the Pareto set and Pareto front are a continuous image of a simplex, i.e., they may have a pinched topology.</span><a class="headerlink" href="#id46" title="Link to this image"></a></p>
 </figcaption>
 </figure>
-<p>In weakly simplicial problems, there exists a continuous map from a simplex to the Pareto set and Pareto front, which is guaranteed to be approximable by the Approximation theorem.</p>
+<p>In weakly simplicial problems, there exists a continuous map from a simplex to the Pareto set and Pareto front, which is guaranteed to be approximable by the Universal Approximation Theorem.</p>
 </section>
 <section id="strongly-convex-problems">
 <h3>Strongly convex problems<a class="headerlink" href="#strongly-convex-problems" title="Link to this heading"></a></h3>
@@ -242,7 +242,7 @@ Then, the mapping <span class="math notranslate nohighlight">\(x^*: \Delta^{m-1}
 </div><div class="proof theorem admonition" id="theorem-8">
 <p class="admonition-title"><span class="caption-number">Theorem 4 </span> (Equivalence of Simple and Simplicial Problems)</p>
 <section class="theorem-content" id="proof-content">
-<p>All <span class="math notranslate nohighlight">\(C^r\)</span>-simplicial problems are simple (<span class="math notranslate nohighlight">\(0\le r \le \infty\)</span>). A simple problem is <span class="math notranslate nohighlight">\(C^0\)</span>-simplicial if the interiors of the Pareto sets of any two subproblems do not intersect.</p>
+<p>All <span class="math notranslate nohighlight">\(C^r\)</span>-simplicial problems are simple (<span class="math notranslate nohighlight">\(0\le r \le \infty\)</span>). A simple problem is <span class="math notranslate nohighlight">\(C^0\)</span>-simplicial if the interiors of Pareto sets for any two subproblems do not intersect.</p>
 </section>
 </div><p>Furthermore, it is conjectured that “simple” and “simplicial” are equivalent even without this extra condition. Therefore, testing whether a problem is simple serves as a practical test for whether a problem is simplicial. Notably, the non-intersection condition itself can also be tested statistically.</p>
 <p>To strictly determine whether a problem is simple, two complementary statistical tests are required. In standard statistical testing, failing to reject a null hypothesis does not allow one to affirmatively adopt it. Therefore, we need both a test to reject simplicity and a test to affirmatively confirm it.</p>
@@ -274,18 +274,6 @@ This affirmative test complements the non-simpliciality test, allowing practitio
 <h2>References<a class="headerlink" href="#references" title="Link to this heading"></a></h2>
 <div class="docutils container" id="id11">
 <div role="list" class="citation-list">
-<div class="citation" id="id23" role="doc-biblioentry">
-<span class="label"><span class="fn-bracket">[</span>mdp23<span class="fn-bracket">]</span></span>
-<p>Supply chain finance and material flow optimization via lqr and convex qp. 2023. Based on MDPI case studies on SC finance.</p>
-</div>
-<div class="citation" id="id17" role="doc-biblioentry">
-<span class="label"><span class="fn-bracket">[</span>per25<span class="fn-bracket">]</span></span>
-<p><strong>missing author in performing2025accelerated</strong></p>
-</div>
-<div class="citation" id="id18" role="doc-biblioentry">
-<span class="label"><span class="fn-bracket">[</span>mul26<span class="fn-bracket">]</span></span>
-<p><strong>missing author in multi2026economic</strong></p>
-</div>
 <div class="citation" id="id34" role="doc-biblioentry">
 <span class="label"><span class="fn-bracket">[</span>BDK21<span class="fn-bracket">]</span></span>
 <p>El Houcine Bergou, Youssef Diouane, and Vyacheslav Kungurtsev. Complexity iteration analysis for strongly convex multi-objective optimization using a newton path-following procedure. <em>Optimization Letters</em>, 15:1215–1227, 2021. <a class="reference external" href="https://doi.org/10.1007/s11590-020-01623-x">doi:10.1007/s11590-020-01623-x</a>.</p>
@@ -301,10 +289,6 @@ This affirmative test complements the non-simpliciality test, allowing practitio
 <div class="citation" id="id39" role="doc-biblioentry">
 <span class="label"><span class="fn-bracket">[</span>dWK<span class="fn-bracket">]</span></span>
 <p>Olivier de Weck and Il Yong Kim. Adaptive weighted sum method for multiobjective optimization. Submitted to Structural and Multidisciplinary Optimization for Review.</p>
-</div>
-<div class="citation" id="id19" role="doc-biblioentry">
-<span class="label"><span class="fn-bracket">[</span>EKJ+25<span class="fn-bracket">]</span></span>
-<p>Yonathan Efroni, Ben Kretzu, Daniel Jiang, Jalaj Bhandari, Zhu Zheqing, and Karen Ullrich. Aligned multi objective optimization. In <em>Proceedings of the 42nd International Conference on Machine Learning</em>. 2025. URL: <a class="reference external" href="https://arxiv.org/abs/2502.14096">https://arxiv.org/abs/2502.14096</a>.</p>
 </div>
 <div class="citation" id="id31" role="doc-biblioentry">
 <span class="label"><span class="fn-bracket">[</span>FGranaDS09<span class="fn-bracket">]</span></span>
@@ -345,45 +329,9 @@ This affirmative test complements the non-simpliciality test, allowing practitio
 <span class="backrefs">(<a role="doc-backlink" href="#id2">1</a>,<a role="doc-backlink" href="#id4">2</a>,<a role="doc-backlink" href="#id5">3</a>)</span>
 <p>Yuto Mizota, Naoki Hamada, and Shunsuke Ichiki. All unconstrained strongly convex problems are weakly simplicial. 2021. URL: <a class="reference external" href="https://arxiv.org/abs/2106.12704">https://arxiv.org/abs/2106.12704</a>, <a class="reference external" href="https://arxiv.org/abs/2106.12704">arXiv:2106.12704</a>.</p>
 </div>
-<div class="citation" id="id22" role="doc-biblioentry">
-<span class="label"><span class="fn-bracket">[</span>NVB24<span class="fn-bracket">]</span></span>
-<p>Siddharth H. Nair, Charlott Vallon, and Francesco Borrelli. Multi-objective learning model predictive control. <em>arXiv preprint arXiv:2405.11698</em>, 2024. URL: <a class="reference external" href="https://arxiv.org/abs/2405.11698">https://arxiv.org/abs/2405.11698</a>.</p>
-</div>
-<div class="citation" id="id27" role="doc-biblioentry">
-<span class="label"><span class="fn-bracket">[</span>oISICE23<span class="fn-bracket">]</span></span>
-<p>Society of Instrument and Control Engineers (SICE). Model predictive control in chemical process industries. 2023.</p>
-</div>
-<div class="citation" id="id26" role="doc-biblioentry">
-<span class="label"><span class="fn-bracket">[</span>oMEJSME23<span class="fn-bracket">]</span></span>
-<p>Japan Society of Mechanical Engineers (JSME). Miqp-based mpc for omni-directional mobile robots. 2023.</p>
-</div>
-<div class="citation" id="id24" role="doc-biblioentry">
-<span class="label"><span class="fn-bracket">[</span>oMITJAMIT23<span class="fn-bracket">]</span></span>
-<p>Japanese Society of Medical Imaging Technology (JAMIT). Optimization-based image reconstruction in ct. 2023.</p>
-</div>
-<div class="citation" id="id25" role="doc-biblioentry">
-<span class="label"><span class="fn-bracket">[</span>oMPJSMP23<span class="fn-bracket">]</span></span>
-<p>Japan Society of Medical Physics (JSMP). Inverse planning and multi-constraint optimization in imrt. 2023.</p>
-</div>
 <div class="citation" id="id16" role="doc-biblioentry">
 <span class="label"><span class="fn-bracket">[</span>Qi<span class="fn-bracket">]</span></span>
 <p>Houduo Qi. Optimal portfolio selections via l1,2-norm regularization. URL: <a class="reference external" href="https://eprints.soton.ac.uk/451606/1/mvpl12_for_PURE.pdf">https://eprints.soton.ac.uk/451606/1/mvpl12_for_PURE.pdf</a>.</p>
-</div>
-<div class="citation" id="id21" role="doc-biblioentry">
-<span class="label"><span class="fn-bracket">[</span>SHS22<span class="fn-bracket">]</span></span>
-<p>Olalekan Shorinwa, Ravi Haksar, and Mac Schwager. Distributed model predictive control via separable optimization. <em>IEEE Transactions on Control of Network Systems</em>, 2022. URL: <a class="reference external" href="https://msl.stanford.edu/papers/shorinwa_distributed_2022.pdf">https://msl.stanford.edu/papers/shorinwa_distributed_2022.pdf</a>.</p>
-</div>
-<div class="citation" id="id20" role="doc-biblioentry">
-<span class="label"><span class="fn-bracket">[</span>SCST17<span class="fn-bracket">]</span></span>
-<p>Virginia Smith, Chao-Kai Chiang, Maziar Sanjabi, and Ameet Talwalkar. Federated multi-task learning. In <em>Advances in Neural Information Processing Systems</em>, volume 30. 2017. URL: <a class="reference external" href="https://proceedings.neurips.cc/paper_files/paper/2017/file/6211080f4f7831969efdd6c99cde327e-Paper.pdf">https://proceedings.neurips.cc/paper_files/paper/2017/file/6211080f4f7831969efdd6c99cde327e-Paper.pdf</a>.</p>
-</div>
-<div class="citation" id="id32" role="doc-biblioentry">
-<span class="label"><span class="fn-bracket">[</span>TFY23<span class="fn-bracket">]</span></span>
-<p>Hiroki Tanabe, Ellen H Fukuda, and Nobuo Yamashita. Convergence rates analysis of a multiobjective proximal gradient method. <em>Optimization Letters</em>, 17(2):333–350, 2023. <a class="reference external" href="https://doi.org/10.1007/s11590-022-01877-7">doi:10.1007/s11590-022-01877-7</a>.</p>
-</div>
-<div class="citation" id="id13" role="doc-biblioentry">
-<span class="label"><span class="fn-bracket">[</span>TSKH20<span class="fn-bracket">]</span></span>
-<p>Aiko Tanaka, Akiyoshi Sannai, Ken Kobayashi, and Naoki Hamada. Asymptotic risk of bézier simplex fitting. In <em>Proceedings of the AAAI Conference on Artificial Intelligence</em>, volume 34, 2416–2424. 2020. URL: <a class="reference external" href="https://doi.org/10.1609/aaai.v34i03.5622">https://doi.org/10.1609/aaai.v34i03.5622</a>.</p>
 </div>
 <div class="citation" id="id42" role="doc-biblioentry">
 <span class="label"><span class="fn-bracket">[</span>TSR+05<span class="fn-bracket">]</span></span>
@@ -397,10 +345,6 @@ This affirmative test complements the non-simpliciality test, allowing practitio
 <span class="label"><span class="fn-bracket">[</span>YL06<span class="fn-bracket">]</span></span>
 <p>Ming Yuan and Yi Lin. Model selection and estimation in regression with grouped variables. <em>Journal of the Royal Statistical Society: Series B (Statistical Methodology)</em>, 68(1):49–67, 2006.</p>
 </div>
-<div class="citation" id="id33" role="doc-biblioentry">
-<span class="label"><span class="fn-bracket">[</span>ZXY+23<span class="fn-bracket">]</span></span>
-<p>Kai Zhang, Lipo Xu, Xin Yi, Zhengtao Ding, Karl H Johansson, Tianyou Chai, and Tao Yang. Predefined-time distributed multiobjective optimization for network resource allocation. <em>Science China Information Sciences</em>, 66:170204, 2023. <a class="reference external" href="https://doi.org/10.1007/s11432-022-3791-8">doi:10.1007/s11432-022-3791-8</a>.</p>
-</div>
 </div>
 </div>
 </section>
@@ -410,7 +354,7 @@ This affirmative test complements the non-simpliciality test, allowing practitio
            </div>
           </div>
           <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
-        <a href="advanced.html" class="btn btn-neutral float-left" title="Advanced Topics" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="advanced/acceleration.html" class="btn btn-neutral float-left" title="Hardware Acceleration" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
         <a href="applications.html" class="btn btn-neutral float-right" title="Applications" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
     </div>
 
@@ -457,6 +401,7 @@ This affirmative test complements the non-simpliciality test, allowing practitio
             <dd><a href="../v0.13.4/whatis.html">v0.13.4</a></dd>
             <dd><a href="../v0.14.0/whatis.html">v0.14.0</a></dd>
             <dd><a href="../v0.14.1/whatis.html">v0.14.1</a></dd>
+            <dd><a href="../v0.14.2/whatis.html">v0.14.2</a></dd>
             <dd><a href="../v0.2.0/whatis.html">v0.2.0</a></dd>
             <dd><a href="../v0.3.0/whatis.html">v0.3.0</a></dd>
             <dd><a href="../v0.3.1/whatis.html">v0.3.1</a></dd>

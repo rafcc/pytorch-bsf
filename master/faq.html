@@ -6,7 +6,7 @@
   <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Frequently asked questions &mdash; PyTorch-BSF 0.14.2 documentation</title>
+  <title>Frequently Asked Questions &mdash; PyTorch-BSF 0.14.2 documentation</title>
       <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=b86133f3" />
       <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=9edc463e" />
       <link rel="stylesheet" type="text/css" href="_static/proof.css" />
@@ -50,18 +50,32 @@
 <li class="toctree-l1"><a class="reference internal" href="advanced.html">Advanced Topics</a></li>
 <li class="toctree-l1"><a class="reference internal" href="whatis.html">What is Bézier simplex fitting?</a></li>
 <li class="toctree-l1"><a class="reference internal" href="applications.html">Applications</a></li>
-<li class="toctree-l1 current"><a class="current reference internal" href="#">Frequently asked questions</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="#there-are-already-many-tools-for-hyperparameter-search-in-ml-why-propose-yet-another-one">There are already many tools for hyperparameter search in ML. Why propose yet another one?</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#are-approximation-results-always-reliable">Are approximation results always reliable?</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#are-there-any-applications-other-than-multiobjective-optimization">Are there any applications other than multiobjective optimization?</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#how-do-i-choose-the-degree-of-the-bezier-simplex">How do I choose the degree of the Bézier simplex?</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#how-many-training-samples-do-i-need">How many training samples do I need?</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#what-if-my-input-parameters-do-not-lie-on-a-simplex">What if my input parameters do not lie on a simplex?</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#can-i-train-on-a-gpu">Can I train on a GPU?</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#what-should-i-do-if-fitting-does-not-converge-or-the-accuracy-is-poor">What should I do if fitting does not converge or the accuracy is poor?</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#when-should-i-use-partial-training-the-fix-argument">When should I use partial training (the <code class="docutils literal notranslate"><span class="pre">fix</span></code> argument)?</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#can-i-verify-whether-my-problem-is-weakly-simplicial-before-fitting">Can I verify whether my problem is weakly simplicial before fitting?</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#what-kinds-of-shapes-can-a-bezier-simplex-represent-beyond-pareto-fronts">What kinds of shapes can a Bézier simplex represent beyond Pareto fronts?</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Frequently Asked Questions</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#general-information">General Information</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#how-does-pytorch-bsf-differ-from-other-hyperparameter-optimization-tools">How does PyTorch-BSF differ from other hyperparameter optimization tools?</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#what-applications-are-there-beyond-multi-objective-optimization">What applications are there beyond multi-objective optimization?</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#mathematical-foundations">Mathematical Foundations</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#what-is-the-weakly-simplicial-assumption">What is the “weakly simplicial” assumption?</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#can-i-verify-the-weakly-simplicial-assumption-for-my-problem">Can I verify the “weakly simplicial” assumption for my problem?</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#practical-usage">Practical Usage</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#how-do-i-choose-the-degree-and-estimate-the-required-sample-size">How do I choose the degree and estimate the required sample size?</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#how-do-i-normalize-my-parameters-or-values">How do I normalize my parameters or values?</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#can-i-use-gpu-or-multi-node-training">Can I use GPU or multi-node training?</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#how-do-i-save-and-load-a-trained-model">How do I save and load a trained model?</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#how-can-i-perform-cross-validation-or-grid-search">How can I perform cross-validation or grid search?</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#when-should-i-use-the-fix-argument">When should I use the <code class="docutils literal notranslate"><span class="pre">fix</span></code> argument?</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#troubleshooting">Troubleshooting</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#are-approximation-results-always-reliable">Are approximation results always reliable?</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#how-can-i-improve-fitting-convergence-or-accuracy">How can I improve fitting convergence or accuracy?</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#references">References</a></li>
 </ul>
 </li>
 </ul>
@@ -84,7 +98,7 @@
           <div role="navigation" aria-label="Page navigation">
   <ul class="wy-breadcrumbs">
       <li><a href="index.html" class="icon icon-home" aria-label="Home"></a></li>
-      <li class="breadcrumb-item active">Frequently asked questions</li>
+      <li class="breadcrumb-item active">Frequently Asked Questions</li>
       <li class="wy-breadcrumbs-aside">
             <a href="_sources/faq.rst.txt" rel="nofollow"> View page source</a>
       </li>
@@ -95,119 +109,196 @@
            <div itemprop="articleBody">
              
   <section id="frequently-asked-questions">
-<h1>Frequently asked questions<a class="headerlink" href="#frequently-asked-questions" title="Link to this heading"></a></h1>
-<section id="there-are-already-many-tools-for-hyperparameter-search-in-ml-why-propose-yet-another-one">
-<h2>There are already many tools for hyperparameter search in ML. Why propose yet another one?<a class="headerlink" href="#there-are-already-many-tools-for-hyperparameter-search-in-ml-why-propose-yet-another-one" title="Link to this heading"></a></h2>
+<h1>Frequently Asked Questions<a class="headerlink" href="#frequently-asked-questions" title="Link to this heading"></a></h1>
+<p>This page provides answers to common questions about PyTorch-BSF, its mathematical foundations, and practical usage.</p>
+<section id="general-information">
+<h2>General Information<a class="headerlink" href="#general-information" title="Link to this heading"></a></h2>
+<section id="how-does-pytorch-bsf-differ-from-other-hyperparameter-optimization-tools">
+<h3>How does PyTorch-BSF differ from other hyperparameter optimization tools?<a class="headerlink" href="#how-does-pytorch-bsf-differ-from-other-hyperparameter-optimization-tools" title="Link to this heading"></a></h3>
 <p>The key difference is that PyTorch-BSF <strong>exploits problem structure</strong> rather than treating the objective as a black box.</p>
-<p><strong>Dramatically fewer evaluations.</strong>
-Black-box methods such as Bayesian optimization make no assumptions about the objective and must explore the search space from scratch.
-Approximating a Pareto front to reasonable accuracy can require hundreds of evaluations with such methods.
-Because PyTorch-BSF assumes the problem is <em>weakly simplicial</em> — meaning the Pareto set has a simplex structure — it can recover the entire Pareto front from as few as 50 points, often with higher accuracy.</p>
-<p><strong>Dimension-free convergence in the manifold setting.</strong>
-When the data lie along a low-dimensional simplex embedded in a high-dimensional ambient space (analogous to manifold learning), the asymptotic risk of Bézier simplex fitting depends only on the <strong>intrinsic dimension</strong> of the simplex, not on the ambient space dimension.
-This gives extremely fast statistical convergence in settings where black-box methods would suffer from the curse of dimensionality.</p>
-<p><strong>The weakly simplicial assumption is broadly applicable.</strong>
-While the assumption may sound restrictive, it in fact covers a wide class of practical problems — including all unconstrained strongly convex problems such as elastic net regression.
-If you are unsure whether your problem qualifies, it can be verified with a statistical test; see <a class="reference internal" href="#can-i-verify-whether-my-problem-is-weakly-simplicial-before-fitting">Can I verify whether my problem is weakly simplicial before fitting?</a> below.</p>
-</section>
-<section id="are-approximation-results-always-reliable">
-<h2>Are approximation results always reliable?<a class="headerlink" href="#are-approximation-results-always-reliable" title="Link to this heading"></a></h2>
-<p>Not always.
-The approximation theorem makes no guarantees about the accuracy of a Bézier simplex of <strong>fixed</strong> degree.
-After fitting, you should assess the goodness of fit using domain knowledge appropriate to your problem.</p>
-</section>
-<section id="are-there-any-applications-other-than-multiobjective-optimization">
-<h2>Are there any applications other than multiobjective optimization?<a class="headerlink" href="#are-there-any-applications-other-than-multiobjective-optimization" title="Link to this heading"></a></h2>
-<p>Not yet documented, but quite possibly yes.
-Bézier simplices are likely to arise wherever high-dimensional shape representation is needed.
-If you discover a new application, please share it — it will be added to the applications section.</p>
-</section>
-<section id="how-do-i-choose-the-degree-of-the-bezier-simplex">
-<h2>How do I choose the degree of the Bézier simplex?<a class="headerlink" href="#how-do-i-choose-the-degree-of-the-bezier-simplex" title="Link to this heading"></a></h2>
-<p>There is no single rule, but the following guidelines are helpful:</p>
 <ul class="simple">
-<li><p><strong>Start low.</strong> A degree-2 or degree-3 simplex is a good default. Low-degree models are less prone to overfitting and faster to fit.</p></li>
-<li><p><strong>Check the residuals.</strong> If the fit is visibly poor, increase the degree by one and refit. Repeat until the residuals are acceptable.</p></li>
-<li><p><strong>Mind the sample size.</strong> A Bézier simplex of degree <span class="math notranslate nohighlight">\(D\)</span> over an <span class="math notranslate nohighlight">\((M-1)\)</span>-dimensional simplex has <span class="math notranslate nohighlight">\(\binom{D+M-1}{M-1}\)</span> control points. You need at least that many training samples for the problem to be well-determined.</p></li>
-<li><p><strong>Avoid over-fitting.</strong> If the model interpolates training points but predicts poorly elsewhere, the degree is too high for the available data.</p></li>
+<li><p><strong>Dramatically fewer evaluations:</strong> Black-box methods such as Bayesian optimization make no assumptions about the objective and must explore the search space from scratch. Approximating a Pareto front to reasonable accuracy can require hundreds of evaluations. Because PyTorch-BSF assumes the problem is <em>weakly simplicial</em>, it can often recover the entire Pareto front from as few as 50 points with higher accuracy.</p></li>
+<li><p><strong>Regression-based approach:</strong> Unlike search methods that find discrete points, PyTorch-BSF fits a continuous parametric surface (a Bézier simplex). Once trained, you can evaluate any point on the trade-off surface instantly.</p></li>
+<li><p><strong>Dimension-free convergence:</strong> When data lie along a low-dimensional manifold embedded in a high-dimensional space, the convergence rate depends on the <strong>intrinsic dimension</strong> of the simplex, not on the ambient space dimension. This avoids the curse of dimensionality common in black-box methods.</p></li>
 </ul>
 </section>
-<section id="how-many-training-samples-do-i-need">
-<h2>How many training samples do I need?<a class="headerlink" href="#how-many-training-samples-do-i-need" title="Link to this heading"></a></h2>
-<p>At minimum, you need as many samples as there are control points.
-A Bézier simplex of degree <span class="math notranslate nohighlight">\(D\)</span> with <span class="math notranslate nohighlight">\(M\)</span>-dimensional parameters has <span class="math notranslate nohighlight">\(\binom{D+M-1}{M-1}\)</span> control points.
-For example, a degree-3 model with 2-dimensional parameters (a Bézier curve) has 4 control points, while the same degree with 3-dimensional parameters (a Bézier triangle) has 10.</p>
-<p>In practice, having two to three times as many samples as control points tends to give stable fits.
-If you have fewer samples than control points, consider reducing the degree.</p>
+<section id="what-applications-are-there-beyond-multi-objective-optimization">
+<h3>What applications are there beyond multi-objective optimization?<a class="headerlink" href="#what-applications-are-there-beyond-multi-objective-optimization" title="Link to this heading"></a></h3>
+<p>While primarily used for Pareto front approximation, Bézier simplex fitting is a general-purpose regression technique for any continuous map from a simplex to a Euclidean space. Potential applications include:</p>
+<ul class="simple">
+<li><p><strong>Interpolation of parametric families:</strong> When a model’s behavior varies continuously with coefficients on a simplex (e.g., mixture weights, regularization strengths in Elastic Net), a Bézier simplex can compactly represent the entire family.</p></li>
+<li><p><strong>Shape modeling:</strong> Bézier simplices generalize Bézier triangles used in CAD and computer graphics; they can represent smooth curved surfaces of any dimension.</p></li>
+<li><p><strong>Solution manifolds:</strong> Any problem whose solution set forms a continuous simplex-structured manifold is a candidate for fitting.</p></li>
+<li><p><strong>Scientific data fitting:</strong> Modeling physical phenomena where constraints naturally form a simplex (e.g., chemical concentrations in a mixture).</p></li>
+</ul>
 </section>
-<section id="what-if-my-input-parameters-do-not-lie-on-a-simplex">
-<h2>What if my input parameters do not lie on a simplex?<a class="headerlink" href="#what-if-my-input-parameters-do-not-lie-on-a-simplex" title="Link to this heading"></a></h2>
-<p>The <code class="docutils literal notranslate"><span class="pre">fit()</span></code> function requires that each row of the <code class="docutils literal notranslate"><span class="pre">params</span></code> tensor sums to 1 (i.e., lies on the standard simplex <span class="math notranslate nohighlight">\(\Delta^{M-1}\)</span>).
-If your raw hyperparameters do not satisfy this constraint, you need to normalize them first.
-For two parameters <span class="math notranslate nohighlight">\(a\)</span> and <span class="math notranslate nohighlight">\(b\)</span>, a common approach is to set <span class="math notranslate nohighlight">\(t_1 = a / (a + b)\)</span> and <span class="math notranslate nohighlight">\(t_2 = b / (a + b)\)</span>.
-More generally, divide each parameter vector by its <span class="math notranslate nohighlight">\(\ell_1\)</span> norm.</p>
 </section>
-<section id="can-i-train-on-a-gpu">
-<h2>Can I train on a GPU?<a class="headerlink" href="#can-i-train-on-a-gpu" title="Link to this heading"></a></h2>
-<p>Yes. PyTorch-BSF is built on PyTorch, so GPU acceleration works in the standard way.
-Move your tensors to the target device before calling <code class="docutils literal notranslate"><span class="pre">fit()</span></code>:</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">torch</span>
-<span class="kn">import</span><span class="w"> </span><span class="nn">torch_bsf</span>
+<section id="mathematical-foundations">
+<h2>Mathematical Foundations<a class="headerlink" href="#mathematical-foundations" title="Link to this heading"></a></h2>
+<section id="what-is-the-weakly-simplicial-assumption">
+<h3>What is the “weakly simplicial” assumption?<a class="headerlink" href="#what-is-the-weakly-simplicial-assumption" title="Link to this heading"></a></h3>
+<p>A problem is <strong>weakly simplicial</strong> if its Pareto set (and Pareto front) is the continuous image of a standard simplex. Topologically, this means the set of optimal trade-offs has no “holes” or disconnected components and can be “stretched” or “bent” from a simplex.</p>
+<p>This assumption is remarkably broad. For example, it has been mathematically proven that <strong>all unconstrained strongly convex optimization problems are weakly simplicial</strong>. This covers a wide class of practical problems, including Elastic Net regression, Ridge regression, and many regularized empirical risk minimization tasks. See the <a class="reference internal" href="whatis.html"><span class="doc">What is Bézier simplex fitting?</span></a> section for formal definitions.</p>
+</section>
+<section id="can-i-verify-the-weakly-simplicial-assumption-for-my-problem">
+<h3>Can I verify the “weakly simplicial” assumption for my problem?<a class="headerlink" href="#can-i-verify-the-weakly-simplicial-assumption-for-my-problem" title="Link to this heading"></a></h3>
+<p>Yes. If your problem is unconstrained and strongly convex, it is guaranteed to be weakly simplicial. For other cases, you can use a <strong>data-driven statistical test</strong> based on persistent homology.</p>
+<p>The test checks whether the topology of the sampled Pareto set is consistent with a simplex structure. If the test rejects the simplicial hypothesis, a Bézier simplex model may not be appropriate. If it does not reject, you have statistical evidence supporting the use of PyTorch-BSF. Detailed information on these tests can be found in <span id="id1">Hamada and Goto [<a class="reference internal" href="whatis.html#id15" title="Naoki Hamada and Keisuke Goto. Data-driven analysis of pareto set topology. In Proceedings of the Genetic and Evolutionary Computation Conference, 657–664. 2018. URL: https://doi.org/10.1145/3205455.3205613.">HG18</a>]</span> and <span id="id2">Hamada [<a class="reference internal" href="whatis.html#id40" title="Naoki Hamada. 多目的最適化の解集合のトポロジーの検定法 (statistical test for the topology of solution sets in multi-objective optimization). In 日本応用数理学会2020年度年会講演予稿集 (Proceedings of the JSIAM Annual Meeting 2020). 2020.">Ham20</a>]</span>.</p>
+</section>
+</section>
+<section id="practical-usage">
+<h2>Practical Usage<a class="headerlink" href="#practical-usage" title="Link to this heading"></a></h2>
+<section id="how-do-i-choose-the-degree-and-estimate-the-required-sample-size">
+<h3>How do I choose the degree and estimate the required sample size?<a class="headerlink" href="#how-do-i-choose-the-degree-and-estimate-the-required-sample-size" title="Link to this heading"></a></h3>
+<p>The complexity of a Bézier simplex is determined by its <strong>degree</strong> (<span class="math notranslate nohighlight">\(D\)</span>) and the number of <strong>objectives</strong> (<span class="math notranslate nohighlight">\(M\)</span>). The number of control points is given by the formula:</p>
+<div class="math notranslate nohighlight">
+\[N_{cp} = \binom{D+M-1}{M-1}\]</div>
+<p><strong>Guidelines:</strong></p>
+<ul class="simple">
+<li><p><strong>Start low:</strong> A degree of 2 or 3 is usually a good starting point. Low-degree models are less prone to overfitting and faster to train.</p></li>
+<li><p><strong>Sample size:</strong> You need at least as many training samples as there are control points (<span class="math notranslate nohighlight">\(N_{cp}\)</span>) for the problem to be well-determined. In practice, having <strong>2 to 3 times as many samples</strong> as control points leads to more stable and reliable fits.</p></li>
+<li><p><strong>Refine as needed:</strong> If the residuals (fitting errors) are high, increase the degree. If the model overfits (low training error but poor generalization), increase the sample size or decrease the degree.</p></li>
+</ul>
+</section>
+<section id="how-do-i-normalize-my-parameters-or-values">
+<h3>How do I normalize my parameters or values?<a class="headerlink" href="#how-do-i-normalize-my-parameters-or-values" title="Link to this heading"></a></h3>
+<p>The <code class="docutils literal notranslate"><span class="pre">fit()</span></code> function requires that each row of the <code class="docutils literal notranslate"><span class="pre">params</span></code> tensor sums to 1 (i.e., lies on the standard simplex <span class="math notranslate nohighlight">\(\Delta^{M-1}\)</span>). If your raw parameters don’t satisfy this, you must normalize them manually.</p>
+<p>Additionally, normalizing the output <code class="docutils literal notranslate"><span class="pre">values</span></code> can improve fitting stability and accuracy. PyTorch-BSF provides several options for automatic value normalization in the CLI/MLflow interface.</p>
+<p>Please refer to the <a class="reference internal" href="advanced/normalization.html"><span class="doc">Data Normalization</span></a> page for detailed instructions on how to normalize your parameter and value tensors.</p>
+</section>
+<section id="can-i-use-gpu-or-multi-node-training">
+<h3>Can I use GPU or multi-node training?<a class="headerlink" href="#can-i-use-gpu-or-multi-node-training" title="Link to this heading"></a></h3>
+<p><strong>Yes.</strong> Since PyTorch-BSF is built on PyTorch and PyTorch Lightning, it supports hardware acceleration and distributed training out of the box.</p>
+<p>Please refer to the <a class="reference internal" href="advanced/acceleration.html"><span class="doc">Hardware Acceleration</span></a> page for detailed instructions on using GPUs (single or multiple), multi-node clusters, and mixed-precision training.</p>
+</section>
+<section id="how-do-i-save-and-load-a-trained-model">
+<h3>How do I save and load a trained model?<a class="headerlink" href="#how-do-i-save-and-load-a-trained-model" title="Link to this heading"></a></h3>
+<p>You can save and load models using the <code class="docutils literal notranslate"><span class="pre">torch_bsf.bezier_simplex</span></code> module. Supported formats include <code class="docutils literal notranslate"><span class="pre">.pt</span></code> (PyTorch), <code class="docutils literal notranslate"><span class="pre">.csv</span></code>, <code class="docutils literal notranslate"><span class="pre">.tsv</span></code>, <code class="docutils literal notranslate"><span class="pre">.json</span></code>, and <code class="docutils literal notranslate"><span class="pre">.yaml</span></code>.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">torch_bsf.bezier_simplex</span><span class="w"> </span><span class="kn">import</span> <span class="n">save</span><span class="p">,</span> <span class="n">load</span>
 
-<span class="n">device</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">device</span><span class="p">(</span><span class="s2">&quot;cuda&quot;</span> <span class="k">if</span> <span class="n">torch</span><span class="o">.</span><span class="n">cuda</span><span class="o">.</span><span class="n">is_available</span><span class="p">()</span> <span class="k">else</span> <span class="s2">&quot;cpu&quot;</span><span class="p">)</span>
-<span class="n">ts</span> <span class="o">=</span> <span class="n">ts</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="n">device</span><span class="p">)</span>
-<span class="n">xs</span> <span class="o">=</span> <span class="n">xs</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="n">device</span><span class="p">)</span>
-<span class="n">bs</span> <span class="o">=</span> <span class="n">torch_bsf</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">params</span><span class="o">=</span><span class="n">ts</span><span class="p">,</span> <span class="n">values</span><span class="o">=</span><span class="n">xs</span><span class="p">,</span> <span class="n">degree</span><span class="o">=</span><span class="mi">3</span><span class="p">)</span>
+<span class="c1"># Save the trained model</span>
+<span class="n">save</span><span class="p">(</span><span class="s2">&quot;my_model.pt&quot;</span><span class="p">,</span> <span class="n">bs</span><span class="p">)</span>
+
+<span class="c1"># Load it back</span>
+<span class="n">bs</span> <span class="o">=</span> <span class="n">load</span><span class="p">(</span><span class="s2">&quot;my_model.pt&quot;</span><span class="p">)</span>
 </pre></div>
 </div>
 </section>
-<section id="what-should-i-do-if-fitting-does-not-converge-or-the-accuracy-is-poor">
-<h2>What should I do if fitting does not converge or the accuracy is poor?<a class="headerlink" href="#what-should-i-do-if-fitting-does-not-converge-or-the-accuracy-is-poor" title="Link to this heading"></a></h2>
-<p>Try the following steps in order:</p>
+<section id="how-can-i-perform-cross-validation-or-grid-search">
+<h3>How can I perform cross-validation or grid search?<a class="headerlink" href="#how-can-i-perform-cross-validation-or-grid-search" title="Link to this heading"></a></h3>
+<p>PyTorch-BSF includes built-in tools for model selection and specific task automation:</p>
+<ul class="simple">
+<li><p><strong>K-Fold Cross-Validation:</strong> Run <cite>python -m torch_bsf.model_selection.kfold</cite> to evaluate model performance across different data splits.</p></li>
+<li><p><strong>Elastic Net Grid Search:</strong> Run <cite>python -m torch_bsf.model_selection.elastic_net_grid</cite> to generate parameter grids specifically for Elastic Net regularization paths.</p></li>
+</ul>
+</section>
+<section id="when-should-i-use-the-fix-argument">
+<h3>When should I use the <code class="docutils literal notranslate"><span class="pre">fix</span></code> argument?<a class="headerlink" href="#when-should-i-use-the-fix-argument" title="Link to this heading"></a></h3>
+<p>The <code class="docutils literal notranslate"><span class="pre">fix</span></code> argument allows you to hold specific control points constant during training. This is useful for:</p>
+<ul class="simple">
+<li><p><strong>Boundary constraints:</strong> If you know the exact values at the vertices of the simplex (e.g., results of single-objective optimizations), fix those vertices and fit only the interior.</p></li>
+<li><p><strong>Incremental refinement:</strong> Fit a low-degree model first, then use its control points as initialization for a higher-degree model, fixing the well-estimated parts to stabilize training.</p></li>
+<li><p><strong>Encoding prior knowledge:</strong> If theoretical or physical constraints dictate the value at certain parameter combinations, you can pin those points to ensure the model respects them.</p></li>
+</ul>
+</section>
+</section>
+<section id="troubleshooting">
+<h2>Troubleshooting<a class="headerlink" href="#troubleshooting" title="Link to this heading"></a></h2>
+<section id="are-approximation-results-always-reliable">
+<h3>Are approximation results always reliable?<a class="headerlink" href="#are-approximation-results-always-reliable" title="Link to this heading"></a></h3>
+<p>Not necessarily. While the Universal Approximation Theorem guarantees that a Bézier simplex <em>can</em> approximate any continuous map, a model with a <strong>fixed</strong> degree might not be sufficient for highly complex or “wiggly” surfaces.</p>
+<p>To ensure reliability:
+1.  <strong>Check Residuals:</strong> Large fitting errors indicate the degree might be too low.
+2.  <strong>Cross-Validation:</strong> Use the built-in k-fold tools to ensure the model generalizes well to unseen data.
+3.  <strong>Visualization:</strong> If the dimension allows, plot the resulting surface against the training points.
+4.  <strong>Domain Knowledge:</strong> Verify that the predicted trade-offs make sense according to the physics or logic of your problem.</p>
+</section>
+<section id="how-can-i-improve-fitting-convergence-or-accuracy">
+<h3>How can I improve fitting convergence or accuracy?<a class="headerlink" href="#how-can-i-improve-fitting-convergence-or-accuracy" title="Link to this heading"></a></h3>
+<p>If you encounter poor accuracy or optimization issues, try these steps:</p>
 <ol class="arabic simple">
-<li><p><strong>Check your data.</strong> Verify that <code class="docutils literal notranslate"><span class="pre">params</span></code> rows sum to 1 and that the number of samples is at least as large as the number of control points.</p></li>
-<li><p><strong>Adjust the degree.</strong> If the fit is underdetermined, reduce the degree. If the Pareto front has high curvature, increase it.</p></li>
-<li><p><strong>Provide a better initialization.</strong> Use the <code class="docutils literal notranslate"><span class="pre">init</span></code> argument of <code class="docutils literal notranslate"><span class="pre">fit()</span></code> to supply initial control points derived from domain knowledge or a coarser prior fit.</p></li>
-<li><p><strong>Increase training iterations.</strong> The underlying L-BFGS optimizer may need more steps for complex surfaces.</p></li>
-<li><p><strong>Inspect the residuals.</strong> Large residuals concentrated at specific parameter values suggest that more training samples are needed in that region.</p></li>
+<li><p><strong>Check Data Quality:</strong> Ensure <code class="docutils literal notranslate"><span class="pre">params</span></code> sum to 1 and that you have enough samples relative to the degree.</p></li>
+<li><p><strong>Adjust the Degree:</strong> If the surface is too complex, increase the degree. If the model is oscillating or overfitting, decrease it.</p></li>
+<li><p><strong>Better Initialization:</strong> Use the <code class="docutils literal notranslate"><span class="pre">init</span></code> argument to provide a better starting point, perhaps from a coarse fit or domain knowledge.</p></li>
+<li><p><strong>Increase Training Epochs:</strong> For complex surfaces, the L-BFGS optimizer might need more iterations. In the CLI, use <code class="docutils literal notranslate"><span class="pre">--max_epochs</span></code>.</p></li>
+<li><p><strong>Data Normalization:</strong> Scale your output values (<code class="docutils literal notranslate"><span class="pre">values</span></code>) to a similar range (e.g., using <code class="docutils literal notranslate"><span class="pre">--normalize</span> <span class="pre">std</span></code>) to help the optimizer converge faster.</p></li>
 </ol>
 </section>
-<section id="when-should-i-use-partial-training-the-fix-argument">
-<h2>When should I use partial training (the <code class="docutils literal notranslate"><span class="pre">fix</span></code> argument)?<a class="headerlink" href="#when-should-i-use-partial-training-the-fix-argument" title="Link to this heading"></a></h2>
-<p>The <code class="docutils literal notranslate"><span class="pre">fix</span></code> argument lets you hold specific control points constant while optimizing the rest.
-This is useful in several situations:</p>
-<ul class="simple">
-<li><p><strong>Boundary constraints.</strong> If you know the values at the vertices of the simplex exactly (e.g., single-objective optima), fix those control points and fit only the interior.</p></li>
-<li><p><strong>Incremental refinement.</strong> Fit a coarse model first, then fix the already-well-estimated control points and refine the rest with additional data.</p></li>
-<li><p><strong>Prior knowledge.</strong> If physical or theoretical considerations pin down part of the surface, encoding that as fixed control points prevents the optimizer from moving away from known-good values.</p></li>
-</ul>
-<p>See the <a class="reference internal" href="advanced.html"><span class="doc">Advanced Topics</span></a> section for a code example.</p>
 </section>
-<section id="can-i-verify-whether-my-problem-is-weakly-simplicial-before-fitting">
-<h2>Can I verify whether my problem is weakly simplicial before fitting?<a class="headerlink" href="#can-i-verify-whether-my-problem-is-weakly-simplicial-before-fitting" title="Link to this heading"></a></h2>
-<p>For a broad and practically important class of problems, no verification is needed: it is known that <strong>all unconstrained strongly convex optimization problems are weakly simplicial</strong> [3].
-This covers, for example, elastic net regression and many other regularized empirical risk minimization problems.</p>
-<p>For problems outside this class, a data-driven statistical test exists (see [4] in the <a class="reference internal" href="whatis.html"><span class="doc">What is Bézier simplex fitting?</span></a> references).
-The test checks whether the topology of the empirical Pareto set is consistent with a simplex structure.
-If the test rejects the simplicial hypothesis, a Bézier simplex model may not be appropriate, and you should consider a more general surrogate model.
-If the test does not reject, you have statistical evidence supporting the use of PyTorch-BSF.</p>
-<aside class="footnote-list brackets">
-<aside class="footnote brackets" id="id1" role="doc-footnote">
-<span class="label"><span class="fn-bracket">[</span>3<span class="fn-bracket">]</span></span>
-<p>Mizota, Y., Hamada, N., &amp; Ichiki, S. (2021). <em>All unconstrained strongly convex problems are weakly simplicial.</em> arXiv:2106.12704. https://arxiv.org/abs/2106.12704</p>
-</aside>
-</aside>
-</section>
-<section id="what-kinds-of-shapes-can-a-bezier-simplex-represent-beyond-pareto-fronts">
-<h2>What kinds of shapes can a Bézier simplex represent beyond Pareto fronts?<a class="headerlink" href="#what-kinds-of-shapes-can-a-bezier-simplex-represent-beyond-pareto-fronts" title="Link to this heading"></a></h2>
-<p>Any continuous map from a simplex to a Euclidean space can be approximated by a Bézier simplex (approximation theorem).
-Beyond Pareto fronts, potential applications include:</p>
-<ul class="simple">
-<li><p><strong>Interpolation of parametric families.</strong> When a model’s behavior varies continuously with a set of coefficients that live on a simplex (e.g., mixture weights, regularization strengths), a Bézier simplex can compactly represent the entire family.</p></li>
-<li><p><strong>Shape modeling.</strong> Bézier simplices generalize Bézier triangles used in surface modeling; they can represent smooth curved surfaces of any dimension.</p></li>
-<li><p><strong>Solution manifolds.</strong> Any problem whose solution set forms a continuous simplex-structured manifold — not just multiobjective optimization — is a candidate.</p></li>
-</ul>
-<p>If you find a new application, please share it so it can be documented in the applications section.</p>
+<section id="references">
+<h2>References<a class="headerlink" href="#references" title="Link to this heading"></a></h2>
+<div class="docutils container" id="id3">
+<div role="list" class="citation-list">
+<div class="citation" id="id26" role="doc-biblioentry">
+<span class="label"><span class="fn-bracket">[</span>BDK21<span class="fn-bracket">]</span></span>
+<p>El Houcine Bergou, Youssef Diouane, and Vyacheslav Kungurtsev. Complexity iteration analysis for strongly convex multi-objective optimization using a newton path-following procedure. <em>Optimization Letters</em>, 15:1215–1227, 2021. <a class="reference external" href="https://doi.org/10.1007/s11590-020-01623-x">doi:10.1007/s11590-020-01623-x</a>.</p>
+</div>
+<div class="citation" id="id22" role="doc-biblioentry">
+<span class="label"><span class="fn-bracket">[</span>BS19<span class="fn-bracket">]</span></span>
+<p>Henri Bonnel and Corinne Schneider. Post-pareto analysis and a new algorithm for the optimal parameter tuning of the elastic net. <em>Journal of Optimization Theory and Applications</em>, 183(3):993–1027, 2019. <a class="reference external" href="https://doi.org/10.1007/s10957-019-01592-x">doi:10.1007/s10957-019-01592-x</a>.</p>
+</div>
+<div class="citation" id="id28" role="doc-biblioentry">
+<span class="label"><span class="fn-bracket">[</span>BSK+07<span class="fn-bracket">]</span></span>
+<p>S Breedveld, P Storchi, M Keijzer, A Heemink, and B Heijmen. A novel approach to multi-criteria inverse planning for imrt. <em>Physics in Medicine and Biology</em>, 2007.</p>
+</div>
+<div class="citation" id="id31" role="doc-biblioentry">
+<span class="label"><span class="fn-bracket">[</span>dWK<span class="fn-bracket">]</span></span>
+<p>Olivier de Weck and Il Yong Kim. Adaptive weighted sum method for multiobjective optimization. Submitted to Structural and Multidisciplinary Optimization for Review.</p>
+</div>
+<div class="citation" id="id23" role="doc-biblioentry">
+<span class="label"><span class="fn-bracket">[</span>FGranaDS09<span class="fn-bracket">]</span></span>
+<p>Jörg Fliege, L M Graña Drummond, and Benar Fux Svaiter. Newton's method for multiobjective optimization. <em>SIAM Journal on Optimization</em>, 20(2):602–626, 2009. <a class="reference external" href="https://doi.org/10.1137/08071692X">doi:10.1137/08071692X</a>.</p>
+</div>
+<div class="citation" id="id32" role="doc-biblioentry">
+<span class="label"><span class="fn-bracket">[</span><a role="doc-backlink" href="#id2">Ham20</a><span class="fn-bracket">]</span></span>
+<p>Naoki Hamada. 多目的最適化の解集合のトポロジーの検定法 (statistical test for the topology of solution sets in multi-objective optimization). In <em>日本応用数理学会2020年度年会講演予稿集 (Proceedings of the JSIAM Annual Meeting 2020)</em>. 2020.</p>
+</div>
+<div class="citation" id="id7" role="doc-biblioentry">
+<span class="label"><span class="fn-bracket">[</span><a role="doc-backlink" href="#id1">HG18</a><span class="fn-bracket">]</span></span>
+<p>Naoki Hamada and Keisuke Goto. Data-driven analysis of pareto set topology. In <em>Proceedings of the Genetic and Evolutionary Computation Conference</em>, 657–664. 2018. URL: <a class="reference external" href="https://doi.org/10.1145/3205455.3205613">https://doi.org/10.1145/3205455.3205613</a>.</p>
+</div>
+<div class="citation" id="id20" role="doc-biblioentry">
+<span class="label"><span class="fn-bracket">[</span>HHI+20<span class="fn-bracket">]</span></span>
+<p>Naoki Hamada, Kenta Hayano, Shunsuke Ichiki, Yutaro Kabata, and Hiroshi Teramoto. Topology of pareto sets of strongly convex problems. <em>SIAM Journal on Optimization</em>, 30(3):2659–2686, 2020. <a class="reference external" href="https://doi.org/10.1137/19M1264175">doi:10.1137/19M1264175</a>.</p>
+</div>
+<div class="citation" id="id29" role="doc-biblioentry">
+<span class="label"><span class="fn-bracket">[</span>HOLeary93<span class="fn-bracket">]</span></span>
+<p>Per Christian Hansen and Dianne Prost O'Leary. The use of the l-curve in the regularization of discrete ill-posed problems. <em>SIAM Journal on Scientific Computing</em>, 14(6):1487–1503, 1993. <a class="reference external" href="https://doi.org/10.1137/0914086">doi:10.1137/0914086</a>.</p>
+</div>
+<div class="citation" id="id4" role="doc-biblioentry">
+<span class="label"><span class="fn-bracket">[</span>KHS+19<span class="fn-bracket">]</span></span>
+<p>Ken Kobayashi, Naoki Hamada, Akiyoshi Sannai, Aiko Tanaka, Kenichi Bannai, and Masashi Sugiyama. Bézier simplex fitting: describing pareto fronts of simplicial problems with small samples in multi-objective optimization. In <em>Proceedings of the AAAI Conference on Artificial Intelligence</em>, volume 33, 2304–2313. 2019. URL: <a class="reference external" href="https://doi.org/10.1609/aaai.v33i01.33012304">https://doi.org/10.1609/aaai.v33i01.33012304</a>.</p>
+</div>
+<div class="citation" id="id21" role="doc-biblioentry">
+<span class="label"><span class="fn-bracket">[</span>LV24<span class="fn-bracket">]</span></span>
+<p>Suyun Liu and Luís N Vicente. The stochastic multi-gradient algorithm for multi-objective optimization and its application to supervised machine learning. <em>Annals of Operations Research</em>, 339(3):1119–1148, 2024. <a class="reference external" href="https://doi.org/10.1007/s10479-021-04033-z">doi:10.1007/s10479-021-04033-z</a>.</p>
+</div>
+<div class="citation" id="id27" role="doc-biblioentry">
+<span class="label"><span class="fn-bracket">[</span>Mar52<span class="fn-bracket">]</span></span>
+<p>Harry Markowitz. Portfolio selection. <em>The Journal of Finance</em>, 7(1):77–91, 1952. <a class="reference external" href="https://doi.org/10.2307/2975974">doi:10.2307/2975974</a>.</p>
+</div>
+<div class="citation" id="id6" role="doc-biblioentry">
+<span class="label"><span class="fn-bracket">[</span>MHI21<span class="fn-bracket">]</span></span>
+<p>Yuto Mizota, Naoki Hamada, and Shunsuke Ichiki. All unconstrained strongly convex problems are weakly simplicial. 2021. URL: <a class="reference external" href="https://arxiv.org/abs/2106.12704">https://arxiv.org/abs/2106.12704</a>, <a class="reference external" href="https://arxiv.org/abs/2106.12704">arXiv:2106.12704</a>.</p>
+</div>
+<div class="citation" id="id8" role="doc-biblioentry">
+<span class="label"><span class="fn-bracket">[</span>Qi<span class="fn-bracket">]</span></span>
+<p>Houduo Qi. Optimal portfolio selections via l1,2-norm regularization. URL: <a class="reference external" href="https://eprints.soton.ac.uk/451606/1/mvpl12_for_PURE.pdf">https://eprints.soton.ac.uk/451606/1/mvpl12_for_PURE.pdf</a>.</p>
+</div>
+<div class="citation" id="id34" role="doc-biblioentry">
+<span class="label"><span class="fn-bracket">[</span>TSR+05<span class="fn-bracket">]</span></span>
+<p>Robert Tibshirani, Michael Saunders, Saharon Rosset, Ji Zhu, and Keith Knight. Sparsity and smoothness via the fused lasso. <em>Journal of the Royal Statistical Society: Series B (Statistical Methodology)</em>, 67(1):91–108, 2005.</p>
+</div>
+<div class="citation" id="id30" role="doc-biblioentry">
+<span class="label"><span class="fn-bracket">[</span>YYLM21<span class="fn-bracket">]</span></span>
+<p>Dongxiang Yan, He Yin, Tao Li, and Chengbin Ma. A two-stage scheme for both power allocation and ev charging coordination in a grid tied pv-battery charging station. <em>IEEE Transactions on Industrial Informatics</em>, 2021. <a class="reference external" href="https://doi.org/10.1109/TII.2021.3054417">doi:10.1109/TII.2021.3054417</a>.</p>
+</div>
+<div class="citation" id="id33" role="doc-biblioentry">
+<span class="label"><span class="fn-bracket">[</span>YL06<span class="fn-bracket">]</span></span>
+<p>Ming Yuan and Yi Lin. Model selection and estimation in regression with grouped variables. <em>Journal of the Royal Statistical Society: Series B (Statistical Methodology)</em>, 68(1):49–67, 2006.</p>
+</div>
+</div>
+</div>
 </section>
 </section>
 
@@ -262,6 +353,7 @@ Beyond Pareto fronts, potential applications include:</p>
             <dd><a href="../v0.13.4/faq.html">v0.13.4</a></dd>
             <dd><a href="../v0.14.0/faq.html">v0.14.0</a></dd>
             <dd><a href="../v0.14.1/faq.html">v0.14.1</a></dd>
+            <dd><a href="../v0.14.2/faq.html">v0.14.2</a></dd>
             <dd><a href="../v0.2.0/faq.html">v0.2.0</a></dd>
             <dd><a href="../v0.3.0/faq.html">v0.3.0</a></dd>
             <dd><a href="../v0.3.1/faq.html">v0.3.1</a></dd>

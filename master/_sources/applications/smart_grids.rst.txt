@@ -1,9 +1,9 @@
 Distributed smart grids and energy operations
 =============================================
 
-Modern power management systems face uniquely high-stakes tradeoffs. The Multi-Objective Optimal Power Flow (MO-OPF) model mathematically formulates the challenges of simultaneously minimizing the economic costs of power generation, restricting environmental emission rates, and regulating line transmission losses or voltage deviations. 
+Modern power management systems face uniquely high-stakes trade-offs. The Multi-Objective Optimal Power Flow (MO-OPF) model mathematically formulates the challenges of simultaneously minimizing the economic costs of power generation, restricting environmental emission rates, and regulating line transmission losses or voltage deviations. 
 
-For traditional generators, the expected fuel and operating cost across an interconnected network is naturally modeled as a strongly convex quadratic function regarding power output :math:`P_i`:
+For traditional generators, the expected fuel and operating cost across an interconnected network is naturally modeled as a strongly convex quadratic function of power output :math:`P_i`:
 
 .. math:: C_i(P_i) = a_i P_i^2 + b_i P_i + c_i \quad (a_i > 0)
 
@@ -16,3 +16,9 @@ From a mathematical perspective, modifying the power allocations to maximize the
 These strongly convex definitions enable massive decentralized networking algorithms—like accelerated Alternating Direction Method of Multipliers (ADMM)—to secure linear convergence uniformly across geographically vast nodes.
 
 Additionally, as weather profiles and market electricity pricing constantly fluctuate, network operators must instantaneously reroute their balance policies. Equipping a distributed smart grid operator with a pre-computed Bézier simplex mapping allows the grid to frictionlessly evaluate these high-dimensional, competitive variables in real-time, executing continuous equilibrium adjustments across millions of endpoints securely.
+
+
+References
+----------
+
+.. bibliography::

@@ -61,7 +61,7 @@
 <li class="toctree-l2"><a class="reference internal" href="facility_location.html">Facility location and continuous approximations</a></li>
 </ul>
 </li>
-<li class="toctree-l1"><a class="reference internal" href="../faq.html">Frequently asked questions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../faq.html">Frequently Asked Questions</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">API reference</span></p>
 <ul>
@@ -102,7 +102,7 @@
 \text{Route Volatility: }  &amp; f_2(R) = \sum_{k=t+1}^{t+h} \|\Delta R(k)\|_2^2\end{split}\]</div>
 <p>Where <span class="math notranslate nohighlight">\(R(k)\)</span> is the routing allocation matrix at time step <span class="math notranslate nohighlight">\(k\)</span>, <span class="math notranslate nohighlight">\(\zeta(k)\)</span> represents the bandwidth excess above target capacity, and <span class="math notranslate nohighlight">\(\Delta R(k)\)</span> denotes the modifications applied to the traffic routing.</p>
 <p>Simultaneously minimizing both objectives heavily relies on strong convexity. Even if the network flow constraints are piece-wise linear or broadly just convex, the explicit <span class="math notranslate nohighlight">\(L_2\)</span> penalty on the route changes (<span class="math notranslate nohighlight">\(\|\Delta R(k)\|_2^2\)</span>) injects a mathematically strict positive-definite curvature into the optimization landscape. This uniformly bounds the Hessian away from zero, enforcing the strong convexity of the routing matrix modifications.</p>
-<p>For real-time network controllers, instantly reacting to traffic bursts while balancing these tradeoffs using standard Quadratic Programming solvers at every microsecond is computationally prohibitive. By fitting a Bézier simplex to the Pareto front of the sub-games, operators unlock an instantaneous, purely arithmetic continuous mapping of the exact tradeoffs between congestion and routing modifications. The network can then dynamically, and safely, slide along the Pareto front using continuous polynomial evaluations rather than reiterating heavy optimization loops, ensuring uninterrupted low-latency services.</p>
+<p>For real-time network controllers, instantly reacting to traffic bursts while balancing these trade-offs using standard Quadratic Programming solvers at every microsecond is computationally prohibitive. By fitting a Bézier simplex to the Pareto front of the sub-games, operators unlock an instantaneous, purely arithmetic continuous mapping of the exact trade-offs between congestion and routing modifications. The network can then dynamically, and safely, slide along the Pareto front using continuous polynomial evaluations instead of repeatedly executing heavy optimization loops, ensuring uninterrupted low-latency services.</p>
 </section>
 
 
@@ -156,6 +156,7 @@
             <dd><a href="../../v0.13.4/index.html">v0.13.4</a></dd>
             <dd><a href="../../v0.14.0/index.html">v0.14.0</a></dd>
             <dd><a href="../../v0.14.1/index.html">v0.14.1</a></dd>
+            <dd><a href="../../v0.14.2/applications/communications.html">v0.14.2</a></dd>
             <dd><a href="../../v0.2.0/index.html">v0.2.0</a></dd>
             <dd><a href="../../v0.3.0/index.html">v0.3.0</a></dd>
             <dd><a href="../../v0.3.1/index.html">v0.3.1</a></dd>

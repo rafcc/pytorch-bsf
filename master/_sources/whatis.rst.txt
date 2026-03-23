@@ -11,7 +11,7 @@ This page introduces the formal definition of Bézier simplices, the least-squar
 Bezier simplex
 --------------
 
-Let :math:`D, M, N` be nonnegative integers, :math:`\mathbb N` the set of nonnegative integers (including zero!), and :math:`\mathbb R^N` the :math:`N`-dimensional Euclidean space.
+Let :math:`D, M, N` be non-negative integers, :math:`\mathbb N` the set of non-negative integers (including zero), and :math:`\mathbb R^N` the :math:`N`-dimensional Euclidean space.
 We define the *index set* by
 
 .. math:: \mathbb N_D^M = \left\{\mathbf d=(d_1,\ldots,d_M)\in\mathbb N^M\ \Bigg|\ \sum_{m=1}^M d_m=D\right\},
@@ -20,7 +20,7 @@ and the *simplex* by
 
 .. math:: \Delta^{M-1} = \left\{\mathbf t=(t_1,\ldots,t_M)\in[0,1]^M\ \Bigg|\ \sum_{m=1}^M t_m=1\right\}.
 
-An :math:`(M-1)`-dimensional *Bezier simplex* of degree :math:`D` in :math:`\mathbb R^N` is a polynomial map :math:`\mathbf b: \Delta^{M-1}\to\mathbb R^N` defined by
+An :math:`(M-1)`-dimensional *Bézier simplex* of degree :math:`D` in :math:`\mathbb R^N` is a polynomial map :math:`\mathbf b: \Delta^{M-1}\to\mathbb R^N` defined by
 
 .. math:: \mathbf b(\mathbf t\mid\mathbf p) = \sum_{\mathbf d\in\mathbb N_D^M} \binom{D}{\mathbf d} \mathbf t^{\mathbf d} \mathbf p_{\mathbf d},
 
@@ -36,7 +36,7 @@ where :math:`\mathbf t^{\mathbf d} = t_1^{d_1} t_2^{d_2}\cdots t_M^{d_M}`, :math
 Bézier simplex fitting
 ----------------------
 
-Assume we have a finite dataset :math:`B\subset\Delta^{M-1}\times\mathbb R^N` and want to fit a Bézier simplex to the dataset. What we are trying can be formulated as a problem of finding the best vector of control points :math:`\mathbf p=(\mathbf p_{\mathbf d})_{\mathbf d\in\mathbb N_D^M}` that minimizes the least square error between the Bezier simplex and the dataset:
+Assume we have a finite dataset :math:`B\subset\Delta^{M-1}\times\mathbb R^N` and want to fit a Bézier simplex to the dataset. What we are trying can be formulated as a problem of finding the best vector of control points :math:`\mathbf p=(\mathbf p_{\mathbf d})_{\mathbf d\in\mathbb N_D^M}` that minimizes the least squares error between the Bézier simplex and the dataset:
 
 .. math:: \arg\min_{\mathbf p} \sum_{(\mathbf t,\mathbf x)\in B}\|\mathbf b(\mathbf t\mid\mathbf p)-\mathbf x\|^2.
 
@@ -52,7 +52,7 @@ PyTorch-BSF provides an algorithm for solving this optimization problem with the
 Approximation theorem
 ---------------------
 
-Any continuous map from a simplex to a Euclidean space can be approximated by a Bezier simplex. More precisely, the following theorem holds :cite:p:`kobayashi2019bezier`:
+Any continuous map from a simplex to a Euclidean space can be approximated by a Bézier simplex. More precisely, the following theorem holds :cite:p:`kobayashi2019bezier`:
 
 .. prf:theorem:: Universal Approximation Theorem
 
@@ -111,7 +111,7 @@ In many real-world multi-objective optimization problems, the Pareto set and Par
 
    A weakly simplicial problem: the Pareto set and Pareto front are a continuous image of a simplex, i.e., they may have a pinched topology.
 
-In weakly simplicial problems, there exists a continuous map from a simplex to the Pareto set and Pareto front, which is guaranteed to be approximable by the Approximation theorem.
+In weakly simplicial problems, there exists a continuous map from a simplex to the Pareto set and Pareto front, which is guaranteed to be approximable by the Universal Approximation Theorem.
 
 
 Strongly convex problems
@@ -170,7 +170,7 @@ Earlier work introduced the formal concept of a *simple problem*:
 
 .. prf:theorem:: Equivalence of Simple and Simplicial Problems
 
-   All :math:`C^r`-simplicial problems are simple (:math:`0\le r \le \infty`). A simple problem is :math:`C^0`-simplicial if the interiors of the Pareto sets of any two subproblems do not intersect.
+   All :math:`C^r`-simplicial problems are simple (:math:`0\le r \le \infty`). A simple problem is :math:`C^0`-simplicial if the interiors of Pareto sets for any two subproblems do not intersect.
 
 Furthermore, it is conjectured that "simple" and "simplicial" are equivalent even without this extra condition. Therefore, testing whether a problem is simple serves as a practical test for whether a problem is simplicial. Notably, the non-intersection condition itself can also be tested statistically.
 
@@ -209,4 +209,3 @@ References
 ----------
 
 .. bibliography::
-   :all:

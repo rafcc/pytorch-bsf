@@ -48,7 +48,7 @@
 <li class="toctree-l1"><a class="reference internal" href="advanced.html">Advanced Topics</a></li>
 <li class="toctree-l1"><a class="reference internal" href="whatis.html">What is Bézier simplex fitting?</a></li>
 <li class="toctree-l1"><a class="reference internal" href="applications.html">Applications</a></li>
-<li class="toctree-l1"><a class="reference internal" href="faq.html">Frequently asked questions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="faq.html">Frequently Asked Questions</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">API reference</span></p>
 <ul>
@@ -86,9 +86,9 @@
 A Bézier simplex is a high-dimensional generalization of the Bézier curve: it can model an arbitrarily complex point cloud as a smooth parametric hyper-surface in any number of dimensions.
 This makes it a natural tool for representing <strong>Pareto fronts</strong> in multi-objective optimization, interpolating scattered observations, and fitting geometric structures in high-dimensional spaces.</p>
 <p>The project is on <a class="reference external" href="https://github.com/opthub-org/pytorch-bsf">GitHub</a>.</p>
-<a class="reference internal image-reference" href="_images/bezier-simplex.png"><img alt="A Bezier simplex and its control points" src="_images/bezier-simplex.png" style="width: 49%;" />
+<a class="reference internal image-reference" href="_images/bezier-simplex.png"><img alt="A Bézier simplex and its control points" src="_images/bezier-simplex.png" style="width: 49%;" />
 </a>
-<a class="reference internal image-reference" href="_images/bezier-simplex-fitting.png"><img alt="A Bezier simplex that fits to a dataset" src="_images/bezier-simplex-fitting.png" style="width: 49%;" />
+<a class="reference internal image-reference" href="_images/bezier-simplex-fitting.png"><img alt="A Bézier simplex that fits to a dataset" src="_images/bezier-simplex-fitting.png" style="width: 49%;" />
 </a>
 <div class="toctree-wrapper compound">
 <p class="caption" role="heading"><span class="caption-text">User guide</span></p>
@@ -100,8 +100,10 @@ This makes it a natural tool for representing <strong>Pareto fronts</strong> in 
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="advanced.html">Advanced Topics</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="advanced.html#initial-control-points">Initial control points</a></li>
-<li class="toctree-l2"><a class="reference internal" href="advanced.html#partial-training">Partial training</a></li>
+<li class="toctree-l2"><a class="reference internal" href="advanced/normalization.html">Data Normalization</a></li>
+<li class="toctree-l2"><a class="reference internal" href="advanced/initialization.html">Initial Control Points</a></li>
+<li class="toctree-l2"><a class="reference internal" href="advanced/partial.html">Partial Training</a></li>
+<li class="toctree-l2"><a class="reference internal" href="advanced/acceleration.html">Hardware Acceleration</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="whatis.html">What is Bézier simplex fitting?</a><ul>
@@ -125,18 +127,12 @@ This makes it a natural tool for representing <strong>Pareto fronts</strong> in 
 <li class="toctree-l2"><a class="reference internal" href="applications/facility_location.html">Facility location and continuous approximations</a></li>
 </ul>
 </li>
-<li class="toctree-l1"><a class="reference internal" href="faq.html">Frequently asked questions</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="faq.html#there-are-already-many-tools-for-hyperparameter-search-in-ml-why-propose-yet-another-one">There are already many tools for hyperparameter search in ML. Why propose yet another one?</a></li>
-<li class="toctree-l2"><a class="reference internal" href="faq.html#are-approximation-results-always-reliable">Are approximation results always reliable?</a></li>
-<li class="toctree-l2"><a class="reference internal" href="faq.html#are-there-any-applications-other-than-multiobjective-optimization">Are there any applications other than multiobjective optimization?</a></li>
-<li class="toctree-l2"><a class="reference internal" href="faq.html#how-do-i-choose-the-degree-of-the-bezier-simplex">How do I choose the degree of the Bézier simplex?</a></li>
-<li class="toctree-l2"><a class="reference internal" href="faq.html#how-many-training-samples-do-i-need">How many training samples do I need?</a></li>
-<li class="toctree-l2"><a class="reference internal" href="faq.html#what-if-my-input-parameters-do-not-lie-on-a-simplex">What if my input parameters do not lie on a simplex?</a></li>
-<li class="toctree-l2"><a class="reference internal" href="faq.html#can-i-train-on-a-gpu">Can I train on a GPU?</a></li>
-<li class="toctree-l2"><a class="reference internal" href="faq.html#what-should-i-do-if-fitting-does-not-converge-or-the-accuracy-is-poor">What should I do if fitting does not converge or the accuracy is poor?</a></li>
-<li class="toctree-l2"><a class="reference internal" href="faq.html#when-should-i-use-partial-training-the-fix-argument">When should I use partial training (the <code class="docutils literal notranslate"><span class="pre">fix</span></code> argument)?</a></li>
-<li class="toctree-l2"><a class="reference internal" href="faq.html#can-i-verify-whether-my-problem-is-weakly-simplicial-before-fitting">Can I verify whether my problem is weakly simplicial before fitting?</a></li>
-<li class="toctree-l2"><a class="reference internal" href="faq.html#what-kinds-of-shapes-can-a-bezier-simplex-represent-beyond-pareto-fronts">What kinds of shapes can a Bézier simplex represent beyond Pareto fronts?</a></li>
+<li class="toctree-l1"><a class="reference internal" href="faq.html">Frequently Asked Questions</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="faq.html#general-information">General Information</a></li>
+<li class="toctree-l2"><a class="reference internal" href="faq.html#mathematical-foundations">Mathematical Foundations</a></li>
+<li class="toctree-l2"><a class="reference internal" href="faq.html#practical-usage">Practical Usage</a></li>
+<li class="toctree-l2"><a class="reference internal" href="faq.html#troubleshooting">Troubleshooting</a></li>
+<li class="toctree-l2"><a class="reference internal" href="faq.html#references">References</a></li>
 </ul>
 </li>
 </ul>
@@ -210,6 +206,7 @@ This makes it a natural tool for representing <strong>Pareto fronts</strong> in 
             <dd><a href="../v0.13.4/index.html">v0.13.4</a></dd>
             <dd><a href="../v0.14.0/index.html">v0.14.0</a></dd>
             <dd><a href="../v0.14.1/index.html">v0.14.1</a></dd>
+            <dd><a href="../v0.14.2/index.html">v0.14.2</a></dd>
             <dd><a href="../v0.2.0/index.html">v0.2.0</a></dd>
             <dd><a href="../v0.3.0/index.html">v0.3.0</a></dd>
             <dd><a href="../v0.3.1/index.html">v0.3.1</a></dd>
