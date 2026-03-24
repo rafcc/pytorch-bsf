@@ -1,5 +1,17 @@
 # Changelog
 
+## [0.14.3](https://github.com/opthub-org/pytorch-bsf/compare/v0.14.2...v0.14.3) (2026-03-24)
+
+
+### Dependencies
+
+* hotfix for mlflow dependency issue ([#245](https://github.com/opthub-org/pytorch-bsf/issues/245)) ([98964a0](https://github.com/opthub-org/pytorch-bsf/commit/98964a08e476b324879f02d8efc423491724487c))
+
+
+### Documentation
+
+* rewrite FAQ ([#239](https://github.com/opthub-org/pytorch-bsf/issues/239)) ([9018e2e](https://github.com/opthub-org/pytorch-bsf/commit/9018e2e052b2ae7afde2ea8029087d56c02a39bd))
+
 ## [0.14.2](https://github.com/opthub-org/pytorch-bsf/compare/v0.14.1...v0.14.2) (2026-03-21)
 
 
