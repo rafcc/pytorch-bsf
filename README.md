@@ -14,10 +14,14 @@
 Key features:
 
 - **Simple API** — train a model in one line with `torch_bsf.fit()`, then call it like any PyTorch module.
-- **Production-ready scale** — built on [PyTorch Lightning](https://www.pytorchlightning.ai/) for distributed training across GPUs and nodes, with real-time progress reporting and automatic checkpointing.
+- **Fast and Scalable** — fully vectorized `forward` pass and built on [PyTorch Lightning](https://www.pytorchlightning.ai/) for distributed training across GPUs and nodes.
+- **Robust Fitting** — built-in **Smoothness Regularization** to handle noisy datasets and produce stable manifolds.
+- **Automated Tuning** — automatic degree selection via k-fold cross-validation.
+- **Rich Visualization** — high-level utilities for plotting 2D curves and 3D surfaces in high dimensions.
+- **Advanced Sampling** — support for Dirichlet and Quasirandom (Sobol) parameter generation.
 - **MLflow integration** — experiments, metrics, and trained models are logged out of the box via [MLflow](https://mlflow.org/).
 - **Flexible I/O** — load and save control points in `.pt`, `.csv`, `.tsv`, `.json`, or `.yaml` formats.
-- **Batteries included** — CLI entry points, k-fold cross-validation, and elastic net grid search are ready to use without writing any code.
+- **Batteries included** — CLI entry points, k-fold cross-validation, and elastic net grid search are ready to use.
 
 <img src="https://opthub-org.github.io/pytorch-bsf/master/_images/bezier-simplex.png" width="49%" alt="A Bézier simplex and its control points"><img src="https://opthub-org.github.io/pytorch-bsf/master/_images/bezier-simplex-fitting.png" width="49%" alt="A Bézier simplex that fits to a dataset">
 

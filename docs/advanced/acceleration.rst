@@ -101,8 +101,9 @@ Large-scale Pareto Front Approximation
 When dealing with thousands of Pareto optimal points and high-degree Bézier simplices (e.g., degree 10+), the number of control points increases significantly. In such cases:
 
 1.  **Use GPUs**: Fitting is highly parallelizable.
-2.  **Use Mixed Precision**: Set ``precision="16-mixed"`` to fit larger models into GPU memory.
-3.  **Increase Batch Size**: Use ``--batch_size`` to optimize GPU throughput.
+2.  **Vectorized Forward**: PyTorch-BSF uses a highly efficient, fully vectorized `forward` pass. This means that instead of looping through each control point, it uses matrix operations, which significantly speeds up computation on GPUs.
+3.  **Use Mixed Precision**: Set ``precision="16-mixed"`` to fit larger models into GPU memory.
+4.  **Increase Batch Size**: Use ``--batch_size`` to optimize GPU throughput.
 
 Distributed Training on Clusters
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
