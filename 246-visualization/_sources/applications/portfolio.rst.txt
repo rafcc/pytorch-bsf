@@ -19,9 +19,3 @@ Because the regularization term is strongly convex, the resulting scalarized obj
 
 Fitting a Bézier simplex to this problem allows practitioners to continuously map the entire robust Pareto front—namely, the continuous efficient frontier—guaranteeing unique solutions. Instead of computing disconnected discrete point clouds using weighted sums, analysts obtain a functionally continuous mapping of allocations versus risk. Utilizing sensitivity-based Newton path-following, the full Pareto front can be computed with an extremely efficient iteration complexity of :math:`O(p \log(1/\varepsilon))` :cite:p:`bergou2021complexity`. 
 Solvers like MOSEK, Gurobi, and OSQP are widely used to efficiently compute these strongly convex QP subproblems. Modern extensions also include CVaR (Conditional Value-at-Risk) portfolio optimization and robust multi-objective portfolio frameworks under data uncertainty.
-
-
-References
-----------
-
-.. bibliography::

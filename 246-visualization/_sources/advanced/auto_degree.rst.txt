@@ -6,7 +6,7 @@ Choosing the optimal degree for a Bézier simplex can be challenging. A degree t
 PyTorch-BSF provides an automated tool to select the best degree based on **k-fold cross-validation**.
 
 How to Use
----------
+----------
 
 The ``select_degree()`` function iterates through multiple degrees and evaluates the mean squared error (MSE) using cross-validation.
 
@@ -34,7 +34,7 @@ The ``select_degree()`` function iterates through multiple degrees and evaluates
    bs = torch_bsf.fit(params=ts, values=xs, degree=best_d)
 
 How it Works
------------
+------------
 
 1.  **Iteration**: The tool trains Bézier simplices for degrees from ``min_degree`` to ``max_degree``.
 2.  **K-Fold CV**: For each degree, it performs :math:`k`-fold cross-validation. The mean MSE across all validation folds is calculated.

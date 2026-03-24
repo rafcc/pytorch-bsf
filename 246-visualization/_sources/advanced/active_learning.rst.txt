@@ -39,7 +39,7 @@ This method suggests points that are furthest away from all existing training po
    suggestions = suggest_next_points(models, n_suggestions=5, method="density", params=existing_params)
 
 A Typical Workflow
------------------
+------------------
 
 Active learning is usually performed in an iterative loop:
 

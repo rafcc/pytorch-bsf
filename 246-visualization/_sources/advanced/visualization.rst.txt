@@ -27,7 +27,7 @@ Supported Plot Types
 --------------------
 
 Bézier Curves (:math:`n\_params=2`)
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 For Bézier curves, the tool plots a smooth path.
 
@@ -36,7 +36,7 @@ For Bézier curves, the tool plots a smooth path.
 *   **Optional**: Control points and the "control polygon" can be displayed using ``show_control_points=True``.
 
 Bézier Triangles (:math:`n\_params=3`)
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 For Bézier triangles (surfaces), the tool uses triangulation to render a smooth manifold.
 
