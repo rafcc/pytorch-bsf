@@ -77,6 +77,7 @@ def simplex_sobol(n_params: int, n_samples: int) -> torch.Tensor:
     torch.Tensor
         Array of sample points in shape (n_samples, n_params).
     """
+    import numpy as np
     from scipy.stats import qmc
 
     # Sobol sequence generator for (n_params - 1) dimensions in [0, 1]
