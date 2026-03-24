@@ -6,7 +6,7 @@ Fitting a Bézier simplex to a noisy dataset can sometimes result in an "oscilla
 This technique adds a penalty term to the loss function based on the distance between adjacent control points in the simplex.
 
 The Smoothness Penalty
----------------------
+----------------------
 
 The smoothness penalty :math:`\mathcal L_{smooth}` is defined as:
 
@@ -16,7 +16,7 @@ The smoothness penalty :math:`\mathcal L_{smooth}` is defined as:
 where :math:`\mathbf x_i` and :math:`\mathbf x_j` are adjacent control points in the Bézier simplex. Two control points are considered adjacent if their multi-indices differ by 1 in two components and are identical in others.
 
 How to Use
----------
+----------
 
 You can enable smoothness regularization by passing the ``smoothness_weight`` argument to the ``fit()`` function.
 
@@ -50,7 +50,7 @@ You can also specify the smoothness weight via the command-line interface or MLf
    mlflow run https://github.com/opthub-org/pytorch-bsf -P params=params.csv -P values=values.csv -P degree=3 -P smoothness_weight=0.1
 
 Choosing the Weight
-------------------
+-------------------
 
 The optimal value for ``smoothness_weight`` depends on the noise level of your data:
 

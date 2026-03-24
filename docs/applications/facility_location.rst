@@ -1,5 +1,5 @@
 Facility location and continuous approximations
-=============================================
+===============================================
 
 Strongly convex multi-objective frameworks naturally accommodate classic spatial, physical, and logistics challenges. For instance, urban planning and supply chain optimization frequently involve determining the optimal spatial coordinates for physical facilities (e.g., warehouses, hospitals, or transit hubs) to mutually minimize the travel distances to several distributed demand points.
 
