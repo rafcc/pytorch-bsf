@@ -17,6 +17,7 @@ Key features:
 - **Fast and Scalable** — fully vectorized `forward` pass and built on [PyTorch Lightning](https://www.pytorchlightning.ai/) for distributed training across GPUs and nodes.
 - **Robust Fitting** — built-in **Smoothness Regularization** to handle noisy datasets and produce stable manifolds.
 - **Automated Tuning** — automatic degree selection via k-fold cross-validation.
+- **Scikit-learn Integration** — compatible with `BaseEstimator` for use in `Pipeline` and `GridSearchCV`.
 - **Rich Visualization** — high-level utilities for plotting 2D curves and 3D surfaces in high dimensions.
 - **Advanced Sampling** — support for Dirichlet and Quasirandom (Sobol) parameter generation.
 - **MLflow integration** — experiments, metrics, and trained models are logged out of the box via [MLflow](https://mlflow.org/).
