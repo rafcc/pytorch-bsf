@@ -205,7 +205,3 @@ This affirmative test complements the non-simpliciality test, allowing practitio
    then :math:`M` is homeomorphic to the standard simplex :math:`\Delta^n`.
 
 
-References
-----------
-
-.. bibliography::
