@@ -32,6 +32,23 @@ You can enable smoothness regularization by passing the ``smoothness_weight`` ar
        smoothness_weight=0.1
    )
 
+CLI / MLflow
+------------
+
+You can also specify the smoothness weight via the command-line interface or MLflow using the ``--smoothness_weight`` flag.
+
+**CLI Example:**
+
+.. code-block:: bash
+
+   python -m torch_bsf --params params.csv --values values.csv --degree 3 --smoothness_weight 0.1
+
+**MLflow Example:**
+
+.. code-block:: bash
+
+   mlflow run https://github.com/opthub-org/pytorch-bsf -P params=params.csv -P values=values.csv -P degree=3 -P smoothness_weight=0.1
+
 Choosing the Weight
 ------------------
 

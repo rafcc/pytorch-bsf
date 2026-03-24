@@ -26,6 +26,7 @@ parser.add_argument(
 parser.add_argument("--split_ratio", type=float, default=1.0)
 parser.add_argument("--batch_size", type=int)
 parser.add_argument("--max_epochs", type=int, default=2)
+parser.add_argument("--smoothness_weight", type=float, default=0.0)
 parser.add_argument("--accelerator", type=str, default="auto")
 parser.add_argument("--strategy", type=str, default="auto")
 parser.add_argument("--devices", type=int_or_str, default="auto")
@@ -72,8 +73,11 @@ bs = (
         n_params=dm.n_params,
         n_values=dm.n_values,
         degree=args.degree,
+        smoothness_weight=args.smoothness_weight,
     )
 )
+if args.init:
+    bs.smoothness_weight = args.smoothness_weight
 
 fix: list[list[int]] = args.fix or []
 validate_simplex_indices(fix, bs.n_params, bs.degree)
