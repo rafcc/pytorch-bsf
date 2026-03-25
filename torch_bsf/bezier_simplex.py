@@ -333,9 +333,11 @@ class BezierSimplex(L.LightningModule):
         -------
             The smoothness penalty.
         """
-        if not hasattr(self, "adjacency_indices_"):
-            return cast(torch.Tensor, 0.0)
         X = self.control_points.matrix
+        if not hasattr(self, "adjacency_indices_"):
+            # Return a scalar tensor on the same device/dtype so this composes
+            # safely with the training loss (e.g., on GPU/AMP).
+            return torch.zeros((), device=X.device, dtype=X.dtype)
         i = self.adjacency_indices_[:, 0]
         j = self.adjacency_indices_[:, 1]
         return torch.sum((X[i] - X[j]).pow(2))
@@ -402,8 +404,25 @@ class BezierSimplex(L.LightningModule):
         """
         from torch_bsf.sampling import simplex_grid
 
+        # Determine an appropriate dtype for the grid:
+        # - Prefer self.coeffs_.dtype when coefficients are registered.
+        # - For constant simplices (n_params == 0), fall back to the dtype of
+        #   the control point at the empty index, if available.
+        # - As a last resort, use torch.get_default_dtype().
+        if hasattr(self, "coeffs_"):
+            dtype = self.coeffs_.dtype
+        else:
+            try:
+                cp = self.control_points[()]
+            except Exception:
+                cp = None
+            if isinstance(cp, torch.Tensor):
+                dtype = cp.dtype
+            else:
+                dtype = torch.get_default_dtype()
+
         ts = simplex_grid(n_params=self.n_params, degree=num).to(
-            device=self.device, dtype=self.coeffs_.dtype
+            device=self.device, dtype=dtype
         )
         xs = self.forward(ts)
         return ts, xs
@@ -840,6 +859,7 @@ def load(
         cpdata = {
             to_parameterdict_key(row[0]): [float(v) for v in row[1:]]
             for row in csv.reader(open(path, encoding="utf-8"))
+            if row
         }
         validate_control_points(cpdata)
         return BezierSimplex(cpdata)
@@ -848,6 +868,7 @@ def load(
         cpdata = {
             to_parameterdict_key(row[0]): [float(v) for v in row[1:]]
             for row in csv.reader(open(path, encoding="utf-8"), delimiter="\t")
+            if row
         }
         validate_control_points(cpdata)
         return BezierSimplex(cpdata)
@@ -962,8 +983,16 @@ def fit(
         raise ValueError("Either degree or init must be specified, not both")
 
     if isinstance(init, BezierSimplex):
-        bs = init
-        bs.smoothness_weight = smoothness_weight
+        # If the existing BezierSimplex already has the desired smoothness_weight
+        # and an adjacency buffer, we can safely reuse it. Otherwise, recreate a
+        # new instance from its control points so that __init__ can rebuild any
+        # internal state (e.g., adjacency indices) that depends on smoothness_weight.
+        same_weight = getattr(init, "smoothness_weight", None) == smoothness_weight
+        has_adjacency = hasattr(init, "adjacency_indices_")
+        if same_weight and has_adjacency:
+            bs = init
+        else:
+            bs = BezierSimplex(init.control_points, smoothness_weight=smoothness_weight)
     elif init is not None:
         bs = BezierSimplex(init, smoothness_weight=smoothness_weight)
     else:

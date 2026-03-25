@@ -53,8 +53,8 @@ meshgrid: Path = args.params if (args.meshgrid is None or args.meshgrid.is_dir()
 
 autolog(
     log_input_examples=(args.loglevel >= 2),
-    log_model_signatures=(args.loglevel >= 2),
-    log_models=(args.loglevel >= 2),
+    log_model_signatures=False,
+    log_models=False,
     disable=(args.loglevel <= 0),
     exclusive=False,
     disable_for_unsupported_versions=False,
