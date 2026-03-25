@@ -21,7 +21,7 @@
     <script src="_static/js/theme.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
-    <link rel="next" title="torch_bsf" href="modules.html" />
+    <link rel="next" title="References" href="references.html" />
     <link rel="prev" title="Facility location and continuous approximations" href="applications/facility_location.html" /> 
 </head>
 
@@ -77,6 +77,7 @@
 </li>
 </ul>
 </li>
+<li class="toctree-l1"><a class="reference internal" href="references.html">References</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">API reference</span></p>
 <ul>
@@ -142,7 +143,7 @@
 <section id="can-i-verify-the-weakly-simplicial-assumption-for-my-problem">
 <h3>Can I verify the “weakly simplicial” assumption for my problem?<a class="headerlink" href="#can-i-verify-the-weakly-simplicial-assumption-for-my-problem" title="Link to this heading"></a></h3>
 <p>Yes. If your problem is unconstrained and strongly convex, it is guaranteed to be weakly simplicial. For other cases, you can use a <strong>data-driven statistical test</strong> based on persistent homology.</p>
-<p>The test checks whether the topology of the sampled Pareto set is consistent with a simplex structure. If the test rejects the simplicial hypothesis, a Bézier simplex model may not be appropriate. If it does not reject, you have statistical evidence supporting the use of PyTorch-BSF. Detailed information on these tests can be found in <span id="id1"></span> and <span id="id2"></span>.</p>
+<p>The test checks whether the topology of the sampled Pareto set is consistent with a simplex structure. If the test rejects the simplicial hypothesis, a Bézier simplex model may not be appropriate. If it does not reject, you have statistical evidence supporting the use of PyTorch-BSF. Detailed information on these tests can be found in <span id="id1">Hamada and Goto [<a class="reference internal" href="references.html#id5" title="Naoki Hamada and Keisuke Goto. Data-driven analysis of pareto set topology. In Proceedings of the Genetic and Evolutionary Computation Conference, 657–664. 2018. URL: https://doi.org/10.1145/3205455.3205613.">HG18</a>]</span> and <span id="id2">Hamada [<a class="reference internal" href="references.html#id28" title="Naoki Hamada. 多目的最適化の解集合のトポロジーの検定法 (statistical test for the topology of solution sets in multi-objective optimization). In 日本応用数理学会2020年度年会講演予稿集 (Proceedings of the JSIAM Annual Meeting 2020). 2020.">Ham20</a>]</span>.</p>
 </section>
 </section>
 <section id="practical-usage">
@@ -231,7 +232,7 @@
           </div>
           <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
         <a href="applications/facility_location.html" class="btn btn-neutral float-left" title="Facility location and continuous approximations" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
-        <a href="modules.html" class="btn btn-neutral float-right" title="torch_bsf" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+        <a href="references.html" class="btn btn-neutral float-right" title="References" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
     </div>
 
   <hr/>
