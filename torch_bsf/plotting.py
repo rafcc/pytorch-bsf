@@ -63,6 +63,7 @@ def _plot_bezier_curve(model, num, ax, show_control_points, **kwargs):
 
 def _plot_bezier_triangle(model, num, ax, show_control_points, **kwargs):
     # This requires a bit more complex triangulation for plotting a surface
+    import matplotlib.pyplot as plt
     from scipy.spatial import Delaunay
 
     ts, xs = model.meshgrid(num=num)
