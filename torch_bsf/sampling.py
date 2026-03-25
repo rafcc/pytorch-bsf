@@ -60,9 +60,9 @@ def simplex_random(n_params: int, n_samples: int) -> torch.Tensor:
         If ``n_params`` is not positive or ``n_samples`` is negative.
     """
     if n_params <= 0:
-        raise ValueError(f"n_params must be a positive integer, got {n_params}")
+        raise ValueError(f"n_params must be positive, got {n_params}")
     if n_samples < 0:
-        raise ValueError(f"n_samples must be a non-negative integer, got {n_samples}")
+        raise ValueError(f"n_samples must be non-negative, got {n_samples}")
     if n_samples == 0:
         return torch.empty((0, n_params), dtype=torch.float32)
 
