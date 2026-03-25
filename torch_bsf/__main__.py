@@ -4,6 +4,7 @@ from pathlib import Path
 import numpy as np
 from lightning.pytorch import Trainer
 from lightning.pytorch.callbacks.early_stopping import EarlyStopping
+import mlflow
 from mlflow import autolog
 
 from torch_bsf import BezierSimplexDataModule
@@ -49,8 +50,8 @@ meshgrid: Path = args.params if (args.meshgrid is None or args.meshgrid.is_dir()
 
 autolog(
     log_input_examples=(args.loglevel >= 2),
-    log_model_signatures=(args.loglevel >= 2),
-    log_models=(args.loglevel >= 2),
+    log_model_signatures=False,
+    log_models=False,
     disable=(args.loglevel <= 0),
     exclusive=False,
     disable_for_unsupported_versions=False,
@@ -97,6 +98,23 @@ trainer = Trainer(
     callbacks=[EarlyStopping(monitor="val_mse")],
 )
 trainer.fit(bs, dm)
+
+if args.loglevel >= 2:
+    from mlflow.models import ModelSignature
+    from mlflow.types import Schema, TensorSpec
+    import mlflow.pytorch
+
+    # Use float64 in signature to match CSV/JSON input (float32/float16 models auto-convert
+    # via torch.as_tensor in forward). Shape (-1, n) validates column count without dtype lock-in.
+    signature = ModelSignature(
+        inputs=Schema([TensorSpec(np.dtype("float64"), (-1, bs.n_params))]),
+        outputs=Schema([TensorSpec(np.dtype("float64"), (-1, bs.n_values))]),
+    )
+    if mlflow.active_run() is not None:
+        mlflow.pytorch.log_model(bs, "model", signature=signature)
+    else:
+        with mlflow.start_run(run_id=mlflow.last_active_run().info.run_id):
+            mlflow.pytorch.log_model(bs, "model", signature=signature)
 
 # search for filename
 fn = f"{args.params.name},{args.values.name},meshgrid,d_{args.degree},r_{args.split_ratio}.csv"
