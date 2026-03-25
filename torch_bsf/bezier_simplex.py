@@ -840,6 +840,7 @@ def load(
         cpdata = {
             to_parameterdict_key(row[0]): [float(v) for v in row[1:]]
             for row in csv.reader(open(path, encoding="utf-8"))
+            if row
         }
         validate_control_points(cpdata)
         return BezierSimplex(cpdata)
@@ -848,6 +849,7 @@ def load(
         cpdata = {
             to_parameterdict_key(row[0]): [float(v) for v in row[1:]]
             for row in csv.reader(open(path, encoding="utf-8"), delimiter="\t")
+            if row
         }
         validate_control_points(cpdata)
         return BezierSimplex(cpdata)
