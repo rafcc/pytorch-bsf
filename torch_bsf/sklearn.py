@@ -2,10 +2,25 @@ from typing import Any, Iterable
 
 import numpy as np
 import torch
-from sklearn.base import BaseEstimator, RegressorMixin
-from sklearn.utils.validation import check_array, check_is_fitted, check_X_y
+
+try:
+    from sklearn.base import BaseEstimator, RegressorMixin
+    _sklearn_available = True
+except ImportError:
+    BaseEstimator = object  # type: ignore[assignment,misc]
+    RegressorMixin = object  # type: ignore[assignment,misc]
+    _sklearn_available = False
 
 from torch_bsf.bezier_simplex import BezierSimplex, ControlPointsData, Index, fit
+
+
+def _check_sklearn() -> None:
+    """Raise a clear ImportError when scikit-learn is not installed."""
+    if not _sklearn_available:
+        raise ImportError(
+            "scikit-learn is required for torch_bsf.sklearn. "
+            "Install it with: pip install scikit-learn"
+        )
 
 
 class BezierSimplexRegressor(BaseEstimator, RegressorMixin):
@@ -48,6 +63,7 @@ class BezierSimplexRegressor(BaseEstimator, RegressorMixin):
         precision: str = "32-true",
         **trainer_kwargs,
     ):
+        _check_sklearn()
         self.degree = degree
         self.smoothness_weight = smoothness_weight
         self.init = init
@@ -75,6 +91,8 @@ class BezierSimplexRegressor(BaseEstimator, RegressorMixin):
             Fitted estimator.
         """
         # Validate data
+        from sklearn.utils.validation import check_X_y
+
         X, y = check_X_y(X, y, multi_output=True, y_numeric=True)
 
         # Convert to torch tensors
@@ -115,6 +133,8 @@ class BezierSimplexRegressor(BaseEstimator, RegressorMixin):
         y_pred : ndarray of shape (n_samples, n_values)
             Predicted values.
         """
+        from sklearn.utils.validation import check_array, check_is_fitted
+
         check_is_fitted(self)
         X = check_array(X)
 
