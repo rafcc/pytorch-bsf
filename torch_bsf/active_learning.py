@@ -1,9 +1,7 @@
-from typing import Any, Iterable, List, Optional
-
-import numpy as np
+from typing import List, Optional
 import torch
 from torch_bsf.bezier_simplex import BezierSimplex
-from torch_bsf.sampling import simplex_grid, simplex_random
+from torch_bsf.sampling import simplex_random
 
 
 def suggest_next_points(

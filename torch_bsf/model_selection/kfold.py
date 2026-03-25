@@ -3,7 +3,6 @@ from pathlib import Path
 
 import numpy as np
 from lightning.pytorch.callbacks.early_stopping import EarlyStopping
-import mlflow
 from mlflow import autolog
 from pl_crossvalidate import KFoldTrainer
 

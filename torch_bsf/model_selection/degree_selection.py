@@ -1,8 +1,5 @@
 import torch
-import torch_bsf
-from torch_bsf.bezier_simplex import BezierSimplex, fit
 from pl_crossvalidate import KFoldTrainer
-from lightning.pytorch.callbacks.early_stopping import EarlyStopping
 
 def select_degree(
     params: torch.Tensor,
@@ -33,16 +30,10 @@ def select_degree(
     -------
         The best degree found.
     """
-    from torch_bsf.bezier_simplex import BezierSimplexDataModule, randn
-
-    dm = BezierSimplexDataModule(
-        params=None, # Not used since we manually setup
-        values=None,
-    )
+    from torch_bsf.bezier_simplex import randn
     # Manual setup since fit() or DataModule usually expects files
     # We can create a SimpleDataModule or use TensorDataset
-    from torch.utils.data import TensorDataset, DataLoader
-    from torch.utils.data import random_split
+    from torch.utils.data import TensorDataset
 
     best_degree = min_degree
     best_mse = float('inf')
