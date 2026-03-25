@@ -448,7 +448,7 @@ def zeros(
       )
     )
     >>> print(bs(torch.tensor([[0.2, 0.8]])))
-    tensor([[..., ..., ...]], grad_fn=<AddBackward0>)
+    tensor([[..., ..., ...]], grad_fn=<...>)
     """
     if n_params < 0:
         raise ValueError(f"n_params must be non-negative: {n_params}")
@@ -505,7 +505,7 @@ def rand(
       )
     )
     >>> print(bs(torch.tensor([[0.2, 0.8]])))  # doctest: +ELLIPSIS
-    tensor([[..., ..., ...]], grad_fn=<AddBackward0>)
+    tensor([[..., ..., ...]], grad_fn=<...>)
     """
     if n_params < 0:
         raise ValueError(f"n_params must be non-negative: {n_params}")
@@ -562,7 +562,7 @@ def randn(
       )
     )
     >>> print(bs(torch.tensor([[0.2, 0.8]])))  # doctest: +ELLIPSIS
-    tensor([[..., ..., ...]], grad_fn=<AddBackward0>)
+    tensor([[..., ..., ...]], grad_fn=<...>)
     """
     if n_params < 0:
         raise ValueError(f"n_params must be non-negative: {n_params}")
@@ -771,7 +771,7 @@ def load(
       )
     )
     >>> print(bs(torch.tensor([[0.2, 0.8]])))
-    tensor([[..., ..., ...]], grad_fn=<AddBackward0>)
+    tensor([[..., ..., ...]], grad_fn=<...>)
     """
     cpdata: dict[str, list[float]]
     path = Path(path)
@@ -946,7 +946,7 @@ def fit(
     >>> t = [[0.2, 0.3, 0.5]]
     >>> x = bs(t)
     >>> print(f"{t} -> {x}")
-    [[0.2, 0.3, 0.5]] -> tensor([[..., ..., ...]], grad_fn=<AddBackward0>)
+    [[0.2, 0.3, 0.5]] -> tensor([[..., ..., ...]], grad_fn=<...>)
 
     See Also
     --------
