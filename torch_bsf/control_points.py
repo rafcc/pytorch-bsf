@@ -189,9 +189,6 @@ class ControlPoints(nn.ParameterDict):
         """
         return simplex_indices(self.n_params, self.degree)
 
-    def __iter__(self) -> Iterable[tuple[int, ...]]:
-        return self.indices()
-
     @property
     def matrix(self) -> torch.Tensor:
         """Returns the control points as a single matrix.
@@ -200,4 +197,4 @@ class ControlPoints(nn.ParameterDict):
         -------
             A matrix of control points of shape (n_indices, n_values).
         """
-        return torch.stack([self[i] for i in self])
+        return torch.stack([self[i] for i in self.indices()])
