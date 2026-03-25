@@ -1,7 +1,7 @@
 Scikit-learn Integration
 ========================
 
-PyTorch-BSF provides a high-level wrapper compatible with the `Scikit-learn <https://scikit-learn.org/>`_ estimator API. This allow you to integrate Bézier simplex fitting into standard machine learning workflows, including pipelines and cross-validation tools.
+PyTorch-BSF provides a high-level wrapper compatible with the `Scikit-learn <https://scikit-learn.org/>`_ estimator API. This allows you to integrate Bézier simplex fitting into standard machine learning workflows, including pipelines and cross-validation tools.
 
 The ``BezierSimplexRegressor``
 ------------------------------
