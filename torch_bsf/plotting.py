@@ -85,7 +85,8 @@ def _plot_bezier_triangle(model, num, ax, show_control_points, **kwargs):
             ax = fig.add_subplot(111)
 
     if model.n_values == 2:
-        ax.triplot(px, py, tri.simplices, alpha=0.3)
+        # Use the triangulation connectivity in value space for a consistent 2D plot
+        ax.triplot(xs[:, 0], xs[:, 1], tri.simplices, alpha=0.3)
         # We can't easily plot a manifold surface in 2D values unless we pick 2 dimensions
         ax.scatter(xs[:, 0], xs[:, 1], alpha=0.1, s=1)
         if show_control_points:
