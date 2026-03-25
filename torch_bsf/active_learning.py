@@ -33,9 +33,18 @@ def suggest_next_points(
     torch.Tensor
         The suggested points in shape (n_suggestions, n_params).
     """
+    if not models:
+        raise ValueError("models must be a non-empty list of BezierSimplex instances")
+
     n_params = models[0].n_params
     device = models[0].device
 
+    # Validate that all models share the same n_params and device
+    for model in models[1:]:
+        if model.n_params != n_params:
+            raise ValueError("All models in 'models' must have the same 'n_params'.")
+        if model.device != device:
+            raise ValueError("All models in 'models' must be on the same device.")
     # Generate candidate points
     candidates = simplex_random(n_params, n_candidates).to(device)
 
