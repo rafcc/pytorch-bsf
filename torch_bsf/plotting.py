@@ -1,6 +1,4 @@
-import matplotlib.pyplot as plt
 import numpy as np
-import torch
 from torch_bsf.bezier_simplex import BezierSimplex
 
 
@@ -34,6 +32,8 @@ def plot_bezier_simplex(
 
 
 def _plot_bezier_curve(model, num, ax, show_control_points, **kwargs):
+    import matplotlib.pyplot as plt
+
     ts, xs = model.meshgrid(num=num)
     xs = xs.detach().cpu().numpy()
 
