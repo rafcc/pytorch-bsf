@@ -178,4 +178,4 @@ Train a model by ``fit()``, and call the model to predict.
 .. testoutput::
    :hide:
 
-   tensor([[...]], grad_fn=<AddBackward0>)
+   tensor([[...]], grad_fn=<...>)

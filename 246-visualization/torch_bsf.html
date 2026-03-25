@@ -389,7 +389,7 @@ Either <code class="docutils literal notranslate"><span class="pre">&quot;max&qu
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">t</span> <span class="o">=</span> <span class="p">[[</span><span class="mf">0.2</span><span class="p">,</span> <span class="mf">0.3</span><span class="p">,</span> <span class="mf">0.5</span><span class="p">]]</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">x</span> <span class="o">=</span> <span class="n">bs</span><span class="p">(</span><span class="n">t</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">t</span><span class="si">}</span><span class="s2"> -&gt; </span><span class="si">{</span><span class="n">x</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
-<span class="go">[[0.2, 0.3, 0.5]] -&gt; tensor([[..., ..., ...]], grad_fn=&lt;AddBackward0&gt;)</span>
+<span class="go">[[0.2, 0.3, 0.5]] -&gt; tensor([[..., ..., ...]], grad_fn=&lt;...&gt;)</span>
 </pre></div>
 </div>
 <div class="admonition seealso">
@@ -442,7 +442,7 @@ classes not allowed by PyTorch’s <code class="docutils literal notranslate"><s
 <span class="go">  )</span>
 <span class="go">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">bs</span><span class="p">(</span><span class="n">torch</span><span class="o">.</span><span class="n">tensor</span><span class="p">([[</span><span class="mf">0.2</span><span class="p">,</span> <span class="mf">0.8</span><span class="p">]])))</span>
-<span class="go">tensor([[..., ..., ...]], grad_fn=&lt;AddBackward0&gt;)</span>
+<span class="go">tensor([[..., ..., ...]], grad_fn=&lt;...&gt;)</span>
 </pre></div>
 </div>
 </dd></dl>
@@ -516,7 +516,7 @@ The values are uniformly distributed in [0, 1).</p>
 <span class="go">  )</span>
 <span class="go">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">bs</span><span class="p">(</span><span class="n">torch</span><span class="o">.</span><span class="n">tensor</span><span class="p">([[</span><span class="mf">0.2</span><span class="p">,</span> <span class="mf">0.8</span><span class="p">]])))</span>
-<span class="go">tensor([[..., ..., ...]], grad_fn=&lt;AddBackward0&gt;)</span>
+<span class="go">tensor([[..., ..., ...]], grad_fn=&lt;...&gt;)</span>
 </pre></div>
 </div>
 </dd></dl>
@@ -556,7 +556,7 @@ The values are normally distributed with mean 0 and standard deviation 1.</p>
 <span class="go">  )</span>
 <span class="go">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">bs</span><span class="p">(</span><span class="n">torch</span><span class="o">.</span><span class="n">tensor</span><span class="p">([[</span><span class="mf">0.2</span><span class="p">,</span> <span class="mf">0.8</span><span class="p">]])))</span>
-<span class="go">tensor([[..., ..., ...]], grad_fn=&lt;AddBackward0&gt;)</span>
+<span class="go">tensor([[..., ..., ...]], grad_fn=&lt;...&gt;)</span>
 </pre></div>
 </div>
 </dd></dl>
@@ -695,7 +695,7 @@ The values are normally distributed with mean 0 and standard deviation 1.</p>
 <span class="go">  )</span>
 <span class="go">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">bs</span><span class="p">(</span><span class="n">torch</span><span class="o">.</span><span class="n">tensor</span><span class="p">([[</span><span class="mf">0.2</span><span class="p">,</span> <span class="mf">0.8</span><span class="p">]])))</span>
-<span class="go">tensor([[..., ..., ...]], grad_fn=&lt;AddBackward0&gt;)</span>
+<span class="go">tensor([[..., ..., ...]], grad_fn=&lt;...&gt;)</span>
 </pre></div>
 </div>
 </dd></dl>
@@ -1221,7 +1221,7 @@ Either <code class="docutils literal notranslate"><span class="pre">&quot;max&qu
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">t</span> <span class="o">=</span> <span class="p">[[</span><span class="mf">0.2</span><span class="p">,</span> <span class="mf">0.3</span><span class="p">,</span> <span class="mf">0.5</span><span class="p">]]</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">x</span> <span class="o">=</span> <span class="n">bs</span><span class="p">(</span><span class="n">t</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">t</span><span class="si">}</span><span class="s2"> -&gt; </span><span class="si">{</span><span class="n">x</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
-<span class="go">[[0.2, 0.3, 0.5]] -&gt; tensor([[..., ..., ...]], grad_fn=&lt;AddBackward0&gt;)</span>
+<span class="go">[[0.2, 0.3, 0.5]] -&gt; tensor([[..., ..., ...]], grad_fn=&lt;...&gt;)</span>
 </pre></div>
 </div>
 <div class="admonition seealso">
