@@ -119,7 +119,7 @@ class BezierSimplexDataModule(L.LightningDataModule):
         delimiter = "," if path.suffix == ".csv" else None
         return torch.from_numpy(
             np.loadtxt(path, delimiter=delimiter, skiprows=self.header, ndmin=2)
-        )
+        ).to(torch.get_default_dtype())
 
     def load_params(self) -> torch.Tensor:
         return self.load_data(self.params)
@@ -262,7 +262,10 @@ class BezierSimplex(L.LightningModule):
             )
             self.register_buffer(
                 "coeffs_",
-                torch.tensor([polynom(self.degree, i) for i in indices]),
+                torch.tensor(
+                    [polynom(self.degree, i) for i in indices],
+                    dtype=torch.get_default_dtype(),
+                ),
                 persistent=False,
             )
 
