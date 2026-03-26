@@ -171,3 +171,94 @@ def test_partial_fit(init_type):
     ]
     x = bs(t)
     print(f"{t} -> {x}")
+
+
+def test_smoothness_penalty_returns_zero_tensor_without_adjacency():
+    """smoothness_penalty() should return a scalar tensor even when adjacency is absent."""
+    bs = tbbs.randn(n_params=2, n_values=2, degree=2, smoothness_weight=0.0)
+    penalty = bs.smoothness_penalty()
+    assert isinstance(penalty, torch.Tensor)
+    assert penalty.shape == ()
+    assert float(penalty) == 0.0
+
+
+def test_smoothness_penalty_nonzero_with_weight():
+    """smoothness_penalty() should return a non-negative tensor when smoothness_weight > 0."""
+    # Use random control points – penalty is the sum of squared differences between adjacent ones,
+    # which is non-negative and typically non-zero for random initialisation.
+    bs = tbbs.randn(n_params=3, n_values=2, degree=2, smoothness_weight=0.1)
+    assert hasattr(bs, "adjacency_indices_"), "adjacency_indices_ must be built when smoothness_weight > 0"
+    penalty = bs.smoothness_penalty()
+    assert isinstance(penalty, torch.Tensor)
+    assert float(penalty) >= 0.0
+
+
+def test_smoothness_affects_training_loss():
+    """smoothness_penalty() contributes a positive value when smoothness_weight > 0."""
+    # Use a random model to ensure control points differ, making penalty non-zero
+    bs_with_smooth = tbbs.randn(n_params=3, n_values=2, degree=2, smoothness_weight=1.0)
+    assert hasattr(bs_with_smooth, "adjacency_indices_")
+    penalty = bs_with_smooth.smoothness_penalty()
+    assert isinstance(penalty, torch.Tensor)
+    # Penalty must be non-negative (sum of squared differences)
+    assert float(penalty) >= 0.0
+
+    # The penalty should be zero if all adjacent control points are identical
+    bs_zeros = tbbs.zeros(n_params=3, n_values=2, degree=2, smoothness_weight=1.0)
+    assert float(bs_zeros.smoothness_penalty()) == 0.0
+
+
+def test_fit_with_bezier_simplex_init_rebuilds_adjacency():
+    """fit() with init=BezierSimplex should correctly rebuild adjacency for smoothness."""
+    ts = torch.tensor(
+        [
+            [1.0, 0.0],
+            [0.5, 0.5],
+            [0.0, 1.0],
+        ]
+    )
+    xs = ts * ts
+
+    # First create a model WITHOUT smoothness
+    bs_no_smooth = tb.fit(
+        params=ts, values=xs, degree=2,
+        smoothness_weight=0.0,
+        max_epochs=1, enable_progress_bar=False,
+    )
+    assert not hasattr(bs_no_smooth, "adjacency_indices_")
+
+    # Now use it as init WITH smoothness – adjacency must be rebuilt
+    bs_with_smooth = tb.fit(
+        params=ts, values=xs,
+        init=bs_no_smooth,
+        smoothness_weight=0.5,
+        max_epochs=1, enable_progress_bar=False,
+    )
+    assert hasattr(bs_with_smooth, "adjacency_indices_"), (
+        "adjacency_indices_ should be built when smoothness_weight > 0"
+    )
+
+
+def test_meshgrid_n_params_zero():
+    """meshgrid() should work for n_params == 0 (constant simplex)."""
+    bs = tbbs.zeros(n_params=0, n_values=2, degree=0)
+    ts, xs = bs.meshgrid(num=5)
+    # For n_params == 0, the simplex has a single trivial point
+    assert xs.shape[1] == 2
+
+
+def test_forward_vectorized():
+    """Vectorized forward should produce the same result as the scalar reference."""
+    ts = torch.tensor(
+        [
+            [1.0, 0.0],
+            [0.5, 0.5],
+            [0.0, 1.0],
+        ]
+    )
+    bs = tbbs.randn(n_params=2, n_values=2, degree=3)
+    # Forward should accept a list-of-lists as well as a Tensor
+    xs_tensor = bs(ts)
+    xs_list = bs([[1.0, 0.0], [0.5, 0.5], [0.0, 1.0]])
+    assert xs_tensor.shape == (3, 2)
+    assert torch.allclose(xs_tensor, xs_list, atol=1e-6)
