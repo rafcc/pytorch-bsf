@@ -37,7 +37,7 @@ torch\_bsf.plotting module
    :show-inheritance:
 
 torch\_bsf.preprocessing module
---------------------------------
+-------------------------------
 
 .. automodule:: torch_bsf.preprocessing
    :members:
