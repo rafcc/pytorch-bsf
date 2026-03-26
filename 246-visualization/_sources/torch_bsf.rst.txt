@@ -5,7 +5,7 @@ Submodules
 ----------
 
 torch\_bsf.active\_learning module
----------------------------------
+----------------------------------
 
 .. automodule:: torch_bsf.active_learning
    :members:
@@ -37,7 +37,7 @@ torch\_bsf.plotting module
    :show-inheritance:
 
 torch\_bsf.preprocessing module
----------------------------
+-------------------------------
 
 .. automodule:: torch_bsf.preprocessing
    :members:
