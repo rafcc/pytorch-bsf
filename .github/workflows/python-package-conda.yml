@@ -10,6 +10,7 @@ jobs:
   build:
     runs-on: ${{ matrix.os }}
     strategy:
+      fail-fast: false
       max-parallel: 5
       matrix:
         os: [ubuntu-latest, macos-latest, windows-latest]
@@ -53,6 +54,7 @@ jobs:
       with:
         auto-update-conda: true
         activate-environment: test-env
+        python-version: "3.14"
     - name: Install dependencies
       run: |
         # Install only mlflow; `mlflow run` below creates the full conda env from environment.yml
