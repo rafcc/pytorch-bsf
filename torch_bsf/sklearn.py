@@ -46,7 +46,7 @@ class BezierSimplexRegressor(BaseEstimator, RegressorMixin):
         Number of devices to use.
     precision : str, default="32-true"
         Floating point precision.
-    **trainer_kwargs
+    trainer_kwargs : dict | None, default=None
         Additional keyword arguments for lightning.pytorch.Trainer.
     """
 
@@ -61,7 +61,7 @@ class BezierSimplexRegressor(BaseEstimator, RegressorMixin):
         accelerator: str = "auto",
         devices: int | str = "auto",
         precision: str = "32-true",
-        **trainer_kwargs,
+        trainer_kwargs: dict[str, Any] | None = None,
     ):
         _check_sklearn()
         self.degree = degree
@@ -112,7 +112,7 @@ class BezierSimplexRegressor(BaseEstimator, RegressorMixin):
             accelerator=self.accelerator,
             devices=self.devices,
             precision=self.precision,
-            **self.trainer_kwargs,
+            **(self.trainer_kwargs or {}),
         )
 
         self.n_features_in_ = X.shape[1]

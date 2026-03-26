@@ -1,5 +1,8 @@
+import logging
 import torch
 from pl_crossvalidate import KFoldTrainer
+
+_logger = logging.getLogger(__name__)
 
 def select_degree(
     params: torch.Tensor,
@@ -39,7 +42,7 @@ def select_degree(
     best_mse = float('inf')
 
     for d in range(min_degree, max_degree + 1):
-        print(f"Checking degree {d}...")
+        _logger.info("Checking degree %d...", d)
         
         # We need a model and data for KFoldTrainer
         # KFoldTrainer works on a model and a datamodule
@@ -72,7 +75,7 @@ def select_degree(
                         val_mses.append(res['train_mse'])
 
         mean_mse = sum(val_mses) / len(val_mses) if val_mses else float('inf')
-        print(f"Degree {d}: Mean MSE = {mean_mse:.6f}")
+        _logger.info("Degree %d: Mean MSE = %.6f", d, mean_mse)
         
         if mean_mse < best_mse:
             best_mse = mean_mse
@@ -80,7 +83,7 @@ def select_degree(
         else:
             # Simple heuristic: if MSE increases, stop
             if d > min_degree + 1:
-                print(f"MSE increased at degree {d}, stopping.")
+                _logger.info("MSE increased at degree %d, stopping.", d)
                 break
                 
     return best_degree
