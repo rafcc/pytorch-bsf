@@ -119,7 +119,7 @@ class BezierSimplexDataModule(L.LightningDataModule):
         delimiter = "," if path.suffix == ".csv" else None
         return torch.from_numpy(
             np.loadtxt(path, delimiter=delimiter, skiprows=self.header, ndmin=2)
-        )
+        ).to(torch.get_default_dtype())
 
     def load_params(self) -> torch.Tensor:
         return self.load_data(self.params)
@@ -240,6 +240,7 @@ class BezierSimplex(L.LightningModule):
     def __init__(
         self,
         control_points: ControlPoints | ControlPointsData,
+        smoothness_weight: float = 0.0,
     ):
         # REQUIRED
         super().__init__()
@@ -248,7 +249,58 @@ class BezierSimplex(L.LightningModule):
             if isinstance(control_points, ControlPoints)
             else ControlPoints(control_points)
         )
-        self.save_hyperparameters()
+        self.smoothness_weight = smoothness_weight
+        # Exclude the submodule from hyperparameters; it is already saved as
+        # part of the module state dict.
+        self.save_hyperparameters(ignore=["control_points"])
+
+        # Track row indices whose gradients should be zeroed (frozen control points).
+        self._fixed_rows: set[int] = set()
+
+        # Cache indices and coefficients for vectorized forward
+        if self.n_params > 0:
+            indices = list(self.control_points.indices())
+            self.register_buffer(
+                "indices_",
+                torch.tensor(indices, dtype=torch.long),
+                persistent=False,
+            )
+            self.register_buffer(
+                "coeffs_",
+                torch.tensor(
+                    [polynom(self.degree, i) for i in indices],
+                    dtype=torch.get_default_dtype(),
+                ),
+                persistent=False,
+            )
+
+            # Adjacency for smoothness penalty.
+            # Built analytically in O(N·M²) instead of the naive O(N²) scan:
+            # two control points are adjacent iff their indices differ by
+            # exactly +1 in one component and −1 in another (L₁ distance = 2).
+            if smoothness_weight > 0:
+                index_to_row = {idx: row for row, idx in enumerate(indices)}
+                adj: list[tuple[int, int]] = []
+                m = self.n_params
+                for a_row, a in enumerate(indices):
+                    for i in range(m):
+                        if a[i] == 0:
+                            continue
+                        for j in range(m):
+                            if i == j:
+                                continue
+                            b = list(a)
+                            b[i] -= 1
+                            b[j] += 1
+                            b_row = index_to_row.get(tuple(b))
+                            if b_row is not None and b_row > a_row:
+                                adj.append((a_row, b_row))
+                if adj:
+                    self.register_buffer(
+                        "adjacency_indices_",
+                        torch.tensor(adj, dtype=torch.long),
+                        persistent=False,
+                    )
 
     @property
     def n_params(self) -> int:
@@ -265,6 +317,29 @@ class BezierSimplex(L.LightningModule):
         r"""The degree of the Bezier simplex."""
         return self.control_points.degree
 
+    def fix_row(self, index: "Index") -> None:
+        """Freeze a control point so its gradient is zeroed after every backward.
+
+        Parameters
+        ----------
+        index
+            The index of the control point to freeze.
+        """
+        from ast import literal_eval as _literal_eval
+
+        k = to_parameterdict_key(index)
+        idx = tuple(_literal_eval(k))
+        row = self.control_points._index_to_row[idx]
+        self._fixed_rows.add(row)
+
+    def on_after_backward(self) -> None:
+        """Zero gradients for frozen control-point rows after each backward pass."""
+        if not self._fixed_rows:
+            return
+        grad = self.control_points.matrix.grad
+        if grad is not None:
+            grad[list(self._fixed_rows)] = 0.0
+
     def forward(self, t: torch.Tensor) -> torch.Tensor:
         r"""Process a forwarding step of training.
 
@@ -278,20 +353,50 @@ class BezierSimplex(L.LightningModule):
         A minibatch of value vectors.
         """
         # REQUIRED
-        x = cast(torch.Tensor, 0)  # x will be of Tensor by subsequent broadcast
-        for i in simplex_indices(self.n_params, self.degree):
-            x += polynom(self.degree, i) * torch.outer(
-                monomial(t, i), self.control_points[i]
-            )
-        return x
+        if self.n_params == 0:
+            # Constant simplex: single control-point row, broadcast over batch.
+            return self.control_points.matrix[0].unsqueeze(0).expand(t.shape[0], -1)
+
+        t = torch.as_tensor(t, device=self.device, dtype=self.coeffs_.dtype)
+
+        # Vectorized monomial calculation: (batch, n_indices)
+        monomials = torch.pow(t.unsqueeze(1), self.indices_.unsqueeze(0)).prod(dim=-1)
+
+        # self.control_points.matrix is a direct nn.Parameter reference — no
+        # Python loop or torch.stack overhead here.
+        # Weighted control points (n_indices, n_values)
+        wcp = self.coeffs_.unsqueeze(1) * self.control_points.matrix
+
+        # Matrix multiplication: (batch, n_indices) @ (n_indices, n_values) -> (batch, n_values)
+        return torch.matmul(monomials, wcp)
+
+    def smoothness_penalty(self) -> torch.Tensor:
+        """Computes the smoothness penalty of the Bezier simplex.
+
+        Returns
+        -------
+            The smoothness penalty.
+        """
+        X = self.control_points.matrix
+        if not hasattr(self, "adjacency_indices_"):
+            # Return a scalar tensor on the same device/dtype so this composes
+            # safely with the training loss (e.g., on GPU/AMP).
+            return torch.zeros((), device=X.device, dtype=X.dtype)
+        i = self.adjacency_indices_[:, 0]
+        j = self.adjacency_indices_[:, 1]
+        return torch.sum((X[i] - X[j]).pow(2))
 
     def training_step(self, batch, batch_idx) -> dict[str, Any]:
         # REQUIRED
         x, y = batch
         y_hat = self.forward(x)
-        loss = F.mse_loss(y_hat, y)
-        tensorboard_logs = {"train_loss": loss}
-        self.log("train_mse", loss, sync_dist=True)
+        mse = F.mse_loss(y_hat, y)
+        loss = mse
+        if self.smoothness_weight > 0:
+            loss += self.smoothness_weight * self.smoothness_penalty()
+        tensorboard_logs = {"train_loss": loss, "train_mse": mse}
+        self.log("train_loss", loss, sync_dist=True)
+        self.log("train_mse", mse, sync_dist=True)
         return {"loss": loss, "log": tensorboard_logs}
 
     def validation_step(self, batch, batch_idx) -> dict[str, Any]:
@@ -341,15 +446,35 @@ class BezierSimplex(L.LightningModule):
         xs
             A value matrix of the mesh grid.
         """
-        ts = (
-            torch.Tensor(list(simplex_indices(n_params=self.n_params, degree=num)))
-            / num
+        from torch_bsf.sampling import simplex_grid
+
+        # Determine an appropriate dtype for the grid:
+        # - Prefer self.coeffs_.dtype when coefficients are registered.
+        # - For constant simplices (n_params == 0), fall back to the dtype of
+        #   the control point at the empty index, if available.
+        # - As a last resort, use torch.get_default_dtype().
+        if hasattr(self, "coeffs_"):
+            dtype = self.coeffs_.dtype
+        else:
+            try:
+                cp = self.control_points[()]
+            except (KeyError, IndexError):
+                cp = None
+            if isinstance(cp, torch.Tensor):
+                dtype = cp.dtype
+            else:
+                dtype = torch.get_default_dtype()
+
+        ts = simplex_grid(n_params=self.n_params, degree=num).to(
+            device=self.device, dtype=dtype
         )
         xs = self.forward(ts)
         return ts, xs
 
 
-def zeros(n_params: int, n_values: int, degree: int) -> BezierSimplex:
+def zeros(
+    n_params: int, n_values: int, degree: int, smoothness_weight: float = 0.0
+) -> BezierSimplex:
     r"""Generates a Bezier simplex with control points at origin.
 
     Parameters
@@ -360,6 +485,8 @@ def zeros(n_params: int, n_values: int, degree: int) -> BezierSimplex:
         The number of values, i.e., the target dimension.
     degree
         The degree of the Bezier simplex.
+    smoothness_weight
+        The weight of smoothness penalty.
 
     Returns
     -------
@@ -377,14 +504,10 @@ def zeros(n_params: int, n_values: int, degree: int) -> BezierSimplex:
     >>> bs = bezier_simplex.zeros(n_params=2, n_values=3, degree=2)
     >>> print(bs)
     BezierSimplex(
-      (control_points): ControlPoints(
-          ((0, 2)): Parameter containing: [torch.FloatTensor of size 3]
-          ((1, 1)): Parameter containing: [torch.FloatTensor of size 3]
-          ((2, 0)): Parameter containing: [torch.FloatTensor of size 3]
-      )
+      (control_points): ControlPoints(n_params=2, degree=2, n_values=3)
     )
     >>> print(bs(torch.tensor([[0.2, 0.8]])))
-    tensor([[..., ..., ...]], grad_fn=<AddBackward0>)
+    tensor([[..., ..., ...]], grad_fn=<...>)
     """
     if n_params < 0:
         raise ValueError(f"n_params must be non-negative: {n_params}")
@@ -394,11 +517,14 @@ def zeros(n_params: int, n_values: int, degree: int) -> BezierSimplex:
         raise ValueError(f"degree must be non-negative: {degree}")
 
     return BezierSimplex(
-        {i: torch.zeros(n_values) for i in simplex_indices(n_params, degree)}
+        {i: torch.zeros(n_values) for i in simplex_indices(n_params, degree)},
+        smoothness_weight=smoothness_weight,
     )
 
 
-def rand(n_params: int, n_values: int, degree: int) -> BezierSimplex:
+def rand(
+    n_params: int, n_values: int, degree: int, smoothness_weight: float = 0.0
+) -> BezierSimplex:
     r"""Generates a random Bezier simplex.
 
     The control points are initialized by random values.
@@ -412,6 +538,8 @@ def rand(n_params: int, n_values: int, degree: int) -> BezierSimplex:
         The number of values, i.e., the target dimension.
     degree
         The degree of the Bezier simplex.
+    smoothness_weight
+        The weight of smoothness penalty.
 
     Returns
     -------
@@ -429,14 +557,10 @@ def rand(n_params: int, n_values: int, degree: int) -> BezierSimplex:
     >>> bs = bezier_simplex.rand(n_params=2, n_values=3, degree=2)
     >>> print(bs)
     BezierSimplex(
-      (control_points): ControlPoints(
-          ((0, 2)): Parameter containing: [torch.FloatTensor of size 3]
-          ((1, 1)): Parameter containing: [torch.FloatTensor of size 3]
-          ((2, 0)): Parameter containing: [torch.FloatTensor of size 3]
-      )
+      (control_points): ControlPoints(n_params=2, degree=2, n_values=3)
     )
     >>> print(bs(torch.tensor([[0.2, 0.8]])))  # doctest: +ELLIPSIS
-    tensor([[..., ..., ...]], grad_fn=<AddBackward0>)
+    tensor([[..., ..., ...]], grad_fn=<...>)
     """
     if n_params < 0:
         raise ValueError(f"n_params must be non-negative: {n_params}")
@@ -446,11 +570,14 @@ def rand(n_params: int, n_values: int, degree: int) -> BezierSimplex:
         raise ValueError(f"degree must be non-negative: {degree}")
 
     return BezierSimplex(
-        {i: torch.rand(n_values) for i in simplex_indices(n_params, degree)}
+        {i: torch.rand(n_values) for i in simplex_indices(n_params, degree)},
+        smoothness_weight=smoothness_weight,
     )
 
 
-def randn(n_params: int, n_values: int, degree: int) -> BezierSimplex:
+def randn(
+    n_params: int, n_values: int, degree: int, smoothness_weight: float = 0.0
+) -> BezierSimplex:
     r"""Generates a random Bezier simplex.
 
     The control points are initialized by random values.
@@ -464,6 +591,8 @@ def randn(n_params: int, n_values: int, degree: int) -> BezierSimplex:
         The number of values, i.e., the target dimension.
     degree
         The degree of the Bezier simplex.
+    smoothness_weight
+        The weight of smoothness penalty.
 
     Returns
     -------
@@ -481,14 +610,10 @@ def randn(n_params: int, n_values: int, degree: int) -> BezierSimplex:
     >>> bs = bezier_simplex.randn(n_params=2, n_values=3, degree=2)
     >>> print(bs)
     BezierSimplex(
-      (control_points): ControlPoints(
-          ((0, 2)): Parameter containing: [torch.FloatTensor of size 3]
-          ((1, 1)): Parameter containing: [torch.FloatTensor of size 3]
-          ((2, 0)): Parameter containing: [torch.FloatTensor of size 3]
-      )
+      (control_points): ControlPoints(n_params=2, degree=2, n_values=3)
     )
     >>> print(bs(torch.tensor([[0.2, 0.8]])))  # doctest: +ELLIPSIS
-    tensor([[..., ..., ...]], grad_fn=<AddBackward0>)
+    tensor([[..., ..., ...]], grad_fn=<...>)
     """
     if n_params < 0:
         raise ValueError(f"n_params must be non-negative: {n_params}")
@@ -498,7 +623,8 @@ def randn(n_params: int, n_values: int, degree: int) -> BezierSimplex:
         raise ValueError(f"degree must be non-negative: {degree}")
 
     return BezierSimplex(
-        {i: torch.randn(n_values) for i in simplex_indices(n_params, degree)}
+        {i: torch.randn(n_values) for i in simplex_indices(n_params, degree)},
+        smoothness_weight=smoothness_weight,
     )
 
 
@@ -689,14 +815,10 @@ def load(
     >>> bs = bezier_simplex.load("tests/data/bezier_simplex.csv")
     >>> print(bs)
     BezierSimplex(
-      (control_points): ControlPoints(
-          ((0, 2)): Parameter containing: [torch.FloatTensor of size 3]
-          ((1, 1)): Parameter containing: [torch.FloatTensor of size 3]
-          ((2, 0)): Parameter containing: [torch.FloatTensor of size 3]
-      )
+      (control_points): ControlPoints(n_params=2, degree=2, n_values=3)
     )
     >>> print(bs(torch.tensor([[0.2, 0.8]])))
-    tensor([[..., ..., ...]], grad_fn=<AddBackward0>)
+    tensor([[..., ..., ...]], grad_fn=<...>)
     """
     cpdata: dict[str, list[float]]
     path = Path(path)
@@ -742,22 +864,6 @@ def load(
             data = torch.load(path, **kwargs)
 
         if isinstance(data, BezierSimplex):
-            # Backward compatibility for old string format like "[1, 0]" in .pt files
-            needs_update = False
-            new_params = {}
-            for k, v in data.control_points._parameters.items():
-                new_k = to_parameterdict_key(k)
-                if new_k != k:
-                    needs_update = True
-                new_params[new_k] = v
-
-            if needs_update:
-                data.control_points._parameters.clear()
-                data.control_points._keys.clear()
-                for k, v in new_params.items():
-                    data.control_points._parameters[k] = v
-                    data.control_points._keys[k] = None
-
             return data
         raise ValueError(f"Unknown data type: {type(data)}")
 
@@ -765,6 +871,7 @@ def load(
         cpdata = {
             to_parameterdict_key(row[0]): [float(v) for v in row[1:]]
             for row in csv.reader(open(path, encoding="utf-8"))
+            if row
         }
         validate_control_points(cpdata)
         return BezierSimplex(cpdata)
@@ -773,6 +880,7 @@ def load(
         cpdata = {
             to_parameterdict_key(row[0]): [float(v) for v in row[1:]]
             for row in csv.reader(open(path, encoding="utf-8"), delimiter="\t")
+            if row
         }
         validate_control_points(cpdata)
         return BezierSimplex(cpdata)
@@ -802,6 +910,7 @@ def fit(
     values: torch.Tensor,
     degree: int | None = None,
     init: BezierSimplex | ControlPoints | ControlPointsData | None = None,
+    smoothness_weight: float = 0.0,
     fix: Iterable[Index] | None = None,
     batch_size: int | None = None,
     **kwargs,
@@ -818,6 +927,8 @@ def fit(
         The degree of the Bezier simplex.
     init
         The initial values of a bezier simplex or control points.
+    smoothness_weight
+        The weight of smoothness penalty.
     fix
         The indices of control points to exclude from training.
     batch_size
@@ -868,7 +979,7 @@ def fit(
     >>> t = [[0.2, 0.3, 0.5]]
     >>> x = bs(t)
     >>> print(f"{t} -> {x}")
-    [[0.2, 0.3, 0.5]] -> tensor([[..., ..., ...]], grad_fn=<AddBackward0>)
+    [[0.2, 0.3, 0.5]] -> tensor([[..., ..., ...]], grad_fn=<...>)
 
     See Also
     --------
@@ -884,21 +995,31 @@ def fit(
         raise ValueError("Either degree or init must be specified, not both")
 
     if isinstance(init, BezierSimplex):
-        bs = init
+        # If the existing BezierSimplex already has the desired smoothness_weight
+        # and an adjacency buffer, we can safely reuse it. Otherwise, recreate a
+        # new instance from its control points so that __init__ can rebuild any
+        # internal state (e.g., adjacency indices) that depends on smoothness_weight.
+        same_weight = getattr(init, "smoothness_weight", None) == smoothness_weight
+        has_adjacency = hasattr(init, "adjacency_indices_")
+        if same_weight and has_adjacency:
+            bs = init
+        else:
+            bs = BezierSimplex(init.control_points, smoothness_weight=smoothness_weight)
     elif init is not None:
-        bs = BezierSimplex(init)
+        bs = BezierSimplex(init, smoothness_weight=smoothness_weight)
     else:
         bs = randn(
             n_params=int(params.shape[1]),
             n_values=int(values.shape[1]),
             degree=cast(int, degree),
+            smoothness_weight=smoothness_weight,
         )
 
     fix = fix or []
     validate_simplex_indices(fix, bs.n_params, bs.degree)
 
     for index in fix:
-        bs.control_points[index].requires_grad = False
+        bs.fix_row(index)
 
     trainer = L.Trainer(**kwargs)
     trainer.fit(bs, dl)

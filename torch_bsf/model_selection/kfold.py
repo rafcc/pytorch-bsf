@@ -7,7 +7,7 @@ from mlflow import autolog
 from pl_crossvalidate import KFoldTrainer
 
 from torch_bsf import BezierSimplexDataModule
-from torch_bsf.bezier_simplex import load, randn
+from torch_bsf.bezier_simplex import BezierSimplex, load, randn
 from torch_bsf.validator import index_list, int_or_str, validate_simplex_indices
 
 parser = ArgumentParser(
@@ -30,6 +30,7 @@ parser.add_argument("--stratified", type=bool, default=True)
 parser.add_argument("--split_ratio", type=float, default=1.0)
 parser.add_argument("--batch_size", type=int)
 parser.add_argument("--max_epochs", type=int, default=2)
+parser.add_argument("--smoothness_weight", type=float, default=0.0)
 parser.add_argument("--accelerator", type=str, default="auto")
 parser.add_argument("--strategy", type=str, default="auto")
 parser.add_argument("--devices", type=int_or_str, default="auto")
@@ -52,8 +53,8 @@ meshgrid: Path = args.params if (args.meshgrid is None or args.meshgrid.is_dir()
 
 autolog(
     log_input_examples=(args.loglevel >= 2),
-    log_model_signatures=(args.loglevel >= 2),
-    log_models=(args.loglevel >= 2),
+    log_model_signatures=False,
+    log_models=False,
     disable=(args.loglevel <= 0),
     exclusive=False,
     disable_for_unsupported_versions=False,
@@ -69,15 +70,21 @@ dm = BezierSimplexDataModule(
     normalize=args.normalize,
 )
 
-bs = (
-    load(args.init)
-    if args.init
-    else randn(
+if args.init:
+    _loaded = load(args.init)
+    _same_weight = getattr(_loaded, "smoothness_weight", None) == args.smoothness_weight
+    _has_adjacency = hasattr(_loaded, "adjacency_indices_")
+    if _same_weight and _has_adjacency:
+        bs = _loaded
+    else:
+        bs = BezierSimplex(_loaded.control_points, smoothness_weight=args.smoothness_weight)
+else:
+    bs = randn(
         n_params=dm.n_params,
         n_values=dm.n_values,
         degree=args.degree,
+        smoothness_weight=args.smoothness_weight,
     )
-)
 
 fix: list[list[int]] = args.fix or []
 validate_simplex_indices(fix, bs.n_params, bs.degree)

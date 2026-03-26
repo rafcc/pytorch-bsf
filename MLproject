@@ -7,24 +7,28 @@ entry_points:
       values: {type: path}
       meshgrid: {type: path, default: "."}
       degree: {type: int}
+      smoothness_weight: {type: float, default: 0.0}
     command: >-
       python -m torch_bsf
       --params={params}
       --values={values}
       --meshgrid={meshgrid}
       --degree={degree}
+      --smoothness_weight={smoothness_weight}
   kfold:
     parameters:
       params: {type: path}
       values: {type: path}
       meshgrid: {type: path, default: "."}
       degree: {type: int}
+      smoothness_weight: {type: float, default: 0.0}
     command: >-
       python -m torch_bsf.model_selection.kfold
       --params={params}
       --values={values}
       --meshgrid={meshgrid}
       --degree={degree}
+      --smoothness_weight={smoothness_weight}
   elastic_net_grid:
     parameters:
       n_lambdas: {type: int}

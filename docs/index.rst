@@ -33,6 +33,7 @@ The project is on `GitHub`_.
    whatis
    applications
    faq
+   references
 
 .. toctree::
    :maxdepth: 2

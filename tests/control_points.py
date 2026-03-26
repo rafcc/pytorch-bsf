@@ -7,6 +7,7 @@ import torch
 from torch_bsf.control_points import (
     ControlPoints,
     ControlPointsData,
+    simplex_indices,
     to_parameterdict_key,
 )
 
@@ -99,7 +100,7 @@ def test_control_points___init__(
     n_values: int,
 ) -> None:
     cps = ControlPoints(data=data)
-    assert len(cps) == len(data)
+    assert len(cps) == len(list(simplex_indices(n_params, degree)))
     assert cps.degree == degree
     assert cps.n_params == n_params
     assert cps.n_values == n_values
@@ -156,4 +157,16 @@ def test_control_points___getitem__(
     value: torch.Tensor,
 ):
     cps = ControlPoints(data=data)
-    assert torch.equal(cps[index], value)
+    assert torch.allclose(cps[index].float(), value.float())
+
+
+def test_control_points_matrix_is_parameter():
+    """matrix attribute should be a leaf nn.Parameter, not a computed tensor."""
+    import torch.nn as nn
+
+    cps = ControlPoints({(1, 0): [0.0, 1.0], (0, 1): [2.0, 3.0]})
+    assert isinstance(cps.matrix, nn.Parameter)
+    assert cps.matrix.requires_grad
+    # Accessing matrix twice returns the same object (no recomputation).
+    assert cps.matrix is cps.matrix
+

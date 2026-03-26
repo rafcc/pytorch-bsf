@@ -128,10 +128,3 @@ The following tables compare the results obtained through an exhaustive grid sea
           :width: 100%
 
           Nonzero coefficients
-
-
-References
-----------
-
-.. bibliography::
-
