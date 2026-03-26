@@ -186,14 +186,18 @@ class ControlPoints(nn.Module):
         self._index_to_row = {idx: row for row, idx in enumerate(self._indices)}
 
         # Build the parameter matrix in canonical index order.
-        # Missing indices (partial data) are filled with zeros.
+        # Missing indices (partial data) are filled with zeros on the same
+        # device and dtype as the first provided tensor to avoid mismatches.
         normalized = to_parameterdict(data)
+        ref = next(iter(normalized.values()))
+        ref_dtype = ref.dtype if ref.is_floating_point() else torch.get_default_dtype()
+        ref_device = ref.device
         rows = [
-            normalized.get(to_parameterdict_key(idx), torch.zeros(self.n_values))
+            normalized.get(to_parameterdict_key(idx), torch.zeros(self.n_values, dtype=ref_dtype, device=ref_device))
             for idx in self._indices
         ]
         self.matrix = nn.Parameter(
-            torch.stack(rows).to(torch.get_default_dtype())
+            torch.stack(rows).to(dtype=ref_dtype, device=ref_device)
         )
 
     def extra_repr(self) -> str:
@@ -218,7 +222,7 @@ class ControlPoints(nn.Module):
         try:
             self._key_to_row(cast(Index, key))
             return True
-        except (KeyError, ValueError, TypeError):
+        except (KeyError, ValueError, TypeError, SyntaxError):
             return False
 
     def __len__(self) -> int:

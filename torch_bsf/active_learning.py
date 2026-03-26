@@ -60,7 +60,8 @@ def suggest_next_points(
         preds = torch.stack(preds)
         
         # Variance of predictions: (n_candidates, n_values)
-        var = torch.var(preds, dim=0)
+        # Use unbiased=False so a single-model committee yields zero (not NaN).
+        var = torch.var(preds, dim=0, unbiased=False)
         
         # Sum of variance across dimensions: (n_candidates,)
         uncertainty = torch.sum(var, dim=1)
