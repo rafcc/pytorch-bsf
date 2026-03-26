@@ -87,7 +87,7 @@ fix: list[list[int]] = args.fix or []
 validate_simplex_indices(fix, bs.n_params, bs.degree)
 
 for index in fix:
-    bs.control_points[index].requires_grad = False
+    bs.fix_row(index)
 
 trainer = Trainer(
     accelerator=args.accelerator,
@@ -116,7 +116,7 @@ if args.loglevel >= 2:
     if mlflow.active_run() is not None:
         mlflow.pytorch.log_model(bs, "model", signature=signature)
     else:
-        with mlflow.start_run(run_id=mlflow.last_active_run().info.run_id):
+        with mlflow.start_run():
             mlflow.pytorch.log_model(bs, "model", signature=signature)
 
 # search for filename

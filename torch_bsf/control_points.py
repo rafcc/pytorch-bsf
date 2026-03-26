@@ -1,5 +1,5 @@
 from ast import literal_eval
-from typing import Iterable, Sequence, TypeAlias, cast
+from typing import Iterable, Iterator, Sequence, TypeAlias, cast
 
 import torch
 import torch.nn as nn
@@ -58,13 +58,13 @@ def simplex_indices(n_params: int, degree: int) -> Iterable[tuple[int, ...]]:
 
 
 def to_parameterdict_key(index: Index) -> str:
-    """Convert an index to a key of a ParameterDict.
+    """Convert an index to a canonical string key.
 
     Args:
-        index (str or tuple[int]): An index of a ParameterDict.
+        index (str or tuple[int]): An index of control points.
 
     Returns:
-        str: A key of a ParameterDict.
+        str: A canonical string key.
     """
     if isinstance(index, str):
         obj = literal_eval(index)
@@ -80,19 +80,19 @@ def to_parameterdict_key(index: Index) -> str:
 
 
 def to_parameterdict_value(value: Value) -> torch.Tensor:
-    """Convert a value to a value of a ParameterDict.
+    """Convert a value to a tensor.
 
     Args:
-        value (list[float]): A value of a ParameterDict.
+        value (list[float]): A value.
 
     Returns:
-        torch.Tensor: A value of a ParameterDict.
+        torch.Tensor: A tensor.
     """
     return torch.as_tensor(value)
 
 
 def to_parameterdict(data: ControlPointsData) -> dict[str, torch.Tensor]:
-    """Convert data to a dictionary of parameters.
+    """Convert data to a dictionary with canonical string keys.
 
     Args:
         data (dict): Data to be converted.
@@ -106,17 +106,25 @@ def to_parameterdict(data: ControlPointsData) -> dict[str, torch.Tensor]:
     }
 
 
-class ControlPoints(nn.ParameterDict):
-    """Control points of a Bezier simplex.
+class ControlPoints(nn.Module):
+    """Control points of a Bezier simplex stored as a single parameter matrix.
+
+    All control points are stored in one ``nn.Parameter`` matrix of shape
+    ``(n_indices, n_values)``.  This eliminates the Python-level loop and
+    ``torch.stack`` call that would otherwise occur on every forward pass,
+    giving a direct O(1) access path to the parameter data.
 
     Attributes
     ----------
+    matrix
+        ``nn.Parameter`` of shape ``(n_indices, n_values)`` holding all
+        control points in canonical simplex-index order.
     degree
         The degree of the Bezier simplex.
     n_params
-        The number of parameters.
+        The number of parameters (source dimension + 1).
     n_values
-        The number of values.
+        The number of values (target dimension).
 
     Examples
     --------
@@ -134,13 +142,9 @@ class ControlPoints(nn.ParameterDict):
     3
 
     >>> control_points[(1, 0)]
-    Parameter containing:
-    tensor([0.0000, 0.1000, 0.2000], requires_grad=True)
+    tensor([0.0000, 0.1000, 0.2000], grad_fn=<SelectBackward0>)
     >>> control_points[(0, 1)]
-    Parameter containing:
-    tensor([1.0000, 1.1000, 1.2000], requires_grad=True)
-
-    >>> control_points[(1, 0)].requires_grad = False
+    tensor([1.0000, 1.1000, 1.2000], grad_fn=<SelectBackward0>)
 
     """
 
@@ -154,47 +158,92 @@ class ControlPoints(nn.ParameterDict):
         data
             The data of control points.
         """
+        super().__init__()
         data = data or {}
-        super().__init__(to_parameterdict(data))
+
         if len(data) == 0:
             self.degree = 0
             self.n_params = 0
             self.n_values = 0
-        else:
-            index, value = cast(
-                tuple[Sequence[int], Sequence[float]],
-                next(iter(data.items())),
-            )
-            if isinstance(index, str):
-                index = cast(list[int], literal_eval(index))
-            self.degree = sum(index)
-            self.n_params = len(index)
-            self.n_values = len(value)
+            self._indices: list[tuple[int, ...]] = [()]
+            self._index_to_row: dict[tuple[int, ...], int] = {(): 0}
+            self.matrix = nn.Parameter(torch.empty(1, 0))
+            return
 
-    def __getitem__(self, key: Index) -> nn.Parameter:
-        key = to_parameterdict_key(key)
-        return cast(nn.Parameter, super().__getitem__(key))
+        first_key, first_val = next(iter(data.items()))
+        if isinstance(first_key, str):
+            parsed_key = cast(tuple[int, ...], tuple(literal_eval(first_key)))
+        elif hasattr(first_key, "tolist"):
+            parsed_key = tuple(int(x) for x in first_key.tolist())  # type: ignore[union-attr]
+        else:
+            parsed_key = tuple(int(x) for x in first_key)
+
+        self.degree = sum(parsed_key)
+        self.n_params = len(parsed_key)
+        self.n_values = len(first_val)
+
+        self._indices = list(simplex_indices(self.n_params, self.degree))
+        self._index_to_row = {idx: row for row, idx in enumerate(self._indices)}
+
+        # Build the parameter matrix in canonical index order.
+        # Missing indices (partial data) are filled with zeros.
+        normalized = to_parameterdict(data)
+        rows = [
+            normalized.get(to_parameterdict_key(idx), torch.zeros(self.n_values))
+            for idx in self._indices
+        ]
+        self.matrix = nn.Parameter(
+            torch.stack(rows).to(torch.get_default_dtype())
+        )
+
+    def extra_repr(self) -> str:
+        return f"n_params={self.n_params}, degree={self.degree}, n_values={self.n_values}"
+
+    def _key_to_row(self, key: Index) -> int:
+        """Convert an index to its matrix row number."""
+        k = to_parameterdict_key(key)
+        idx = cast(tuple[int, ...], tuple(literal_eval(k)))
+        return self._index_to_row[idx]
+
+    def __getitem__(self, key: Index) -> torch.Tensor:
+        return self.matrix[self._key_to_row(key)]
 
     def __setitem__(self, key: Index, value: Value) -> None:
-        key = to_parameterdict_key(key)
-        value = to_parameterdict_value(value)
-        super().__setitem__(key, value)
+        row = self._key_to_row(key)
+        v = to_parameterdict_value(value).to(dtype=self.matrix.dtype, device=self.matrix.device)
+        with torch.no_grad():
+            self.matrix.data[row] = v
 
-    def indices(self) -> Iterable[tuple[int, ...]]:
+    def __contains__(self, key: object) -> bool:
+        try:
+            self._key_to_row(cast(Index, key))
+            return True
+        except (KeyError, ValueError, TypeError):
+            return False
+
+    def __len__(self) -> int:
+        return len(self._indices)
+
+    def indices(self) -> Iterator[tuple[int, ...]]:
         """Iterates the index of control points of the Bezier simplex.
 
         Returns
         -------
-            The indices.
+            The indices in canonical order.
         """
-        return simplex_indices(self.n_params, self.degree)
+        return iter(self._indices)
 
-    @property
-    def matrix(self) -> torch.Tensor:
-        """Returns the control points as a single matrix.
+    def keys(self) -> Iterator[str]:
+        """Iterates canonical string keys in canonical order."""
+        for idx in self._indices:
+            yield to_parameterdict_key(idx)
+
+    def items(self) -> Iterator[tuple[str, torch.Tensor]]:
+        """Iterates ``(str_key, value_tensor)`` pairs in canonical order.
 
         Returns
         -------
-            A matrix of control points of shape (n_indices, n_values).
+            An iterator of ``(key, value)`` pairs.
         """
-        return torch.stack([self[i] for i in self.indices()])
+        for idx in self._indices:
+            yield to_parameterdict_key(idx), self.matrix[self._index_to_row[idx]]
