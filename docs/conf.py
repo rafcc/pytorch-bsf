@@ -55,6 +55,10 @@ autodoc_type_aliases = {
     "Index": "torch_bsf.bezier_simplex.Index",
 }
 autodoc_inherit_docstrings = False
+# Optional dependencies that may not be present in the docs build environment.
+# These modules are imported lazily (inside functions) but autodoc may still
+# try to resolve type annotations that reference them.
+autodoc_mock_imports = ["matplotlib", "sklearn", "scipy"]
 
 # -- doctest -----------------------------------------------------------------
 # https://www.sphinx-doc.org/ja/master/usage/extensions/doctest.html#confval-doctest_global_setup

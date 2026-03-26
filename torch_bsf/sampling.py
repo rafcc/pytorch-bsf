@@ -117,9 +117,10 @@ def simplex_sobol(n_params: int, n_samples: int) -> torch.Tensor:
     sampler = qmc.Sobol(d=n_params - 1, scramble=True)
     q = sampler.random(n=n_samples)
 
-    # Transform to simplex: q[i] sorted are the spacings? No, that's not Sobol on simplex.
-    # Standard way to project onto simplex: use the "uniform mapping"
-    # q_i are in [0, 1]. Sort them in each sample.
+    # Project Sobol samples to the simplex via the uniform sorted-differences mapping:
+    # 1. Sort each (n_params - 1)-dim sample in ascending order.
+    # 2. Prepend 0 and append 1 to get n_params + 1 boundary values.
+    # 3. Take consecutive differences to obtain n_params non-negative values that sum to 1.
     q = np.sort(q, axis=1)
     q = np.concatenate(
         [np.zeros((n_samples, 1)), q, np.ones((n_samples, 1))], axis=1
