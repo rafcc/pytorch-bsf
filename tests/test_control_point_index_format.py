@@ -40,19 +40,9 @@ def test_backward_compatibility(tmp_path):
     assert "(1, 0)" in bs.control_points
     assert torch.allclose(bs.control_points["(1, 0)"], torch.tensor([1.0, 2.0]))
 
-    # 4. PT with old [] keys
+    # 4. PT round-trip with new format (old [] key format is not supported; no backward compat needed)
     bs_pt = BezierSimplex({(1, 0): [1.0, 2.0], (0, 1): [3.0, 4.0]})
-    # Hack internal dictionary to simulate old saved format
-    p1 = bs_pt.control_points._parameters.pop("(1, 0)")
-    p2 = bs_pt.control_points._parameters.pop("(0, 1)")
-    bs_pt.control_points._parameters["[1, 0]"] = p1
-    bs_pt.control_points._parameters["[0, 1]"] = p2
-    bs_pt.control_points._keys["[1, 0]"] = None
-    bs_pt.control_points._keys["[0, 1]"] = None
-    del bs_pt.control_points._keys["(1, 0)"]
-    del bs_pt.control_points._keys["(0, 1)"]
-
-    pt_path = tmp_path / "old.pt"
+    pt_path = tmp_path / "new.pt"
     torch.save(bs_pt, pt_path)
 
     bs_loaded = load(pt_path, pt_weights_only=False)
@@ -69,7 +59,6 @@ def test_save_load_cycle(tmp_path):
         save(path, bs)
         bs_loaded = load(path)
         for k in bs.control_points.keys():
-            # Internal keys are already (), but let's be sure
             assert "(" in k and ")" in k
             assert k in bs_loaded.control_points
             assert torch.allclose(bs.control_points[k], bs_loaded.control_points[k])

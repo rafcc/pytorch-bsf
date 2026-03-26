@@ -17,8 +17,11 @@ def simplex_grid(n_params: int, degree: int) -> torch.Tensor:
     torch.Tensor
         Array of grid points in shape (N, n_params), where N = binom(degree + n_params - 1, n_params - 1).
     """
-    if n_params <= 0:
-        return torch.empty((0, 0))
+    if n_params < 0:
+        raise ValueError(f"n_params must be non-negative, got {n_params}")
+    if n_params == 0:
+        # Constant simplex: exactly one valid parameter (the empty tuple).
+        return torch.empty((1, 0), dtype=torch.float32)
     if degree == 0:
         return torch.ones((1, n_params), dtype=torch.float32) / n_params
 

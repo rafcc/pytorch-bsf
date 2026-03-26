@@ -250,7 +250,12 @@ class BezierSimplex(L.LightningModule):
             else ControlPoints(control_points)
         )
         self.smoothness_weight = smoothness_weight
-        self.save_hyperparameters()
+        # Exclude the submodule from hyperparameters; it is already saved as
+        # part of the module state dict.
+        self.save_hyperparameters(ignore=["control_points"])
+
+        # Track row indices whose gradients should be zeroed (frozen control points).
+        self._fixed_rows: set[int] = set()
 
         # Cache indices and coefficients for vectorized forward
         if self.n_params > 0:
@@ -269,14 +274,27 @@ class BezierSimplex(L.LightningModule):
                 persistent=False,
             )
 
-            # Adjacency for smoothness penalty
+            # Adjacency for smoothness penalty.
+            # Built analytically in O(N·M²) instead of the naive O(N²) scan:
+            # two control points are adjacent iff their indices differ by
+            # exactly +1 in one component and −1 in another (L₁ distance = 2).
             if smoothness_weight > 0:
-                adj = []
-                for a_idx, a in enumerate(indices):
-                    for b_idx in range(a_idx + 1, len(indices)):
-                        b = indices[b_idx]
-                        if sum(abs(ak - bk) for ak, bk in zip(a, b)) == 2:
-                            adj.append((a_idx, b_idx))
+                index_to_row = {idx: row for row, idx in enumerate(indices)}
+                adj: list[tuple[int, int]] = []
+                m = self.n_params
+                for a_row, a in enumerate(indices):
+                    for i in range(m):
+                        if a[i] == 0:
+                            continue
+                        for j in range(m):
+                            if i == j:
+                                continue
+                            b = list(a)
+                            b[i] -= 1
+                            b[j] += 1
+                            b_row = index_to_row.get(tuple(b))
+                            if b_row is not None and b_row > a_row:
+                                adj.append((a_row, b_row))
                 if adj:
                     self.register_buffer(
                         "adjacency_indices_",
@@ -299,6 +317,29 @@ class BezierSimplex(L.LightningModule):
         r"""The degree of the Bezier simplex."""
         return self.control_points.degree
 
+    def fix_row(self, index: "Index") -> None:
+        """Freeze a control point so its gradient is zeroed after every backward.
+
+        Parameters
+        ----------
+        index
+            The index of the control point to freeze.
+        """
+        from ast import literal_eval as _literal_eval
+
+        k = to_parameterdict_key(index)
+        idx = tuple(_literal_eval(k))
+        row = self.control_points._index_to_row[idx]
+        self._fixed_rows.add(row)
+
+    def on_after_backward(self) -> None:
+        """Zero gradients for frozen control-point rows after each backward pass."""
+        if not self._fixed_rows:
+            return
+        grad = self.control_points.matrix.grad
+        if grad is not None:
+            grad[list(self._fixed_rows)] = 0.0
+
     def forward(self, t: torch.Tensor) -> torch.Tensor:
         r"""Process a forwarding step of training.
 
@@ -313,13 +354,16 @@ class BezierSimplex(L.LightningModule):
         """
         # REQUIRED
         if self.n_params == 0:
-            return self.control_points[()].unsqueeze(0).expand(t.shape[0], -1)
+            # Constant simplex: single control-point row, broadcast over batch.
+            return self.control_points.matrix[0].unsqueeze(0).expand(t.shape[0], -1)
 
         t = torch.as_tensor(t, device=self.device, dtype=self.coeffs_.dtype)
 
         # Vectorized monomial calculation: (batch, n_indices)
         monomials = torch.pow(t.unsqueeze(1), self.indices_.unsqueeze(0)).prod(dim=-1)
 
+        # self.control_points.matrix is a direct nn.Parameter reference — no
+        # Python loop or torch.stack overhead here.
         # Weighted control points (n_indices, n_values)
         wcp = self.coeffs_.unsqueeze(1) * self.control_points.matrix
 
@@ -414,7 +458,7 @@ class BezierSimplex(L.LightningModule):
         else:
             try:
                 cp = self.control_points[()]
-            except Exception:
+            except (KeyError, IndexError):
                 cp = None
             if isinstance(cp, torch.Tensor):
                 dtype = cp.dtype
@@ -460,11 +504,7 @@ def zeros(
     >>> bs = bezier_simplex.zeros(n_params=2, n_values=3, degree=2)
     >>> print(bs)
     BezierSimplex(
-      (control_points): ControlPoints(
-          ((0, 2)): Parameter containing: [torch.FloatTensor of size 3]
-          ((1, 1)): Parameter containing: [torch.FloatTensor of size 3]
-          ((2, 0)): Parameter containing: [torch.FloatTensor of size 3]
-      )
+      (control_points): ControlPoints(n_params=2, degree=2, n_values=3)
     )
     >>> print(bs(torch.tensor([[0.2, 0.8]])))
     tensor([[..., ..., ...]], grad_fn=<...>)
@@ -517,11 +557,7 @@ def rand(
     >>> bs = bezier_simplex.rand(n_params=2, n_values=3, degree=2)
     >>> print(bs)
     BezierSimplex(
-      (control_points): ControlPoints(
-          ((0, 2)): Parameter containing: [torch.FloatTensor of size 3]
-          ((1, 1)): Parameter containing: [torch.FloatTensor of size 3]
-          ((2, 0)): Parameter containing: [torch.FloatTensor of size 3]
-      )
+      (control_points): ControlPoints(n_params=2, degree=2, n_values=3)
     )
     >>> print(bs(torch.tensor([[0.2, 0.8]])))  # doctest: +ELLIPSIS
     tensor([[..., ..., ...]], grad_fn=<...>)
@@ -574,11 +610,7 @@ def randn(
     >>> bs = bezier_simplex.randn(n_params=2, n_values=3, degree=2)
     >>> print(bs)
     BezierSimplex(
-      (control_points): ControlPoints(
-          ((0, 2)): Parameter containing: [torch.FloatTensor of size 3]
-          ((1, 1)): Parameter containing: [torch.FloatTensor of size 3]
-          ((2, 0)): Parameter containing: [torch.FloatTensor of size 3]
-      )
+      (control_points): ControlPoints(n_params=2, degree=2, n_values=3)
     )
     >>> print(bs(torch.tensor([[0.2, 0.8]])))  # doctest: +ELLIPSIS
     tensor([[..., ..., ...]], grad_fn=<...>)
@@ -783,11 +815,7 @@ def load(
     >>> bs = bezier_simplex.load("tests/data/bezier_simplex.csv")
     >>> print(bs)
     BezierSimplex(
-      (control_points): ControlPoints(
-          ((0, 2)): Parameter containing: [torch.FloatTensor of size 3]
-          ((1, 1)): Parameter containing: [torch.FloatTensor of size 3]
-          ((2, 0)): Parameter containing: [torch.FloatTensor of size 3]
-      )
+      (control_points): ControlPoints(n_params=2, degree=2, n_values=3)
     )
     >>> print(bs(torch.tensor([[0.2, 0.8]])))
     tensor([[..., ..., ...]], grad_fn=<...>)
@@ -836,22 +864,6 @@ def load(
             data = torch.load(path, **kwargs)
 
         if isinstance(data, BezierSimplex):
-            # Backward compatibility for old string format like "[1, 0]" in .pt files
-            needs_update = False
-            new_params = {}
-            for k, v in data.control_points._parameters.items():
-                new_k = to_parameterdict_key(k)
-                if new_k != k:
-                    needs_update = True
-                new_params[new_k] = v
-
-            if needs_update:
-                data.control_points._parameters.clear()
-                data.control_points._keys.clear()
-                for k, v in new_params.items():
-                    data.control_points._parameters[k] = v
-                    data.control_points._keys[k] = None
-
             return data
         raise ValueError(f"Unknown data type: {type(data)}")
 
@@ -1007,7 +1019,7 @@ def fit(
     validate_simplex_indices(fix, bs.n_params, bs.degree)
 
     for index in fix:
-        bs.control_points[index].requires_grad = False
+        bs.fix_row(index)
 
     trainer = L.Trainer(**kwargs)
     trainer.fit(bs, dl)

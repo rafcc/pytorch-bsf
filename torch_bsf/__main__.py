@@ -87,7 +87,7 @@ fix: list[list[int]] = args.fix or []
 validate_simplex_indices(fix, bs.n_params, bs.degree)
 
 for index in fix:
-    bs.control_points[index].requires_grad = False
+    bs.fix_row(index)
 
 trainer = Trainer(
     accelerator=args.accelerator,
@@ -113,7 +113,7 @@ if args.loglevel >= 2:
         inputs=Schema([TensorSpec(np.dtype("float64"), (-1, bs.n_params))]),
         outputs=Schema([TensorSpec(np.dtype("float64"), (-1, bs.n_values))]),
     )
-    if mlflow.active_run() is not None:
+    if mlflow.active_run() is not None or mlflow.last_active_run() is None:
         mlflow.pytorch.log_model(bs, "model", signature=signature)
     else:
         with mlflow.start_run(run_id=mlflow.last_active_run().info.run_id):
