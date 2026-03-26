@@ -1,5 +1,22 @@
 # Changelog
 
+## [0.15.0](https://github.com/opthub-org/pytorch-bsf/compare/v0.14.3...v0.15.0) (2026-03-26)
+
+
+### Features
+
+* visualization ([#247](https://github.com/opthub-org/pytorch-bsf/issues/247)) ([4a4e4a0](https://github.com/opthub-org/pytorch-bsf/commit/4a4e4a07a4211ba01de5ff123c23cbf41ba97531))
+
+
+### Bug Fixes
+
+* remove cudatoolkit, add multi-OS conda CI ([#252](https://github.com/opthub-org/pytorch-bsf/issues/252)) ([118a841](https://github.com/opthub-org/pytorch-bsf/commit/118a841c2feb9fa20550199a4f1801c8c75a1923))
+
+
+### Documentation
+
+* add CONTRIBUTING.md with developer onboarding guide ([#251](https://github.com/opthub-org/pytorch-bsf/issues/251)) ([97b9864](https://github.com/opthub-org/pytorch-bsf/commit/97b9864a8959400a1bf6ab184831ba762da0a85b))
+
 ## [0.14.3](https://github.com/opthub-org/pytorch-bsf/compare/v0.14.2...v0.14.3) (2026-03-24)
 
 
