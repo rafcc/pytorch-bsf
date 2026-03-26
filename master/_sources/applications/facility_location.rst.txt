@@ -1,5 +1,5 @@
 Facility location and continuous approximations
-=============================================
+===============================================
 
 Strongly convex multi-objective frameworks naturally accommodate classic spatial, physical, and logistics challenges. For instance, urban planning and supply chain optimization frequently involve determining the optimal spatial coordinates for physical facilities (e.g., warehouses, hospitals, or transit hubs) to mutually minimize the travel distances to several distributed demand points.
 
@@ -14,9 +14,3 @@ Likewise, in engineering design optimizing for structural compliance or minimum 
 These properties are explicitly leveraged by Adaptive Weighted Sum (AWS) methods in structural multidisciplinary optimization, where successive boundary-constrained strongly-convex QPs smoothly and uniformly map the Pareto front :cite:p:`deweck2004adaptive`. Even in complex biological systems, such as competitive Lotka-Volterra models, transformations of the quadratic interaction terms yield strongly convex models that exhibit identically stable simplicial Pareto behavior.
 
 Approximating these Pareto fronts with a Bézier simplex yields a completely continuous, analytic structural location map. Planners and decision-makers are empowered to visually and analytically slide trade-off priorities—such as selectively favoring certain demand hubs—to determine the optimal coordinates seamlessly, without needing to re-solve the spatial optimization from scratch.
-
-
-References
-----------
-
-.. bibliography::

@@ -9,5 +9,10 @@ These features are useful for improving fitting accuracy through data normalizat
 
    advanced/normalization
    advanced/initialization
+   advanced/regularization
+   advanced/auto_degree
    advanced/partial
    advanced/acceleration
+   advanced/visualization
+   advanced/sklearn
+   advanced/active_learning

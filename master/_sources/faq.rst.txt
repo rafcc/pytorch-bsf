@@ -134,9 +134,3 @@ If you encounter poor accuracy or optimization issues, try these steps:
 3.  **Better Initialization:** Use the ``init`` argument to provide a better starting point, perhaps from a coarse fit or domain knowledge.
 4.  **Increase Training Epochs:** For complex surfaces, the L-BFGS optimizer might need more iterations. In the CLI, use ``--max_epochs``.
 5.  **Data Normalization:** Scale your output values (``values``) to a similar range (e.g., using ``--normalize std``) to help the optimizer converge faster.
-
-
-References
-----------
-
-.. bibliography::

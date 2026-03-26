@@ -58,4 +58,4 @@ The ``fit()`` function provides parameters for partial training, i.e., training 
 .. testoutput::
    :hide:
 
-   tensor([[...]], grad_fn=<AddBackward0>)
+   tensor([[...]], grad_fn=<...>)
