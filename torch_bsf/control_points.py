@@ -247,3 +247,4 @@ class ControlPoints(nn.Module):
         """
         for idx in self._indices:
             yield to_parameterdict_key(idx), self.matrix[self._index_to_row[idx]]
+
