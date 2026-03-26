@@ -32,7 +32,13 @@ def plot_bezier_simplex(
 
 
 def _plot_bezier_curve(model, num, ax, show_control_points, **kwargs):
-    import matplotlib.pyplot as plt
+    try:
+        import matplotlib.pyplot as plt
+    except ImportError as e:
+        raise ImportError(
+            "matplotlib is required for plotting. "
+            "Install it with: pip install matplotlib"
+        ) from e
 
     ts, xs = model.meshgrid(num=num)
     xs = xs.detach().cpu().numpy()
@@ -63,8 +69,20 @@ def _plot_bezier_curve(model, num, ax, show_control_points, **kwargs):
 
 def _plot_bezier_triangle(model, num, ax, show_control_points, **kwargs):
     # This requires a bit more complex triangulation for plotting a surface
-    import matplotlib.pyplot as plt
-    from scipy.spatial import Delaunay
+    try:
+        import matplotlib.pyplot as plt
+    except ImportError as e:
+        raise ImportError(
+            "matplotlib is required for plotting. "
+            "Install it with: pip install matplotlib"
+        ) from e
+    try:
+        from scipy.spatial import Delaunay
+    except ImportError as e:
+        raise ImportError(
+            "scipy is required for triangle plotting. "
+            "Install it with: pip install scipy"
+        ) from e
 
     ts, xs = model.meshgrid(num=num)
     xs = xs.detach().cpu().numpy()

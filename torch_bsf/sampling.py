@@ -81,6 +81,7 @@ def simplex_sobol(n_params: int, n_samples: int) -> torch.Tensor:
     ----------
     n_params : int
         The number of parameters (vertices of the simplex).
+        Must be at least 2.
     n_samples : int
         The number of samples.
 
@@ -88,9 +89,29 @@ def simplex_sobol(n_params: int, n_samples: int) -> torch.Tensor:
     -------
     torch.Tensor
         Array of sample points in shape (n_samples, n_params).
+
+    Raises
+    ------
+    ImportError
+        If SciPy is not installed.
+    ValueError
+        If ``n_params`` is less than 2 or ``n_samples`` is negative.
     """
+    if n_params < 2:
+        raise ValueError(f"n_params must be at least 2 for Sobol sampling, got {n_params}")
+    if n_samples < 0:
+        raise ValueError(f"n_samples must be non-negative, got {n_samples}")
+    if n_samples == 0:
+        return torch.empty((0, n_params), dtype=torch.float32)
+
     import numpy as np
-    from scipy.stats import qmc
+    try:
+        from scipy.stats import qmc
+    except ImportError as e:
+        raise ImportError(
+            "SciPy is required for simplex_sobol. "
+            "Install it with: pip install scipy"
+        ) from e
 
     # Sobol sequence generator for (n_params - 1) dimensions in [0, 1]
     sampler = qmc.Sobol(d=n_params - 1, scramble=True)

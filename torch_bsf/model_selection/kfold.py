@@ -7,7 +7,7 @@ from mlflow import autolog
 from pl_crossvalidate import KFoldTrainer
 
 from torch_bsf import BezierSimplexDataModule
-from torch_bsf.bezier_simplex import load, randn
+from torch_bsf.bezier_simplex import BezierSimplex, load, randn
 from torch_bsf.validator import index_list, int_or_str, validate_simplex_indices
 
 parser = ArgumentParser(
@@ -70,18 +70,21 @@ dm = BezierSimplexDataModule(
     normalize=args.normalize,
 )
 
-bs = (
-    load(args.init)
-    if args.init
-    else randn(
+if args.init:
+    _loaded = load(args.init)
+    _same_weight = getattr(_loaded, "smoothness_weight", None) == args.smoothness_weight
+    _has_adjacency = hasattr(_loaded, "adjacency_indices_")
+    if _same_weight and _has_adjacency:
+        bs = _loaded
+    else:
+        bs = BezierSimplex(_loaded.control_points, smoothness_weight=args.smoothness_weight)
+else:
+    bs = randn(
         n_params=dm.n_params,
         n_values=dm.n_values,
         degree=args.degree,
         smoothness_weight=args.smoothness_weight,
     )
-)
-if args.init:
-    bs.smoothness_weight = args.smoothness_weight
 
 fix: list[list[int]] = args.fix or []
 validate_simplex_indices(fix, bs.n_params, bs.degree)
