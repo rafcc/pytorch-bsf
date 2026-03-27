@@ -345,15 +345,19 @@ def test_save_case_insensitive_tsv(tmp_path, ext):
 
 @pytest.mark.parametrize("ext", [".pt", ".PT", ".Pt"])
 def test_load_case_insensitive_pt(tmp_path, ext):
+    # Create a real .pt file via save() to avoid relying on the LFS-backed fixture file
+    bs = tbbs.randn(n_params=2, n_values=2, degree=1)
+    src = tmp_path / "source_model.pt"
+    tbbs.save(str(src), bs)
     dest = tmp_path / f"model{ext}"
-    shutil.copy(_DATA_DIR / "bezier_simplex.pt", dest)
-    bs = tbbs.load(str(dest))
-    assert isinstance(bs, tbbs.BezierSimplex)
+    shutil.copy(src, dest)
+    bs2 = tbbs.load(str(dest))
+    assert isinstance(bs2, tbbs.BezierSimplex)
 
 
 @pytest.mark.parametrize("ext", [".pt", ".PT", ".Pt"])
 def test_save_case_insensitive_pt(tmp_path, ext):
-    bs = tbbs.load(str(_DATA_DIR / "bezier_simplex.pt"))
+    bs = tbbs.randn(n_params=2, n_values=2, degree=1)
     dest = tmp_path / f"model{ext}"
     tbbs.save(str(dest), bs)
     assert dest.exists()
