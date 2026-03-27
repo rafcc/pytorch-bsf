@@ -660,13 +660,13 @@ def save(path: str | Path, data: BezierSimplex) -> None:
         torch.save(data, path)
 
     elif suffix == ".csv":
-        with open(path, "w", encoding="utf-8") as f:
+        with open(path, "w", encoding="utf-8", newline="") as f:
             writer = csv.writer(f)
             for index, value in data.control_points.items():
                 writer.writerow([index] + value.tolist())
 
     elif suffix == ".tsv":
-        with open(path, "w", encoding="utf-8") as f:
+        with open(path, "w", encoding="utf-8", newline="") as f:
             writer = csv.writer(f, delimiter="\t")
             for index, value in data.control_points.items():
                 writer.writerow([index] + value.tolist())
@@ -916,7 +916,7 @@ def load(
             raw = yaml.safe_load(f)
         if not isinstance(raw, dict):
             raise ValueError(
-                f"YAML file '{path}' must contain a mapping of control point keys to value lists"
+                f"YAML file '{path}' must contain a mapping of control point keys to value lists, got {type(raw).__name__}"
             )
         if not raw:
             raise ValueError(f"No control points found in '{path}'")
