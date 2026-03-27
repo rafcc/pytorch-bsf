@@ -30,12 +30,15 @@ class TestMinMaxScaler:
         recovered = scaler.inverse_transform(scaled)
         assert torch.allclose(recovered, simple_values, atol=1e-5)
 
-    def test_fit_then_transform_separately(self, simple_values):
-        scaler = MinMaxScaler()
-        scaler.fit(simple_values)
-        result = (simple_values - scaler.mins) / scaler.scales
-        expected = scaler.fit_transform(simple_values)
-        assert torch.allclose(result, expected, atol=1e-6)
+    def test_fit_is_consistent_with_fit_transform(self, simple_values):
+        # fit() must set up state that is equivalent to what fit_transform() uses
+        scaler_a = MinMaxScaler()
+        scaled_a = scaler_a.fit_transform(simple_values)
+
+        scaler_b = MinMaxScaler()
+        scaler_b.fit(simple_values)
+        recovered = scaler_b.inverse_transform(scaled_a)
+        assert torch.allclose(recovered, simple_values, atol=1e-6)
 
     def test_single_row(self):
         values = torch.tensor([[3.0, 7.0]])

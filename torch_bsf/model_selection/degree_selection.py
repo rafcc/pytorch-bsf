@@ -34,48 +34,39 @@ def select_degree(
         The best degree found.
     """
     from torch_bsf.bezier_simplex import randn
-    # Manual setup since fit() or DataModule usually expects files
-    # We can create a SimpleDataModule or use TensorDataset
     from torch.utils.data import DataLoader, TensorDataset
+
+    # Build the dataset once – it doesn't change across degree iterations
+    dataset = TensorDataset(params, values)
+    train_dl = DataLoader(dataset)
+
+    # Disable validation monitoring during training; the CV estimate comes from
+    # test_step (the per-fold held-out subset produced by KFoldTrainer).
+    kfold_kwargs: dict = {"limit_val_batches": 0.0, "num_sanity_val_steps": 0}
+    kfold_kwargs.update(trainer_kwargs)
 
     best_degree = min_degree
     best_mse = float('inf')
 
     for d in range(min_degree, max_degree + 1):
         _logger.info("Checking degree %d...", d)
-        
-        # We need a model and data for KFoldTrainer
-        # KFoldTrainer works on a model and a dataloader
-        dataset = TensorDataset(params, values)
-        train_dl = DataLoader(dataset, batch_size=len(params))
-        
-        # Setup dummy model to get dimensions
-        model = randn(params.shape[1], values.shape[1], d)
-        
-        trainer = KFoldTrainer(
-            num_folds=num_folds,
-            **trainer_kwargs
-        )
-        
-        # We want to measure val_mse
-        # Use same data for validation (matches split_ratio=1.0 in BezierSimplexDataModule)
-        stats = trainer.cross_validate(model, train_dataloader=train_dl, val_dataloaders=train_dl)
-        # stats is a list of results for each fold
-        # Find the mean validation MSE
-        val_mses = []
-        for fold_results in stats:
-            for res in fold_results:
-                if 'val_mse' in res:
-                    val_mses.append(res['val_mse'])
-        
-        if not val_mses:
-            # Fallback to training MSE if validation MSE is not logged
-            for fold_results in stats:
-                for res in fold_results:
-                    if 'train_mse' in res:
-                        val_mses.append(res['train_mse'])
 
-        mean_mse = sum(val_mses) / len(val_mses) if val_mses else float('inf')
+        model = randn(params.shape[1], values.shape[1], d)
+
+        trainer = KFoldTrainer(num_folds=num_folds, **kfold_kwargs)
+
+        # KFoldTrainer splits train_dl into per-fold train/test subsets;
+        # test results (test_mse) give the unbiased cross-validation estimate.
+        stats = trainer.cross_validate(model, train_dataloader=train_dl)
+
+        test_mses = [
+            res["test_mse"]
+            for fold_results in stats
+            for res in fold_results
+            if "test_mse" in res
+        ]
+
+        mean_mse = sum(test_mses) / len(test_mses) if test_mses else float('inf')
         _logger.info("Degree %d: Mean MSE = %.6f", d, mean_mse)
         
         if mean_mse < best_mse:
