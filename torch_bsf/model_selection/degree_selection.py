@@ -66,7 +66,18 @@ def select_degree(
     # Use full-batch loading (consistent with bezier_simplex.fit()) unless the
     # caller explicitly provides a different batch_size via trainer_kwargs.
     dataset = TensorDataset(params, values)
+    if len(dataset) == 0:
+        raise ValueError(
+            "select_degree requires a non-empty dataset; got 0 samples. "
+            "Ensure that 'params' and 'values' contain at least one example."
+        )
     batch_size = trainer_kwargs.pop("batch_size", len(dataset))
+    if isinstance(batch_size, int) and batch_size <= 0:
+        raise ValueError(
+            f"batch_size must be a positive integer, got {batch_size}. "
+            "Either provide a positive 'batch_size' in trainer_kwargs or pass "
+            "non-empty 'params' and 'values'."
+        )
     train_dl = DataLoader(dataset, batch_size=batch_size)
 
     # Disable validation monitoring during training by default; the CV estimate
