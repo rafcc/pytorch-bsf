@@ -1,4 +1,3 @@
-import pytest
 import torch
 
 from torch_bsf.model_selection.degree_selection import select_degree

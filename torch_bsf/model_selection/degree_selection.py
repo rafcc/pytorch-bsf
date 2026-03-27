@@ -10,6 +10,8 @@ def select_degree(
     min_degree: int = 1,
     max_degree: int = 5,
     num_folds: int = 5,
+    val_dataloaders=None,
+    datamodule=None,
     **trainer_kwargs
 ) -> int:
     """Select the best degree for the Bezier simplex using cross-validation.
@@ -26,16 +28,32 @@ def select_degree(
         Ending degree to check.
     num_folds
         Number of folds for cross-validation.
+    val_dataloaders
+        Optional validation dataloader(s) forwarded to
+        :meth:`~pl_crossvalidate.KFoldTrainer.cross_validate` for fold-internal
+        validation (e.g., to use ``EarlyStopping(monitor="val_mse")``).  When
+        provided, ``limit_val_batches`` is **not** forced to ``0.0``.
+    datamodule
+        Optional Lightning DataModule forwarded to
+        :meth:`~pl_crossvalidate.KFoldTrainer.cross_validate`.  When a
+        ``datamodule`` is provided the ``train_dataloader`` built internally is
+        **not** used.
     trainer_kwargs
-        Additional arguments forwarded to :class:`~pl_crossvalidate.KFoldTrainer`.
+        Additional arguments forwarded to :class:`~pl_crossvalidate.KFoldTrainer`,
+        except for the special-case ``batch_size`` key.  If supplied,
+        ``batch_size`` is consumed here to set the batch size of the
+        ``DataLoader`` used for cross-validation and is **not** forwarded to
+        :class:`~pl_crossvalidate.KFoldTrainer`.  By default, full-batch loading
+        (``batch_size=len(dataset)``) is used for consistency with
+        :func:`torch_bsf.bezier_simplex.fit`.
+
         By default, ``limit_val_batches=0.0`` and ``num_sanity_val_steps=0`` are
         set so that no validation loop is run inside each fold — the
         cross-validation estimate is taken from ``test_mse`` (the held-out test
         subset produced by KFoldTrainer after each fold's ``fit`` call).
         If you need a validation loop within each fold (e.g., for
-        ``EarlyStopping``), pass ``limit_val_batches=1.0`` and supply
-        ``val_dataloaders`` via a custom
-        :class:`~pl_crossvalidate.KFoldDataModule`.
+        ``EarlyStopping``), pass ``val_dataloaders`` or ``datamodule``;
+        ``limit_val_batches`` will then be left at its default value of ``1.0``.
 
     Returns
     -------
@@ -51,10 +69,13 @@ def select_degree(
     batch_size = trainer_kwargs.pop("batch_size", len(dataset))
     train_dl = DataLoader(dataset, batch_size=batch_size)
 
-    # Disable validation monitoring during training; the CV estimate comes from
-    # test_step (the per-fold held-out subset produced by KFoldTrainer).
-    # Callers can override these defaults via trainer_kwargs.
-    kfold_kwargs: dict = {"limit_val_batches": 0.0, "num_sanity_val_steps": 0}
+    # Disable validation monitoring during training by default; the CV estimate
+    # comes from test_step (the per-fold held-out subset produced by KFoldTrainer).
+    # When the caller supplies val_dataloaders or a datamodule, respect those by
+    # not forcing limit_val_batches=0.0.
+    kfold_kwargs: dict = {"num_sanity_val_steps": 0}
+    if val_dataloaders is None and datamodule is None:
+        kfold_kwargs["limit_val_batches"] = 0.0
     kfold_kwargs.update(trainer_kwargs)
 
     best_degree = min_degree
@@ -69,7 +90,14 @@ def select_degree(
 
         # KFoldTrainer splits train_dl into per-fold train/test subsets;
         # test results (test_mse) give the unbiased cross-validation estimate.
-        stats = trainer.cross_validate(model, train_dataloader=train_dl)
+        cross_validate_kwargs: dict = {}
+        if datamodule is not None:
+            cross_validate_kwargs["datamodule"] = datamodule
+        else:
+            cross_validate_kwargs["train_dataloader"] = train_dl
+        if val_dataloaders is not None:
+            cross_validate_kwargs["val_dataloaders"] = val_dataloaders
+        stats = trainer.cross_validate(model, **cross_validate_kwargs)
 
         test_mses = [
             res["test_mse"]
