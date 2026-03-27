@@ -399,7 +399,7 @@ class BezierSimplex(L.LightningModule):
         self.log("train_mse", mse, sync_dist=True)
         return {"loss": loss, "log": tensorboard_logs}
 
-    def validation_step(self, batch, batch_idx) -> dict[str, Any]:
+    def validation_step(self, batch, batch_idx) -> None:
         # OPTIONAL
         x, y = batch
         y_hat = self.forward(x)
@@ -407,14 +407,7 @@ class BezierSimplex(L.LightningModule):
         mae = F.l1_loss(y_hat, y)
         self.log("val_mse", mse, sync_dist=True)
         self.log("val_mae", mae, sync_dist=True)
-        return {"val_loss": mse}
-
-    def validation_end(self, outputs) -> dict[str, Any]:
-        # OPTIONAL
-        avg_loss = torch.stack([x["val_loss"] for x in outputs]).mean()
-        tensorboard_logs = {"val_loss": avg_loss}
-        self.log("val_avg_mse", avg_loss, sync_dist=True)
-        return {"avg_val_loss": avg_loss, "log": tensorboard_logs}
+        self.log("val_avg_mse", mse, on_step=False, on_epoch=True, sync_dist=True)
 
     def test_step(self, batch, batch_idx) -> dict[str, Any]:
         # OPTIONAL
