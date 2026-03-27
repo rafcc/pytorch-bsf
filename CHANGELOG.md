@@ -1,5 +1,23 @@
 # Changelog
 
+## [0.15.1](https://github.com/opthub-org/pytorch-bsf/compare/v0.15.0...v0.15.1) (2026-03-27)
+
+
+### Bug Fixes
+
+* close file handles using context managers in save() and load() ([#264](https://github.com/opthub-org/pytorch-bsf/issues/264)) ([fad6dfb](https://github.com/opthub-org/pytorch-bsf/commit/fad6dfb739afdb8cbe6e214cffd7a59372245007))
+* replace deprecated `validation_end()` with Lightning v2 epoch logging ([#265](https://github.com/opthub-org/pytorch-bsf/issues/265)) ([aa2cfc9](https://github.com/opthub-org/pytorch-bsf/commit/aa2cfc9c339fb04f7591d0bca408369a143f0fe8))
+
+
+### Dependencies
+
+* pin major version constraints for core dependencies ([#268](https://github.com/opthub-org/pytorch-bsf/issues/268)) ([431cc24](https://github.com/opthub-org/pytorch-bsf/commit/431cc24f3fb30522abca48455dabcf42e6fb1f7c))
+
+
+### Documentation
+
+* add numpy-style docstrings to scaler classes in preprocessing.py ([#269](https://github.com/opthub-org/pytorch-bsf/issues/269)) ([8cd6d35](https://github.com/opthub-org/pytorch-bsf/commit/8cd6d35fa3428dd2946f9c56f0c1a800387b24f7))
+
 ## [0.15.0](https://github.com/opthub-org/pytorch-bsf/compare/v0.14.3...v0.15.0) (2026-03-26)
 
 
