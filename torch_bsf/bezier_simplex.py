@@ -672,11 +672,13 @@ def save(path: str | Path, data: BezierSimplex) -> None:
 
     elif path.suffix == ".json":
         dic = {index: value.tolist() for index, value in data.control_points.items()}
-        json.dump(dic, open(path, "w", encoding="utf-8"))
+        with open(path, "w", encoding="utf-8") as f:
+            json.dump(dic, f)
 
     elif path.suffix in (".yml", ".yaml"):
         dic = {to_parameterdict_key(index): value.tolist() for index, value in data.control_points.items()}
-        yaml.dump(dic, open(path, "w", encoding="utf-8"))
+        with open(path, "w", encoding="utf-8") as f:
+            yaml.dump(dic, f)
 
     else:
         raise ValueError(f"Unknown file type: {path}")
@@ -868,36 +870,40 @@ def load(
         raise ValueError(f"Unknown data type: {type(data)}")
 
     elif path.suffix == ".csv":
-        cpdata = {
-            to_parameterdict_key(row[0]): [float(v) for v in row[1:]]
-            for row in csv.reader(open(path, encoding="utf-8"))
-            if row
-        }
+        with open(path, encoding="utf-8") as f:
+            cpdata = {
+                to_parameterdict_key(row[0]): [float(v) for v in row[1:]]
+                for row in csv.reader(f)
+                if row
+            }
         validate_control_points(cpdata)
         return BezierSimplex(cpdata)
 
     elif path.suffix == ".tsv":
-        cpdata = {
-            to_parameterdict_key(row[0]): [float(v) for v in row[1:]]
-            for row in csv.reader(open(path, encoding="utf-8"), delimiter="\t")
-            if row
-        }
+        with open(path, encoding="utf-8") as f:
+            cpdata = {
+                to_parameterdict_key(row[0]): [float(v) for v in row[1:]]
+                for row in csv.reader(f, delimiter="\t")
+                if row
+            }
         validate_control_points(cpdata)
         return BezierSimplex(cpdata)
 
     elif path.suffix == ".json":
-        cpdata = {
-            to_parameterdict_key(index): [float(v) for v in value]
-            for index, value in json.load(open(path, encoding="utf-8")).items()
-        }
+        with open(path, encoding="utf-8") as f:
+            cpdata = {
+                to_parameterdict_key(index): [float(v) for v in value]
+                for index, value in json.load(f).items()
+            }
         validate_control_points(cpdata)
         return BezierSimplex(cpdata)
 
     elif path.suffix in (".yml", ".yaml"):
-        cpdata = {
-            to_parameterdict_key(index): [float(v) for v in value]
-            for index, value in yaml.safe_load(open(path, encoding="utf-8")).items()
-        }
+        with open(path, encoding="utf-8") as f:
+            cpdata = {
+                to_parameterdict_key(index): [float(v) for v in value]
+                for index, value in yaml.safe_load(f).items()
+            }
         validate_control_points(cpdata)
         return BezierSimplex(cpdata)
 
