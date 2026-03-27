@@ -1,5 +1,8 @@
 import pytest
 import torch
+import lightning.pytorch as L
+from lightning.pytorch.callbacks.early_stopping import EarlyStopping
+from torch.utils.data import DataLoader, TensorDataset
 
 import torch_bsf as tb
 import torch_bsf.bezier_simplex as tbbs
@@ -262,3 +265,58 @@ def test_forward_vectorized():
     xs_list = bs([[1.0, 0.0], [0.5, 0.5], [0.0, 1.0]])
     assert xs_tensor.shape == (3, 2)
     assert torch.allclose(xs_tensor, xs_list, atol=1e-6)
+
+
+def test_val_avg_mse_logged_at_epoch_end():
+    """val_avg_mse must appear in callback_metrics after validation under Lightning v2."""
+    ts = torch.tensor(
+        [
+            [1.0, 0.0],
+            [0.5, 0.5],
+            [0.0, 1.0],
+        ]
+    )
+    xs = 1 - ts * ts
+
+    train_dl = DataLoader(TensorDataset(ts, xs))
+    val_dl = DataLoader(TensorDataset(ts, xs))
+
+    bs = tbbs.randn(n_params=2, n_values=2, degree=1)
+    trainer = L.Trainer(
+        max_epochs=1,
+        enable_progress_bar=False,
+        logger=False,
+        enable_checkpointing=False,
+    )
+    trainer.fit(bs, train_dl, val_dl)
+
+    assert "val_avg_mse" in trainer.callback_metrics, (
+        "val_avg_mse should be logged at epoch end and available in callback_metrics"
+    )
+
+
+def test_early_stopping_monitors_val_avg_mse():
+    """EarlyStopping(monitor='val_avg_mse') must not raise under Lightning v2."""
+    ts = torch.tensor(
+        [
+            [1.0, 0.0],
+            [0.5, 0.5],
+            [0.0, 1.0],
+        ]
+    )
+    xs = 1 - ts * ts
+
+    train_dl = DataLoader(TensorDataset(ts, xs))
+    val_dl = DataLoader(TensorDataset(ts, xs))
+
+    bs = tbbs.randn(n_params=2, n_values=2, degree=1)
+    trainer = L.Trainer(
+        max_epochs=3,
+        enable_progress_bar=False,
+        logger=False,
+        enable_checkpointing=False,
+        callbacks=[EarlyStopping(monitor="val_avg_mse", patience=2)],
+    )
+    # Should complete without MisconfigurationException about missing monitor key
+    trainer.fit(bs, train_dl, val_dl)
+    assert "val_avg_mse" in trainer.callback_metrics
