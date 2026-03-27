@@ -36,7 +36,7 @@ def select_degree(
     from torch_bsf.bezier_simplex import randn
     # Manual setup since fit() or DataModule usually expects files
     # We can create a SimpleDataModule or use TensorDataset
-    from torch.utils.data import TensorDataset
+    from torch.utils.data import DataLoader, TensorDataset
 
     best_degree = min_degree
     best_mse = float('inf')
@@ -45,9 +45,9 @@ def select_degree(
         _logger.info("Checking degree %d...", d)
         
         # We need a model and data for KFoldTrainer
-        # KFoldTrainer works on a model and a datamodule
-        # But we can also pass a dataset
+        # KFoldTrainer works on a model and a dataloader
         dataset = TensorDataset(params, values)
+        train_dl = DataLoader(dataset, batch_size=len(params))
         
         # Setup dummy model to get dimensions
         model = randn(params.shape[1], values.shape[1], d)
@@ -58,7 +58,8 @@ def select_degree(
         )
         
         # We want to measure val_mse
-        stats = trainer.cross_validate(model, dataset=dataset)
+        # Use same data for validation (matches split_ratio=1.0 in BezierSimplexDataModule)
+        stats = trainer.cross_validate(model, train_dataloader=train_dl, val_dataloaders=train_dl)
         # stats is a list of results for each fold
         # Find the mean validation MSE
         val_mses = []
