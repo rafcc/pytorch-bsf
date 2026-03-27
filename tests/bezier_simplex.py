@@ -284,6 +284,9 @@ def test_val_avg_mse_logged_at_epoch_end():
     bs = tbbs.randn(n_params=2, n_values=2, degree=1)
     trainer = L.Trainer(
         max_epochs=1,
+        accelerator="cpu",
+        devices=1,
+        num_sanity_val_steps=0,
         enable_progress_bar=False,
         logger=False,
         enable_checkpointing=False,
@@ -312,6 +315,9 @@ def test_early_stopping_monitors_val_avg_mse():
     bs = tbbs.randn(n_params=2, n_values=2, degree=1)
     trainer = L.Trainer(
         max_epochs=3,
+        accelerator="cpu",
+        devices=1,
+        num_sanity_val_steps=0,
         enable_progress_bar=False,
         logger=False,
         enable_checkpointing=False,
