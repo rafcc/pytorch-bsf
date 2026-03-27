@@ -128,11 +128,11 @@ class StdScaler:
 
 
 class QuantileScaler:
-    """Quantile-based scaler that normalizes values using percentile clipping.
+    """Quantile-based scaler that normalizes values using percentile-based ranges.
 
     Values are scaled so that the ``q``-th percentile maps to 0 and the
-    ``(1 - q)``-th percentile maps to 1.  This makes the scaler robust to
-    outliers compared to :class:`MinMaxScaler`.
+    ``(1 - q)``-th percentile maps to 1, without clipping values to this range.
+    This makes the scaler robust to outliers compared to :class:`MinMaxScaler`.
 
     Attributes
     ----------
@@ -224,7 +224,7 @@ class NoneScaler:
         Parameters
         ----------
         values : torch.Tensor
-            Input tensor of shape ``(n_samples, n_features)``.
+            Input tensor of any shape.
 
         Returns
         -------
@@ -239,7 +239,7 @@ class NoneScaler:
         Parameters
         ----------
         values : torch.Tensor
-            Input tensor of shape ``(n_samples, n_features)``.
+            Input tensor of any shape.
 
         Returns
         -------
