@@ -876,6 +876,8 @@ def load(
                 for row in csv.reader(f)
                 if row
             }
+        if not cpdata:
+            raise ValueError(f"No control points found in '{path}'")
         validate_control_points(cpdata)
         return BezierSimplex(cpdata)
 
@@ -886,24 +888,36 @@ def load(
                 for row in csv.reader(f, delimiter="\t")
                 if row
             }
+        if not cpdata:
+            raise ValueError(f"No control points found in '{path}'")
         validate_control_points(cpdata)
         return BezierSimplex(cpdata)
 
     elif path.suffix == ".json":
         with open(path, encoding="utf-8") as f:
-            cpdata = {
-                to_parameterdict_key(index): [float(v) for v in value]
-                for index, value in json.load(f).items()
-            }
+            raw = json.load(f)
+        if not isinstance(raw, dict):
+            raise ValueError(
+                f"JSON file '{path}' must contain a mapping of control point keys to value lists, got {type(raw).__name__}"
+            )
+        cpdata = {
+            to_parameterdict_key(index): [float(v) for v in value]
+            for index, value in raw.items()
+        }
         validate_control_points(cpdata)
         return BezierSimplex(cpdata)
 
     elif path.suffix in (".yml", ".yaml"):
         with open(path, encoding="utf-8") as f:
-            cpdata = {
-                to_parameterdict_key(index): [float(v) for v in value]
-                for index, value in yaml.safe_load(f).items()
-            }
+            raw = yaml.safe_load(f)
+        if not isinstance(raw, dict):
+            raise ValueError(
+                f"YAML file '{path}' must contain a mapping of control point keys to value lists"
+            )
+        cpdata = {
+            to_parameterdict_key(index): [float(v) for v in value]
+            for index, value in raw.items()
+        }
         validate_control_points(cpdata)
         return BezierSimplex(cpdata)
 
