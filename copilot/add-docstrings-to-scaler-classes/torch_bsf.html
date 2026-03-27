@@ -1070,7 +1070,7 @@ and <a class="reference internal" href="#torch_bsf.preprocessing.NoneScaler.inve
 <dd><p>Return <code class="docutils literal notranslate"><span class="pre">values</span></code> unchanged.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>values</strong> (<a class="reference external" href="https://docs.pytorch.org/docs/stable/tensors.html#torch.Tensor" title="(in PyTorch v2.11)"><em>torch.Tensor</em></a>) – Input tensor of shape <code class="docutils literal notranslate"><span class="pre">(n_samples,</span> <span class="pre">n_features)</span></code>.</p>
+<dd class="field-odd"><p><strong>values</strong> (<a class="reference external" href="https://docs.pytorch.org/docs/stable/tensors.html#torch.Tensor" title="(in PyTorch v2.11)"><em>torch.Tensor</em></a>) – Input tensor of any shape.</p>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
 <dd class="field-even"><p>The same tensor as <code class="docutils literal notranslate"><span class="pre">values</span></code> without any modification.</p>
@@ -1087,7 +1087,7 @@ and <a class="reference internal" href="#torch_bsf.preprocessing.NoneScaler.inve
 <dd><p>Return <code class="docutils literal notranslate"><span class="pre">values</span></code> unchanged.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>values</strong> (<a class="reference external" href="https://docs.pytorch.org/docs/stable/tensors.html#torch.Tensor" title="(in PyTorch v2.11)"><em>torch.Tensor</em></a>) – Input tensor of shape <code class="docutils literal notranslate"><span class="pre">(n_samples,</span> <span class="pre">n_features)</span></code>.</p>
+<dd class="field-odd"><p><strong>values</strong> (<a class="reference external" href="https://docs.pytorch.org/docs/stable/tensors.html#torch.Tensor" title="(in PyTorch v2.11)"><em>torch.Tensor</em></a>) – Input tensor of any shape.</p>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
 <dd class="field-even"><p>The same tensor as <code class="docutils literal notranslate"><span class="pre">values</span></code> without any modification.</p>
@@ -1104,10 +1104,10 @@ and <a class="reference internal" href="#torch_bsf.preprocessing.NoneScaler.inve
 <dt class="sig sig-object py" id="torch_bsf.preprocessing.QuantileScaler">
 <em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">torch_bsf.preprocessing.</span></span><span class="sig-name descname"><span class="pre">QuantileScaler</span></span><a class="reference external" href="https://github.com/opthub-org/pytorch-bsf/blob/master/torch_bsf/preprocessing.py#L130-L200"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#torch_bsf.preprocessing.QuantileScaler" title="Link to this definition"></a></dt>
 <dd><p>Bases: <a class="reference external" href="https://docs.python.org/3/library/functions.html#object" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></a></p>
-<p>Quantile-based scaler that normalizes values using percentile clipping.</p>
+<p>Quantile-based scaler that normalizes values using percentile-based ranges.</p>
 <p>Values are scaled so that the <code class="docutils literal notranslate"><span class="pre">q</span></code>-th percentile maps to 0 and the
-<code class="docutils literal notranslate"><span class="pre">(1</span> <span class="pre">-</span> <span class="pre">q)</span></code>-th percentile maps to 1.  This makes the scaler robust to
-outliers compared to <a class="reference internal" href="#torch_bsf.preprocessing.MinMaxScaler" title="torch_bsf.preprocessing.MinMaxScaler"><code class="xref py py-class docutils literal notranslate"><span class="pre">MinMaxScaler</span></code></a>.</p>
+<code class="docutils literal notranslate"><span class="pre">(1</span> <span class="pre">-</span> <span class="pre">q)</span></code>-th percentile maps to 1, without clipping values to this range.
+This makes the scaler robust to outliers compared to <a class="reference internal" href="#torch_bsf.preprocessing.MinMaxScaler" title="torch_bsf.preprocessing.MinMaxScaler"><code class="xref py py-class docutils literal notranslate"><span class="pre">MinMaxScaler</span></code></a>.</p>
 <dl class="py attribute">
 <dt class="sig sig-object py" id="torch_bsf.preprocessing.QuantileScaler.q">
 <span class="sig-name descname"><span class="pre">q</span></span><a class="reference external" href="https://github.com/opthub-org/pytorch-bsf/blob/master/torch_bsf/preprocessing.py"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#torch_bsf.preprocessing.QuantileScaler.q" title="Link to this definition"></a></dt>
