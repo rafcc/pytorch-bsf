@@ -1,0 +1,115 @@
+[build-system]
+requires = ["setuptools>=61", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "pytorch-bsf"
+dynamic = ["version"]
+description = "PyTorch implementation of Bezier simplex fitting"
+readme = {file = "README.md", content-type = "text/markdown"}
+license = {file = "LICENSE"}
+authors = [
+  {name = "OptHub Inc. and FUJITSU LIMITED", email = "hmkz@s101.xrea.com"},
+]
+requires-python = ">=3.10"
+classifiers = [
+  "Development Status :: 3 - Alpha",
+  "Environment :: Console",
+  "Intended Audience :: Developers",
+  "Intended Audience :: Education",
+  "Intended Audience :: Science/Research",
+  "License :: OSI Approved :: MIT License",
+  "Operating System :: POSIX",
+  "Programming Language :: Python",
+  "Programming Language :: Python :: 3.10",
+  "Programming Language :: Python :: 3.11",
+  "Programming Language :: Python :: 3.12",
+  "Programming Language :: Python :: 3.13",
+  "Programming Language :: Python :: 3.14",
+  "Topic :: Scientific/Engineering",
+  "Topic :: Scientific/Engineering :: Artificial Intelligence",
+  "Topic :: Scientific/Engineering :: Mathematics",
+  "Topic :: Software Development",
+  "Topic :: Software Development :: Libraries",
+  "Topic :: Software Development :: Libraries :: Python Modules",
+]
+dependencies = [
+  "setuptools>=21.0.0",
+  "torch>=2,<3",
+  "lightning>=2,<3",
+  "pl-crossvalidate>=0.1,<1",
+  "protobuf>=6,<7",
+  "mlflow>=3,<4",
+  # hotfix for mlflow's starlette 1.0.0 issue
+  "starlette<1",
+  "jsonschema>=4,<5",
+  "PyYAML>=6,<7",
+]
+
+[project.urls]
+Homepage = "https://github.com/opthub-org/pytorch-bsf"
+
+[project.optional-dependencies]
+sampling = [
+  "scipy",
+]
+sklearn = [
+  "scikit-learn",
+]
+plot = [
+  "matplotlib",
+  "scipy",
+]
+all = [
+  "scipy",
+  "scikit-learn",
+  "matplotlib",
+]
+develop = [
+  "isort",
+  "black",
+  "flake8",
+  "tox",
+  "pytest",
+  "pytest-cov",
+  "pytest-randomly",
+  "mypy",
+  "types-jsonschema",
+  "types-PyYAML",
+  "types-setuptools",
+]
+
+[tool.setuptools]
+include-package-data = true
+zip-safe = false
+
+[tool.setuptools.dynamic]
+version = {attr = "torch_bsf.__version__"}
+
+[tool.setuptools.packages.find]
+exclude = ["build", "dist", "docs"]
+
+[tool.pytest.ini_options]
+addopts = """
+  --verbose
+  --assert=plain
+  --durations=0
+  --cov=torch_bsf
+  --cov-report=term-missing
+  --cov-report=html
+  --cov-report=xml
+  --doctest-modules
+  --junit-xml=pytest.xml
+"""
+testpaths = ["tests"]
+python_files = ["*.py"]
+python_functions = ["test_*", "_test_*"]
+
+[tool.mypy]
+python_version = "3.10"
+warn_return_any = true
+warn_unused_configs = true
+
+[[tool.mypy.overrides]]
+module = "mlflow.*"
+ignore_missing_imports = true
