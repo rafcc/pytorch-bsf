@@ -8,8 +8,8 @@ dependencies:
 - "pytorch>=2,<3"
 - "lightning>=2,<3"
 - "torchmetrics>=1,<2"
-- "mlflow>=2,<4"
-- "starlette<1.0.0"  # hotfix for mlflow's starlette 1.0.0 issue
+- "mlflow>=2,<3"
+- "starlette<1"  # hotfix for mlflow's starlette 1.0.0 issue
 - "jsonschema>=4,<5"
 - "pyyaml>=6,<7"
 - "protobuf>=7,<8"
