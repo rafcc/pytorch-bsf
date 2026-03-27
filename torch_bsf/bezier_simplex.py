@@ -648,28 +648,31 @@ def save(path: str | Path, data: BezierSimplex) -> None:
 
     """
     path = Path(path)
-    if path.suffix == ".pt":
+    suffix = path.suffix.lower()
+    if suffix == ".pt":
         torch.save(data, path)
 
-    elif path.suffix == ".csv":
-        with open(path, "w", encoding="utf-8") as f:
+    elif suffix == ".csv":
+        with open(path, "w", encoding="utf-8", newline="") as f:
             writer = csv.writer(f)
             for index, value in data.control_points.items():
                 writer.writerow([index] + value.tolist())
 
-    elif path.suffix == ".tsv":
-        with open(path, "w", encoding="utf-8") as f:
+    elif suffix == ".tsv":
+        with open(path, "w", encoding="utf-8", newline="") as f:
             writer = csv.writer(f, delimiter="\t")
             for index, value in data.control_points.items():
                 writer.writerow([index] + value.tolist())
 
-    elif path.suffix == ".json":
+    elif suffix == ".json":
         dic = {index: value.tolist() for index, value in data.control_points.items()}
-        json.dump(dic, open(path, "w", encoding="utf-8"))
+        with open(path, "w", encoding="utf-8") as f:
+            json.dump(dic, f)
 
-    elif path.suffix in (".yml", ".yaml"):
+    elif suffix in (".yml", ".yaml"):
         dic = {to_parameterdict_key(index): value.tolist() for index, value in data.control_points.items()}
-        yaml.dump(dic, open(path, "w", encoding="utf-8"))
+        with open(path, "w", encoding="utf-8") as f:
+            yaml.dump(dic, f)
 
     else:
         raise ValueError(f"Unknown file type: {path}")
@@ -815,7 +818,8 @@ def load(
     """
     cpdata: dict[str, list[float]]
     path = Path(path)
-    if path.suffix == ".pt":
+    suffix = path.suffix.lower()
+    if suffix == ".pt":
         has_safe_globals = hasattr(torch.serialization, "safe_globals")
 
         kwargs: dict[str, Any] = {}
@@ -860,36 +864,58 @@ def load(
             return data
         raise ValueError(f"Unknown data type: {type(data)}")
 
-    elif path.suffix == ".csv":
-        cpdata = {
-            to_parameterdict_key(row[0]): [float(v) for v in row[1:]]
-            for row in csv.reader(open(path, encoding="utf-8"))
-            if row
-        }
+    elif suffix == ".csv":
+        with open(path, encoding="utf-8", newline="") as f:
+            cpdata = {
+                to_parameterdict_key(row[0]): [float(v) for v in row[1:]]
+                for row in csv.reader(f)
+                if row
+            }
+        if not cpdata:
+            raise ValueError(f"No control points found in '{path}'")
         validate_control_points(cpdata)
         return BezierSimplex(cpdata)
 
-    elif path.suffix == ".tsv":
-        cpdata = {
-            to_parameterdict_key(row[0]): [float(v) for v in row[1:]]
-            for row in csv.reader(open(path, encoding="utf-8"), delimiter="\t")
-            if row
-        }
+    elif suffix == ".tsv":
+        with open(path, encoding="utf-8", newline="") as f:
+            cpdata = {
+                to_parameterdict_key(row[0]): [float(v) for v in row[1:]]
+                for row in csv.reader(f, delimiter="\t")
+                if row
+            }
+        if not cpdata:
+            raise ValueError(f"No control points found in '{path}'")
         validate_control_points(cpdata)
         return BezierSimplex(cpdata)
 
-    elif path.suffix == ".json":
+    elif suffix == ".json":
+        with open(path, encoding="utf-8") as f:
+            raw = json.load(f)
+        if not isinstance(raw, dict):
+            raise ValueError(
+                f"JSON file '{path}' must contain a mapping of control point keys to value lists, got {type(raw).__name__}"
+            )
+        if not raw:
+            raise ValueError(f"No control points found in '{path}'")
         cpdata = {
             to_parameterdict_key(index): [float(v) for v in value]
-            for index, value in json.load(open(path, encoding="utf-8")).items()
+            for index, value in raw.items()
         }
         validate_control_points(cpdata)
         return BezierSimplex(cpdata)
 
-    elif path.suffix in (".yml", ".yaml"):
+    elif suffix in (".yml", ".yaml"):
+        with open(path, encoding="utf-8") as f:
+            raw = yaml.safe_load(f)
+        if not isinstance(raw, dict):
+            raise ValueError(
+                f"YAML file '{path}' must contain a mapping of control point keys to value lists, got {type(raw).__name__}"
+            )
+        if not raw:
+            raise ValueError(f"No control points found in '{path}'")
         cpdata = {
             to_parameterdict_key(index): [float(v) for v in value]
-            for index, value in yaml.safe_load(open(path, encoding="utf-8")).items()
+            for index, value in raw.items()
         }
         validate_control_points(cpdata)
         return BezierSimplex(cpdata)

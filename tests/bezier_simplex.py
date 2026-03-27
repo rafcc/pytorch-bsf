@@ -1,3 +1,6 @@
+import shutil
+from pathlib import Path
+
 import pytest
 import torch
 import lightning.pytorch as L
@@ -7,6 +10,7 @@ from torch.utils.data import DataLoader, TensorDataset
 import torch_bsf as tb
 import torch_bsf.bezier_simplex as tbbs
 
+_DATA_DIR = Path(__file__).parent / "data"
 
 @pytest.mark.parametrize(
     "n_params, n_values, degree",
@@ -265,6 +269,148 @@ def test_forward_vectorized():
     xs_list = bs([[1.0, 0.0], [0.5, 0.5], [0.0, 1.0]])
     assert xs_tensor.shape == (3, 2)
     assert torch.allclose(xs_tensor, xs_list, atol=1e-6)
+
+
+@pytest.mark.parametrize("ext", [".csv", ".CSV", ".Csv"])
+def test_load_case_insensitive_csv(tmp_path, ext):
+    dest = tmp_path / f"model{ext}"
+    shutil.copy(_DATA_DIR / "bezier_simplex.csv", dest)
+    bs = tbbs.load(str(dest))
+    assert isinstance(bs, tbbs.BezierSimplex)
+
+
+@pytest.mark.parametrize("ext", [".json", ".JSON", ".Json"])
+def test_load_case_insensitive_json(tmp_path, ext):
+    dest = tmp_path / f"model{ext}"
+    shutil.copy(_DATA_DIR / "bezier_simplex.json", dest)
+    bs = tbbs.load(str(dest))
+    assert isinstance(bs, tbbs.BezierSimplex)
+
+
+@pytest.mark.parametrize("ext", [".yml", ".YML", ".yaml", ".YAML"])
+def test_load_case_insensitive_yaml(tmp_path, ext):
+    dest = tmp_path / f"model{ext}"
+    shutil.copy(_DATA_DIR / "bezier_simplex.yml", dest)
+    bs = tbbs.load(str(dest))
+    assert isinstance(bs, tbbs.BezierSimplex)
+
+
+@pytest.mark.parametrize("ext", [".csv", ".CSV", ".Csv"])
+def test_save_case_insensitive_csv(tmp_path, ext):
+    bs = tbbs.load(str(_DATA_DIR / "bezier_simplex.csv"))
+    dest = tmp_path / f"model{ext}"
+    tbbs.save(str(dest), bs)
+    assert dest.exists()
+    bs2 = tbbs.load(str(dest))
+    assert isinstance(bs2, tbbs.BezierSimplex)
+
+
+@pytest.mark.parametrize("ext", [".json", ".JSON", ".Json"])
+def test_save_case_insensitive_json(tmp_path, ext):
+    bs = tbbs.load(str(_DATA_DIR / "bezier_simplex.json"))
+    dest = tmp_path / f"model{ext}"
+    tbbs.save(str(dest), bs)
+    assert dest.exists()
+    bs2 = tbbs.load(str(dest))
+    assert isinstance(bs2, tbbs.BezierSimplex)
+
+
+@pytest.mark.parametrize("ext", [".yml", ".YML", ".Yml", ".yaml", ".YAML", ".Yaml"])
+def test_save_case_insensitive_yaml(tmp_path, ext):
+    bs = tbbs.load(str(_DATA_DIR / "bezier_simplex.yml"))
+    dest = tmp_path / f"model{ext}"
+    tbbs.save(str(dest), bs)
+    assert dest.exists()
+    bs2 = tbbs.load(str(dest))
+    assert isinstance(bs2, tbbs.BezierSimplex)
+
+
+@pytest.mark.parametrize("ext", [".tsv", ".TSV", ".Tsv"])
+def test_load_case_insensitive_tsv(tmp_path, ext):
+    dest = tmp_path / f"model{ext}"
+    shutil.copy(_DATA_DIR / "bezier_simplex.tsv", dest)
+    bs = tbbs.load(str(dest))
+    assert isinstance(bs, tbbs.BezierSimplex)
+
+
+@pytest.mark.parametrize("ext", [".tsv", ".TSV", ".Tsv"])
+def test_save_case_insensitive_tsv(tmp_path, ext):
+    bs = tbbs.load(str(_DATA_DIR / "bezier_simplex.tsv"))
+    dest = tmp_path / f"model{ext}"
+    tbbs.save(str(dest), bs)
+    assert dest.exists()
+    bs2 = tbbs.load(str(dest))
+    assert isinstance(bs2, tbbs.BezierSimplex)
+
+
+@pytest.mark.parametrize("ext", [".pt", ".PT", ".Pt"])
+def test_load_case_insensitive_pt(tmp_path, ext):
+    # Create a real .pt file via save() to avoid relying on a committed fixture
+    bs = tbbs.randn(n_params=2, n_values=2, degree=1)
+    src = tmp_path / "source_model.pt"
+    tbbs.save(str(src), bs)
+    dest = tmp_path / f"model{ext}"
+    shutil.copy(src, dest)
+    bs2 = tbbs.load(str(dest))
+    assert isinstance(bs2, tbbs.BezierSimplex)
+
+
+@pytest.mark.parametrize("ext", [".pt", ".PT", ".Pt"])
+def test_save_case_insensitive_pt(tmp_path, ext):
+    bs = tbbs.randn(n_params=2, n_values=2, degree=1)
+    dest = tmp_path / f"model{ext}"
+    tbbs.save(str(dest), bs)
+    assert dest.exists()
+    bs2 = tbbs.load(str(dest))
+    assert isinstance(bs2, tbbs.BezierSimplex)
+
+
+@pytest.mark.parametrize("content,ext", [
+    ("", ".csv"),
+    ("\n\n", ".csv"),
+    ("", ".tsv"),
+    ("\n\n", ".tsv"),
+])
+def test_load_empty_csv_tsv_raises(tmp_path, content, ext):
+    f = tmp_path / f"empty{ext}"
+    f.write_text(content, encoding="utf-8")
+    with pytest.raises(ValueError, match="No control points found"):
+        tbbs.load(str(f))
+
+
+def test_load_empty_json_raises(tmp_path):
+    f = tmp_path / "empty.json"
+    f.write_text("{}", encoding="utf-8")
+    with pytest.raises(ValueError, match="No control points found"):
+        tbbs.load(str(f))
+
+
+def test_load_non_dict_json_raises(tmp_path):
+    f = tmp_path / "bad.json"
+    f.write_text("[1, 2, 3]", encoding="utf-8")
+    with pytest.raises(ValueError, match="must contain a mapping"):
+        tbbs.load(str(f))
+
+
+def test_load_empty_yaml_raises(tmp_path):
+    f = tmp_path / "empty.yaml"
+    f.write_text("{}\n", encoding="utf-8")
+    with pytest.raises(ValueError, match="No control points found"):
+        tbbs.load(str(f))
+
+
+def test_load_null_yaml_raises(tmp_path):
+    f = tmp_path / "null.yaml"
+    f.write_text("", encoding="utf-8")
+    with pytest.raises(ValueError, match="must contain a mapping"):
+        tbbs.load(str(f))
+
+
+def test_load_non_dict_yaml_raises(tmp_path):
+    f = tmp_path / "bad.yaml"
+    f.write_text("- 1\n- 2\n", encoding="utf-8")
+    with pytest.raises(ValueError, match="must contain a mapping"):
+        tbbs.load(str(f))
 
 
 def test_val_avg_mse_logged_at_epoch_end():
