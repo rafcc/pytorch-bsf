@@ -7,7 +7,6 @@ dependencies:
 - python=3.14
 - "pytorch>=2,<3"
 - "lightning>=2,<3"
-- "torchmetrics>=1,<2"
 - "mlflow>=2,<3"
 - "starlette<1"  # hotfix for mlflow's starlette 1.0.0 issue
 - "jsonschema>=4,<5"
