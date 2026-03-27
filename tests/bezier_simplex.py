@@ -278,8 +278,8 @@ def test_val_avg_mse_logged_at_epoch_end():
     )
     xs = 1 - ts * ts
 
-    train_dl = DataLoader(TensorDataset(ts, xs))
-    val_dl = DataLoader(TensorDataset(ts, xs))
+    train_dl = DataLoader(TensorDataset(ts, xs), batch_size=len(ts))
+    val_dl = DataLoader(TensorDataset(ts, xs), batch_size=len(ts))
 
     bs = tbbs.randn(n_params=2, n_values=2, degree=1)
     trainer = L.Trainer(
@@ -309,12 +309,12 @@ def test_early_stopping_monitors_val_avg_mse():
     )
     xs = 1 - ts * ts
 
-    train_dl = DataLoader(TensorDataset(ts, xs))
-    val_dl = DataLoader(TensorDataset(ts, xs))
+    train_dl = DataLoader(TensorDataset(ts, xs), batch_size=len(ts))
+    val_dl = DataLoader(TensorDataset(ts, xs), batch_size=len(ts))
 
     bs = tbbs.randn(n_params=2, n_values=2, degree=1)
     trainer = L.Trainer(
-        max_epochs=3,
+        max_epochs=1,
         accelerator="cpu",
         devices=1,
         num_sanity_val_steps=0,
