@@ -870,7 +870,7 @@ def load(
         raise ValueError(f"Unknown data type: {type(data)}")
 
     elif path.suffix == ".csv":
-        with open(path, encoding="utf-8") as f:
+        with open(path, encoding="utf-8", newline="") as f:
             cpdata = {
                 to_parameterdict_key(row[0]): [float(v) for v in row[1:]]
                 for row in csv.reader(f)
@@ -880,7 +880,7 @@ def load(
         return BezierSimplex(cpdata)
 
     elif path.suffix == ".tsv":
-        with open(path, encoding="utf-8") as f:
+        with open(path, encoding="utf-8", newline="") as f:
             cpdata = {
                 to_parameterdict_key(row[0]): [float(v) for v in row[1:]]
                 for row in csv.reader(f, delimiter="\t")
