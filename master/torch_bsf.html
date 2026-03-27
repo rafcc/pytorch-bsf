@@ -960,119 +960,336 @@ control points in canonical simplex-index order.</p>
 <span id="torch-bsf-preprocessing-module"></span><h2>torch_bsf.preprocessing module<a class="headerlink" href="#module-torch_bsf.preprocessing" title="Link to this heading"></a></h2>
 <dl class="py class">
 <dt class="sig sig-object py" id="torch_bsf.preprocessing.MinMaxScaler">
-<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">torch_bsf.preprocessing.</span></span><span class="sig-name descname"><span class="pre">MinMaxScaler</span></span><a class="reference external" href="https://github.com/opthub-org/pytorch-bsf/blob/master/torch_bsf/preprocessing.py#L4-L21"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#torch_bsf.preprocessing.MinMaxScaler" title="Link to this definition"></a></dt>
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">torch_bsf.preprocessing.</span></span><span class="sig-name descname"><span class="pre">MinMaxScaler</span></span><a class="reference external" href="https://github.com/opthub-org/pytorch-bsf/blob/master/torch_bsf/preprocessing.py#L4-L66"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#torch_bsf.preprocessing.MinMaxScaler" title="Link to this definition"></a></dt>
 <dd><p>Bases: <a class="reference external" href="https://docs.python.org/3/library/functions.html#object" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></a></p>
-<dl class="py method">
-<dt class="sig sig-object py" id="torch_bsf.preprocessing.MinMaxScaler.fit">
-<span class="sig-name descname"><span class="pre">fit</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">values</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.pytorch.org/docs/stable/tensors.html#torch.Tensor" title="(in PyTorch v2.11)"><span class="pre">Tensor</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.14)"><span class="pre">None</span></a></span></span><a class="reference external" href="https://github.com/opthub-org/pytorch-bsf/blob/master/torch_bsf/preprocessing.py#L8-L14"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#torch_bsf.preprocessing.MinMaxScaler.fit" title="Link to this definition"></a></dt>
-<dd></dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="torch_bsf.preprocessing.MinMaxScaler.fit_transform">
-<span class="sig-name descname"><span class="pre">fit_transform</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">values</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.pytorch.org/docs/stable/tensors.html#torch.Tensor" title="(in PyTorch v2.11)"><span class="pre">Tensor</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.pytorch.org/docs/stable/tensors.html#torch.Tensor" title="(in PyTorch v2.11)"><span class="pre">Tensor</span></a></span></span><a class="reference external" href="https://github.com/opthub-org/pytorch-bsf/blob/master/torch_bsf/preprocessing.py#L16-L18"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#torch_bsf.preprocessing.MinMaxScaler.fit_transform" title="Link to this definition"></a></dt>
-<dd></dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="torch_bsf.preprocessing.MinMaxScaler.inverse_transform">
-<span class="sig-name descname"><span class="pre">inverse_transform</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">values</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.pytorch.org/docs/stable/tensors.html#torch.Tensor" title="(in PyTorch v2.11)"><span class="pre">Tensor</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.pytorch.org/docs/stable/tensors.html#torch.Tensor" title="(in PyTorch v2.11)"><span class="pre">Tensor</span></a></span></span><a class="reference external" href="https://github.com/opthub-org/pytorch-bsf/blob/master/torch_bsf/preprocessing.py#L20-L21"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#torch_bsf.preprocessing.MinMaxScaler.inverse_transform" title="Link to this definition"></a></dt>
-<dd></dd></dl>
-
+<p>Min-max scaler that normalizes values to the [0, 1] range.</p>
 <dl class="py attribute">
 <dt class="sig sig-object py" id="torch_bsf.preprocessing.MinMaxScaler.mins">
-<span class="sig-name descname"><span class="pre">mins</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.pytorch.org/docs/stable/tensors.html#torch.Tensor" title="(in PyTorch v2.11)"><span class="pre">Tensor</span></a></em><a class="reference external" href="https://github.com/opthub-org/pytorch-bsf/blob/master/torch_bsf/preprocessing.py"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#torch_bsf.preprocessing.MinMaxScaler.mins" title="Link to this definition"></a></dt>
-<dd></dd></dl>
+<span class="sig-name descname"><span class="pre">mins</span></span><a class="reference external" href="https://github.com/opthub-org/pytorch-bsf/blob/master/torch_bsf/preprocessing.py"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#torch_bsf.preprocessing.MinMaxScaler.mins" title="Link to this definition"></a></dt>
+<dd><p>Minimum values per feature dimension.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.pytorch.org/docs/stable/tensors.html#torch.Tensor" title="(in PyTorch v2.11)">torch.Tensor</a></p>
+</dd>
+</dl>
+</dd></dl>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="torch_bsf.preprocessing.MinMaxScaler.scales">
-<span class="sig-name descname"><span class="pre">scales</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.pytorch.org/docs/stable/tensors.html#torch.Tensor" title="(in PyTorch v2.11)"><span class="pre">Tensor</span></a></em><a class="reference external" href="https://github.com/opthub-org/pytorch-bsf/blob/master/torch_bsf/preprocessing.py"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#torch_bsf.preprocessing.MinMaxScaler.scales" title="Link to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">scales</span></span><a class="reference external" href="https://github.com/opthub-org/pytorch-bsf/blob/master/torch_bsf/preprocessing.py"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#torch_bsf.preprocessing.MinMaxScaler.scales" title="Link to this definition"></a></dt>
+<dd><p>Scale factors (max - min) per feature dimension.
+Dimensions where max equals min are set to 1 to avoid division by zero.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.pytorch.org/docs/stable/tensors.html#torch.Tensor" title="(in PyTorch v2.11)">torch.Tensor</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="torch_bsf.preprocessing.MinMaxScaler.fit">
+<span class="sig-name descname"><span class="pre">fit</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">values</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.pytorch.org/docs/stable/tensors.html#torch.Tensor" title="(in PyTorch v2.11)"><span class="pre">Tensor</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.14)"><span class="pre">None</span></a></span></span><a class="reference external" href="https://github.com/opthub-org/pytorch-bsf/blob/master/torch_bsf/preprocessing.py#L19-L34"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#torch_bsf.preprocessing.MinMaxScaler.fit" title="Link to this definition"></a></dt>
+<dd><p>Fit the scaler to the data.</p>
+<p>Computes the per-feature minimum and scale (max - min) from <code class="docutils literal notranslate"><span class="pre">values</span></code>.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>values</strong> (<a class="reference external" href="https://docs.pytorch.org/docs/stable/tensors.html#torch.Tensor" title="(in PyTorch v2.11)"><em>torch.Tensor</em></a>) – Input tensor of shape <code class="docutils literal notranslate"><span class="pre">(n_samples,</span> <span class="pre">n_features)</span></code>.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="torch_bsf.preprocessing.MinMaxScaler.fit_transform">
+<span class="sig-name descname"><span class="pre">fit_transform</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">values</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.pytorch.org/docs/stable/tensors.html#torch.Tensor" title="(in PyTorch v2.11)"><span class="pre">Tensor</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.pytorch.org/docs/stable/tensors.html#torch.Tensor" title="(in PyTorch v2.11)"><span class="pre">Tensor</span></a></span></span><a class="reference external" href="https://github.com/opthub-org/pytorch-bsf/blob/master/torch_bsf/preprocessing.py#L36-L51"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#torch_bsf.preprocessing.MinMaxScaler.fit_transform" title="Link to this definition"></a></dt>
+<dd><p>Fit the scaler to the data and return the normalized tensor.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>values</strong> (<a class="reference external" href="https://docs.pytorch.org/docs/stable/tensors.html#torch.Tensor" title="(in PyTorch v2.11)"><em>torch.Tensor</em></a>) – Input tensor of shape <code class="docutils literal notranslate"><span class="pre">(n_samples,</span> <span class="pre">n_features)</span></code>.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Normalized tensor of the same shape as <code class="docutils literal notranslate"><span class="pre">values</span></code>,
+with each feature scaled to the [0, 1] range.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.pytorch.org/docs/stable/tensors.html#torch.Tensor" title="(in PyTorch v2.11)">torch.Tensor</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="torch_bsf.preprocessing.MinMaxScaler.inverse_transform">
+<span class="sig-name descname"><span class="pre">inverse_transform</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">values</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.pytorch.org/docs/stable/tensors.html#torch.Tensor" title="(in PyTorch v2.11)"><span class="pre">Tensor</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.pytorch.org/docs/stable/tensors.html#torch.Tensor" title="(in PyTorch v2.11)"><span class="pre">Tensor</span></a></span></span><a class="reference external" href="https://github.com/opthub-org/pytorch-bsf/blob/master/torch_bsf/preprocessing.py#L53-L66"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#torch_bsf.preprocessing.MinMaxScaler.inverse_transform" title="Link to this definition"></a></dt>
+<dd><p>Reverse the normalization applied by <a class="reference internal" href="#torch_bsf.preprocessing.MinMaxScaler.fit_transform" title="torch_bsf.preprocessing.MinMaxScaler.fit_transform"><code class="xref py py-meth docutils literal notranslate"><span class="pre">fit_transform()</span></code></a>.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>values</strong> (<a class="reference external" href="https://docs.pytorch.org/docs/stable/tensors.html#torch.Tensor" title="(in PyTorch v2.11)"><em>torch.Tensor</em></a>) – Normalized tensor of shape <code class="docutils literal notranslate"><span class="pre">(n_samples,</span> <span class="pre">n_features)</span></code>.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Tensor rescaled back to the original value range.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.pytorch.org/docs/stable/tensors.html#torch.Tensor" title="(in PyTorch v2.11)">torch.Tensor</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="id0">
+<span class="sig-name descname"><span class="pre">mins</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.pytorch.org/docs/stable/tensors.html#torch.Tensor" title="(in PyTorch v2.11)"><span class="pre">Tensor</span></a></em><a class="reference external" href="https://github.com/opthub-org/pytorch-bsf/blob/master/torch_bsf/preprocessing.py"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#id0" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="id1">
+<span class="sig-name descname"><span class="pre">scales</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.pytorch.org/docs/stable/tensors.html#torch.Tensor" title="(in PyTorch v2.11)"><span class="pre">Tensor</span></a></em><a class="reference external" href="https://github.com/opthub-org/pytorch-bsf/blob/master/torch_bsf/preprocessing.py"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#id1" title="Link to this definition"></a></dt>
 <dd></dd></dl>
 
 </dd></dl>
 
 <dl class="py class">
 <dt class="sig sig-object py" id="torch_bsf.preprocessing.NoneScaler">
-<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">torch_bsf.preprocessing.</span></span><span class="sig-name descname"><span class="pre">NoneScaler</span></span><a class="reference external" href="https://github.com/opthub-org/pytorch-bsf/blob/master/torch_bsf/preprocessing.py#L61-L69"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#torch_bsf.preprocessing.NoneScaler" title="Link to this definition"></a></dt>
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">torch_bsf.preprocessing.</span></span><span class="sig-name descname"><span class="pre">NoneScaler</span></span><a class="reference external" href="https://github.com/opthub-org/pytorch-bsf/blob/master/torch_bsf/preprocessing.py#L203-L249"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#torch_bsf.preprocessing.NoneScaler" title="Link to this definition"></a></dt>
 <dd><p>Bases: <a class="reference external" href="https://docs.python.org/3/library/functions.html#object" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></a></p>
+<p>Pass-through scaler that leaves values unchanged.</p>
+<p>Useful as a no-op placeholder when normalization is not required,
+while still providing the same <a class="reference internal" href="#torch_bsf.preprocessing.NoneScaler.fit" title="torch_bsf.preprocessing.NoneScaler.fit"><code class="xref py py-meth docutils literal notranslate"><span class="pre">fit()</span></code></a>, <a class="reference internal" href="#torch_bsf.preprocessing.NoneScaler.fit_transform" title="torch_bsf.preprocessing.NoneScaler.fit_transform"><code class="xref py py-meth docutils literal notranslate"><span class="pre">fit_transform()</span></code></a>,
+and <a class="reference internal" href="#torch_bsf.preprocessing.NoneScaler.inverse_transform" title="torch_bsf.preprocessing.NoneScaler.inverse_transform"><code class="xref py py-meth docutils literal notranslate"><span class="pre">inverse_transform()</span></code></a> interface as the other scalers.</p>
 <dl class="py method">
 <dt class="sig sig-object py" id="torch_bsf.preprocessing.NoneScaler.fit">
-<span class="sig-name descname"><span class="pre">fit</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">values</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.pytorch.org/docs/stable/tensors.html#torch.Tensor" title="(in PyTorch v2.11)"><span class="pre">Tensor</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.14)"><span class="pre">None</span></a></span></span><a class="reference external" href="https://github.com/opthub-org/pytorch-bsf/blob/master/torch_bsf/preprocessing.py#L62-L63"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#torch_bsf.preprocessing.NoneScaler.fit" title="Link to this definition"></a></dt>
-<dd></dd></dl>
+<span class="sig-name descname"><span class="pre">fit</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">values</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.pytorch.org/docs/stable/tensors.html#torch.Tensor" title="(in PyTorch v2.11)"><span class="pre">Tensor</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.14)"><span class="pre">None</span></a></span></span><a class="reference external" href="https://github.com/opthub-org/pytorch-bsf/blob/master/torch_bsf/preprocessing.py#L211-L219"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#torch_bsf.preprocessing.NoneScaler.fit" title="Link to this definition"></a></dt>
+<dd><p>No-op fit method included for API compatibility.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>values</strong> (<a class="reference external" href="https://docs.pytorch.org/docs/stable/tensors.html#torch.Tensor" title="(in PyTorch v2.11)"><em>torch.Tensor</em></a>) – Input tensor (ignored).</p>
+</dd>
+</dl>
+</dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="torch_bsf.preprocessing.NoneScaler.fit_transform">
-<span class="sig-name descname"><span class="pre">fit_transform</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">values</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.pytorch.org/docs/stable/tensors.html#torch.Tensor" title="(in PyTorch v2.11)"><span class="pre">Tensor</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.pytorch.org/docs/stable/tensors.html#torch.Tensor" title="(in PyTorch v2.11)"><span class="pre">Tensor</span></a></span></span><a class="reference external" href="https://github.com/opthub-org/pytorch-bsf/blob/master/torch_bsf/preprocessing.py#L65-L66"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#torch_bsf.preprocessing.NoneScaler.fit_transform" title="Link to this definition"></a></dt>
-<dd></dd></dl>
+<span class="sig-name descname"><span class="pre">fit_transform</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">values</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.pytorch.org/docs/stable/tensors.html#torch.Tensor" title="(in PyTorch v2.11)"><span class="pre">Tensor</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.pytorch.org/docs/stable/tensors.html#torch.Tensor" title="(in PyTorch v2.11)"><span class="pre">Tensor</span></a></span></span><a class="reference external" href="https://github.com/opthub-org/pytorch-bsf/blob/master/torch_bsf/preprocessing.py#L221-L234"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#torch_bsf.preprocessing.NoneScaler.fit_transform" title="Link to this definition"></a></dt>
+<dd><p>Return <code class="docutils literal notranslate"><span class="pre">values</span></code> unchanged.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>values</strong> (<a class="reference external" href="https://docs.pytorch.org/docs/stable/tensors.html#torch.Tensor" title="(in PyTorch v2.11)"><em>torch.Tensor</em></a>) – Input tensor of any shape.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>The same tensor as <code class="docutils literal notranslate"><span class="pre">values</span></code> without any modification.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.pytorch.org/docs/stable/tensors.html#torch.Tensor" title="(in PyTorch v2.11)">torch.Tensor</a></p>
+</dd>
+</dl>
+</dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="torch_bsf.preprocessing.NoneScaler.inverse_transform">
-<span class="sig-name descname"><span class="pre">inverse_transform</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">values</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.pytorch.org/docs/stable/tensors.html#torch.Tensor" title="(in PyTorch v2.11)"><span class="pre">Tensor</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.pytorch.org/docs/stable/tensors.html#torch.Tensor" title="(in PyTorch v2.11)"><span class="pre">Tensor</span></a></span></span><a class="reference external" href="https://github.com/opthub-org/pytorch-bsf/blob/master/torch_bsf/preprocessing.py#L68-L69"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#torch_bsf.preprocessing.NoneScaler.inverse_transform" title="Link to this definition"></a></dt>
-<dd></dd></dl>
+<span class="sig-name descname"><span class="pre">inverse_transform</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">values</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.pytorch.org/docs/stable/tensors.html#torch.Tensor" title="(in PyTorch v2.11)"><span class="pre">Tensor</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.pytorch.org/docs/stable/tensors.html#torch.Tensor" title="(in PyTorch v2.11)"><span class="pre">Tensor</span></a></span></span><a class="reference external" href="https://github.com/opthub-org/pytorch-bsf/blob/master/torch_bsf/preprocessing.py#L236-L249"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#torch_bsf.preprocessing.NoneScaler.inverse_transform" title="Link to this definition"></a></dt>
+<dd><p>Return <code class="docutils literal notranslate"><span class="pre">values</span></code> unchanged.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>values</strong> (<a class="reference external" href="https://docs.pytorch.org/docs/stable/tensors.html#torch.Tensor" title="(in PyTorch v2.11)"><em>torch.Tensor</em></a>) – Input tensor of any shape.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>The same tensor as <code class="docutils literal notranslate"><span class="pre">values</span></code> without any modification.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.pytorch.org/docs/stable/tensors.html#torch.Tensor" title="(in PyTorch v2.11)">torch.Tensor</a></p>
+</dd>
+</dl>
+</dd></dl>
 
 </dd></dl>
 
 <dl class="py class">
 <dt class="sig sig-object py" id="torch_bsf.preprocessing.QuantileScaler">
-<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">torch_bsf.preprocessing.</span></span><span class="sig-name descname"><span class="pre">QuantileScaler</span></span><a class="reference external" href="https://github.com/opthub-org/pytorch-bsf/blob/master/torch_bsf/preprocessing.py#L40-L58"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#torch_bsf.preprocessing.QuantileScaler" title="Link to this definition"></a></dt>
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">torch_bsf.preprocessing.</span></span><span class="sig-name descname"><span class="pre">QuantileScaler</span></span><a class="reference external" href="https://github.com/opthub-org/pytorch-bsf/blob/master/torch_bsf/preprocessing.py#L130-L200"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#torch_bsf.preprocessing.QuantileScaler" title="Link to this definition"></a></dt>
 <dd><p>Bases: <a class="reference external" href="https://docs.python.org/3/library/functions.html#object" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></a></p>
-<dl class="py method">
-<dt class="sig sig-object py" id="torch_bsf.preprocessing.QuantileScaler.fit">
-<span class="sig-name descname"><span class="pre">fit</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">values</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.pytorch.org/docs/stable/tensors.html#torch.Tensor" title="(in PyTorch v2.11)"><span class="pre">Tensor</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.14)"><span class="pre">None</span></a></span></span><a class="reference external" href="https://github.com/opthub-org/pytorch-bsf/blob/master/torch_bsf/preprocessing.py#L45-L51"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#torch_bsf.preprocessing.QuantileScaler.fit" title="Link to this definition"></a></dt>
-<dd></dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="torch_bsf.preprocessing.QuantileScaler.fit_transform">
-<span class="sig-name descname"><span class="pre">fit_transform</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">values</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.pytorch.org/docs/stable/tensors.html#torch.Tensor" title="(in PyTorch v2.11)"><span class="pre">Tensor</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.pytorch.org/docs/stable/tensors.html#torch.Tensor" title="(in PyTorch v2.11)"><span class="pre">Tensor</span></a></span></span><a class="reference external" href="https://github.com/opthub-org/pytorch-bsf/blob/master/torch_bsf/preprocessing.py#L53-L55"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#torch_bsf.preprocessing.QuantileScaler.fit_transform" title="Link to this definition"></a></dt>
-<dd></dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="torch_bsf.preprocessing.QuantileScaler.inverse_transform">
-<span class="sig-name descname"><span class="pre">inverse_transform</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">values</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.pytorch.org/docs/stable/tensors.html#torch.Tensor" title="(in PyTorch v2.11)"><span class="pre">Tensor</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.pytorch.org/docs/stable/tensors.html#torch.Tensor" title="(in PyTorch v2.11)"><span class="pre">Tensor</span></a></span></span><a class="reference external" href="https://github.com/opthub-org/pytorch-bsf/blob/master/torch_bsf/preprocessing.py#L57-L58"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#torch_bsf.preprocessing.QuantileScaler.inverse_transform" title="Link to this definition"></a></dt>
-<dd></dd></dl>
+<p>Quantile-based scaler that normalizes values using percentile-based ranges.</p>
+<p>Values are scaled so that the <code class="docutils literal notranslate"><span class="pre">q</span></code>-th percentile maps to 0 and the
+<code class="docutils literal notranslate"><span class="pre">(1</span> <span class="pre">-</span> <span class="pre">q)</span></code>-th percentile maps to 1, without clipping values to this range.
+This makes the scaler robust to outliers compared to <a class="reference internal" href="#torch_bsf.preprocessing.MinMaxScaler" title="torch_bsf.preprocessing.MinMaxScaler"><code class="xref py py-class docutils literal notranslate"><span class="pre">MinMaxScaler</span></code></a>.</p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="torch_bsf.preprocessing.QuantileScaler.q">
+<span class="sig-name descname"><span class="pre">q</span></span><a class="reference external" href="https://github.com/opthub-org/pytorch-bsf/blob/master/torch_bsf/preprocessing.py"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#torch_bsf.preprocessing.QuantileScaler.q" title="Link to this definition"></a></dt>
+<dd><p>The lower quantile fraction used as the effective minimum.
+Defaults to <code class="docutils literal notranslate"><span class="pre">0.05</span></code> (5th percentile), ignoring the bottom and top 5% of values.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.14)">float</a></p>
+</dd>
+</dl>
+</dd></dl>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="torch_bsf.preprocessing.QuantileScaler.mins">
-<span class="sig-name descname"><span class="pre">mins</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.pytorch.org/docs/stable/tensors.html#torch.Tensor" title="(in PyTorch v2.11)"><span class="pre">Tensor</span></a></em><a class="reference external" href="https://github.com/opthub-org/pytorch-bsf/blob/master/torch_bsf/preprocessing.py"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#torch_bsf.preprocessing.QuantileScaler.mins" title="Link to this definition"></a></dt>
-<dd></dd></dl>
-
-<dl class="py attribute">
-<dt class="sig sig-object py" id="torch_bsf.preprocessing.QuantileScaler.q">
-<span class="sig-name descname"><span class="pre">q</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.14)"><span class="pre">float</span></a></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">0.05</span></em><a class="reference external" href="https://github.com/opthub-org/pytorch-bsf/blob/master/torch_bsf/preprocessing.py"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#torch_bsf.preprocessing.QuantileScaler.q" title="Link to this definition"></a></dt>
-<dd></dd></dl>
+<span class="sig-name descname"><span class="pre">mins</span></span><a class="reference external" href="https://github.com/opthub-org/pytorch-bsf/blob/master/torch_bsf/preprocessing.py"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#torch_bsf.preprocessing.QuantileScaler.mins" title="Link to this definition"></a></dt>
+<dd><p>Per-feature values at the <code class="docutils literal notranslate"><span class="pre">q</span></code>-th quantile, computed during <a class="reference internal" href="#torch_bsf.preprocessing.QuantileScaler.fit" title="torch_bsf.preprocessing.QuantileScaler.fit"><code class="xref py py-meth docutils literal notranslate"><span class="pre">fit()</span></code></a>.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.pytorch.org/docs/stable/tensors.html#torch.Tensor" title="(in PyTorch v2.11)">torch.Tensor</a></p>
+</dd>
+</dl>
+</dd></dl>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="torch_bsf.preprocessing.QuantileScaler.scales">
-<span class="sig-name descname"><span class="pre">scales</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.pytorch.org/docs/stable/tensors.html#torch.Tensor" title="(in PyTorch v2.11)"><span class="pre">Tensor</span></a></em><a class="reference external" href="https://github.com/opthub-org/pytorch-bsf/blob/master/torch_bsf/preprocessing.py"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#torch_bsf.preprocessing.QuantileScaler.scales" title="Link to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">scales</span></span><a class="reference external" href="https://github.com/opthub-org/pytorch-bsf/blob/master/torch_bsf/preprocessing.py"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#torch_bsf.preprocessing.QuantileScaler.scales" title="Link to this definition"></a></dt>
+<dd><p>Per-feature scale factors (<code class="docutils literal notranslate"><span class="pre">(1-q)</span></code>-quantile minus <code class="docutils literal notranslate"><span class="pre">q</span></code>-quantile).
+Dimensions where the scale is zero are set to 1 to avoid division by zero.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.pytorch.org/docs/stable/tensors.html#torch.Tensor" title="(in PyTorch v2.11)">torch.Tensor</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="torch_bsf.preprocessing.QuantileScaler.fit">
+<span class="sig-name descname"><span class="pre">fit</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">values</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.pytorch.org/docs/stable/tensors.html#torch.Tensor" title="(in PyTorch v2.11)"><span class="pre">Tensor</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.14)"><span class="pre">None</span></a></span></span><a class="reference external" href="https://github.com/opthub-org/pytorch-bsf/blob/master/torch_bsf/preprocessing.py#L153-L168"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#torch_bsf.preprocessing.QuantileScaler.fit" title="Link to this definition"></a></dt>
+<dd><p>Fit the scaler to the data.</p>
+<p>Computes per-feature quantile bounds from <code class="docutils literal notranslate"><span class="pre">values</span></code>.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>values</strong> (<a class="reference external" href="https://docs.pytorch.org/docs/stable/tensors.html#torch.Tensor" title="(in PyTorch v2.11)"><em>torch.Tensor</em></a>) – Input tensor of shape <code class="docutils literal notranslate"><span class="pre">(n_samples,</span> <span class="pre">n_features)</span></code>.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="torch_bsf.preprocessing.QuantileScaler.fit_transform">
+<span class="sig-name descname"><span class="pre">fit_transform</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">values</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.pytorch.org/docs/stable/tensors.html#torch.Tensor" title="(in PyTorch v2.11)"><span class="pre">Tensor</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.pytorch.org/docs/stable/tensors.html#torch.Tensor" title="(in PyTorch v2.11)"><span class="pre">Tensor</span></a></span></span><a class="reference external" href="https://github.com/opthub-org/pytorch-bsf/blob/master/torch_bsf/preprocessing.py#L170-L185"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#torch_bsf.preprocessing.QuantileScaler.fit_transform" title="Link to this definition"></a></dt>
+<dd><p>Fit the scaler to the data and return the scaled tensor.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>values</strong> (<a class="reference external" href="https://docs.pytorch.org/docs/stable/tensors.html#torch.Tensor" title="(in PyTorch v2.11)"><em>torch.Tensor</em></a>) – Input tensor of shape <code class="docutils literal notranslate"><span class="pre">(n_samples,</span> <span class="pre">n_features)</span></code>.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Scaled tensor of the same shape as <code class="docutils literal notranslate"><span class="pre">values</span></code>.
+Values outside the fitted quantile range may exceed [0, 1].</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.pytorch.org/docs/stable/tensors.html#torch.Tensor" title="(in PyTorch v2.11)">torch.Tensor</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="torch_bsf.preprocessing.QuantileScaler.inverse_transform">
+<span class="sig-name descname"><span class="pre">inverse_transform</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">values</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.pytorch.org/docs/stable/tensors.html#torch.Tensor" title="(in PyTorch v2.11)"><span class="pre">Tensor</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.pytorch.org/docs/stable/tensors.html#torch.Tensor" title="(in PyTorch v2.11)"><span class="pre">Tensor</span></a></span></span><a class="reference external" href="https://github.com/opthub-org/pytorch-bsf/blob/master/torch_bsf/preprocessing.py#L187-L200"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#torch_bsf.preprocessing.QuantileScaler.inverse_transform" title="Link to this definition"></a></dt>
+<dd><p>Reverse the scaling applied by <a class="reference internal" href="#torch_bsf.preprocessing.QuantileScaler.fit_transform" title="torch_bsf.preprocessing.QuantileScaler.fit_transform"><code class="xref py py-meth docutils literal notranslate"><span class="pre">fit_transform()</span></code></a>.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>values</strong> (<a class="reference external" href="https://docs.pytorch.org/docs/stable/tensors.html#torch.Tensor" title="(in PyTorch v2.11)"><em>torch.Tensor</em></a>) – Scaled tensor of shape <code class="docutils literal notranslate"><span class="pre">(n_samples,</span> <span class="pre">n_features)</span></code>.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Tensor rescaled back to the original value range.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.pytorch.org/docs/stable/tensors.html#torch.Tensor" title="(in PyTorch v2.11)">torch.Tensor</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="id2">
+<span class="sig-name descname"><span class="pre">mins</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.pytorch.org/docs/stable/tensors.html#torch.Tensor" title="(in PyTorch v2.11)"><span class="pre">Tensor</span></a></em><a class="reference external" href="https://github.com/opthub-org/pytorch-bsf/blob/master/torch_bsf/preprocessing.py"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#id2" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="id3">
+<span class="sig-name descname"><span class="pre">q</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.14)"><span class="pre">float</span></a></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">0.05</span></em><a class="reference external" href="https://github.com/opthub-org/pytorch-bsf/blob/master/torch_bsf/preprocessing.py"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#id3" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="id4">
+<span class="sig-name descname"><span class="pre">scales</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.pytorch.org/docs/stable/tensors.html#torch.Tensor" title="(in PyTorch v2.11)"><span class="pre">Tensor</span></a></em><a class="reference external" href="https://github.com/opthub-org/pytorch-bsf/blob/master/torch_bsf/preprocessing.py"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#id4" title="Link to this definition"></a></dt>
 <dd></dd></dl>
 
 </dd></dl>
 
 <dl class="py class">
 <dt class="sig sig-object py" id="torch_bsf.preprocessing.StdScaler">
-<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">torch_bsf.preprocessing.</span></span><span class="sig-name descname"><span class="pre">StdScaler</span></span><a class="reference external" href="https://github.com/opthub-org/pytorch-bsf/blob/master/torch_bsf/preprocessing.py#L24-L37"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#torch_bsf.preprocessing.StdScaler" title="Link to this definition"></a></dt>
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">torch_bsf.preprocessing.</span></span><span class="sig-name descname"><span class="pre">StdScaler</span></span><a class="reference external" href="https://github.com/opthub-org/pytorch-bsf/blob/master/torch_bsf/preprocessing.py#L69-L127"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#torch_bsf.preprocessing.StdScaler" title="Link to this definition"></a></dt>
 <dd><p>Bases: <a class="reference external" href="https://docs.python.org/3/library/functions.html#object" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></a></p>
-<dl class="py method">
-<dt class="sig sig-object py" id="torch_bsf.preprocessing.StdScaler.fit">
-<span class="sig-name descname"><span class="pre">fit</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">values</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.pytorch.org/docs/stable/tensors.html#torch.Tensor" title="(in PyTorch v2.11)"><span class="pre">Tensor</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.14)"><span class="pre">None</span></a></span></span><a class="reference external" href="https://github.com/opthub-org/pytorch-bsf/blob/master/torch_bsf/preprocessing.py#L28-L30"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#torch_bsf.preprocessing.StdScaler.fit" title="Link to this definition"></a></dt>
-<dd></dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="torch_bsf.preprocessing.StdScaler.fit_transform">
-<span class="sig-name descname"><span class="pre">fit_transform</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">values</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.pytorch.org/docs/stable/tensors.html#torch.Tensor" title="(in PyTorch v2.11)"><span class="pre">Tensor</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.pytorch.org/docs/stable/tensors.html#torch.Tensor" title="(in PyTorch v2.11)"><span class="pre">Tensor</span></a></span></span><a class="reference external" href="https://github.com/opthub-org/pytorch-bsf/blob/master/torch_bsf/preprocessing.py#L32-L34"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#torch_bsf.preprocessing.StdScaler.fit_transform" title="Link to this definition"></a></dt>
-<dd></dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="torch_bsf.preprocessing.StdScaler.inverse_transform">
-<span class="sig-name descname"><span class="pre">inverse_transform</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">values</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.pytorch.org/docs/stable/tensors.html#torch.Tensor" title="(in PyTorch v2.11)"><span class="pre">Tensor</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.pytorch.org/docs/stable/tensors.html#torch.Tensor" title="(in PyTorch v2.11)"><span class="pre">Tensor</span></a></span></span><a class="reference external" href="https://github.com/opthub-org/pytorch-bsf/blob/master/torch_bsf/preprocessing.py#L36-L37"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#torch_bsf.preprocessing.StdScaler.inverse_transform" title="Link to this definition"></a></dt>
-<dd></dd></dl>
-
+<p>Standard-score (z-score) scaler that normalizes values to zero mean and unit variance.</p>
 <dl class="py attribute">
 <dt class="sig sig-object py" id="torch_bsf.preprocessing.StdScaler.means">
-<span class="sig-name descname"><span class="pre">means</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.pytorch.org/docs/stable/tensors.html#torch.Tensor" title="(in PyTorch v2.11)"><span class="pre">Tensor</span></a></em><a class="reference external" href="https://github.com/opthub-org/pytorch-bsf/blob/master/torch_bsf/preprocessing.py"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#torch_bsf.preprocessing.StdScaler.means" title="Link to this definition"></a></dt>
-<dd></dd></dl>
+<span class="sig-name descname"><span class="pre">means</span></span><a class="reference external" href="https://github.com/opthub-org/pytorch-bsf/blob/master/torch_bsf/preprocessing.py"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#torch_bsf.preprocessing.StdScaler.means" title="Link to this definition"></a></dt>
+<dd><p>Per-feature means computed during <a class="reference internal" href="#torch_bsf.preprocessing.StdScaler.fit" title="torch_bsf.preprocessing.StdScaler.fit"><code class="xref py py-meth docutils literal notranslate"><span class="pre">fit()</span></code></a>.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.pytorch.org/docs/stable/tensors.html#torch.Tensor" title="(in PyTorch v2.11)">torch.Tensor</a></p>
+</dd>
+</dl>
+</dd></dl>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="torch_bsf.preprocessing.StdScaler.stds">
-<span class="sig-name descname"><span class="pre">stds</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.pytorch.org/docs/stable/tensors.html#torch.Tensor" title="(in PyTorch v2.11)"><span class="pre">Tensor</span></a></em><a class="reference external" href="https://github.com/opthub-org/pytorch-bsf/blob/master/torch_bsf/preprocessing.py"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#torch_bsf.preprocessing.StdScaler.stds" title="Link to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">stds</span></span><a class="reference external" href="https://github.com/opthub-org/pytorch-bsf/blob/master/torch_bsf/preprocessing.py"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#torch_bsf.preprocessing.StdScaler.stds" title="Link to this definition"></a></dt>
+<dd><p>Per-feature standard deviations computed during <a class="reference internal" href="#torch_bsf.preprocessing.StdScaler.fit" title="torch_bsf.preprocessing.StdScaler.fit"><code class="xref py py-meth docutils literal notranslate"><span class="pre">fit()</span></code></a>.
+Dimensions with zero standard deviation are set to 1 to avoid division by zero.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.pytorch.org/docs/stable/tensors.html#torch.Tensor" title="(in PyTorch v2.11)">torch.Tensor</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="torch_bsf.preprocessing.StdScaler.fit">
+<span class="sig-name descname"><span class="pre">fit</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">values</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.pytorch.org/docs/stable/tensors.html#torch.Tensor" title="(in PyTorch v2.11)"><span class="pre">Tensor</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.14)"><span class="pre">None</span></a></span></span><a class="reference external" href="https://github.com/opthub-org/pytorch-bsf/blob/master/torch_bsf/preprocessing.py#L84-L95"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#torch_bsf.preprocessing.StdScaler.fit" title="Link to this definition"></a></dt>
+<dd><p>Fit the scaler to the data.</p>
+<p>Computes the per-feature mean and standard deviation from <code class="docutils literal notranslate"><span class="pre">values</span></code>.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>values</strong> (<a class="reference external" href="https://docs.pytorch.org/docs/stable/tensors.html#torch.Tensor" title="(in PyTorch v2.11)"><em>torch.Tensor</em></a>) – Input tensor of shape <code class="docutils literal notranslate"><span class="pre">(n_samples,</span> <span class="pre">n_features)</span></code>.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="torch_bsf.preprocessing.StdScaler.fit_transform">
+<span class="sig-name descname"><span class="pre">fit_transform</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">values</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.pytorch.org/docs/stable/tensors.html#torch.Tensor" title="(in PyTorch v2.11)"><span class="pre">Tensor</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.pytorch.org/docs/stable/tensors.html#torch.Tensor" title="(in PyTorch v2.11)"><span class="pre">Tensor</span></a></span></span><a class="reference external" href="https://github.com/opthub-org/pytorch-bsf/blob/master/torch_bsf/preprocessing.py#L97-L112"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#torch_bsf.preprocessing.StdScaler.fit_transform" title="Link to this definition"></a></dt>
+<dd><p>Fit the scaler to the data and return the standardized tensor.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>values</strong> (<a class="reference external" href="https://docs.pytorch.org/docs/stable/tensors.html#torch.Tensor" title="(in PyTorch v2.11)"><em>torch.Tensor</em></a>) – Input tensor of shape <code class="docutils literal notranslate"><span class="pre">(n_samples,</span> <span class="pre">n_features)</span></code>.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Standardized tensor of the same shape as <code class="docutils literal notranslate"><span class="pre">values</span></code>,
+with each feature having zero mean and unit standard deviation.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.pytorch.org/docs/stable/tensors.html#torch.Tensor" title="(in PyTorch v2.11)">torch.Tensor</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="torch_bsf.preprocessing.StdScaler.inverse_transform">
+<span class="sig-name descname"><span class="pre">inverse_transform</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">values</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.pytorch.org/docs/stable/tensors.html#torch.Tensor" title="(in PyTorch v2.11)"><span class="pre">Tensor</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.pytorch.org/docs/stable/tensors.html#torch.Tensor" title="(in PyTorch v2.11)"><span class="pre">Tensor</span></a></span></span><a class="reference external" href="https://github.com/opthub-org/pytorch-bsf/blob/master/torch_bsf/preprocessing.py#L114-L127"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#torch_bsf.preprocessing.StdScaler.inverse_transform" title="Link to this definition"></a></dt>
+<dd><p>Reverse the standardization applied by <a class="reference internal" href="#torch_bsf.preprocessing.StdScaler.fit_transform" title="torch_bsf.preprocessing.StdScaler.fit_transform"><code class="xref py py-meth docutils literal notranslate"><span class="pre">fit_transform()</span></code></a>.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>values</strong> (<a class="reference external" href="https://docs.pytorch.org/docs/stable/tensors.html#torch.Tensor" title="(in PyTorch v2.11)"><em>torch.Tensor</em></a>) – Standardized tensor of shape <code class="docutils literal notranslate"><span class="pre">(n_samples,</span> <span class="pre">n_features)</span></code>.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Tensor rescaled back to the original value range.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.pytorch.org/docs/stable/tensors.html#torch.Tensor" title="(in PyTorch v2.11)">torch.Tensor</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="id5">
+<span class="sig-name descname"><span class="pre">means</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.pytorch.org/docs/stable/tensors.html#torch.Tensor" title="(in PyTorch v2.11)"><span class="pre">Tensor</span></a></em><a class="reference external" href="https://github.com/opthub-org/pytorch-bsf/blob/master/torch_bsf/preprocessing.py"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#id5" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="id6">
+<span class="sig-name descname"><span class="pre">stds</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.pytorch.org/docs/stable/tensors.html#torch.Tensor" title="(in PyTorch v2.11)"><span class="pre">Tensor</span></a></em><a class="reference external" href="https://github.com/opthub-org/pytorch-bsf/blob/master/torch_bsf/preprocessing.py"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#id6" title="Link to this definition"></a></dt>
 <dd></dd></dl>
 
 </dd></dl>
