@@ -10,7 +10,7 @@ def _make_simplex_data(n_params: int = 3, n_values: int = 2, n_samples: int = 20
     generator.manual_seed(seed)
     raw = torch.rand(n_samples, n_params, generator=generator)
     params = raw / raw.sum(dim=1, keepdim=True)
-    values = 1.0 - params ** 2
+    values = (1.0 - params ** 2)[:, :n_values]
     return params, values
 
 
