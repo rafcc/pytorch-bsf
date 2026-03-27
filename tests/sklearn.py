@@ -7,11 +7,11 @@ from torch_bsf.sklearn import BezierSimplexRegressor
 
 
 def _make_data(n_params: int = 3, n_values: int = 2, n_samples: int = 20):
-    """Return (X, y) on the standard simplex."""
+    """Return (X, y) on the standard simplex with output dimension n_values."""
     rng = np.random.default_rng(42)
     raw = rng.random((n_samples, n_params))
     X = raw / raw.sum(axis=1, keepdims=True)
-    y = 1.0 - X ** 2
+    y = (1.0 - X ** 2)[:, :n_values]
     return X.astype(np.float32), y.astype(np.float32)
 
 

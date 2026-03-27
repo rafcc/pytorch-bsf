@@ -71,14 +71,23 @@ def select_degree(
             "select_degree requires a non-empty dataset; got 0 samples. "
             "Ensure that 'params' and 'values' contain at least one example."
         )
-    batch_size = trainer_kwargs.pop("batch_size", len(dataset))
-    if isinstance(batch_size, int) and batch_size <= 0:
-        raise ValueError(
-            f"batch_size must be a positive integer, got {batch_size}. "
-            "Either provide a positive 'batch_size' in trainer_kwargs or pass "
-            "non-empty 'params' and 'values'."
-        )
-    train_dl = DataLoader(dataset, batch_size=batch_size)
+    # batch_size is always popped from trainer_kwargs to prevent it from being
+    # forwarded to KFoldTrainer (which does not accept it).  When a datamodule is
+    # supplied the caller's own data pipeline controls batching, so we only
+    # validate and use batch_size when we need to build train_dl ourselves.
+    batch_size = trainer_kwargs.pop("batch_size", None)
+    if datamodule is None:
+        if batch_size is None:
+            batch_size = len(dataset)
+        elif not isinstance(batch_size, int) or batch_size <= 0:
+            raise ValueError(
+                f"batch_size must be a positive integer or None, got {batch_size!r}. "
+                "Either provide a positive 'batch_size' in trainer_kwargs or omit it "
+                "to use the default (full-batch)."
+            )
+        train_dl = DataLoader(dataset, batch_size=batch_size)
+    else:
+        train_dl = None  # datamodule provides its own dataloaders
 
     # Disable validation monitoring during training by default; the CV estimate
     # comes from test_step (the per-fold held-out subset produced by KFoldTrainer).
