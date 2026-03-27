@@ -27,7 +27,15 @@ def select_degree(
     num_folds
         Number of folds for cross-validation.
     trainer_kwargs
-        Additional arguments for the KFoldTrainer and Trainer.
+        Additional arguments forwarded to :class:`~pl_crossvalidate.KFoldTrainer`.
+        By default, ``limit_val_batches=0.0`` and ``num_sanity_val_steps=0`` are
+        set so that no validation loop is run inside each fold — the
+        cross-validation estimate is taken from ``test_mse`` (the held-out test
+        subset produced by KFoldTrainer after each fold's ``fit`` call).
+        If you need a validation loop within each fold (e.g., for
+        ``EarlyStopping``), pass ``limit_val_batches=1.0`` and supply
+        ``val_dataloaders`` via a custom
+        :class:`~pl_crossvalidate.KFoldDataModule`.
 
     Returns
     -------
@@ -36,12 +44,16 @@ def select_degree(
     from torch_bsf.bezier_simplex import randn
     from torch.utils.data import DataLoader, TensorDataset
 
-    # Build the dataset once – it doesn't change across degree iterations
+    # Build the dataset once – it doesn't change across degree iterations.
+    # Use full-batch loading (consistent with bezier_simplex.fit()) unless the
+    # caller explicitly provides a different batch_size via trainer_kwargs.
     dataset = TensorDataset(params, values)
-    train_dl = DataLoader(dataset)
+    batch_size = trainer_kwargs.pop("batch_size", len(dataset))
+    train_dl = DataLoader(dataset, batch_size=batch_size)
 
     # Disable validation monitoring during training; the CV estimate comes from
     # test_step (the per-fold held-out subset produced by KFoldTrainer).
+    # Callers can override these defaults via trainer_kwargs.
     kfold_kwargs: dict = {"limit_val_batches": 0.0, "num_sanity_val_steps": 0}
     kfold_kwargs.update(trainer_kwargs)
 

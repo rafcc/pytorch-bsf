@@ -1,6 +1,8 @@
 import numpy as np
 import pytest
 
+pytest.importorskip("sklearn")
+
 from torch_bsf.sklearn import BezierSimplexRegressor
 
 
