@@ -1,3 +1,5 @@
+import shutil
+
 import pytest
 import torch
 from pathlib import Path
@@ -269,7 +271,6 @@ def test_forward_vectorized():
 @pytest.mark.parametrize("ext", [".csv", ".CSV", ".Csv"])
 def test_load_case_insensitive_csv(tmp_path, ext):
     dest = tmp_path / f"model{ext}"
-    import shutil
     shutil.copy(_DATA_DIR / "bezier_simplex.csv", dest)
     bs = tbbs.load(str(dest))
     assert isinstance(bs, tbbs.BezierSimplex)
@@ -278,7 +279,6 @@ def test_load_case_insensitive_csv(tmp_path, ext):
 @pytest.mark.parametrize("ext", [".json", ".JSON", ".Json"])
 def test_load_case_insensitive_json(tmp_path, ext):
     dest = tmp_path / f"model{ext}"
-    import shutil
     shutil.copy(_DATA_DIR / "bezier_simplex.json", dest)
     bs = tbbs.load(str(dest))
     assert isinstance(bs, tbbs.BezierSimplex)
@@ -287,7 +287,6 @@ def test_load_case_insensitive_json(tmp_path, ext):
 @pytest.mark.parametrize("ext", [".yml", ".YML", ".yaml", ".YAML"])
 def test_load_case_insensitive_yaml(tmp_path, ext):
     dest = tmp_path / f"model{ext}"
-    import shutil
     shutil.copy(_DATA_DIR / "bezier_simplex.yml", dest)
     bs = tbbs.load(str(dest))
     assert isinstance(bs, tbbs.BezierSimplex)
