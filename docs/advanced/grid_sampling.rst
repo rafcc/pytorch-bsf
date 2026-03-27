@@ -63,18 +63,21 @@ single null-model point :math:`P^*`.
 .. figure:: ../_static/elastic_net_leaf_space.png
    :width: 100%
 
-   **Left** – The :math:`(\alpha, w_1)` parameter rectangle.
-   The highlighted crimson edge at :math:`w_1 = 1` (:math:`\lambda = 0`) is
-   identified to the single vertex :math:`(1, 0, 0)` of the simplex.
-   Coloured horizontal lines are the sampled *leaves* at each :math:`\lambda` level
-   (log-spaced, ``base=10``).
-   **Centre** – The same leaves and grid points on the 2-simplex; the blue base edge
-   (connecting the pure-L1 and pure-L2 vertices) is the null-model edge to be
-   identified.
-   **Right** – The quotient space obtained by collapsing the base edge to the null-model
-   point :math:`P^*`.  The leaf/eye shape has vertex :math:`A` (:math:`\lambda = 0`) at
-   the top and :math:`P^*` at the bottom; horizontal coloured segments are constant-λ
-   leaves; grey curves are constant-α lines running from :math:`A` to :math:`P^*`.
+   All points are coloured by :math:`(w_1, w_2, w_3) \mapsto (R, G, B)`,
+   so the same weight vector has the same colour in every panel.
+   **Left** – The :math:`(\alpha, \lambda)` hyperparameter space (x: L1 mixing ratio,
+   y: regularisation strength).
+   The red line at :math:`\lambda = 0` is the identified edge; all points on it
+   share the colour :math:`(1, 0, 0)` = red because :math:`w = (1, 0, 0)` there.
+   **Centre** – The 2-simplex with vertices :math:`(1,0,0)` at the top (red),
+   :math:`(0,1,0)` at the bottom-left (green), and :math:`(0,0,1)` at the
+   bottom-right (blue).
+   Coloured horizontal segments are constant-:math:`\lambda` *leaves*; the gradient
+   base edge (green→blue at the bottom) is the null-model edge to be identified.
+   **Right** – The quotient space: vertex :math:`A` = :math:`(1,0,0)` (red, top),
+   and the null-model point :math:`P^*` (bottom) shown as a large green dot
+   :math:`(0,1,0)` behind a smaller blue dot :math:`(0,0,1)`, reflecting that
+   both endpoints of the base edge are identified to :math:`P^*`.
 
 
 Grid Structure
