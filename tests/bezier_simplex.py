@@ -325,6 +325,42 @@ def test_save_case_insensitive_yaml(tmp_path, ext):
     assert isinstance(bs2, tbbs.BezierSimplex)
 
 
+@pytest.mark.parametrize("ext", [".tsv", ".TSV", ".Tsv"])
+def test_load_case_insensitive_tsv(tmp_path, ext):
+    dest = tmp_path / f"model{ext}"
+    shutil.copy(_DATA_DIR / "bezier_simplex.tsv", dest)
+    bs = tbbs.load(str(dest))
+    assert isinstance(bs, tbbs.BezierSimplex)
+
+
+@pytest.mark.parametrize("ext", [".tsv", ".TSV", ".Tsv"])
+def test_save_case_insensitive_tsv(tmp_path, ext):
+    bs = tbbs.load(str(_DATA_DIR / "bezier_simplex.tsv"))
+    dest = tmp_path / f"model{ext}"
+    tbbs.save(str(dest), bs)
+    assert dest.exists()
+    bs2 = tbbs.load(str(dest))
+    assert isinstance(bs2, tbbs.BezierSimplex)
+
+
+@pytest.mark.parametrize("ext", [".pt", ".PT", ".Pt"])
+def test_load_case_insensitive_pt(tmp_path, ext):
+    dest = tmp_path / f"model{ext}"
+    shutil.copy(_DATA_DIR / "bezier_simplex.pt", dest)
+    bs = tbbs.load(str(dest))
+    assert isinstance(bs, tbbs.BezierSimplex)
+
+
+@pytest.mark.parametrize("ext", [".pt", ".PT", ".Pt"])
+def test_save_case_insensitive_pt(tmp_path, ext):
+    bs = tbbs.load(str(_DATA_DIR / "bezier_simplex.pt"))
+    dest = tmp_path / f"model{ext}"
+    tbbs.save(str(dest), bs)
+    assert dest.exists()
+    bs2 = tbbs.load(str(dest))
+    assert isinstance(bs2, tbbs.BezierSimplex)
+
+
 @pytest.mark.parametrize("content,ext", [
     ("", ".csv"),
     ("\n\n", ".csv"),
