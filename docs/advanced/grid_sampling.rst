@@ -40,13 +40,25 @@ vertex :math:`(w_1, w_2, w_3) = (1, 0, 0)` of the simplex.
 Identifying this edge with a single point transforms the rectangle into a triangle —
 the 2-simplex :math:`\Delta^2`.
 
-This identification gives the space a **leaf (foliation) structure**: for each fixed
+Conversely, as :math:`\lambda \to \infty` the regularisation overwhelms the data term
+and drives all model coefficients to zero, regardless of :math:`\alpha`.
+In the elastic net this limit is called the **null model** (all :math:`\beta_i = 0`).
+All weight vectors on the opposite edge of the simplex
+:math:`\{(w_1, w_2, w_3) : w_1 = 0\}` — the *base edge* connecting
+:math:`(0, 1, 0)` and :math:`(0, 0, 1)` — therefore correspond to the same solution.
+Since the Bézier simplex must assign a single output to each input weight, these
+identical solutions are identified to a single point :math:`P^*` before the grid is
+constructed.
+The resulting quotient space is a **leaf/eye-shaped CW complex**: two 0-cells (:math:`A`
+and :math:`P^*`), two 1-cells (the former edges :math:`AB` and :math:`AC`, now
+connecting :math:`A` to :math:`P^*` as curves), and one 2-cell (the interior).
+
+This identification gives the interior a **leaf (foliation) structure**: for each fixed
 value of :math:`w_1 \in (0, 1]`, the set of corresponding weight vectors
 :math:`\{(w_1, w_2, w_3) : w_2 + w_3 = 1 - w_1,\; w_2, w_3 \ge 0\}`
 is a line segment (a *leaf*) parametrised by :math:`\alpha`.
-As :math:`w_1 \to 0` (i.e. :math:`\lambda \to \infty`), the leaves sweep across the
-entire opposite edge of the simplex from the pure-L2 vertex :math:`(0, 0, 1)` to the
-pure-L1 vertex :math:`(0, 1, 0)`.
+As :math:`w_1 \to 0` (i.e. :math:`\lambda \to \infty`), the leaves shrink to the
+single null-model point :math:`P^*`.
 
 .. figure:: ../_static/elastic_net_leaf_space.png
    :width: 100%
@@ -56,8 +68,13 @@ pure-L1 vertex :math:`(0, 1, 0)`.
    identified to the single vertex :math:`(1, 0, 0)` of the simplex.
    Coloured horizontal lines are the sampled *leaves* at each :math:`\lambda` level
    (log-spaced, ``base=10``).
-   **Right** – The same leaves and grid points on the 2-simplex after the
-   identification.  Colour encodes :math:`w_1`.
+   **Centre** – The same leaves and grid points on the 2-simplex; the blue base edge
+   (connecting the pure-L1 and pure-L2 vertices) is the null-model edge to be
+   identified.
+   **Right** – The quotient space obtained by collapsing the base edge to the null-model
+   point :math:`P^*`.  The leaf/eye shape has vertex :math:`A` (:math:`\lambda = 0`) at
+   the top and :math:`P^*` at the bottom; horizontal coloured segments are constant-λ
+   leaves; grey curves are constant-α lines running from :math:`A` to :math:`P^*`.
 
 
 Grid Structure
