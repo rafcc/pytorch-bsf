@@ -5,14 +5,15 @@ channels:
 - defaults
 dependencies:
 - python=3.14
-- pytorch
-- lightning
+- "pytorch>=2,<3"
+- "lightning>=2,<3"
 - torchmetrics
-- mlflow
-- starlette<1.0.0  # hotfix for mlflow's starlette 1.0.0 issue
-- jsonschema
-- pyyaml
+- "mlflow>=2,<4"
+- "starlette<1.0.0"  # hotfix for mlflow's starlette 1.0.0 issue
+- "jsonschema>=4,<5"
+- "pyyaml>=6,<7"
 - pip
 - pip:
-  - pl-crossvalidate
+  - "pl-crossvalidate>=0.1,<1"
+  - "protobuf>=4,<8"
   - -e .
