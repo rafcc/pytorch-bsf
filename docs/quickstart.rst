@@ -18,14 +18,14 @@ On each training and prediction, separation of runtime environment and installat
 Installation
 ^^^^^^^^^^^^
 
-First, install `Miniconda`_.
-Then, install ``mlflow`` package from ``conda-forge`` channel:
+First, install `Docker`_.
+Then, install ``mlflow`` via pip:
 
 .. code-block:: bash
 
-   conda install -c conda-forge mlflow
+   pip install mlflow
 
-.. _Miniconda: https://docs.conda.io/en/latest/miniconda.html
+.. _Docker: https://docs.docker.com/get-docker/
 
 
 Training

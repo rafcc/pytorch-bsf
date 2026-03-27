@@ -41,7 +41,7 @@ Python >=3.10, <3.15.
 
 ### 1. via MLflow (No Installation Required)
 
-This is the easiest method as it requires no installation. If you have MLflow installed (e.g., via `conda install -c conda-forge mlflow`), you can run `pytorch-bsf` directly from the repository without manually installing it.
+This is the easiest method as it requires no installation. If you have Docker and MLflow installed (e.g., via `pip install mlflow`), you can run `pytorch-bsf` directly from the repository without manually installing it.
 
 First, prepare your data:
 
@@ -71,7 +71,8 @@ mlflow run https://github.com/opthub-org/pytorch-bsf \
   -P degree=3
 ```
 
-This will automatically create a temporary conda environment, install dependencies, and run the training process.
+This will automatically pull the pre-built Docker image (with all dependencies pre-installed) and run the training process.
+If you prefer conda instead of Docker, pass `--env-manager=conda` to the command above.
 
 ### 2. via CLI (After Installation)
 
