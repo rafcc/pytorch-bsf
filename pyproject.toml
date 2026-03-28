@@ -83,7 +83,7 @@ include-package-data = true
 zip-safe = false
 
 [tool.setuptools.dynamic]
-version = {attr = "torch_bsf.__version__"}
+version = {attr = "torch_bsf._version.__version__"}
 
 [tool.setuptools.packages.find]
 exclude = ["build", "dist", "docs"]
