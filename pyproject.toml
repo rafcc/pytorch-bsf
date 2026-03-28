@@ -34,7 +34,6 @@ classifiers = [
   "Topic :: Software Development :: Libraries :: Python Modules",
 ]
 dependencies = [
-  "setuptools>=21.0.0",
   "torch>=2,<3",
   "lightning>=2,<3",
   "pl-crossvalidate>=0.1,<1",
