@@ -40,7 +40,6 @@ jobs:
     - name: Type check with mypy
       if: matrix.python-version == '3.10'
       run: |
-        pip install mypy types-jsonschema types-PyYAML types-setuptools
         python -m pip install mypy types-jsonschema types-PyYAML types-setuptools
         python -m mypy torch_bsf
     - name: Test with pytest
