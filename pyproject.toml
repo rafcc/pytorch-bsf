@@ -113,3 +113,15 @@ warn_unused_configs = true
 [[tool.mypy.overrides]]
 module = "mlflow.*"
 ignore_missing_imports = true
+
+[[tool.mypy.overrides]]
+module = "scipy.*"
+ignore_missing_imports = true
+
+[[tool.mypy.overrides]]
+module = "sklearn.*"
+ignore_missing_imports = true
+
+[[tool.mypy.overrides]]
+module = "pl_crossvalidate.*"
+ignore_missing_imports = true

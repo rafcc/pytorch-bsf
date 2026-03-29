@@ -116,7 +116,9 @@ if args.loglevel >= 2:
     if mlflow.active_run() is not None or mlflow.last_active_run() is None:
         mlflow.pytorch.log_model(bs, "model", signature=signature)
     else:
-        with mlflow.start_run(run_id=mlflow.last_active_run().info.run_id):
+        last_run = mlflow.last_active_run()
+        assert last_run is not None, "Expected last_active_run() to return a run object"
+        with mlflow.start_run(run_id=last_run.info.run_id):
             mlflow.pytorch.log_model(bs, "model", signature=signature)
 
 # search for filename

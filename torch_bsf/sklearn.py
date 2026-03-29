@@ -143,7 +143,7 @@ class BezierSimplexRegressor(BaseEstimator, RegressorMixin):
         with torch.no_grad():
             ys = self.model_(ts)
 
-        return ys.cpu().numpy()
+        return ys.cpu().numpy()  # type: ignore[no-any-return]
 
     def score(self, X: Any, y: Any, sample_weight: Any = None) -> float:
         """Return the coefficient of determination R^2 of the prediction.
@@ -164,4 +164,4 @@ class BezierSimplexRegressor(BaseEstimator, RegressorMixin):
         """
         from sklearn.metrics import r2_score
 
-        return r2_score(y, self.predict(X), sample_weight=sample_weight)
+        return r2_score(y, self.predict(X), sample_weight=sample_weight)  # type: ignore[no-any-return]

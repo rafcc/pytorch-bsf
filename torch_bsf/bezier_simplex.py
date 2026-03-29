@@ -77,13 +77,14 @@ class BezierSimplexDataModule(L.LightningDataModule):
         self.batch_size = batch_size
         self.split_ratio = split_ratio
         self.normalize = normalize
+        self.scaler: MinMaxScaler | StdScaler | QuantileScaler | NoneScaler
         if normalize == "max":
             self.scaler = MinMaxScaler()
         elif normalize == "std":
             self.scaler = StdScaler()
-        if normalize == "quantile":
+        elif normalize == "quantile":
             self.scaler = QuantileScaler()
-        if normalize == "none":
+        else:
             self.scaler = NoneScaler()
 
         with open(self.params) as f:
@@ -103,17 +104,17 @@ class BezierSimplexDataModule(L.LightningDataModule):
         size = len(xy)
         if self.split_ratio == 1.0:
             self.trainset = xy
-            self.trainset.indices = torch.arange(size)
+            self.trainset.indices = torch.arange(size)  # type: ignore[attr-defined]
             self.valset = self.trainset
         else:
             n_train = int(size * self.split_ratio)
-            self.trainset, self.valset = random_split(xy, [n_train, size - n_train])
+            self.trainset, self.valset = random_split(xy, [n_train, size - n_train])  # type: ignore[assignment]
 
         index_set = torch.arange(params.shape[1])
         labels = np.array(
-            [to_parameterdict_key(index_set[v]) for v in params[self.trainset.indices] > 0]
+            [to_parameterdict_key(index_set[v]) for v in params[self.trainset.indices] > 0]  # type: ignore[attr-defined]
         )
-        self.trainset.labels = labels
+        self.trainset.labels = labels  # type: ignore[attr-defined]
 
     def load_data(self, path) -> torch.Tensor:
         delimiter = "," if path.suffix == ".csv" else None
@@ -357,15 +358,15 @@ class BezierSimplex(L.LightningModule):
             # Constant simplex: single control-point row, broadcast over batch.
             return self.control_points.matrix[0].unsqueeze(0).expand(t.shape[0], -1)
 
-        t = torch.as_tensor(t, device=self.device, dtype=self.coeffs_.dtype)
+        t = torch.as_tensor(t, device=self.device, dtype=cast(torch.Tensor, self.coeffs_).dtype)
 
         # Vectorized monomial calculation: (batch, n_indices)
-        monomials = torch.pow(t.unsqueeze(1), self.indices_.unsqueeze(0)).prod(dim=-1)
+        monomials = torch.pow(t.unsqueeze(1), cast(torch.Tensor, self.indices_).unsqueeze(0)).prod(dim=-1)
 
         # self.control_points.matrix is a direct nn.Parameter reference — no
         # Python loop or torch.stack overhead here.
         # Weighted control points (n_indices, n_values)
-        wcp = self.coeffs_.unsqueeze(1) * self.control_points.matrix
+        wcp = cast(torch.Tensor, self.coeffs_).unsqueeze(1) * self.control_points.matrix
 
         # Matrix multiplication: (batch, n_indices) @ (n_indices, n_values) -> (batch, n_values)
         return torch.matmul(monomials, wcp)
@@ -382,8 +383,9 @@ class BezierSimplex(L.LightningModule):
             # Return a scalar tensor on the same device/dtype so this composes
             # safely with the training loss (e.g., on GPU/AMP).
             return torch.zeros((), device=X.device, dtype=X.dtype)
-        i = self.adjacency_indices_[:, 0]
-        j = self.adjacency_indices_[:, 1]
+        adj_indices = cast(torch.Tensor, self.adjacency_indices_)
+        i = adj_indices[:, 0]
+        j = adj_indices[:, 1]
         return torch.sum((X[i] - X[j]).pow(2))
 
     def training_step(self, batch, batch_idx) -> dict[str, Any]:
@@ -447,7 +449,7 @@ class BezierSimplex(L.LightningModule):
         #   the control point at the empty index, if available.
         # - As a last resort, use torch.get_default_dtype().
         if hasattr(self, "coeffs_"):
-            dtype = self.coeffs_.dtype
+            dtype = cast(torch.Tensor, self.coeffs_).dtype
         else:
             try:
                 cp = self.control_points[()]
@@ -855,7 +857,7 @@ def load(
             except (ImportError, AttributeError):
                 pass
 
-            with torch.serialization.safe_globals(safe_classes):
+            with torch.serialization.safe_globals(safe_classes):  # type: ignore[arg-type]
                 data = torch.load(path, **kwargs)
         else:
             data = torch.load(path, **kwargs)

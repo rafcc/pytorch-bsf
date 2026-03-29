@@ -180,7 +180,7 @@ class ControlPoints(nn.Module):
 
         self.degree = sum(parsed_key)
         self.n_params = len(parsed_key)
-        self.n_values = len(first_val)
+        self.n_values = len(first_val)  # type: ignore[arg-type]
 
         self._indices = list(simplex_indices(self.n_params, self.degree))
         self._index_to_row = {idx: row for row, idx in enumerate(self._indices)}
