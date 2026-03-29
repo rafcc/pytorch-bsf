@@ -1,6 +1,6 @@
 name: pytorch-bsf
 docker_env:
-  image: ghcr.io/opthub-org/pytorch-bsf
+  image: ghcr.io/opthub-org/pytorch-bsf:latest
 entry_points:
   main:
     parameters:
