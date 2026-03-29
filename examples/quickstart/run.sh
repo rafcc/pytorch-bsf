@@ -58,8 +58,8 @@ python -m torch_bsf \
 echo "Train a Bezier Simplex Model with MLflow."
 # [TAG:MLflowURLDefine]
 MLFLOW_PROJECT_URL=https://github.com/opthub-org/pytorch-bsf
-MLFLOW_ENV_MANAGER=docker
 # [TAG:MLflowURLDefine_End]
+MLFLOW_ENV_MANAGER=docker
 
 # github action uses local repository to test pushed code
 if [ "${MLFLOW_RUN_LOCAL:-}" = "1" ]; then
@@ -69,6 +69,7 @@ fi
 
 # [TAG:RunMLflowTraining]
 mlflow run "$MLFLOW_PROJECT_URL" \
+  --env-manager="$MLFLOW_ENV_MANAGER" \
   -P params=params.csv \
   -P values=values.csv \
   -P degree=3
