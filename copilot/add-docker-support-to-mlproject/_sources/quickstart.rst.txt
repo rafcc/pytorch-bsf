@@ -60,23 +60,20 @@ Let's prepare sample parameters and values files for training:
 
 Now, you can fit a Bézier simplex model using the latest version of PyTorch-BSF directly from its GitHub repository.
 
-.. literalinclude:: ../examples/quickstart/run.sh
-   :language: bash
-   :start-after: [TAG:MLflowURLDefine]
-   :end-before: [TAG:MLflowURLDefine_End]
-
 **Docker (default)** — pulls a GHCR image with MKL-backed PyTorch:
 
-.. literalinclude:: ../examples/quickstart/run.sh
-   :language: bash
-   :start-after: [TAG:RunMLflowTraining]
-   :end-before: [TAG:RunMLflowTraining_End]
+.. code-block:: bash
+
+   mlflow run https://github.com/opthub-org/pytorch-bsf \
+     -P params=params.csv \
+     -P values=values.csv \
+     -P degree=3
 
 **Conda** — creates a conda environment with MKL-backed PyTorch:
 
 .. code-block:: bash
 
-   mlflow run "$MLFLOW_PROJECT_URL" \
+   mlflow run https://github.com/opthub-org/pytorch-bsf \
      --env-manager=conda \
      -P params=params.csv \
      -P values=values.csv \

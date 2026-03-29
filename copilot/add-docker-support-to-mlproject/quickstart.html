@@ -141,19 +141,15 @@ cat<span class="w"> </span><span class="s">&lt;&lt; EOS &gt; values.csv</span>
 <p>The parameters file and the values file must have the same number of lines.</p>
 </div>
 <p>Now, you can fit a Bézier simplex model using the latest version of PyTorch-BSF directly from its GitHub repository.</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nv">MLFLOW_PROJECT_URL</span><span class="o">=</span>https://github.com/opthub-org/pytorch-bsf
-<span class="nv">MLFLOW_ENV_MANAGER</span><span class="o">=</span>docker
-</pre></div>
-</div>
 <p><strong>Docker (default)</strong> — pulls a GHCR image with MKL-backed PyTorch:</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>mlflow<span class="w"> </span>run<span class="w"> </span><span class="s2">&quot;</span><span class="nv">$MLFLOW_PROJECT_URL</span><span class="s2">&quot;</span><span class="w"> </span><span class="se">\</span>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>mlflow<span class="w"> </span>run<span class="w"> </span>https://github.com/opthub-org/pytorch-bsf<span class="w"> </span><span class="se">\</span>
 <span class="w">  </span>-P<span class="w"> </span><span class="nv">params</span><span class="o">=</span>params.csv<span class="w"> </span><span class="se">\</span>
 <span class="w">  </span>-P<span class="w"> </span><span class="nv">values</span><span class="o">=</span>values.csv<span class="w"> </span><span class="se">\</span>
 <span class="w">  </span>-P<span class="w"> </span><span class="nv">degree</span><span class="o">=</span><span class="m">3</span>
 </pre></div>
 </div>
 <p><strong>Conda</strong> — creates a conda environment with MKL-backed PyTorch:</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>mlflow<span class="w"> </span>run<span class="w"> </span><span class="s2">&quot;</span><span class="nv">$MLFLOW_PROJECT_URL</span><span class="s2">&quot;</span><span class="w"> </span><span class="se">\</span>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>mlflow<span class="w"> </span>run<span class="w"> </span>https://github.com/opthub-org/pytorch-bsf<span class="w"> </span><span class="se">\</span>
 <span class="w">  </span>--env-manager<span class="o">=</span>conda<span class="w"> </span><span class="se">\</span>
 <span class="w">  </span>-P<span class="w"> </span><span class="nv">params</span><span class="o">=</span>params.csv<span class="w"> </span><span class="se">\</span>
 <span class="w">  </span>-P<span class="w"> </span><span class="nv">values</span><span class="o">=</span>values.csv<span class="w"> </span><span class="se">\</span>
