@@ -117,7 +117,8 @@ if args.loglevel >= 2:
         mlflow.pytorch.log_model(bs, "model", signature=signature)
     else:
         last_run = mlflow.last_active_run()
-        assert last_run is not None, "Expected last_active_run() to return a run object"
+        if last_run is None:
+            raise RuntimeError("Expected mlflow.last_active_run() to return a run object before starting a new run")
         with mlflow.start_run(run_id=last_run.info.run_id):
             mlflow.pytorch.log_model(bs, "model", signature=signature)
 
