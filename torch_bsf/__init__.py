@@ -2,7 +2,6 @@
 
 """
 
+from torch_bsf._version import __version__
 from torch_bsf.bezier_simplex import BezierSimplex, BezierSimplexDataModule, fit
-
-__version__ = "0.15.1"
 __all__ = ["BezierSimplex", "BezierSimplexDataModule", "fit"]
