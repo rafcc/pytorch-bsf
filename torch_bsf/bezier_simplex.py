@@ -105,18 +105,11 @@ class BezierSimplexDataModule(L.LightningDataModule):
         if self.split_ratio == 1.0:
             self.trainset: TensorDataset | Subset[tuple[torch.Tensor, ...]] = xy
             self.valset: TensorDataset | Subset[tuple[torch.Tensor, ...]] = self.trainset
-            train_indices = torch.arange(size)
         else:
             n_train = int(size * self.split_ratio)
             trainset, valset = random_split(xy, [n_train, size - n_train])
             self.trainset = trainset
             self.valset = valset
-            train_indices = torch.as_tensor(trainset.indices)
-
-        index_set = torch.arange(params.shape[1])
-        self.train_labels = np.array(
-            [to_parameterdict_key(index_set[v]) for v in params[train_indices] > 0]
-        )
 
     def load_data(self, path) -> torch.Tensor:
         delimiter = "," if path.suffix == ".csv" else None
