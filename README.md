@@ -41,7 +41,8 @@ Python >=3.10, <3.15.
 
 ### 1. via MLflow (No Installation Required)
 
-This is the easiest method as it requires no installation. If you have Docker and MLflow installed (e.g., via `pip install mlflow`), you can run `pytorch-bsf` directly from the repository without manually installing it.
+This is the easiest method as it requires no installation of `pytorch-bsf` itself.
+MLflow manages the runtime environment automatically—choose Docker (default) or Conda.
 
 First, prepare your data:
 
@@ -62,7 +63,11 @@ cat <<EOS > values.csv
 EOS
 ```
 
-Then, run the experiment:
+#### Docker (default) — MKL-backed PyTorch
+
+**Prerequisites:** [Docker](https://docs.docker.com/get-docker/) and `pip install mlflow`.
+
+MLflow pulls a pre-built image from GHCR that installs PyTorch via the `pytorch` conda channel, giving you Intel MKL as the BLAS backend:
 
 ```bash
 mlflow run https://github.com/opthub-org/pytorch-bsf \
@@ -71,8 +76,19 @@ mlflow run https://github.com/opthub-org/pytorch-bsf \
   -P degree=3
 ```
 
-This will automatically pull the pre-built Docker image (with all dependencies pre-installed) and run the training process.
-If you prefer conda instead of Docker, pass `--env-manager=conda` to the command above.
+#### Conda — MKL-backed PyTorch
+
+**Prerequisites:** [Miniconda](https://docs.conda.io/en/latest/miniconda.html) or Anaconda, and `pip install mlflow`.
+
+MLflow creates a conda environment from the project's `environment.yml`, which also uses the `pytorch` conda channel and Intel MKL:
+
+```bash
+mlflow run https://github.com/opthub-org/pytorch-bsf \
+  --env-manager=conda \
+  -P params=params.csv \
+  -P values=values.csv \
+  -P degree=3
+```
 
 ### 2. via CLI (After Installation)
 

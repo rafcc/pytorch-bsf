@@ -18,14 +18,31 @@ On each training and prediction, separation of runtime environment and installat
 Installation
 ^^^^^^^^^^^^
 
-First, install `Docker`_.
-Then, install ``mlflow`` via pip:
+Choose Docker (the default) or Conda as the environment manager.
+
+**Docker (default)**
+
+Install `Docker`_ and then install ``mlflow`` via pip:
 
 .. code-block:: bash
 
    pip install mlflow
 
+MLflow will pull a pre-built image from GHCR that installs PyTorch via the ``pytorch`` conda channel, providing Intel MKL as the BLAS backend.
+
 .. _Docker: https://docs.docker.com/get-docker/
+
+**Conda**
+
+Install `Miniconda`_ (or Anaconda) and then install ``mlflow`` via pip:
+
+.. code-block:: bash
+
+   pip install mlflow
+
+MLflow will create a conda environment from the project's ``environment.yml``, which also uses the ``pytorch`` conda channel and Intel MKL.
+
+.. _Miniconda: https://docs.conda.io/en/latest/miniconda.html
 
 
 Training
@@ -41,17 +58,29 @@ Let's prepare sample parameters and values files for training:
 .. warning::
    The parameters file and the values file must have the same number of lines.
 
-Now, you can fit a Bézier simplex model using the latest version of PyTorch-BSF directly from its GitHub repository:
+Now, you can fit a Bézier simplex model using the latest version of PyTorch-BSF directly from its GitHub repository.
 
 .. literalinclude:: ../examples/quickstart/run.sh
    :language: bash
    :start-after: [TAG:MLflowURLDefine]
    :end-before: [TAG:MLflowURLDefine_End]
 
+**Docker (default)** — pulls a GHCR image with MKL-backed PyTorch:
+
 .. literalinclude:: ../examples/quickstart/run.sh
    :language: bash
    :start-after: [TAG:RunMLflowTraining]
    :end-before: [TAG:RunMLflowTraining_End]
+
+**Conda** — creates a conda environment with MKL-backed PyTorch:
+
+.. code-block:: bash
+
+   mlflow run "$MLFLOW_PROJECT_URL" \
+     --env-manager=conda \
+     -P params=params.csv \
+     -P values=values.csv \
+     -P degree=3
 
 After the command finishes, the trained model will be saved in ``mlruns/0`` directory.
 Note the **Run ID** automatically set to the command execution, as you will need it for prediction.
