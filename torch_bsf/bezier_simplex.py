@@ -13,7 +13,7 @@ import torch.optim
 import yaml
 from jsonschema import ValidationError, validate
 from torch.nn import functional as F
-from torch.utils.data import DataLoader, TensorDataset, random_split
+from torch.utils.data import DataLoader, Subset, TensorDataset, random_split
 
 from torch_bsf.control_points import (
     ControlPoints,
@@ -77,13 +77,14 @@ class BezierSimplexDataModule(L.LightningDataModule):
         self.batch_size = batch_size
         self.split_ratio = split_ratio
         self.normalize = normalize
+        self.scaler: MinMaxScaler | StdScaler | QuantileScaler | NoneScaler
         if normalize == "max":
             self.scaler = MinMaxScaler()
         elif normalize == "std":
             self.scaler = StdScaler()
-        if normalize == "quantile":
+        elif normalize == "quantile":
             self.scaler = QuantileScaler()
-        if normalize == "none":
+        else:
             self.scaler = NoneScaler()
 
         with open(self.params) as f:
@@ -102,18 +103,13 @@ class BezierSimplexDataModule(L.LightningDataModule):
         xy = TensorDataset(params, values)
         size = len(xy)
         if self.split_ratio == 1.0:
-            self.trainset = xy
-            self.trainset.indices = torch.arange(size)
-            self.valset = self.trainset
+            self.trainset: TensorDataset | Subset[tuple[torch.Tensor, ...]] = xy
+            self.valset: TensorDataset | Subset[tuple[torch.Tensor, ...]] = self.trainset
         else:
             n_train = int(size * self.split_ratio)
-            self.trainset, self.valset = random_split(xy, [n_train, size - n_train])
-
-        index_set = torch.arange(params.shape[1])
-        labels = np.array(
-            [to_parameterdict_key(index_set[v]) for v in params[self.trainset.indices] > 0]
-        )
-        self.trainset.labels = labels
+            trainset, valset = random_split(xy, [n_train, size - n_train])
+            self.trainset = trainset
+            self.valset = valset
 
     def load_data(self, path) -> torch.Tensor:
         delimiter = "," if path.suffix == ".csv" else None
@@ -357,15 +353,15 @@ class BezierSimplex(L.LightningModule):
             # Constant simplex: single control-point row, broadcast over batch.
             return self.control_points.matrix[0].unsqueeze(0).expand(t.shape[0], -1)
 
-        t = torch.as_tensor(t, device=self.device, dtype=self.coeffs_.dtype)
+        t = torch.as_tensor(t, device=self.device, dtype=cast(torch.Tensor, self.coeffs_).dtype)
 
         # Vectorized monomial calculation: (batch, n_indices)
-        monomials = torch.pow(t.unsqueeze(1), self.indices_.unsqueeze(0)).prod(dim=-1)
+        monomials = torch.pow(t.unsqueeze(1), cast(torch.Tensor, self.indices_).unsqueeze(0)).prod(dim=-1)
 
         # self.control_points.matrix is a direct nn.Parameter reference — no
         # Python loop or torch.stack overhead here.
         # Weighted control points (n_indices, n_values)
-        wcp = self.coeffs_.unsqueeze(1) * self.control_points.matrix
+        wcp = cast(torch.Tensor, self.coeffs_).unsqueeze(1) * self.control_points.matrix
 
         # Matrix multiplication: (batch, n_indices) @ (n_indices, n_values) -> (batch, n_values)
         return torch.matmul(monomials, wcp)
@@ -382,8 +378,9 @@ class BezierSimplex(L.LightningModule):
             # Return a scalar tensor on the same device/dtype so this composes
             # safely with the training loss (e.g., on GPU/AMP).
             return torch.zeros((), device=X.device, dtype=X.dtype)
-        i = self.adjacency_indices_[:, 0]
-        j = self.adjacency_indices_[:, 1]
+        adj_indices = cast(torch.Tensor, self.adjacency_indices_)
+        i = adj_indices[:, 0]
+        j = adj_indices[:, 1]
         return torch.sum((X[i] - X[j]).pow(2))
 
     def training_step(self, batch, batch_idx) -> dict[str, Any]:
@@ -447,7 +444,7 @@ class BezierSimplex(L.LightningModule):
         #   the control point at the empty index, if available.
         # - As a last resort, use torch.get_default_dtype().
         if hasattr(self, "coeffs_"):
-            dtype = self.coeffs_.dtype
+            dtype = cast(torch.Tensor, self.coeffs_).dtype
         else:
             try:
                 cp = self.control_points[()]
@@ -840,7 +837,7 @@ def load(
             kwargs["weights_only"] = pt_weights_only
 
         if has_safe_globals and pt_weights_only:
-            safe_classes = [
+            safe_classes: list[Any] = [
                 BezierSimplex,
                 ControlPoints,
                 MinMaxScaler,

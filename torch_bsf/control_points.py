@@ -180,7 +180,10 @@ class ControlPoints(nn.Module):
 
         self.degree = sum(parsed_key)
         self.n_params = len(parsed_key)
-        self.n_values = len(first_val)
+        first_val_tensor = to_parameterdict_value(cast(Value, first_val))
+        if first_val_tensor.dim() != 1:
+            raise ValueError("Control point values must be 1-D tensors or sequences.")
+        self.n_values = first_val_tensor.numel()
 
         self._indices = list(simplex_indices(self.n_params, self.degree))
         self._index_to_row = {idx: row for row, idx in enumerate(self._indices)}

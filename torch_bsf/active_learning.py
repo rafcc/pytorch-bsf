@@ -50,18 +50,18 @@ def suggest_next_points(
 
     if method == "qbc":
         # Calculate variance across models
-        preds = []
+        preds: list[torch.Tensor] = []
         for model in models:
             model.eval()
             with torch.no_grad():
                 preds.append(model(candidates))
         
-        # preds: (K, n_candidates, n_values)
-        preds = torch.stack(preds)
+        # preds_stacked: (K, n_candidates, n_values)
+        preds_stacked = torch.stack(preds)
         
         # Variance of predictions: (n_candidates, n_values)
         # Use unbiased=False so a single-model committee yields zero (not NaN).
-        var = torch.var(preds, dim=0, unbiased=False)
+        var = torch.var(preds_stacked, dim=0, unbiased=False)
         
         # Sum of variance across dimensions: (n_candidates,)
         uncertainty = torch.sum(var, dim=1)
