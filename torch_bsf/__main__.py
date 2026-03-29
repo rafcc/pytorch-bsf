@@ -113,12 +113,10 @@ if args.loglevel >= 2:
         inputs=Schema([TensorSpec(np.dtype("float64"), (-1, bs.n_params))]),
         outputs=Schema([TensorSpec(np.dtype("float64"), (-1, bs.n_values))]),
     )
-    if mlflow.active_run() is not None or mlflow.last_active_run() is None:
+    last_run = mlflow.last_active_run()
+    if mlflow.active_run() is not None or last_run is None:
         mlflow.pytorch.log_model(bs, "model", signature=signature)
     else:
-        last_run = mlflow.last_active_run()
-        if last_run is None:
-            raise RuntimeError("Expected mlflow.last_active_run() to return a run object before starting a new run")
         with mlflow.start_run(run_id=last_run.info.run_id):
             mlflow.pytorch.log_model(bs, "model", signature=signature)
 

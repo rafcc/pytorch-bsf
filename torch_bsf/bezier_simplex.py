@@ -13,7 +13,7 @@ import torch.optim
 import yaml
 from jsonschema import ValidationError, validate
 from torch.nn import functional as F
-from torch.utils.data import DataLoader, TensorDataset, random_split
+from torch.utils.data import DataLoader, Subset, TensorDataset, random_split
 
 from torch_bsf.control_points import (
     ControlPoints,
@@ -103,18 +103,20 @@ class BezierSimplexDataModule(L.LightningDataModule):
         xy = TensorDataset(params, values)
         size = len(xy)
         if self.split_ratio == 1.0:
-            self.trainset = xy
-            self.trainset.indices = torch.arange(size)  # type: ignore[attr-defined]
-            self.valset = self.trainset
+            self.trainset: TensorDataset | Subset[tuple[torch.Tensor, ...]] = xy
+            self.valset: TensorDataset | Subset[tuple[torch.Tensor, ...]] = self.trainset
+            train_indices = torch.arange(size)
         else:
             n_train = int(size * self.split_ratio)
-            self.trainset, self.valset = random_split(xy, [n_train, size - n_train])  # type: ignore[assignment]
+            trainset, valset = random_split(xy, [n_train, size - n_train])
+            self.trainset = trainset
+            self.valset = valset
+            train_indices = torch.as_tensor(trainset.indices)
 
         index_set = torch.arange(params.shape[1])
-        labels = np.array(
-            [to_parameterdict_key(index_set[v]) for v in params[self.trainset.indices] > 0]  # type: ignore[attr-defined]
+        self.train_labels = np.array(
+            [to_parameterdict_key(index_set[v]) for v in params[train_indices] > 0]
         )
-        self.trainset.labels = labels  # type: ignore[attr-defined]
 
     def load_data(self, path) -> torch.Tensor:
         delimiter = "," if path.suffix == ".csv" else None
@@ -842,7 +844,7 @@ def load(
             kwargs["weights_only"] = pt_weights_only
 
         if has_safe_globals and pt_weights_only:
-            safe_classes = [
+            safe_classes: list[Any] = [
                 BezierSimplex,
                 ControlPoints,
                 MinMaxScaler,
@@ -857,7 +859,7 @@ def load(
             except (ImportError, AttributeError):
                 pass
 
-            with torch.serialization.safe_globals(safe_classes):  # type: ignore[arg-type]
+            with torch.serialization.safe_globals(safe_classes):
                 data = torch.load(path, **kwargs)
         else:
             data = torch.load(path, **kwargs)
