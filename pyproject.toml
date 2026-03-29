@@ -81,6 +81,7 @@ develop = [
 [tool.setuptools]
 include-package-data = true
 zip-safe = false
+license-files = ["LICENSE"]
 
 [tool.setuptools.dynamic]
 version = {attr = "torch_bsf._version.__version__"}
