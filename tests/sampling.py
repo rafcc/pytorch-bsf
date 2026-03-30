@@ -116,15 +116,15 @@ def test_simplex_random_invalid_n_samples():
 # ---------------------------------------------------------------------------
 
 try:
-    import scipy  # noqa: F401
-except Exception:
+    from scipy.stats import qmc  # noqa: F401
+except ImportError:
     _has_scipy = False
 else:
     _has_scipy = True
 
 _scipy_skip = pytest.mark.skipif(
     not _has_scipy,
-    reason="scipy is required for simplex_sobol",
+    reason="scipy.stats.qmc is required for simplex_sobol",
 )
 
 

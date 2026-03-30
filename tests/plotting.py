@@ -2,7 +2,7 @@ import pytest
 
 matplotlib = pytest.importorskip("matplotlib")
 matplotlib.use("Agg")  # Non-interactive backend for tests
-pytest.importorskip("scipy")  # Required for triangle plotting via Delaunay
+pytest.importorskip("scipy.spatial")  # Required for triangle plotting via Delaunay
 
 import torch_bsf.bezier_simplex as tbbs
 from torch_bsf.plotting import plot_bezier_simplex
