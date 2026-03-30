@@ -65,19 +65,19 @@ single null-model point :math:`P^*`.
 
    All points are coloured by :math:`(w_1, w_2, w_3) \mapsto (R, G, B)`,
    so the same weight vector has the same colour in every panel.
-   **Left** – The :math:`(\alpha, \lambda)` hyperparameter space (x: L1 mixing ratio,
-   y: regularisation strength).
+   **Left** – The :math:`(\lambda, \alpha)` hyperparameter space (x: regularisation
+   strength, y: L1 mixing ratio).
    The red line at :math:`\lambda = 0` is the identified edge; all points on it
    share the colour :math:`(1, 0, 0)` = red because :math:`w = (1, 0, 0)` there.
-   **Centre** – The 2-simplex with vertices :math:`(1,0,0)` at the top (red),
-   :math:`(0,1,0)` at the bottom-left (green), and :math:`(0,0,1)` at the
-   bottom-right (blue).
-   Coloured horizontal segments are constant-:math:`\lambda` *leaves*; the gradient
-   base edge (green→blue at the bottom) is the null-model edge to be identified.
-   **Right** – The quotient space: vertex :math:`A` = :math:`(1,0,0)` (red, top),
-   and the null-model point :math:`P^*` (bottom) shown as a large green dot
-   :math:`(0,1,0)` behind a smaller blue dot :math:`(0,0,1)`, reflecting that
-   both endpoints of the base edge are identified to :math:`P^*`.
+   **Centre** – The 2-simplex with vertices :math:`(1,0,0)` at the bottom-left (red),
+   :math:`(0,1,0)` at the bottom-right (green), and :math:`(0,0,1)` at the
+   top (blue).
+   The gradient right edge (green→blue) is the null-model base edge to be identified.
+   **Right** – The quotient space rotated 90° counterclockwise: vertex :math:`A` =
+   :math:`(1,0,0)` (red) at the left, and the null-model point :math:`P^*` at the
+   right shown as a large green dot :math:`(0,1,0)` behind a smaller blue dot
+   :math:`(0,0,1)`, reflecting that both endpoints of the base edge are identified
+   to :math:`P^*`.
 
 
 Grid Structure
