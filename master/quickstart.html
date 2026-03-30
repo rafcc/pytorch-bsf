@@ -46,9 +46,13 @@
               <p class="caption" role="heading"><span class="caption-text">User guide</span></p>
 <ul class="current">
 <li class="toctree-l1 current"><a class="current reference internal" href="#">Quickstart</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#run-as-a-docker-container">Run as a Docker container</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#training">Training</a></li>
+</ul>
+</li>
 <li class="toctree-l2"><a class="reference internal" href="#run-as-an-mlflow-project">Run as an MLflow project</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="#installation">Installation</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#training">Training</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id1">Training</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#prediction">Prediction</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#serve-prediction-api">Serve prediction API</a></li>
 </ul>
@@ -94,8 +98,49 @@
              
   <section id="quickstart">
 <h1>Quickstart<a class="headerlink" href="#quickstart" title="Link to this heading"></a></h1>
-<p>PyTorch-BSF can be used in three ways depending on your workflow: as a zero-install <strong>MLflow project</strong> (great for one-off experiments), as a <strong>CLI module</strong> (scriptable, no Python required), or as a <strong>Python library</strong> (for full programmatic control).
+<p>PyTorch-BSF can be used in four ways depending on your workflow: as a <strong>Docker container</strong> (no installation required), as a zero-install <strong>MLflow project</strong> (great for one-off experiments with experiment tracking), as a <strong>CLI module</strong> (scriptable, no Python coding required), or as a <strong>Python library</strong> (for full programmatic control).
 Pick the option that best fits your setup.</p>
+<section id="run-as-a-docker-container">
+<h2>Run as a Docker container<a class="headerlink" href="#run-as-a-docker-container" title="Link to this heading"></a></h2>
+<p>A pre-built image is available on GHCR, built on <code class="docutils literal notranslate"><span class="pre">continuumio/miniconda3</span></code> with PyTorch installed via the <code class="docutils literal notranslate"><span class="pre">pytorch</span></code> conda channel — providing Intel MKL as the BLAS backend.</p>
+<p><strong>Prerequisites:</strong> <a class="reference external" href="https://docs.docker.com/get-docker/">Docker</a>.</p>
+<section id="training">
+<h3>Training<a class="headerlink" href="#training" title="Link to this heading"></a></h3>
+<p>Let’s prepare sample parameters and values files for training:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>cat<span class="w"> </span><span class="s">&lt;&lt; EOS &gt; params.csv</span>
+<span class="s">1.00,0.00</span>
+<span class="s">0.75,0.25</span>
+<span class="s">0.50,0.50</span>
+<span class="s">0.25,0.75</span>
+<span class="s">0.00,1.00</span>
+<span class="s">EOS</span>
+cat<span class="w"> </span><span class="s">&lt;&lt; EOS &gt; values.csv</span>
+<span class="s">0.00,1.00</span>
+<span class="s">3.00,2.00</span>
+<span class="s">4.00,5.00</span>
+<span class="s">7.00,6.00</span>
+<span class="s">8.00,9.00</span>
+<span class="s">EOS</span>
+</pre></div>
+</div>
+<div class="admonition warning">
+<p class="admonition-title">Warning</p>
+<p>The parameters file and the values file must have the same number of lines.</p>
+</div>
+<p>Mount the current directory as <code class="docutils literal notranslate"><span class="pre">/workspace</span></code> inside the container and run training:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>docker<span class="w"> </span>run<span class="w"> </span>--rm<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>--user<span class="w"> </span><span class="s2">&quot;</span><span class="k">$(</span>id<span class="w"> </span>-u<span class="k">)</span><span class="s2">&quot;</span>:<span class="s2">&quot;</span><span class="k">$(</span>id<span class="w"> </span>-g<span class="k">)</span><span class="s2">&quot;</span><span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>-v<span class="w"> </span><span class="s2">&quot;</span><span class="k">$(</span><span class="nb">pwd</span><span class="k">)</span><span class="s2">&quot;</span>:/workspace<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>ghcr.io/opthub-org/pytorch-bsf<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>python<span class="w"> </span>-m<span class="w"> </span>torch_bsf<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>--params<span class="o">=</span>params.csv<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>--values<span class="o">=</span>values.csv<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>--degree<span class="o">=</span><span class="m">3</span>
+</pre></div>
+</div>
+<p>The trained model will be saved under <code class="docutils literal notranslate"><span class="pre">mlruns/</span></code> in the current directory.</p>
+</section>
+</section>
 <section id="run-as-an-mlflow-project">
 <h2>Run as an MLflow project<a class="headerlink" href="#run-as-an-mlflow-project" title="Link to this heading"></a></h2>
 <p>If you have parameters and values for training a Bézier simplex in common file formats such as CSV, JSON, etc., then the easiest way is to invoke PyTorch-BSF via <a class="reference external" href="https://www.mlflow.org/docs/latest/">MLflow</a>.
@@ -103,14 +148,14 @@ In this way, some CLI commands for training and prediction are provided without 
 On each training and prediction, separation of runtime environment and installation of PyTorch-BSF are automatically handled by MLflow!</p>
 <section id="installation">
 <h3>Installation<a class="headerlink" href="#installation" title="Link to this heading"></a></h3>
-<p>First, install <a class="reference external" href="https://docs.conda.io/en/latest/miniconda.html">Miniconda</a>.
+<p>Install <a class="reference external" href="https://docs.conda.io/en/latest/miniconda.html">Miniconda</a>.
 Then, install <code class="docutils literal notranslate"><span class="pre">mlflow</span></code> package from <code class="docutils literal notranslate"><span class="pre">conda-forge</span></code> channel:</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>conda<span class="w"> </span>install<span class="w"> </span>-c<span class="w"> </span>conda-forge<span class="w"> </span>mlflow
 </pre></div>
 </div>
 </section>
-<section id="training">
-<h3>Training<a class="headerlink" href="#training" title="Link to this heading"></a></h3>
+<section id="id1">
+<h3>Training<a class="headerlink" href="#id1" title="Link to this heading"></a></h3>
 <p>Let’s prepare sample parameters and values files for training:</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>cat<span class="w"> </span><span class="s">&lt;&lt; EOS &gt; params.csv</span>
 <span class="s">1.00,0.00</span>
@@ -310,6 +355,7 @@ Then, install the package:</p>
             <dd><a href="../v0.14.3/quickstart.html">v0.14.3</a></dd>
             <dd><a href="../v0.15.0/quickstart.html">v0.15.0</a></dd>
             <dd><a href="../v0.15.1/quickstart.html">v0.15.1</a></dd>
+            <dd><a href="../v0.16.0/quickstart.html">v0.16.0</a></dd>
             <dd><a href="../v0.2.0/quickstart.html">v0.2.0</a></dd>
             <dd><a href="../v0.3.0/quickstart.html">v0.3.0</a></dd>
             <dd><a href="../v0.3.1/quickstart.html">v0.3.1</a></dd>
