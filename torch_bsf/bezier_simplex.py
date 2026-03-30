@@ -235,17 +235,35 @@ class BezierSimplex(L.LightningModule):
 
     def __init__(
         self,
-        control_points: ControlPoints | ControlPointsData,
+        control_points: ControlPoints | ControlPointsData | None = None,
         smoothness_weight: float = 0.0,
+        _n_params: int | None = None,
+        _degree: int | None = None,
+        _n_values: int | None = None,
     ):
         # REQUIRED
         super().__init__()
+        if control_points is None:
+            # Called by load_from_checkpoint: reconstruct a placeholder from
+            # the saved dimensions so that the state dict can be loaded into it.
+            if _n_params is None or _degree is None or _n_values is None:
+                raise TypeError("BezierSimplex.__init__() missing required argument: 'control_points'")
+            control_points = {
+                idx: [0.0] * _n_values
+                for idx in simplex_indices(_n_params, _degree)
+            }
         self.control_points = (
             control_points
             if isinstance(control_points, ControlPoints)
             else ControlPoints(control_points)
         )
         self.smoothness_weight = smoothness_weight
+        # Overwrite reconstruction params with the actual model dimensions so
+        # that they are serialised into every Lightning checkpoint and can be
+        # used to recreate a placeholder when load_from_checkpoint is called.
+        _n_params = self.n_params
+        _degree = self.degree
+        _n_values = self.n_values
         # Exclude the submodule from hyperparameters; it is already saved as
         # part of the module state dict.
         self.save_hyperparameters(ignore=["control_points"])
