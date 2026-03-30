@@ -39,10 +39,6 @@ Python >=3.10, <3.15.
 
 ## Quickstart
 
-### 1. via MLflow (No Installation Required)
-
-This is the easiest method as it requires no installation. If you have MLflow installed (e.g., via `conda install -c conda-forge mlflow`), you can run `pytorch-bsf` directly from the repository without manually installing it.
-
 First, prepare your data:
 
 ```bash
@@ -62,7 +58,28 @@ cat <<EOS > values.csv
 EOS
 ```
 
-Then, run the experiment:
+### 1. via Docker (No Installation Required)
+
+**Prerequisites:** [Docker](https://docs.docker.com/get-docker/).
+
+A pre-built image is available on GHCR, built on `continuumio/miniconda3` with PyTorch installed via the `pytorch` conda channel, providing Intel MKL as the BLAS backend:
+
+```bash
+docker run --rm \
+  --user "$(id -u)":"$(id -g)" \
+  -v "$(pwd)":/workspace \
+  ghcr.io/opthub-org/pytorch-bsf \
+  python -m torch_bsf \
+  --params=params.csv \
+  --values=values.csv \
+  --degree=3
+```
+
+### 2. via MLflow (No Installation Required)
+
+**Prerequisites:** [Miniconda](https://docs.conda.io/en/latest/miniconda.html) or Anaconda, and `pip install mlflow`.
+
+MLflow creates a conda environment from the project's `environment.yml`, which uses the `pytorch` conda channel and Intel MKL:
 
 ```bash
 mlflow run https://github.com/opthub-org/pytorch-bsf \
@@ -71,9 +88,7 @@ mlflow run https://github.com/opthub-org/pytorch-bsf \
   -P degree=3
 ```
 
-This will automatically create a temporary conda environment, install dependencies, and run the training process.
-
-### 2. via CLI (After Installation)
+### 3. via CLI (After Installation)
 
 This method is suitable when you do not need experiment tracking. If you prefer to install the package, you can run it via the command line interface.
 
@@ -120,7 +135,7 @@ python -m torch_bsf \
 
 </details>
 
-### 3. via Python Script
+### 4. via Python Script
 
 This is the most flexible method, allowing you to use custom data loaders to read large-scale data and finely control logging. Train a model using the Python API `fit()`, and call the resulting model to predict.
 
