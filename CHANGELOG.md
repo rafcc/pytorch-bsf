@@ -1,6 +1,6 @@
 # Changelog
 
-## [0.17.0](https://github.com/opthub-org/pytorch-bsf/compare/v0.16.0...v0.17.0) (2026-03-30)
+## [0.16.0](https://github.com/opthub-org/pytorch-bsf/compare/v0.15.1...v0.16.0) (2026-03-30)
 
 
 ### Features
@@ -22,6 +22,7 @@
 * use pytorch-lightning v2 ([#119](https://github.com/opthub-org/pytorch-bsf/issues/119)) ([8afbf48](https://github.com/opthub-org/pytorch-bsf/commit/8afbf482539540028d14a3cd9eafac219bebd71d))
 * visualization ([#247](https://github.com/opthub-org/pytorch-bsf/issues/247)) ([4a4e4a0](https://github.com/opthub-org/pytorch-bsf/commit/4a4e4a07a4211ba01de5ff123c23cbf41ba97531))
 * write a file for each fold ([#170](https://github.com/opthub-org/pytorch-bsf/issues/170)) ([b00d4c3](https://github.com/opthub-org/pytorch-bsf/commit/b00d4c3807ab67e6d1963d778779903967816a7c))
+* add pyproject.toml for uv support ([#213](https://github.com/opthub-org/pytorch-bsf/issues/213)) ([#274](https://github.com/opthub-org/pytorch-bsf/issues/274)) ([97bd22d](https://github.com/opthub-org/pytorch-bsf/commit/97bd22dc262c222c49a880bde26db1f6ea3c94e4))
 
 
 ### Bug Fixes
@@ -72,13 +73,6 @@
 * update examples ([5a07b7b](https://github.com/opthub-org/pytorch-bsf/commit/5a07b7b14008f287a03e38a2f5c5b4f12e2dad45))
 * update terminology ([#209](https://github.com/opthub-org/pytorch-bsf/issues/209)) ([dc52c50](https://github.com/opthub-org/pytorch-bsf/commit/dc52c506bb1c556fc5cd5f636e98f5cf82734933))
 * use license_files instead of license_file ([#146](https://github.com/opthub-org/pytorch-bsf/issues/146)) ([82b5fd8](https://github.com/opthub-org/pytorch-bsf/commit/82b5fd86f6b56454e69218f513de1a7c4431f76c))
-
-## [0.16.0](https://github.com/opthub-org/pytorch-bsf/compare/v0.15.1...v0.16.0) (2026-03-29)
-
-
-### Features
-
-* add pyproject.toml for uv support ([#213](https://github.com/opthub-org/pytorch-bsf/issues/213)) ([#274](https://github.com/opthub-org/pytorch-bsf/issues/274)) ([97bd22d](https://github.com/opthub-org/pytorch-bsf/commit/97bd22dc262c222c49a880bde26db1f6ea3c94e4))
 
 ## [0.15.1](https://github.com/opthub-org/pytorch-bsf/compare/v0.15.0...v0.15.1) (2026-03-27)
 
