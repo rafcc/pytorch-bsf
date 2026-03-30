@@ -1,4 +1,4 @@
-from argparse import ArgumentParser
+from argparse import ArgumentParser, BooleanOptionalAction
 from pathlib import Path
 
 import numpy as np
@@ -25,8 +25,8 @@ parser.add_argument(
     "--normalize", type=str, choices=("none", "max", "std", "quantile"), default="none"
 )
 parser.add_argument("--num_folds", type=int, default=5)
-parser.add_argument("--shuffle", type=bool, default=True)
-parser.add_argument("--stratified", type=bool, default=True)
+parser.add_argument("--shuffle", action=BooleanOptionalAction, default=True)
+parser.add_argument("--stratified", action=BooleanOptionalAction, default=True)
 parser.add_argument("--split_ratio", type=float, default=1.0)
 parser.add_argument("--batch_size", type=int)
 parser.add_argument("--max_epochs", type=int, default=2)

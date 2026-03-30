@@ -261,6 +261,7 @@ class BezierSimplex(L.LightningModule):
         self,
         control_points: ControlPoints | ControlPointsData | None = None,
         smoothness_weight: float = 0.0,
+        *,
         _n_params: int | None = None,
         _degree: int | None = None,
         _n_values: int | None = None,

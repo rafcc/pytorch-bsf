@@ -41,8 +41,8 @@ def test_cli_basic_run(tmp_path):
         "--num_folds=2",
         "--max_epochs=1",
         "--loglevel=0",
-        # stratified=False avoids StratifiedKFold failure on continuous multioutput values
-        "--stratified=",
+        # Disable stratification to avoid StratifiedKFold failure on continuous multioutput values
+        "--no-stratified",
         cwd=tmp_path,
     )
     assert result.returncode == 0, result.stderr
@@ -108,8 +108,8 @@ def test_cli_init_flag(tmp_path):
         "--num_folds=2",
         "--max_epochs=1",
         "--loglevel=0",
-        # stratified=False avoids StratifiedKFold failure on continuous multioutput values
-        "--stratified=",
+        # Disable stratification to avoid StratifiedKFold failure on continuous multioutput values
+        "--no-stratified",
         cwd=tmp_path,
     )
     assert result.returncode == 0, result.stderr
@@ -124,8 +124,8 @@ def test_cli_output_files_created(tmp_path):
         "--num_folds=2",
         "--max_epochs=1",
         "--loglevel=0",
-        # stratified=False avoids StratifiedKFold failure on continuous multioutput values
-        "--stratified=",
+        # Disable stratification to avoid StratifiedKFold failure on continuous multioutput values
+        "--no-stratified",
         cwd=tmp_path,
     )
     assert result.returncode == 0, result.stderr
