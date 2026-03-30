@@ -22,7 +22,6 @@
 * use pytorch-lightning v2 ([#119](https://github.com/opthub-org/pytorch-bsf/issues/119)) ([8afbf48](https://github.com/opthub-org/pytorch-bsf/commit/8afbf482539540028d14a3cd9eafac219bebd71d))
 * visualization ([#247](https://github.com/opthub-org/pytorch-bsf/issues/247)) ([4a4e4a0](https://github.com/opthub-org/pytorch-bsf/commit/4a4e4a07a4211ba01de5ff123c23cbf41ba97531))
 * write a file for each fold ([#170](https://github.com/opthub-org/pytorch-bsf/issues/170)) ([b00d4c3](https://github.com/opthub-org/pytorch-bsf/commit/b00d4c3807ab67e6d1963d778779903967816a7c))
-* add pyproject.toml for uv support ([#213](https://github.com/opthub-org/pytorch-bsf/issues/213)) ([#274](https://github.com/opthub-org/pytorch-bsf/issues/274)) ([97bd22d](https://github.com/opthub-org/pytorch-bsf/commit/97bd22dc262c222c49a880bde26db1f6ea3c94e4))
 
 
 ### Bug Fixes
