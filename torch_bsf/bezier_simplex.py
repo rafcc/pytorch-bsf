@@ -249,7 +249,7 @@ class BezierSimplex(L.LightningModule):
             if _n_params is None or _degree is None or _n_values is None:
                 raise TypeError("BezierSimplex.__init__() missing required argument: 'control_points'")
             control_points = {
-                idx: [0.0] * _n_values
+                idx: [0.0 for _ in range(_n_values)]
                 for idx in simplex_indices(_n_params, _degree)
             }
         self.control_points = (
@@ -258,9 +258,13 @@ class BezierSimplex(L.LightningModule):
             else ControlPoints(control_points)
         )
         self.smoothness_weight = smoothness_weight
-        # Overwrite reconstruction params with the actual model dimensions so
-        # that they are serialised into every Lightning checkpoint and can be
-        # used to recreate a placeholder when load_from_checkpoint is called.
+        # save_hyperparameters() captures local variable values at the point of
+        # the call.  Reassigning _n_params/_degree/_n_values from the actual
+        # model dimensions here ensures they are stored correctly in every
+        # checkpoint — both when called normally (where the caller passes None
+        # for these) and when called by load_from_checkpoint (where the caller
+        # passes the saved values).  Without this reassignment, a normal save
+        # would persist _n_params=None and checkpoint loading would fail.
         _n_params = self.n_params
         _degree = self.degree
         _n_values = self.n_values
