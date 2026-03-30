@@ -1,7 +1,7 @@
 Quickstart
 ==========
 
-PyTorch-BSF can be used in four ways depending on your workflow: as a **Docker container** (no installation required), as a zero-install **MLflow project** (great for one-off experiments with experiment tracking), as a **CLI module** (scriptable, no Python required), or as a **Python library** (for full programmatic control).
+PyTorch-BSF can be used in four ways depending on your workflow: as a **Docker container** (no installation required), as a zero-install **MLflow project** (great for one-off experiments with experiment tracking), as a **CLI module** (scriptable, no Python coding required), or as a **Python library** (for full programmatic control).
 Pick the option that best fits your setup.
 
 
