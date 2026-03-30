@@ -39,11 +39,6 @@ Python >=3.10, <3.15.
 
 ## Quickstart
 
-### 1. via MLflow (No Installation Required)
-
-This is the easiest method as it requires no installation of `pytorch-bsf` itself.
-MLflow manages the runtime environment automatically—choose Docker (default) or Conda.
-
 First, prepare your data:
 
 ```bash
@@ -63,34 +58,36 @@ cat <<EOS > values.csv
 EOS
 ```
 
-#### Docker (default) — MKL-backed PyTorch
+### 1. via Docker (No Installation Required)
 
-**Prerequisites:** [Docker](https://docs.docker.com/get-docker/) and `pip install mlflow`.
+**Prerequisites:** [Docker](https://docs.docker.com/get-docker/).
 
-MLflow pulls a pre-built image from GHCR that installs PyTorch via the `pytorch` conda channel, giving you Intel MKL as the BLAS backend:
+A pre-built image is available on GHCR, built on `continuumio/miniconda3` with PyTorch installed via the `pytorch` conda channel, providing Intel MKL as the BLAS backend:
 
 ```bash
-mlflow run https://github.com/opthub-org/pytorch-bsf \
-  -P params=params.csv \
-  -P values=values.csv \
-  -P degree=3
+docker run --rm \
+  -v "$(pwd)":/workspace \
+  ghcr.io/opthub-org/pytorch-bsf \
+  python -m torch_bsf \
+  --params=params.csv \
+  --values=values.csv \
+  --degree=3
 ```
 
-#### Conda — MKL-backed PyTorch
+### 2. via MLflow (No Installation Required)
 
 **Prerequisites:** [Miniconda](https://docs.conda.io/en/latest/miniconda.html) or Anaconda, and `pip install mlflow`.
 
-MLflow creates a conda environment from the project's `environment.yml`, which also uses the `pytorch` conda channel and Intel MKL:
+MLflow creates a conda environment from the project's `environment.yml`, which uses the `pytorch` conda channel and Intel MKL:
 
 ```bash
 mlflow run https://github.com/opthub-org/pytorch-bsf \
-  --env-manager=conda \
   -P params=params.csv \
   -P values=values.csv \
   -P degree=3
 ```
 
-### 2. via CLI (After Installation)
+### 3. via CLI (After Installation)
 
 This method is suitable when you do not need experiment tracking. If you prefer to install the package, you can run it via the command line interface.
 

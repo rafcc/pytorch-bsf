@@ -53,8 +53,12 @@ jobs:
       uses: conda-incubator/setup-miniconda@v3
       with:
         auto-update-conda: true
-        activate-environment: pytorch-bsf  # matches `name:` in environment.yml
-        environment-file: environment.yml
+        activate-environment: test-env
+        python-version: "3.14"
+    - name: Install dependencies
+      run: |
+        # Install only mlflow; `mlflow run` below creates the full conda env from environment.yml
+        conda install -c conda-forge mlflow
     - name: E2E test with MLflow
       run: |
-        mlflow run . --env-manager=local -P params=params.csv -P values=values.csv -P degree=3
+        mlflow run https://github.com/opthub-org/pytorch-bsf --version ${{ github.sha }} -P params=params.csv -P values=values.csv -P degree=3

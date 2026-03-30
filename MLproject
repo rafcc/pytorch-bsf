@@ -1,6 +1,5 @@
 name: pytorch-bsf
-docker_env:
-  image: ghcr.io/opthub-org/pytorch-bsf:latest
+conda_env: environment.yml
 entry_points:
   main:
     parameters:
