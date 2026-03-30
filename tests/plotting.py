@@ -1,7 +1,8 @@
-import matplotlib
 import pytest
 
+matplotlib = pytest.importorskip("matplotlib")
 matplotlib.use("Agg")  # Non-interactive backend for tests
+pytest.importorskip("scipy")  # Required for triangle plotting via Delaunay
 
 import torch_bsf.bezier_simplex as tbbs
 from torch_bsf.plotting import plot_bezier_simplex
@@ -28,23 +29,35 @@ def bezier_triangle_3d():
 
 
 def test_plot_bezier_curve_2d_returns_axes(bezier_curve_2d):
+    import matplotlib.pyplot as plt
+
     ax = plot_bezier_simplex(bezier_curve_2d, num=10)
     assert ax is not None
+    plt.close(ax.figure)
 
 
 def test_plot_bezier_curve_3d_returns_axes(bezier_curve_3d):
+    import matplotlib.pyplot as plt
+
     ax = plot_bezier_simplex(bezier_curve_3d, num=10)
     assert ax is not None
+    plt.close(ax.figure)
 
 
 def test_plot_bezier_triangle_2d_returns_axes(bezier_triangle_2d):
+    import matplotlib.pyplot as plt
+
     ax = plot_bezier_simplex(bezier_triangle_2d, num=5)
     assert ax is not None
+    plt.close(ax.figure)
 
 
 def test_plot_bezier_triangle_3d_returns_axes(bezier_triangle_3d):
+    import matplotlib.pyplot as plt
+
     ax = plot_bezier_simplex(bezier_triangle_3d, num=5)
     assert ax is not None
+    plt.close(ax.figure)
 
 
 def test_plot_bezier_simplex_not_implemented():
@@ -72,10 +85,16 @@ def test_plot_triangle_with_existing_axes(bezier_triangle_2d):
 
 
 def test_plot_curve_without_control_points(bezier_curve_2d):
+    import matplotlib.pyplot as plt
+
     ax = plot_bezier_simplex(bezier_curve_2d, num=10, show_control_points=False)
     assert ax is not None
+    plt.close(ax.figure)
 
 
 def test_plot_triangle_without_control_points(bezier_triangle_2d):
+    import matplotlib.pyplot as plt
+
     ax = plot_bezier_simplex(bezier_triangle_2d, num=5, show_control_points=False)
     assert ax is not None
+    plt.close(ax.figure)

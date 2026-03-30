@@ -115,7 +115,15 @@ def test_simplex_random_invalid_n_samples():
 # simplex_sobol
 # ---------------------------------------------------------------------------
 
+import importlib.util as _importlib_util
 
+_scipy_skip = pytest.mark.skipif(
+    _importlib_util.find_spec("scipy") is None,
+    reason="scipy is required for simplex_sobol",
+)
+
+
+@_scipy_skip
 @pytest.mark.parametrize(
     "n_params, n_samples",
     [
@@ -128,6 +136,7 @@ def test_simplex_sobol_shape(n_params, n_samples):
     assert result.shape == (n_samples, n_params)
 
 
+@_scipy_skip
 @pytest.mark.parametrize(
     "n_params, n_samples",
     [
@@ -140,21 +149,25 @@ def test_simplex_sobol_sums_to_one(n_params, n_samples):
     assert torch.allclose(result.sum(dim=1), torch.ones(n_samples), atol=1e-5)
 
 
+@_scipy_skip
 def test_simplex_sobol_zero_samples():
     result = simplex_sobol(2, 0)
     assert result.shape == (0, 2)
 
 
+@_scipy_skip
 def test_simplex_sobol_non_negative():
     result = simplex_sobol(3, 16)
     assert (result >= 0).all()
 
 
+@_scipy_skip
 def test_simplex_sobol_invalid_n_params():
     with pytest.raises(ValueError, match="at least 2"):
         simplex_sobol(1, 5)
 
 
+@_scipy_skip
 def test_simplex_sobol_invalid_n_samples():
     with pytest.raises(ValueError, match="non-negative"):
         simplex_sobol(2, -1)
