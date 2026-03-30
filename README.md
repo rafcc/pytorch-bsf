@@ -66,6 +66,7 @@ A pre-built image is available on GHCR, built on `continuumio/miniconda3` with P
 
 ```bash
 docker run --rm \
+  --user "$(id -u)":"$(id -g)" \
   -v "$(pwd)":/workspace \
   ghcr.io/opthub-org/pytorch-bsf \
   python -m torch_bsf \
@@ -134,7 +135,7 @@ python -m torch_bsf \
 
 </details>
 
-### 3. via Python Script
+### 4. via Python Script
 
 This is the most flexible method, allowing you to use custom data loaders to read large-scale data and finely control logging. Train a model using the Python API `fit()`, and call the resulting model to predict.
 
