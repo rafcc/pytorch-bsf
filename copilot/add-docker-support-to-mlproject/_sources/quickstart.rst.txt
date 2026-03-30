@@ -1,8 +1,46 @@
 Quickstart
 ==========
 
-PyTorch-BSF can be used in three ways depending on your workflow: as a zero-install **MLflow project** (great for one-off experiments), as a **CLI module** (scriptable, no Python required), or as a **Python library** (for full programmatic control).
+PyTorch-BSF can be used in four ways depending on your workflow: as a **Docker container** (no installation required), as a zero-install **MLflow project** (great for one-off experiments with experiment tracking), as a **CLI module** (scriptable, no Python required), or as a **Python library** (for full programmatic control).
 Pick the option that best fits your setup.
+
+
+Run as a Docker container
+--------------------------
+
+A pre-built image is available on GHCR, built on ``continuumio/miniconda3`` with PyTorch installed via the ``pytorch`` conda channel — providing Intel MKL as the BLAS backend.
+
+**Prerequisites:** `Docker`_.
+
+.. _Docker: https://docs.docker.com/get-docker/
+
+
+Training
+^^^^^^^^
+
+Let's prepare sample parameters and values files for training:
+
+.. literalinclude:: ../examples/quickstart/run.sh
+   :language: bash
+   :start-after: [TAG:CreateFiles]
+   :end-before: [TAG:CreateFiles_End]
+
+.. warning::
+   The parameters file and the values file must have the same number of lines.
+
+Mount the current directory as ``/workspace`` inside the container and run training:
+
+.. code-block:: bash
+
+   docker run --rm \
+     -v "$(pwd)":/workspace \
+     ghcr.io/opthub-org/pytorch-bsf \
+     python -m torch_bsf \
+     --params=params.csv \
+     --values=values.csv \
+     --degree=3
+
+The trained model will be saved under ``mlruns/`` in the current directory.
 
 
 Run as an MLflow project
@@ -18,29 +56,12 @@ On each training and prediction, separation of runtime environment and installat
 Installation
 ^^^^^^^^^^^^
 
-Choose Docker (the default) or Conda as the environment manager.
-
-**Docker (default)**
-
-Install `Docker`_ and then install ``mlflow`` via pip:
+Install `Miniconda`_.
+Then, install ``mlflow`` package from ``conda-forge`` channel:
 
 .. code-block:: bash
 
-   pip install mlflow
-
-MLflow will pull a pre-built image from GHCR that installs PyTorch via the ``pytorch`` conda channel, providing Intel MKL as the BLAS backend.
-
-.. _Docker: https://docs.docker.com/get-docker/
-
-**Conda**
-
-Install `Miniconda`_ (or Anaconda) and then install ``mlflow`` via pip:
-
-.. code-block:: bash
-
-   pip install mlflow
-
-MLflow will create a conda environment from the project's ``environment.yml``, which also uses the ``pytorch`` conda channel and Intel MKL.
+   conda install -c conda-forge mlflow
 
 .. _Miniconda: https://docs.conda.io/en/latest/miniconda.html
 
@@ -58,26 +79,17 @@ Let's prepare sample parameters and values files for training:
 .. warning::
    The parameters file and the values file must have the same number of lines.
 
-Now, you can fit a Bézier simplex model using the latest version of PyTorch-BSF directly from its GitHub repository.
+Now, you can fit a Bézier simplex model using the latest version of PyTorch-BSF directly from its GitHub repository:
 
-**Docker (default)** — pulls a GHCR image with MKL-backed PyTorch:
+.. literalinclude:: ../examples/quickstart/run.sh
+   :language: bash
+   :start-after: [TAG:MLflowURLDefine]
+   :end-before: [TAG:MLflowURLDefine_End]
 
-.. code-block:: bash
-
-   mlflow run https://github.com/opthub-org/pytorch-bsf \
-     -P params=params.csv \
-     -P values=values.csv \
-     -P degree=3
-
-**Conda** — creates a conda environment with MKL-backed PyTorch:
-
-.. code-block:: bash
-
-   mlflow run https://github.com/opthub-org/pytorch-bsf \
-     --env-manager=conda \
-     -P params=params.csv \
-     -P values=values.csv \
-     -P degree=3
+.. literalinclude:: ../examples/quickstart/run.sh
+   :language: bash
+   :start-after: [TAG:RunMLflowTraining]
+   :end-before: [TAG:RunMLflowTraining_End]
 
 After the command finishes, the trained model will be saved in ``mlruns/0`` directory.
 Note the **Run ID** automatically set to the command execution, as you will need it for prediction.
