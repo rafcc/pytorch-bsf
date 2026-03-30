@@ -1,5 +1,6 @@
 """Tests for torch_bsf.model_selection.kfold (the k-fold CLI entry point)."""
 
+import os
 import subprocess
 import sys
 from pathlib import Path
@@ -9,15 +10,25 @@ import pytest
 _REPO_ROOT = Path(__file__).parent.parent.parent
 _PARAMS_CSV = _REPO_ROOT / "params.csv"
 _VALUES_CSV = _REPO_ROOT / "values.csv"
+_CLI_TIMEOUT = 300  # seconds
 
 
 def _run_cli(*args, cwd=None):
     """Run `python -m torch_bsf.model_selection.kfold` with the given arguments."""
+    workdir = cwd or _REPO_ROOT
+    env = os.environ.copy()
+    # Force MLflow to use a local file-based backend under the working directory
+    env["MLFLOW_TRACKING_URI"] = f"file://{workdir}"
+    # Remove any external MLflow credentials to keep tests hermetic
+    for var in ("MLFLOW_TRACKING_USERNAME", "MLFLOW_TRACKING_PASSWORD", "MLFLOW_TRACKING_TOKEN"):
+        env.pop(var, None)
     return subprocess.run(
         [sys.executable, "-m", "torch_bsf.model_selection.kfold"] + list(args),
         capture_output=True,
         text=True,
-        cwd=cwd or _REPO_ROOT,
+        cwd=workdir,
+        env=env,
+        timeout=_CLI_TIMEOUT,
     )
 
 

@@ -196,7 +196,31 @@ class BezierSimplex(L.LightningModule):
     Parameters
     ----------
     control_points
-        The control points of the Bezier simplex.
+        The control points of the Bezier simplex.  Pass ``None`` only when
+        reconstructing a model from a Lightning checkpoint via
+        :meth:`load_from_checkpoint` — in that case all three shape
+        parameters (``_n_params``, ``_degree``, ``_n_values``) must be
+        provided so that a correctly-shaped placeholder can be built before
+        the saved state dict is loaded into it.
+    smoothness_weight
+        The weight of the smoothness penalty term added to the training loss.
+        When greater than zero, adjacent control points are encouraged to have
+        similar values.  Defaults to ``0.0`` (no penalty).
+    _n_params
+        *Checkpoint-reconstruction parameter — do not set manually.*
+        The number of parameters (source dimension + 1) used to build the
+        placeholder control points when ``control_points`` is ``None``.
+        Automatically saved to, and restored from, Lightning checkpoints.
+    _degree
+        *Checkpoint-reconstruction parameter — do not set manually.*
+        The degree of the Bezier simplex used to build the placeholder when
+        ``control_points`` is ``None``.
+        Automatically saved to, and restored from, Lightning checkpoints.
+    _n_values
+        *Checkpoint-reconstruction parameter — do not set manually.*
+        The number of values (target dimension) used to build the placeholder
+        when ``control_points`` is ``None``.
+        Automatically saved to, and restored from, Lightning checkpoints.
 
     Examples
     --------
