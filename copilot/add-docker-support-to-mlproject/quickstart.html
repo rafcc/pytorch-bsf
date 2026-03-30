@@ -129,6 +129,7 @@ cat<span class="w"> </span><span class="s">&lt;&lt; EOS &gt; values.csv</span>
 </div>
 <p>Mount the current directory as <code class="docutils literal notranslate"><span class="pre">/workspace</span></code> inside the container and run training:</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>docker<span class="w"> </span>run<span class="w"> </span>--rm<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>--user<span class="w"> </span><span class="s2">&quot;</span><span class="k">$(</span>id<span class="w"> </span>-u<span class="k">)</span><span class="s2">&quot;</span>:<span class="s2">&quot;</span><span class="k">$(</span>id<span class="w"> </span>-g<span class="k">)</span><span class="s2">&quot;</span><span class="w"> </span><span class="se">\</span>
 <span class="w">  </span>-v<span class="w"> </span><span class="s2">&quot;</span><span class="k">$(</span><span class="nb">pwd</span><span class="k">)</span><span class="s2">&quot;</span>:/workspace<span class="w"> </span><span class="se">\</span>
 <span class="w">  </span>ghcr.io/opthub-org/pytorch-bsf<span class="w"> </span><span class="se">\</span>
 <span class="w">  </span>python<span class="w"> </span>-m<span class="w"> </span>torch_bsf<span class="w"> </span><span class="se">\</span>

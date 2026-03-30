@@ -33,6 +33,7 @@ Mount the current directory as ``/workspace`` inside the container and run train
 .. code-block:: bash
 
    docker run --rm \
+     --user "$(id -u)":"$(id -g)" \
      -v "$(pwd)":/workspace \
      ghcr.io/opthub-org/pytorch-bsf \
      python -m torch_bsf \
