@@ -1,4 +1,4 @@
-FROM continuumio/miniconda3
+FROM continuumio/miniconda3:23.11.0-0
 
 # Install pytorch-bsf with MKL-backed PyTorch from the pytorch conda channel.
 WORKDIR /opt/pytorch-bsf
