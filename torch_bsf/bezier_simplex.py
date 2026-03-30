@@ -247,7 +247,11 @@ class BezierSimplex(L.LightningModule):
             # Called by load_from_checkpoint: reconstruct a placeholder from
             # the saved dimensions so that the state dict can be loaded into it.
             if _n_params is None or _degree is None or _n_values is None:
-                raise TypeError("BezierSimplex.__init__() missing required argument: 'control_points'")
+                raise TypeError(
+                    "BezierSimplex.__init__() requires either 'control_points' "
+                    "or all of '_n_params', '_degree', and '_n_values' "
+                    "(e.g. when loading from a checkpoint)."
+                )
             control_points = {
                 idx: [0.0 for _ in range(_n_values)]
                 for idx in simplex_indices(_n_params, _degree)
