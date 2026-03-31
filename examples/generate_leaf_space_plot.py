@@ -322,8 +322,8 @@ ax.add_collection(LineCollection(segs_bb, colors=c_bb, lw=2.0, zorder=3))
 # Top boundary (α=1): color transitions red→green  (w1=1-t, w2=t, w3=0)
 pts_tb = np.column_stack([x_alpha1_bnd, y_alpha1_bnd])
 segs_tb = np.stack([pts_tb[:-1], pts_tb[1:]], axis=1)
-c_bb = np.stack([1.0 - t_bnd_mids, t_bnd_mids, np.zeros_like(t_bnd_mids)], axis=-1)
-ax.add_collection(LineCollection(segs_bb, colors=c_bb, lw=2.0, zorder=3))
+c_tb = np.stack([1.0 - t_bnd_mids, t_bnd_mids, np.zeros_like(t_bnd_mids)], axis=-1)
+ax.add_collection(LineCollection(segs_tb, colors=c_tb, lw=2.0, zorder=3))
 
 # Leaves: constant-λ (constant w1) segments — now vertical after rotation
 # Skip w1=0: it maps to P* (zero-width leaf) and is shown by the vertex marker
