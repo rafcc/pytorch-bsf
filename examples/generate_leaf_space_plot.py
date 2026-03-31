@@ -24,11 +24,11 @@ The script writes ``docs/_static/elastic_net_leaf_space.png``.
 import matplotlib
 matplotlib.use("Agg")
 import matplotlib.pyplot as plt  # noqa: E402
-from matplotlib.collections import LineCollection
-import numpy as np
-from pathlib import Path
+from matplotlib.collections import LineCollection  # noqa: E402
+import numpy as np  # noqa: E402
+from pathlib import Path  # noqa: E402
 
-from torch_bsf.model_selection.elastic_net_grid import elastic_net_grid
+from torch_bsf.model_selection.elastic_net_grid import elastic_net_grid  # noqa: E402
 
 
 # ---------------------------------------------------------------------------
