@@ -106,8 +106,11 @@ rapidly near :math:`\lambda = 0` and slowly for large :math:`\lambda`.
 
 The ``n_vertex_copies`` parameter adds extra copies of each simplex vertex.
 This is useful when the grid is passed to k-fold cross-validation
-(see :doc:`auto_degree`) so that each fold is guaranteed to contain every vertex at
-least once.
+(see :doc:`auto_degree`): set ``n_vertex_copies >= k`` for k-fold CV so that,
+when the fold-splitting procedure distributes rows approximately evenly, each fold
+will contain every vertex at least once.  Using fewer copies than folds can inflate
+cross-validation variance, and :func:`~torch_bsf.model_selection.elastic_net_grid.elastic_net_grid`
+will emit a ``UserWarning`` if you pass ``n_folds`` and ``n_vertex_copies < n_folds``.
 
 .. figure:: ../_static/elastic_net_grid_comparison.png
    :width: 100%

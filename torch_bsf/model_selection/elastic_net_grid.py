@@ -1,3 +1,4 @@
+import warnings
 from argparse import ArgumentParser
 
 import numpy as np
@@ -64,7 +65,8 @@ def elastic_net_grid(
     n_lambdas: int = 102,
     n_alphas: int = 12,
     n_vertex_copies: int = 1,
-    base: float = 10
+    base: float = 10,
+    n_folds: int = 0
 ) -> np.ndarray:
     """Return an array of 3D grid points on the standard 2-simplex, which is suitable for grid search for elastic net's hyperparameters.
 
@@ -91,6 +93,11 @@ def elastic_net_grid(
         The base of the log space.
         The step size between the elements in ``ln(samples) / ln(base)`` (or ``log_base(samples)``) is uniform.
         Default is ``10.0``.
+    n_folds : int, optional
+        Number of folds for k-fold cross-validation.
+        When greater than 0, a warning is emitted if ``n_vertex_copies < n_folds``
+        because some folds may then lack a simplex vertex, inflating CV variance.
+        Default is ``0`` (no check).
 
     Returns
     -------
@@ -157,6 +164,15 @@ def elastic_net_grid(
     """
     if n_lambdas < 1 or n_alphas < 1:
         return np.empty((0, 3))
+    if n_folds > 0 and n_vertex_copies < n_folds:
+        warnings.warn(
+            f"n_vertex_copies={n_vertex_copies} is less than n_folds={n_folds}. "
+            "Some folds may not contain all simplex vertices, which can inflate "
+            "cross-validation variance. "
+            f"Set n_vertex_copies >= {n_folds} to ensure every fold contains every vertex.",
+            UserWarning,
+            stacklevel=2,
+        )
     w1_values = reverse_logspace(n_lambdas - 1, base)
     w2_values = np.linspace(0.0, 1.0 - w1_values, n_alphas, axis=1)
     n_vertices = 3 * n_vertex_copies - 2
@@ -184,7 +200,8 @@ if __name__ == "__main__":
     parser.add_argument("--n_alphas", help="Number of samples for alpha values", type=int, default=12)
     parser.add_argument("--n_vertex_copies", help="Number of copies of each vertex", type=int, default=1)
     parser.add_argument("--base", help="Base of the log space", type=float, default=10)
+    parser.add_argument("--n_folds", help="Number of CV folds; warn if n_vertex_copies < n_folds", type=int, default=0)
     args = parser.parse_args()
 
-    grid = elastic_net_grid(args.n_lambdas, args.n_alphas, args.n_vertex_copies, base=args.base)
+    grid = elastic_net_grid(args.n_lambdas, args.n_alphas, args.n_vertex_copies, base=args.base, n_folds=args.n_folds)
     print("\n".join(f"{p[0]:.17e},{p[1]:.17e},{p[2]:.17e}" for p in grid.tolist()))
