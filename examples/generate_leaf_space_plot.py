@@ -189,9 +189,9 @@ ax.annotate(
 
 # Corner labels
 ax.text(-lambda_max * 0.035, 0.0, r"$\alpha=0$" "\n(pure L2)",
-        fontsize=8, va="center", ha="right")
+        fontsize=8, va="top", ha="right")
 ax.text(-lambda_max * 0.035, 1.0, r"$\alpha=1$" "\n(pure L1)",
-        fontsize=8, va="center", ha="right")
+        fontsize=8, va="bottom", ha="right")
 ax.tick_params(axis="both", which="both", length=3)
 ax.set_box_aspect(1)
 # Horizontal grid lines at each α level in the data
@@ -217,7 +217,7 @@ for alpha_val in alphas_per_row:
     by = h3 * alpha_val           # y of base-edge point
     ax.plot([0.0, bx], [0.0, by], color="gray", lw=0.5, alpha=0.4, zorder=0)
 
-ax.set_title("Elastic-net grid on the 2-simplex\n(after identification)", fontsize=11)
+ax.set_title("Elastic-net grid on the 2-simplex\n(after identification)", fontsize=11, pad=20)
 
 # Triangle boundary
 draw_simplex_boundary(ax)
@@ -293,7 +293,7 @@ ax = ax_leaf
 
 ax.set_aspect("equal")
 ax.axis("off")
-ax.set_title("Quotient space\n(base edge identified to null model $P^*$)", fontsize=11)
+ax.set_title("Quotient space\n(base edge identified to null model $P^*$)", fontsize=11, pad=14)
 
 R = 0.55  # half-width of the widest cross-section
 
