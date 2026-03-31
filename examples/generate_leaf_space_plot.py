@@ -194,7 +194,9 @@ ax.text(-lambda_max * 0.035, 1.0, r"$\alpha=1$" "\n(pure L1)",
         fontsize=8, va="center", ha="right")
 ax.tick_params(axis="both", which="both", length=3)
 ax.set_box_aspect(1)
-ax.grid(True, color="gray", lw=0.5, alpha=0.5)
+# Horizontal grid lines at each α level in the data
+for alpha_val in alphas_per_row:
+    ax.axhline(y=alpha_val, color="gray", lw=0.5, alpha=0.4, zorder=1)
 
 
 # ===========================================================================
@@ -207,11 +209,13 @@ ax = ax_simplex
 ax.set_aspect("equal")
 ax.axis("off")
 
-# Manual grid lines (axis is off, so use axhline/axvline)
-for _gx in np.arange(0.0, 1.05, 0.25):
-    ax.axvline(x=_gx, color="gray", lw=0.5, alpha=0.4, zorder=0)
-for _gy in np.arange(0.0, h3 + 0.01, 0.25):
-    ax.axhline(y=_gy, color="gray", lw=0.5, alpha=0.4, zorder=0)
+# Manual radial grid lines from vertex (1,0,0)=(0,0) toward each α value on
+# the base edge — only at α levels present in the data.
+# Base edge point for α: (0, α, 1-α)  →  (1 - 0.5*α, sqrt3/2 * α)
+for alpha_val in alphas_per_row:
+    bx = 1.0 - 0.5 * alpha_val   # x of base-edge point
+    by = h3 * alpha_val           # y of base-edge point
+    ax.plot([0.0, bx], [0.0, by], color="gray", lw=0.5, alpha=0.4, zorder=0)
 
 ax.set_title("Elastic-net grid on the 2-simplex\n(after identification)", fontsize=11)
 
