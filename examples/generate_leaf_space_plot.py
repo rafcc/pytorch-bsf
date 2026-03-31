@@ -23,7 +23,7 @@ The script writes ``docs/_static/elastic_net_leaf_space.png``.
 
 import matplotlib
 matplotlib.use("Agg")
-import matplotlib.pyplot as plt
+import matplotlib.pyplot as plt  # noqa: E402
 from matplotlib.collections import LineCollection
 import numpy as np
 from pathlib import Path
