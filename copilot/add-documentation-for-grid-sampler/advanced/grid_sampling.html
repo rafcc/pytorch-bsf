@@ -203,8 +203,7 @@ This is useful when the grid is passed to k-fold cross-validation
 (see <a class="reference internal" href="auto_degree.html"><span class="doc">Automatic Degree Selection</span></a>): set <code class="docutils literal notranslate"><span class="pre">n_vertex_copies</span> <span class="pre">&gt;=</span> <span class="pre">k</span></code> for k-fold CV so that,
 when the fold-splitting procedure distributes rows approximately evenly, each fold
 will contain every vertex at least once.  Using fewer copies than folds can inflate
-cross-validation variance, and <code class="xref py py-func docutils literal notranslate"><span class="pre">elastic_net_grid()</span></code>
-will emit a <code class="docutils literal notranslate"><span class="pre">UserWarning</span></code> if you pass <code class="docutils literal notranslate"><span class="pre">n_folds</span></code> and <code class="docutils literal notranslate"><span class="pre">n_vertex_copies</span> <span class="pre">&lt;</span> <span class="pre">n_folds</span></code>.</p>
+cross-validation variance.</p>
 <figure class="align-default" id="id2">
 <a class="reference internal image-reference" href="../_images/elastic_net_grid_comparison.png"><img alt="../_images/elastic_net_grid_comparison.png" src="../_images/elastic_net_grid_comparison.png" style="width: 100%;" />
 </a>
