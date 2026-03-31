@@ -150,19 +150,6 @@ ax.set_xlabel(r"$\lambda$  (regularisation strength)", fontsize=11)
 ax.set_ylabel(r"$\alpha$  (L1 mixing ratio)", fontsize=11)
 ax.set_title("Hyperparameter space\n(before identification)", fontsize=11)
 
-# Background gradient: colour each pixel by (w1, w2, w3)
-# x-axis = λ, y-axis = α  →  rgb_bg has shape [n_alpha, n_lambda, 3]
-n_bg = 200
-a_bg = np.linspace(0.0, 1.0, n_bg)
-l_bg = np.linspace(0.0, lambda_max, n_bg)
-L_bg, A_bg = np.meshgrid(l_bg, a_bg)   # L varies along x, A along y
-W1_bg = 1.0 / (1.0 + L_bg)
-W2_bg = L_bg * A_bg / (1.0 + L_bg)
-W3_bg = L_bg * (1.0 - A_bg) / (1.0 + L_bg)
-rgb_bg = np.stack([W1_bg, W2_bg, W3_bg], axis=-1)
-ax.imshow(rgb_bg, origin="lower", extent=[0.0, lambda_max, 0.0, 1.0],
-          aspect="auto", alpha=0.4)
-
 # Vertical leaf lines at each λ level
 for lam in lambda_unique:
     ax.axvline(x=lam, color="gray", lw=0.5, alpha=0.4, zorder=2)
@@ -206,6 +193,8 @@ ax.text(-lambda_max * 0.035, 0.0, r"$\alpha=0$" "\n(pure L2)",
 ax.text(-lambda_max * 0.035, 1.0, r"$\alpha=1$" "\n(pure L1)",
         fontsize=8, va="center", ha="right")
 ax.tick_params(axis="both", which="both", length=3)
+ax.set_box_aspect(1)
+ax.grid(True, color="gray", lw=0.5, alpha=0.5)
 
 
 # ===========================================================================
@@ -217,6 +206,13 @@ ax = ax_simplex
 
 ax.set_aspect("equal")
 ax.axis("off")
+
+# Manual grid lines (axis is off, so use axhline/axvline)
+for _gx in np.arange(0.0, 1.05, 0.25):
+    ax.axvline(x=_gx, color="gray", lw=0.5, alpha=0.4, zorder=0)
+for _gy in np.arange(0.0, h3 + 0.01, 0.25):
+    ax.axhline(y=_gy, color="gray", lw=0.5, alpha=0.4, zorder=0)
+
 ax.set_title("Elastic-net grid on the 2-simplex\n(after identification)", fontsize=11)
 
 # Triangle boundary
