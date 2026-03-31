@@ -41,8 +41,6 @@ def weights_to_rgb(w1, w2, w3):
 
 # ---------------------------------------------------------------------------
 # Projection helpers
-# New vertex layout: (1,0,0) at top, (0,1,0) at bottom-left,
-#                    (0,0,1) at bottom-right.
 # ---------------------------------------------------------------------------
 
 def project_to_2d(points):
@@ -351,8 +349,10 @@ w2_m = grid_main[:, 1]
 w3_m = grid_main[:, 2]
 rgb_m = weights_to_rgb(w1_m, w2_m, w3_m)
 w23_sum = w2_m + w3_m
-# For the base-edge points (w1=0, w2+w3=1) alpha is defined; for the
-# exact vertex (1,0,0) w2=w3=0, so α is undefined – use 0.5 (midpoint).
+# On the base edge (w1=0, w2+w3=1) we define alpha = w2 / (w2 + w3).
+# Use a fallback of 0.5 when w2 + w3 is (numerically) zero to avoid division
+# by zero in degenerate cases; this does not occur for the current grid_main
+# but is kept as a defensive default.
 alpha_m = np.where(w23_sum > 1e-10, w2_m / w23_sum, 0.5)
 x_eye, y_eye = to_eye_coords(w1_m, alpha_m, r=R)
 x_eye_rot, y_eye_rot = rot90ccw(x_eye, y_eye)
