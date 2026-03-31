@@ -131,7 +131,7 @@ As a Python function
        n_vertex_copies=10,
        base=10,
    )
-   # grid.shape == (1232, 3)
+   # grid.shape == (1240, 3)
    # Each row is a weight vector (w1, w2, w3) on the 2-simplex.
 
    np.savetxt("weights.csv", grid, delimiter=",", fmt="%.17e")
@@ -155,7 +155,7 @@ Run the module directly to print the grid as a CSV file to *stdout*:
        > weights.csv
 
 All four parameters are optional and fall back to their defaults
-(``n_lambdas=102``, ``n_alphas=12``, ``n_vertex_copies=1``, ``base=10``).
+(``n_lambdas=102``, ``n_alphas=12``, ``n_vertex_copies=10``, ``base=10``).
 
 Via MLproject
 ~~~~~~~~~~~~~

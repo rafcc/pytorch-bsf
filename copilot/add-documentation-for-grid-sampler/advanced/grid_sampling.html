@@ -222,7 +222,7 @@ which is appropriate when you expect the optimal model to have small
     <span class="n">n_vertex_copies</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span>
     <span class="n">base</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span>
 <span class="p">)</span>
-<span class="c1"># grid.shape == (1232, 3)</span>
+<span class="c1"># grid.shape == (1240, 3)</span>
 <span class="c1"># Each row is a weight vector (w1, w2, w3) on the 2-simplex.</span>
 
 <span class="n">np</span><span class="o">.</span><span class="n">savetxt</span><span class="p">(</span><span class="s2">&quot;weights.csv&quot;</span><span class="p">,</span> <span class="n">grid</span><span class="p">,</span> <span class="n">delimiter</span><span class="o">=</span><span class="s2">&quot;,&quot;</span><span class="p">,</span> <span class="n">fmt</span><span class="o">=</span><span class="s2">&quot;</span><span class="si">%.17e</span><span class="s2">&quot;</span><span class="p">)</span>
@@ -244,7 +244,7 @@ over the elastic-net regularisation map.</p>
 </pre></div>
 </div>
 <p>All four parameters are optional and fall back to their defaults
-(<code class="docutils literal notranslate"><span class="pre">n_lambdas=102</span></code>, <code class="docutils literal notranslate"><span class="pre">n_alphas=12</span></code>, <code class="docutils literal notranslate"><span class="pre">n_vertex_copies=1</span></code>, <code class="docutils literal notranslate"><span class="pre">base=10</span></code>).</p>
+(<code class="docutils literal notranslate"><span class="pre">n_lambdas=102</span></code>, <code class="docutils literal notranslate"><span class="pre">n_alphas=12</span></code>, <code class="docutils literal notranslate"><span class="pre">n_vertex_copies=10</span></code>, <code class="docutils literal notranslate"><span class="pre">base=10</span></code>).</p>
 </section>
 <section id="via-mlproject">
 <h3>Via MLproject<a class="headerlink" href="#via-mlproject" title="Link to this heading"></a></h3>
