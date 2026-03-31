@@ -4,7 +4,7 @@ hyperparameter space and the corresponding grid sampling on the 2-simplex.
 The figure has three panels:
 
 1. The (λ, α) parameter half-plane with the identified edge λ=0 highlighted.
-   x-axis: λ (regularisation strength), y-axis: α (L1 mixing ratio).
+   x-axis: λ (regularization strength), y-axis: α (L1 mixing ratio).
 2. The elastic-net grid on the 2-simplex with vertices (1,0,0) at bottom-left,
    (0,1,0) at the top, and (0,0,1) at bottom-right.
 3. The quotient space obtained by collapsing the base edge of the simplex to a
@@ -26,6 +26,7 @@ matplotlib.use("Agg")
 import matplotlib.pyplot as plt
 from matplotlib.collections import LineCollection
 import numpy as np
+from pathlib import Path
 
 from torch_bsf.model_selection.elastic_net_grid import elastic_net_grid
 
@@ -137,14 +138,14 @@ fig, (ax_rect, ax_simplex, ax_leaf) = plt.subplots(
 
 # ===========================================================================
 # Left panel – (λ, α) hyperparameter space
-# x-axis: λ (regularisation strength), y-axis: α (L1 mixing ratio).
+# x-axis: λ (regularization strength), y-axis: α (L1 mixing ratio).
 # Points are coloured by (w1, w2, w3) = (R, G, B).
 # ===========================================================================
 ax = ax_rect
 
 ax.set_xlim(-lambda_max * 0.04, lambda_max)
 ax.set_ylim(-0.02, 1.02)
-ax.set_xlabel(r"$\lambda$  (regularisation strength)", fontsize=11)
+ax.set_xlabel(r"$\lambda$  (regularization strength)", fontsize=11)
 ax.set_ylabel(r"$\alpha$  (L1 mixing ratio)", fontsize=11)
 ax.set_title("Hyperparameter space\n(before identification)", fontsize=11)
 
@@ -384,9 +385,8 @@ ax.text(0, -(R + 0.06), r"$\alpha=0$" "\n(pure L2)",
 # Save
 # ===========================================================================
 
-fig.savefig(
-    "docs/_static/elastic_net_leaf_space.png",
-    dpi=150,
-    bbox_inches="tight",
-)
-print("Saved docs/_static/elastic_net_leaf_space.png")
+_repo_root = Path(__file__).resolve().parent.parent
+_out_path = _repo_root / "docs" / "_static" / "elastic_net_leaf_space.png"
+_out_path.parent.mkdir(parents=True, exist_ok=True)
+fig.savefig(_out_path, dpi=150, bbox_inches="tight")
+print(f"Saved {_out_path}")

@@ -1,7 +1,7 @@
 Elastic Net Grid Sampling
 =========================
 
-When fitting a Bézier simplex to the elastic-net regularisation map you first need to
+When fitting a Bézier simplex to the elastic-net regularization map you first need to
 choose a set of weight vectors on the standard 2-simplex :math:`\Delta^2` at which to
 evaluate the model.
 The :func:`~torch_bsf.model_selection.elastic_net_grid.elastic_net_grid` function
@@ -22,7 +22,7 @@ The elastic net minimises a weighted combination of three objectives:
    \qquad (w_1, w_2, w_3) \in \Delta^2.
 
 The conventional elastic-net parameters :math:`\lambda \ge 0` (overall
-regularisation strength) and :math:`\alpha \in [0, 1]` (L1 mixing ratio) relate to the
+regularization strength) and :math:`\alpha \in [0, 1]` (L1 mixing ratio) relate to the
 simplex weight vector by:
 
 .. math::
@@ -33,39 +33,42 @@ simplex weight vector by:
 
 The :math:`(\lambda, \alpha)` parameter space is a semi-infinite rectangle
 :math:`[0,\infty) \times [0,1]`.
-When :math:`\lambda = 0` the regularisation terms vanish and the solution depends only
+When :math:`\lambda = 0` the regularization terms vanish and the solution depends only
 on the data, *regardless of* :math:`\alpha`.
 Therefore the entire edge :math:`\{\lambda = 0\} \times [0, 1]` maps to the single
 vertex :math:`(w_1, w_2, w_3) = (1, 0, 0)` of the simplex.
 Identifying this edge with a single point transforms the rectangle into a triangle —
 the 2-simplex :math:`\Delta^2`.
 
-Conversely, as :math:`\lambda \to \infty` the regularisation overwhelms the data term
+Conversely, as :math:`\lambda \to \infty` the regularization overwhelms the data term
 and drives all model coefficients to zero, regardless of :math:`\alpha`.
 In the elastic net this limit is called the **null model** (all :math:`\beta_i = 0`).
 All weight vectors on the opposite edge of the simplex
 :math:`\{(w_1, w_2, w_3) : w_1 = 0\}` — the *base edge* connecting
 :math:`(0, 1, 0)` and :math:`(0, 0, 1)` — therefore correspond to the same solution.
-Since the Bézier simplex must assign a single output to each input weight, these
-identical solutions are identified to a single point :math:`P^*` before the grid is
-constructed.
-The resulting quotient space is a **leaf/eye-shaped CW complex**: two 0-cells (:math:`A`
-and :math:`P^*`), two 1-cells (the former edges :math:`AB` and :math:`AC`, now
-connecting :math:`A` to :math:`P^*` as curves), and one 2-cell (the interior).
+Since the Bézier simplex (and the underlying solution map) must assign a single output
+to each input weight, all of these base-edge weights are identified with a single
+null-model point :math:`P^*` in the solution space. The
+:func:`~torch_bsf.model_selection.elastic_net_grid.elastic_net_grid` function still
+returns multiple distinct base-edge weights (:math:`w_1 = 0` with varying :math:`w_2`,
+:math:`w_3`), but they all evaluate to this same null-model solution. The resulting
+quotient space is a **leaf/eye-shaped CW complex**: two 0-cells (:math:`A` and
+:math:`P^*`), two 1-cells (the former edges :math:`AB` and :math:`AC`, now connecting
+:math:`A` to :math:`P^*` as curves), and one 2-cell (the interior).
 
 This identification gives the interior a **leaf (foliation) structure**: for each fixed
 value of :math:`w_1 \in (0, 1]`, the set of corresponding weight vectors
 :math:`\{(w_1, w_2, w_3) : w_2 + w_3 = 1 - w_1,\; w_2, w_3 \ge 0\}`
 is a line segment (a *leaf*) parametrised by :math:`\alpha`.
-As :math:`w_1 \to 0` (i.e. :math:`\lambda \to \infty`), the leaves shrink to the
-single null-model point :math:`P^*`.
+As :math:`w_1 \to 0` (i.e. :math:`\lambda \to \infty`), the images of these leaves
+under the solution map shrink to the single null-model point :math:`P^*`.
 
 .. figure:: ../_static/elastic_net_leaf_space.png
    :width: 100%
 
    All points are coloured by :math:`(w_1, w_2, w_3) \mapsto (R, G, B)`,
    so the same weight vector has the same colour in every panel.
-   **Left** – The :math:`(\lambda, \alpha)` hyperparameter space (x: regularisation
+   **Left** – The :math:`(\lambda, \alpha)` hyperparameter space (x: regularization
    strength, y: L1 mixing ratio).
    The red line at :math:`\lambda = 0` is the identified edge; all points on it
    share the colour :math:`(1, 0, 0)` = red because :math:`w = (1, 0, 0)` there.
@@ -138,7 +141,7 @@ As a Python function
 
 The returned array can be saved to a CSV file and passed as the ``params`` argument to
 :func:`torch_bsf.fit` (or to the ``--params`` CLI option) to train a Bézier simplex
-over the elastic-net regularisation map.
+over the elastic-net regularization map.
 
 As a Python module (CLI)
 ~~~~~~~~~~~~~~~~~~~~~~~~
