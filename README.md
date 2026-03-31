@@ -235,6 +235,31 @@ python -m torch_bsf.model_selection.elastic_net_grid \
 
 The output is printed to stdout as CSV with three columns (one row per grid point).
 
+## Visualization
+
+Plot a fitted Bézier simplex with a single call — 2D curves and 3D surfaces are both supported.
+See [Visualization](https://opthub-org.github.io/pytorch-bsf/master/advanced/visualization.html) for details.
+
+## Advanced Sampling
+
+Generate simplex parameter points via Dirichlet random sampling or quasi-random Sobol sequences, in addition to the default uniform grid.
+See [Advanced Sampling](https://opthub-org.github.io/pytorch-bsf/master/advanced/sampling.html) for details.
+
+## Automated Degree Selection
+
+Automatically pick the best polynomial degree using k-fold cross-validation.
+See [Automatic Degree Selection](https://opthub-org.github.io/pytorch-bsf/master/advanced/auto_degree.html) for details.
+
+## Scikit-learn Integration
+
+`BezierSimplexRegressor` exposes a standard `fit` / `predict` / `score` API compatible with `Pipeline` and `GridSearchCV`.
+See [Scikit-learn Integration](https://opthub-org.github.io/pytorch-bsf/master/advanced/sklearn.html) for details.
+
+## Active Learning
+
+Suggest the most informative next sampling points using Query-By-Committee or density-based strategies.
+See [Active Learning](https://opthub-org.github.io/pytorch-bsf/master/advanced/active_learning.html) for details.
+
 ## Author
 
 OptHub Inc. and FUJITSU LIMITED
