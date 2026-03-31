@@ -193,21 +193,25 @@ to <span class="math notranslate nohighlight">\(P^*\)</span>.</span><a class="he
 rapidly near <span class="math notranslate nohighlight">\(\lambda = 0\)</span> and slowly for large <span class="math notranslate nohighlight">\(\lambda\)</span>.
 <code class="xref py py-func docutils literal notranslate"><span class="pre">elastic_net_grid()</span></code> therefore uses:</p>
 <ul class="simple">
-<li><p><strong>Log-scale spacing of the base-edge weight</strong> <span class="math notranslate nohighlight">\(w_1\)</span> – the
+<li><p><strong>Log-scale spacing in the data-fidelity weight coordinate</strong> <span class="math notranslate nohighlight">\(w_1\)</span> – the
 <code class="xref py py-func docutils literal notranslate"><span class="pre">reverse_logspace()</span></code> routine
-generates <code class="docutils literal notranslate"><span class="pre">n_lambdas</span> <span class="pre">-</span> <span class="pre">1</span></code> values of <span class="math notranslate nohighlight">\(w_1 \in [0, 1)\)</span> along the null-model
-base edge, including <span class="math notranslate nohighlight">\(w_1 = 0\)</span> (which corresponds to <span class="math notranslate nohighlight">\(\lambda = \infty\)</span>)
-and excluding the data-fidelity vertex at <span class="math notranslate nohighlight">\(w_1 = 1\)</span>.
+generates <code class="docutils literal notranslate"><span class="pre">n_lambdas</span> <span class="pre">-</span> <span class="pre">1</span></code> values of <span class="math notranslate nohighlight">\(w_1 \in [0, 1)\)</span> that serve as
+<span class="math notranslate nohighlight">\(w_1\)</span>-levels for iso-<span class="math notranslate nohighlight">\(w_1\)</span> leaves, including <span class="math notranslate nohighlight">\(w_1 = 0\)</span> (which
+lies on the null-model base edge and corresponds to <span class="math notranslate nohighlight">\(\lambda = \infty\)</span>) and
+excluding the data-fidelity vertex at <span class="math notranslate nohighlight">\(w_1 = 1\)</span>.
 The vertex at <span class="math notranslate nohighlight">\(w_1 = 1\)</span> (i.e. <span class="math notranslate nohighlight">\(\lambda = 0\)</span>) is appended separately.
-Since <span class="math notranslate nohighlight">\(\lambda = (1 - w_1) / w_1\)</span> is finite only for <span class="math notranslate nohighlight">\(w_1 &gt; 0\)</span>, all
-finite values of <span class="math notranslate nohighlight">\(\lambda\)</span> arise from <span class="math notranslate nohighlight">\(0 &lt; w_1 &lt; 1\)</span>.
-This construction produces more samples close to the data-fidelity vertex and
-therefore near <span class="math notranslate nohighlight">\(\lambda = 0\)</span>.
+As <span class="math notranslate nohighlight">\(w_1\)</span> increases from 0 towards 1, these levels move from the base edge
+into the simplex interior towards the data-fidelity vertex.  Since
+<span class="math notranslate nohighlight">\(\lambda = (1 - w_1) / w_1\)</span> is finite only for <span class="math notranslate nohighlight">\(w_1 &gt; 0\)</span>, all finite
+values of <span class="math notranslate nohighlight">\(\lambda\)</span> arise from <span class="math notranslate nohighlight">\(0 &lt; w_1 &lt; 1\)</span>.
+The log spacing in <span class="math notranslate nohighlight">\(w_1\)</span> produces more <span class="math notranslate nohighlight">\(w_1\)</span> levels close to the
+data-fidelity vertex and therefore near <span class="math notranslate nohighlight">\(\lambda = 0\)</span>.
 The steepness of this clustering is controlled by the <code class="docutils literal notranslate"><span class="pre">base</span></code> parameter:
 <code class="docutils literal notranslate"><span class="pre">base=1</span></code> gives uniform spacing in <span class="math notranslate nohighlight">\(w_1\)</span>, while larger values concentrate
 points further towards <span class="math notranslate nohighlight">\(w_1 = 1\)</span> (i.e. towards smaller <span class="math notranslate nohighlight">\(\lambda\)</span>).</p></li>
-<li><p><strong>Uniform spacing along</strong> <span class="math notranslate nohighlight">\(\alpha\)</span> – on each leaf the <code class="docutils literal notranslate"><span class="pre">n_alphas</span></code> values of
-<span class="math notranslate nohighlight">\(\alpha\)</span> are placed uniformly in <span class="math notranslate nohighlight">\([0, 1]\)</span>.</p></li>
+<li><p><strong>Uniform spacing along</strong> <span class="math notranslate nohighlight">\(\alpha\)</span> – for each <span class="math notranslate nohighlight">\(w_1\)</span> level, the
+<code class="docutils literal notranslate"><span class="pre">n_alphas</span></code> values of <span class="math notranslate nohighlight">\(\alpha\)</span> are placed uniformly in <span class="math notranslate nohighlight">\([0, 1]\)</span> to
+span the corresponding iso-<span class="math notranslate nohighlight">\(w_1\)</span> leaf.</p></li>
 </ul>
 <p>The <code class="docutils literal notranslate"><span class="pre">n_vertex_copies</span></code> parameter adds extra copies of each simplex vertex.
 This is useful when the grid is passed to k-fold cross-validation

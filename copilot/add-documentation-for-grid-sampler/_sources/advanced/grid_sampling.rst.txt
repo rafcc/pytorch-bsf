@@ -102,22 +102,26 @@ A uniform grid in :math:`(\lambda, \alpha)` is sub-optimal because solutions cha
 rapidly near :math:`\lambda = 0` and slowly for large :math:`\lambda`.
 :func:`~torch_bsf.model_selection.elastic_net_grid.elastic_net_grid` therefore uses:
 
-* **Log-scale spacing of the base-edge weight** :math:`w_1` – the
+* **Log-scale spacing in the data-fidelity weight coordinate** :math:`w_1` – the
   :func:`~torch_bsf.model_selection.elastic_net_grid.reverse_logspace` routine
-  generates ``n_lambdas - 1`` values of :math:`w_1 \in [0, 1)` along the null-model
-  base edge, including :math:`w_1 = 0` (which corresponds to :math:`\lambda = \infty`)
-  and excluding the data-fidelity vertex at :math:`w_1 = 1`.
+  generates ``n_lambdas - 1`` values of :math:`w_1 \in [0, 1)` that serve as
+  :math:`w_1`-levels for iso-:math:`w_1` leaves, including :math:`w_1 = 0` (which
+  lies on the null-model base edge and corresponds to :math:`\lambda = \infty`) and
+  excluding the data-fidelity vertex at :math:`w_1 = 1`.
   The vertex at :math:`w_1 = 1` (i.e. :math:`\lambda = 0`) is appended separately.
-  Since :math:`\lambda = (1 - w_1) / w_1` is finite only for :math:`w_1 > 0`, all
-  finite values of :math:`\lambda` arise from :math:`0 < w_1 < 1`.
-  This construction produces more samples close to the data-fidelity vertex and
-  therefore near :math:`\lambda = 0`.
+  As :math:`w_1` increases from 0 towards 1, these levels move from the base edge
+  into the simplex interior towards the data-fidelity vertex.  Since
+  :math:`\lambda = (1 - w_1) / w_1` is finite only for :math:`w_1 > 0`, all finite
+  values of :math:`\lambda` arise from :math:`0 < w_1 < 1`.
+  The log spacing in :math:`w_1` produces more :math:`w_1` levels close to the
+  data-fidelity vertex and therefore near :math:`\lambda = 0`.
   The steepness of this clustering is controlled by the ``base`` parameter:
   ``base=1`` gives uniform spacing in :math:`w_1`, while larger values concentrate
   points further towards :math:`w_1 = 1` (i.e. towards smaller :math:`\lambda`).
 
-* **Uniform spacing along** :math:`\alpha` – on each leaf the ``n_alphas`` values of
-  :math:`\alpha` are placed uniformly in :math:`[0, 1]`.
+* **Uniform spacing along** :math:`\alpha` – for each :math:`w_1` level, the
+  ``n_alphas`` values of :math:`\alpha` are placed uniformly in :math:`[0, 1]` to
+  span the corresponding iso-:math:`w_1` leaf.
 
 The ``n_vertex_copies`` parameter adds extra copies of each simplex vertex.
 This is useful when the grid is passed to k-fold cross-validation
