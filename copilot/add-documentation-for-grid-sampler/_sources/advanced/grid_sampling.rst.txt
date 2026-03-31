@@ -12,7 +12,20 @@ hyperparameter space.
 The Hyperparameter Space
 ------------------------
 
-The elastic net minimizes a weighted combination of three objectives:
+The elastic net is conventionally formulated with a regularization strength
+:math:`\lambda \ge 0` and an L1/L2 mixing ratio :math:`\alpha \in [0, 1]`:
+
+.. math::
+
+   \min_{\beta} \; f_{\text{data}}(\beta) + \lambda \left(\alpha \, f_{\text{sparse}}(\beta)
+   + (1-\alpha) \, f_{\text{smooth}}(\beta)\right).
+
+Here :math:`f_{\text{data}}` is the data-fidelity term, :math:`f_{\text{sparse}}` is the L1
+penalty and :math:`f_{\text{smooth}}` is the L2 penalty. This parameterization is a
+semi-infinite rectangle :math:`[0,\infty) \times [0,1]` in :math:`(\lambda,\alpha)`.
+
+Equivalently, elastic-net optimization can be written as a convex combination of the
+same three objectives:
 
 .. math::
 
@@ -37,8 +50,7 @@ When :math:`\lambda = 0` the regularization terms vanish and the solution depend
 on the data, *regardless of* :math:`\alpha`.
 Therefore the entire edge :math:`\{\lambda = 0\} \times [0, 1]` maps to the single
 vertex :math:`(w_1, w_2, w_3) = (1, 0, 0)` of the simplex.
-Identifying this edge with a single point transforms the rectangle into a triangle —
-the 2-simplex :math:`\Delta^2`.
+Identifying this edge with a single point transforms the rectangle into a triangle – the 2-simplex :math:`\Delta^2`.
 
 Conversely, as :math:`\lambda \to \infty` the regularization overwhelms the data term
 and drives all model coefficients to zero, regardless of :math:`\alpha`.
