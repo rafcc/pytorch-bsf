@@ -1,7 +1,7 @@
 Elastic Net Grid Sampling
 =========================
 
-When fitting a Bézier simplex to the elastic-net regularisation map you first need to
+When fitting a Bézier simplex to the elastic-net regularization map you first need to
 choose a set of weight vectors on the standard 2-simplex :math:`\Delta^2` at which to
 evaluate the model.
 The :func:`~torch_bsf.model_selection.elastic_net_grid.elastic_net_grid` function
@@ -12,7 +12,20 @@ hyperparameter space.
 The Hyperparameter Space
 ------------------------
 
-The elastic net minimises a weighted combination of three objectives:
+The elastic net is conventionally formulated with a regularization strength
+:math:`\lambda \ge 0` and an L1/L2 mixing ratio :math:`\alpha \in [0, 1]`:
+
+.. math::
+
+   \min_{\beta} \; f_{\text{data}}(\beta) + \lambda \left(\alpha \, f_{\text{sparse}}(\beta)
+   + (1-\alpha) \, f_{\text{smooth}}(\beta)\right).
+
+Here :math:`f_{\text{data}}` is the data-fidelity term, :math:`f_{\text{sparse}}` is the L1
+penalty and :math:`f_{\text{smooth}}` is the L2 penalty. This parameterization is a
+semi-infinite rectangle :math:`[0,\infty) \times [0,1]` in :math:`(\lambda,\alpha)`.
+
+Equivalently, elastic-net optimization can be written as a convex combination of the
+same three objectives:
 
 .. math::
 
@@ -22,7 +35,7 @@ The elastic net minimises a weighted combination of three objectives:
    \qquad (w_1, w_2, w_3) \in \Delta^2.
 
 The conventional elastic-net parameters :math:`\lambda \ge 0` (overall
-regularisation strength) and :math:`\alpha \in [0, 1]` (L1 mixing ratio) relate to the
+regularization strength) and :math:`\alpha \in [0, 1]` (L1 mixing ratio) relate to the
 simplex weight vector by:
 
 .. math::
@@ -33,19 +46,18 @@ simplex weight vector by:
 
 The :math:`(\lambda, \alpha)` parameter space is a semi-infinite rectangle
 :math:`[0,\infty) \times [0,1]`.
-When :math:`\lambda = 0` the regularisation terms vanish and the solution depends only
+When :math:`\lambda = 0` the regularization terms vanish and the solution depends only
 on the data, *regardless of* :math:`\alpha`.
 Therefore the entire edge :math:`\{\lambda = 0\} \times [0, 1]` maps to the single
 vertex :math:`(w_1, w_2, w_3) = (1, 0, 0)` of the simplex.
-Identifying this edge with a single point transforms the rectangle into a triangle —
-the 2-simplex :math:`\Delta^2`.
+Identifying this edge with a single point transforms the rectangle into a triangle  Ethe 2-simplex :math:`\Delta^2`.
 
-Conversely, as :math:`\lambda \to \infty` the regularisation overwhelms the data term
+Conversely, as :math:`\lambda \to \infty` the regularization overwhelms the data term
 and drives all model coefficients to zero, regardless of :math:`\alpha`.
 In the elastic net this limit is called the **null model** (all :math:`\beta_i = 0`).
 All weight vectors on the opposite edge of the simplex
-:math:`\{(w_1, w_2, w_3) : w_1 = 0\}` — the *base edge* connecting
-:math:`(0, 1, 0)` and :math:`(0, 0, 1)` — therefore correspond to the same solution.
+:math:`\{(w_1, w_2, w_3) : w_1 = 0\}`  Ethe *base edge* connecting
+:math:`(0, 1, 0)` and :math:`(0, 0, 1)`  Etherefore correspond to the same solution.
 Since the Bézier simplex must assign a single output to each input weight, these
 identical solutions are identified to a single point :math:`P^*` before the grid is
 constructed.
@@ -63,18 +75,18 @@ single null-model point :math:`P^*`.
 .. figure:: ../_static/elastic_net_leaf_space.png
    :width: 100%
 
-   All points are coloured by :math:`(w_1, w_2, w_3) \mapsto (R, G, B)`,
-   so the same weight vector has the same colour in every panel.
-   **Left** – The :math:`(\alpha, \lambda)` hyperparameter space (x: L1 mixing ratio,
-   y: regularisation strength).
+   All points are colored by :math:`(w_1, w_2, w_3) \mapsto (R, G, B)`,
+   so the same weight vector has the same color in every panel.
+   **Left**  EThe :math:`(\alpha, \lambda)` hyperparameter space (x: L1 mixing ratio,
+   y: regularization strength).
    The red line at :math:`\lambda = 0` is the identified edge; all points on it
-   share the colour :math:`(1, 0, 0)` = red because :math:`w = (1, 0, 0)` there.
-   **Centre** – The 2-simplex with vertices :math:`(1,0,0)` at the top (red),
+   share the color :math:`(1, 0, 0)` = red because :math:`w = (1, 0, 0)` there.
+   **Centre**  EThe 2-simplex with vertices :math:`(1,0,0)` at the top (red),
    :math:`(0,1,0)` at the bottom-left (green), and :math:`(0,0,1)` at the
    bottom-right (blue).
-   Coloured horizontal segments are constant-:math:`\lambda` *leaves*; the gradient
+   colored horizontal segments are constant-:math:`\lambda` *leaves*; the gradient
    base edge (green→blue at the bottom) is the null-model edge to be identified.
-   **Right** – The quotient space: vertex :math:`A` = :math:`(1,0,0)` (red, top),
+   **Right**  EThe quotient space: vertex :math:`A` = :math:`(1,0,0)` (red, top),
    and the null-model point :math:`P^*` (bottom) shown as a large green dot
    :math:`(0,1,0)` behind a smaller blue dot :math:`(0,0,1)`, reflecting that
    both endpoints of the base edge are identified to :math:`P^*`.
@@ -87,14 +99,14 @@ A uniform grid in :math:`(\lambda, \alpha)` is sub-optimal because solutions cha
 rapidly near :math:`\lambda = 0` and slowly for large :math:`\lambda`.
 :func:`~torch_bsf.model_selection.elastic_net_grid.elastic_net_grid` therefore uses:
 
-* **Log-scale spacing along** :math:`\lambda` – the ``n_lambdas`` break points are
+* **Log-scale spacing along** :math:`\lambda`  Ethe ``n_lambdas`` break points are
   generated by
   :func:`~torch_bsf.model_selection.elastic_net_grid.reverse_logspace`, placing more
   samples close to :math:`\lambda = 0` (i.e. close to the data-fidelity vertex).
   The steepness of the log scale is controlled by the ``base`` parameter: ``base=1``
   gives uniform spacing, larger values concentrate points further towards the vertex.
 
-* **Uniform spacing along** :math:`\alpha` – on each leaf the ``n_alphas`` values of
+* **Uniform spacing along** :math:`\alpha`  Eon each leaf the ``n_alphas`` values of
   :math:`\alpha` are placed uniformly in :math:`[0, 1]`.
 
 The ``n_vertex_copies`` parameter adds extra copies of each simplex vertex.
@@ -138,7 +150,7 @@ As a Python function
 
 The returned array can be saved to a CSV file and passed as the ``params`` argument to
 :func:`torch_bsf.fit` (or to the ``--params`` CLI option) to train a Bézier simplex
-over the elastic-net regularisation map.
+over the elastic-net regularization map.
 
 As a Python module (CLI)
 ~~~~~~~~~~~~~~~~~~~~~~~~
@@ -186,10 +198,10 @@ subsequent training run:
 
 .. seealso::
 
-   * :func:`torch_bsf.model_selection.elastic_net_grid.elastic_net_grid` – API
+   * :func:`torch_bsf.model_selection.elastic_net_grid.elastic_net_grid`  EAPI
      reference with parameter descriptions and examples.
-   * :func:`torch_bsf.model_selection.elastic_net_grid.reverse_logspace` – helper that
+   * :func:`torch_bsf.model_selection.elastic_net_grid.reverse_logspace`  Ehelper that
      generates the log-spaced :math:`\lambda` values.
-   * :doc:`auto_degree` – automatic degree selection via k-fold cross-validation.
-   * :doc:`../applications/elastic_net` – end-to-end example of elastic-net model
+   * :doc:`auto_degree`  Eautomatic degree selection via k-fold cross-validation.
+   * :doc:`../applications/elastic_net`  Eend-to-end example of elastic-net model
      selection using PyTorch-BSF.
