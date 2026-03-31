@@ -115,7 +115,7 @@ generates a purpose-built grid that respects the intrinsic geometry of the elast
 hyperparameter space.</p>
 <section id="the-hyperparameter-space">
 <h2>The Hyperparameter Space<a class="headerlink" href="#the-hyperparameter-space" title="Link to this heading"></a></h2>
-<p>The elastic net minimises a weighted combination of three objectives:</p>
+<p>The elastic net minimizes a weighted combination of three objectives:</p>
 <div class="math notranslate nohighlight">
 \[\min_{\beta} \; w_1 \, f_{\text{data}}(\beta)
             + w_2 \, f_{\text{sparse}}(\beta)
@@ -200,8 +200,11 @@ points further towards the vertex.</p></li>
 </ul>
 <p>The <code class="docutils literal notranslate"><span class="pre">n_vertex_copies</span></code> parameter adds extra copies of each simplex vertex.
 This is useful when the grid is passed to k-fold cross-validation
-(see <a class="reference internal" href="auto_degree.html"><span class="doc">Automatic Degree Selection</span></a>) so that each fold is guaranteed to contain every vertex at
-least once.</p>
+(see <a class="reference internal" href="auto_degree.html"><span class="doc">Automatic Degree Selection</span></a>): set <code class="docutils literal notranslate"><span class="pre">n_vertex_copies</span> <span class="pre">&gt;=</span> <span class="pre">k</span></code> for k-fold CV so that,
+when the fold-splitting procedure distributes rows approximately evenly, each fold
+will contain every vertex at least once.  Using fewer copies than folds can inflate
+cross-validation variance, and <code class="xref py py-func docutils literal notranslate"><span class="pre">elastic_net_grid()</span></code>
+will emit a <code class="docutils literal notranslate"><span class="pre">UserWarning</span></code> if you pass <code class="docutils literal notranslate"><span class="pre">n_folds</span></code> and <code class="docutils literal notranslate"><span class="pre">n_vertex_copies</span> <span class="pre">&lt;</span> <span class="pre">n_folds</span></code>.</p>
 <figure class="align-default" id="id2">
 <a class="reference internal image-reference" href="../_images/elastic_net_grid_comparison.png"><img alt="../_images/elastic_net_grid_comparison.png" src="../_images/elastic_net_grid_comparison.png" style="width: 100%;" />
 </a>
@@ -251,7 +254,7 @@ over the elastic-net regularization map.</p>
 </pre></div>
 </div>
 <p>All four parameters are optional and fall back to their defaults
-(<code class="docutils literal notranslate"><span class="pre">n_lambdas=102</span></code>, <code class="docutils literal notranslate"><span class="pre">n_alphas=12</span></code>, <code class="docutils literal notranslate"><span class="pre">n_vertex_copies=10</span></code>, <code class="docutils literal notranslate"><span class="pre">base=10</span></code>).</p>
+(<code class="docutils literal notranslate"><span class="pre">n_lambdas=102</span></code>, <code class="docutils literal notranslate"><span class="pre">n_alphas=12</span></code>, <code class="docutils literal notranslate"><span class="pre">n_vertex_copies=1</span></code>, <code class="docutils literal notranslate"><span class="pre">base=10</span></code>).</p>
 </section>
 <section id="via-mlproject">
 <h3>Via MLproject<a class="headerlink" href="#via-mlproject" title="Link to this heading"></a></h3>
@@ -281,7 +284,8 @@ subsequent training run:</p>
 <li><p><code class="xref py py-func docutils literal notranslate"><span class="pre">torch_bsf.model_selection.elastic_net_grid.elastic_net_grid()</span></code> – API
 reference with parameter descriptions and examples.</p></li>
 <li><p><code class="xref py py-func docutils literal notranslate"><span class="pre">torch_bsf.model_selection.elastic_net_grid.reverse_logspace()</span></code> – helper that
-generates the log-spaced <span class="math notranslate nohighlight">\(\lambda\)</span> values.</p></li>
+generates log-spaced samples for the first weight component <span class="math notranslate nohighlight">\(w_1\)</span>, from
+which the <span class="math notranslate nohighlight">\(\lambda = (1 - w_1) / w_1\)</span> values are derived.</p></li>
 <li><p><a class="reference internal" href="auto_degree.html"><span class="doc">Automatic Degree Selection</span></a> – automatic degree selection via k-fold cross-validation.</p></li>
 <li><p><a class="reference internal" href="../applications/elastic_net.html"><span class="doc">Elastic net model selection</span></a> – end-to-end example of elastic-net model
 selection using PyTorch-BSF.</p></li>
