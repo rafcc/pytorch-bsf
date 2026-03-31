@@ -12,7 +12,7 @@ hyperparameter space.
 The Hyperparameter Space
 ------------------------
 
-The elastic net minimises a weighted combination of three objectives:
+The elastic net minimizes a weighted combination of three objectives:
 
 .. math::
 
@@ -162,7 +162,7 @@ Run the module directly to print the grid as a CSV file to *stdout*:
        > weights.csv
 
 All four parameters are optional and fall back to their defaults
-(``n_lambdas=102``, ``n_alphas=12``, ``n_vertex_copies=10``, ``base=10``).
+(``n_lambdas=102``, ``n_alphas=12``, ``n_vertex_copies=1``, ``base=10``).
 
 Via MLproject
 ~~~~~~~~~~~~~
@@ -196,7 +196,8 @@ subsequent training run:
    * :func:`torch_bsf.model_selection.elastic_net_grid.elastic_net_grid` – API
      reference with parameter descriptions and examples.
    * :func:`torch_bsf.model_selection.elastic_net_grid.reverse_logspace` – helper that
-     generates the log-spaced :math:`\lambda` values.
+     generates log-spaced samples for the first weight component :math:`w_1`, from
+     which the :math:`\lambda = (1 - w_1) / w_1` values are derived.
    * :doc:`auto_degree` – automatic degree selection via k-fold cross-validation.
    * :doc:`../applications/elastic_net` – end-to-end example of elastic-net model
      selection using PyTorch-BSF.
