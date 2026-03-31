@@ -145,8 +145,9 @@ As a Python function
 
    np.savetxt("weights.csv", grid, delimiter=",", fmt="%.17e")
 
-The returned array can be saved to a CSV file and passed as the ``params`` argument to
-:func:`torch_bsf.fit` (or to the ``--params`` CLI option) to train a Bézier simplex
+The returned array can be saved to a CSV file and then either (a) loaded back into an
+array or tensor and passed as the ``params`` argument to :func:`torch_bsf.fit`, or
+(b) passed as a file path to the ``--params`` CLI option, to train a Bézier simplex
 over the elastic-net regularization map.
 
 As a Python module (CLI)
