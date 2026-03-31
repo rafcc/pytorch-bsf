@@ -102,16 +102,19 @@ A uniform grid in :math:`(\lambda, \alpha)` is sub-optimal because solutions cha
 rapidly near :math:`\lambda = 0` and slowly for large :math:`\lambda`.
 :func:`~torch_bsf.model_selection.elastic_net_grid.elastic_net_grid` therefore uses:
 
-* **Log-scale spacing of the identified-edge weight** :math:`w_1` – the
+* **Log-scale spacing of the base-edge weight** :math:`w_1` – the
   :func:`~torch_bsf.model_selection.elastic_net_grid.reverse_logspace` routine
-  generates ``n_lambdas - 1`` values of :math:`w_1 \in (0, 1)` along the identified
-  edge, and the vertex at :math:`w_1 = 1` (i.e. :math:`\lambda = 0`) is appended
-  separately.
-  This produces more samples close to the data-fidelity vertex and therefore near
-  :math:`\lambda = 0`.
+  generates ``n_lambdas - 1`` values of :math:`w_1 \in [0, 1)` along the null-model
+  base edge, including :math:`w_1 = 0` (which corresponds to :math:`\lambda = \infty`)
+  and excluding the data-fidelity vertex at :math:`w_1 = 1`.
+  The vertex at :math:`w_1 = 1` (i.e. :math:`\lambda = 0`) is appended separately.
+  Since :math:`\lambda = (1 - w_1) / w_1` is finite only for :math:`w_1 > 0`, all
+  finite values of :math:`\lambda` arise from :math:`0 < w_1 < 1`.
+  This construction produces more samples close to the data-fidelity vertex and
+  therefore near :math:`\lambda = 0`.
   The steepness of this clustering is controlled by the ``base`` parameter:
   ``base=1`` gives uniform spacing in :math:`w_1`, while larger values concentrate
-  points further towards the vertex.
+  points further towards :math:`w_1 = 1` (i.e. towards smaller :math:`\lambda`).
 
 * **Uniform spacing along** :math:`\alpha` – on each leaf the ``n_alphas`` values of
   :math:`\alpha` are placed uniformly in :math:`[0, 1]`.
