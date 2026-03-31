@@ -3,7 +3,7 @@ hyperparameter space and the corresponding grid sampling on the 2-simplex.
 
 The figure has three panels:
 
-1. The (λ, α) parameter half-plane with the identified edge λ=0 highlighted.
+1. The (λ, α) parameter domain [0, ∞) × [0, 1] with the boundary λ=0 highlighted.
    x-axis: λ (regularization strength), y-axis: α (L1 mixing ratio).
 2. The elastic-net grid on the 2-simplex with vertices (1,0,0) at bottom-left,
    (0,1,0) at the top, and (0,0,1) at bottom-right.
