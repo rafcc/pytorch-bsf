@@ -237,8 +237,9 @@ which is appropriate when you expect the optimal model to have small
 <span class="n">np</span><span class="o">.</span><span class="n">savetxt</span><span class="p">(</span><span class="s2">&quot;weights.csv&quot;</span><span class="p">,</span> <span class="n">grid</span><span class="p">,</span> <span class="n">delimiter</span><span class="o">=</span><span class="s2">&quot;,&quot;</span><span class="p">,</span> <span class="n">fmt</span><span class="o">=</span><span class="s2">&quot;</span><span class="si">%.17e</span><span class="s2">&quot;</span><span class="p">)</span>
 </pre></div>
 </div>
-<p>The returned array can be saved to a CSV file and passed as the <code class="docutils literal notranslate"><span class="pre">params</span></code> argument to
-<a class="reference internal" href="../torch_bsf.html#torch_bsf.fit" title="torch_bsf.fit"><code class="xref py py-func docutils literal notranslate"><span class="pre">torch_bsf.fit()</span></code></a> (or to the <code class="docutils literal notranslate"><span class="pre">--params</span></code> CLI option) to train a Bézier simplex
+<p>The returned array can be saved to a CSV file and then either (a) loaded back into an
+array or tensor and passed as the <code class="docutils literal notranslate"><span class="pre">params</span></code> argument to <a class="reference internal" href="../torch_bsf.html#torch_bsf.fit" title="torch_bsf.fit"><code class="xref py py-func docutils literal notranslate"><span class="pre">torch_bsf.fit()</span></code></a>, or
+(b) passed as a file path to the <code class="docutils literal notranslate"><span class="pre">--params</span></code> CLI option, to train a Bézier simplex
 over the elastic-net regularization map.</p>
 </section>
 <section id="as-a-python-module-cli">
