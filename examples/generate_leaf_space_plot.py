@@ -301,26 +301,27 @@ def rot90ccw(x, y):
     return -y, x
 
 # Boundary curves with color gradient
-# t parametrises from A (t=0) to P* (t=1)
+# t parameterizes from A (t=0) to P* (t=1)
 t_bnd = np.linspace(0.0, 1.0, 300)
-# Before rotation: left boundary (α=0) has x=-R*sin, y=cos;
-#                  right boundary (α=1) has x=R*sin, y=cos.
-# After 90° CCW rotation:
-#   top boundary (was α=0 left): new_x=-cos, new_y=-R*sin
-#   bottom boundary (was α=1 right): new_x=-cos, new_y=R*sin
-x_top_bnd, y_top_bnd   = rot90ccw(-R * np.sin(np.pi * t_bnd), np.cos(np.pi * t_bnd))
-x_bot_bnd, y_bot_bnd   = rot90ccw( R * np.sin(np.pi * t_bnd), np.cos(np.pi * t_bnd))
+# Before rotation in the (x, y)-plane:
+#   left boundary (α=0):  x = -R * sin(π t),  y = cos(π t)
+#   right boundary (α=1): x =  R * sin(π t),  y = cos(π t)
+# After 90° CCW rotation (x, y) → (-y, x):
+#   α=0 boundary → new_x = -cos(π t), new_y = -R * sin(π t)  (bottom, y ≤ 0)
+#   α=1 boundary → new_x = -cos(π t), new_y =  R * sin(π t)  (top,    y ≥ 0)
+x_alpha0_bnd, y_alpha0_bnd = rot90ccw(-R * np.sin(np.pi * t_bnd), np.cos(np.pi * t_bnd))
+x_alpha1_bnd, y_alpha1_bnd = rot90ccw( R * np.sin(np.pi * t_bnd), np.cos(np.pi * t_bnd))
 
-# Top boundary (α=0): color transitions red→blue  (w1=1-t, w2=0, w3=t)
-pts_tb = np.column_stack([x_top_bnd, y_top_bnd])
-segs_tb = np.stack([pts_tb[:-1], pts_tb[1:]], axis=1)
-t_bnd_mids = 0.5 * (t_bnd[:-1] + t_bnd[1:])
-c_tb = np.stack([1.0 - t_bnd_mids, np.zeros_like(t_bnd_mids), t_bnd_mids], axis=-1)
-ax.add_collection(LineCollection(segs_tb, colors=c_tb, lw=2.0, zorder=3))
-
-# Bottom boundary (α=1): color transitions red→green  (w1=1-t, w2=t, w3=0)
-pts_bb = np.column_stack([x_bot_bnd, y_bot_bnd])
+# Bottom boundary (α=0): color transitions red→blue  (w1=1-t, w2=0, w3=t)
+pts_bb = np.column_stack([x_alpha0_bnd, y_alpha0_bnd])
 segs_bb = np.stack([pts_bb[:-1], pts_bb[1:]], axis=1)
+t_bnd_mids = 0.5 * (t_bnd[:-1] + t_bnd[1:])
+c_bb = np.stack([1.0 - t_bnd_mids, np.zeros_like(t_bnd_mids), t_bnd_mids], axis=-1)
+ax.add_collection(LineCollection(segs_bb, colors=c_bb, lw=2.0, zorder=3))
+
+# Top boundary (α=1): color transitions red→green  (w1=1-t, w2=t, w3=0)
+pts_tb = np.column_stack([x_alpha1_bnd, y_alpha1_bnd])
+segs_tb = np.stack([pts_tb[:-1], pts_tb[1:]], axis=1)
 c_bb = np.stack([1.0 - t_bnd_mids, t_bnd_mids, np.zeros_like(t_bnd_mids)], axis=-1)
 ax.add_collection(LineCollection(segs_bb, colors=c_bb, lw=2.0, zorder=3))
 
@@ -363,7 +364,7 @@ ax.scatter(x_eye_rot, y_eye_rot, c=rgb_m, s=20, zorder=3, edgecolors="none")
 ax.plot(-1, 0, "o", color=(1.0, 0.0, 0.0), markersize=8, zorder=5)
 
 # Collapsed point P*: large green dot (behind) + smaller blue dot (in front) — now at RIGHT (1, 0)
-# This visualises that both (0,1,0) and (0,0,1) map to P*.
+# This visualizes that both (0,1,0) and (0,0,1) map to P*.
 ax.plot(1, 0, "o", color=(0.0, 1.0, 0.0), markersize=14, zorder=4)  # green, larger
 ax.plot(1, 0, "o", color=(0.0, 0.0, 1.0), markersize=8,  zorder=5)  # blue, smaller
 
