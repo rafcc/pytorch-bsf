@@ -11,8 +11,8 @@ The figure has three panels:
    single point P* (the null model), shown as a leaf/eye-shaped CW complex,
    rotated 90° counterclockwise (A at left, P* at right).
 
-All points are coloured by (w1, w2, w3) mapped to (R, G, B), so the same
-weight vector has the same colour in every panel.
+All points are colored by (w1, w2, w3) mapped to (R, G, B), so the same
+weight vector has the same color in every panel.
 
 Usage::
 
@@ -36,7 +36,7 @@ from torch_bsf.model_selection.elastic_net_grid import elastic_net_grid  # noqa:
 # ---------------------------------------------------------------------------
 
 def weights_to_rgb(w1, w2, w3):
-    """Map weight vectors (w1, w2, w3) to RGB colours."""
+    """Map weight vectors (w1, w2, w3) to RGB colors."""
     return np.clip(np.stack([w1, w2, w3], axis=-1), 0.0, 1.0)
 
 
@@ -124,7 +124,7 @@ lambda_unique = (1.0 - unique_w1_finite) / unique_w1_finite  # λ = (1-w1)/w1
 lambda_max = lambda_unique.max() * 1.15                       # axis upper limit
 
 alphas_per_row = np.linspace(0.0, 1.0, N_ALPHAS, endpoint=True)
-h3 = np.sqrt(3) / 2   # used in both centre and right panels
+h3 = np.sqrt(3) / 2   # used in both center and right panels
 
 
 # ---------------------------------------------------------------------------
@@ -139,7 +139,7 @@ fig, (ax_rect, ax_simplex, ax_leaf) = plt.subplots(
 # ===========================================================================
 # Left panel – (λ, α) hyperparameter space
 # x-axis: λ (regularization strength), y-axis: α (L1 mixing ratio).
-# Points are coloured by (w1, w2, w3) = (R, G, B).
+# Points are colored by (w1, w2, w3) = (R, G, B).
 # ===========================================================================
 ax = ax_rect
 
@@ -153,7 +153,7 @@ ax.set_title("Hyperparameter space\n(before identification)", fontsize=11)
 for lam in lambda_unique:
     ax.axvline(x=lam, color="gray", lw=0.5, alpha=0.4, zorder=2)
 
-# Grid scatter coloured by (w1, w2, w3)
+# Grid scatter colored by (w1, w2, w3)
 for lam, w1 in zip(lambda_unique, unique_w1_finite):
     w1_row = np.full(N_ALPHAS, w1)
     w2_row = lam * alphas_per_row / (1.0 + lam)
@@ -201,7 +201,7 @@ for alpha_val in alphas_per_row:
 # ===========================================================================
 # Centre panel – 2-simplex with foliation (leaves) and grid points
 # Vertices: (1,0,0) at bottom-left, (0,1,0) at top, (0,0,1) at bottom-right.
-# Points are coloured by (w1, w2, w3) = (R, G, B).
+# Points are colored by (w1, w2, w3) = (R, G, B).
 # ===========================================================================
 ax = ax_simplex
 
@@ -255,7 +255,7 @@ for w1 in unique_w1_finite:
     ax.add_collection(LineCollection(segs_lf, colors=c_lf_mids,
                                      lw=1.0, alpha=0.7, zorder=1))
 
-# Scatter grid points coloured by (w1, w2, w3)
+# Scatter grid points colored by (w1, w2, w3)
 ax.scatter(px, py, c=rgb_all, s=20, zorder=3, edgecolors="none")
 
 # Vertex markers and labels
@@ -284,7 +284,7 @@ ax.text(0.82, h3 * 0.45, "base edge\n(null model)", fontsize=7.5, ha="center",
 #   - two 1-cells (edges) from A to P*, shown as curves
 #   - one 2-cell (face) enclosed by the two edges
 # The overall shape resembles a leaf or eye (horizontal orientation).
-# Points are coloured by (w1, w2, w3) = (R, G, B).
+# Points are colored by (w1, w2, w3) = (R, G, B).
 # At P*, a large green dot (behind) and a smaller blue dot (in front) are
 # overlaid to show that (0,1,0) and (0,0,1) are both mapped here.
 # ===========================================================================
@@ -300,7 +300,7 @@ R = 0.55  # half-width of the widest cross-section
 def rot90ccw(x, y):
     return -y, x
 
-# Boundary curves with colour gradient
+# Boundary curves with color gradient
 # t parametrises from A (t=0) to P* (t=1)
 t_bnd = np.linspace(0.0, 1.0, 300)
 # Before rotation: left boundary (α=0) has x=-R*sin, y=cos;
@@ -311,14 +311,14 @@ t_bnd = np.linspace(0.0, 1.0, 300)
 x_top_bnd, y_top_bnd   = rot90ccw(-R * np.sin(np.pi * t_bnd), np.cos(np.pi * t_bnd))
 x_bot_bnd, y_bot_bnd   = rot90ccw( R * np.sin(np.pi * t_bnd), np.cos(np.pi * t_bnd))
 
-# Top boundary (α=0): colour transitions red→blue  (w1=1-t, w2=0, w3=t)
+# Top boundary (α=0): color transitions red→blue  (w1=1-t, w2=0, w3=t)
 pts_tb = np.column_stack([x_top_bnd, y_top_bnd])
 segs_tb = np.stack([pts_tb[:-1], pts_tb[1:]], axis=1)
 t_bnd_mids = 0.5 * (t_bnd[:-1] + t_bnd[1:])
 c_tb = np.stack([1.0 - t_bnd_mids, np.zeros_like(t_bnd_mids), t_bnd_mids], axis=-1)
 ax.add_collection(LineCollection(segs_tb, colors=c_tb, lw=2.0, zorder=3))
 
-# Bottom boundary (α=1): colour transitions red→green  (w1=1-t, w2=t, w3=0)
+# Bottom boundary (α=1): color transitions red→green  (w1=1-t, w2=t, w3=0)
 pts_bb = np.column_stack([x_bot_bnd, y_bot_bnd])
 segs_bb = np.stack([pts_bb[:-1], pts_bb[1:]], axis=1)
 c_bb = np.stack([1.0 - t_bnd_mids, t_bnd_mids, np.zeros_like(t_bnd_mids)], axis=-1)
@@ -343,7 +343,7 @@ for alpha in alpha_lines:
     x_rot, y_rot = rot90ccw(x_orig, y_orig)
     ax.plot(x_rot, y_rot, color="gray", lw=0.5, alpha=0.35)
 
-# Grid scatter coloured by (w1, w2, w3)
+# Grid scatter colored by (w1, w2, w3)
 grid_main = grid[:n_main]
 w1_m = grid_main[:, 0]
 w2_m = grid_main[:, 1]
