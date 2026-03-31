@@ -136,24 +136,43 @@ Therefore the entire edge <span class="math notranslate nohighlight">\(\{\lambda
 vertex <span class="math notranslate nohighlight">\((w_1, w_2, w_3) = (1, 0, 0)\)</span> of the simplex.
 Identifying this edge with a single point transforms the rectangle into a triangle —
 the 2-simplex <span class="math notranslate nohighlight">\(\Delta^2\)</span>.</p>
-<p>This identification gives the space a <strong>leaf (foliation) structure</strong>: for each fixed
+<p>Conversely, as <span class="math notranslate nohighlight">\(\lambda \to \infty\)</span> the regularisation overwhelms the data term
+and drives all model coefficients to zero, regardless of <span class="math notranslate nohighlight">\(\alpha\)</span>.
+In the elastic net this limit is called the <strong>null model</strong> (all <span class="math notranslate nohighlight">\(\beta_i = 0\)</span>).
+All weight vectors on the opposite edge of the simplex
+<span class="math notranslate nohighlight">\(\{(w_1, w_2, w_3) : w_1 = 0\}\)</span> — the <em>base edge</em> connecting
+<span class="math notranslate nohighlight">\((0, 1, 0)\)</span> and <span class="math notranslate nohighlight">\((0, 0, 1)\)</span> — therefore correspond to the same solution.
+Since the Bézier simplex must assign a single output to each input weight, these
+identical solutions are identified to a single point <span class="math notranslate nohighlight">\(P^*\)</span> before the grid is
+constructed.
+The resulting quotient space is a <strong>leaf/eye-shaped CW complex</strong>: two 0-cells (<span class="math notranslate nohighlight">\(A\)</span>
+and <span class="math notranslate nohighlight">\(P^*\)</span>), two 1-cells (the former edges <span class="math notranslate nohighlight">\(AB\)</span> and <span class="math notranslate nohighlight">\(AC\)</span>, now
+connecting <span class="math notranslate nohighlight">\(A\)</span> to <span class="math notranslate nohighlight">\(P^*\)</span> as curves), and one 2-cell (the interior).</p>
+<p>This identification gives the interior a <strong>leaf (foliation) structure</strong>: for each fixed
 value of <span class="math notranslate nohighlight">\(w_1 \in (0, 1]\)</span>, the set of corresponding weight vectors
 <span class="math notranslate nohighlight">\(\{(w_1, w_2, w_3) : w_2 + w_3 = 1 - w_1,\; w_2, w_3 \ge 0\}\)</span>
 is a line segment (a <em>leaf</em>) parametrised by <span class="math notranslate nohighlight">\(\alpha\)</span>.
-As <span class="math notranslate nohighlight">\(w_1 \to 0\)</span> (i.e. <span class="math notranslate nohighlight">\(\lambda \to \infty\)</span>), the leaves sweep across the
-entire opposite edge of the simplex from the pure-L2 vertex <span class="math notranslate nohighlight">\((0, 0, 1)\)</span> to the
-pure-L1 vertex <span class="math notranslate nohighlight">\((0, 1, 0)\)</span>.</p>
+As <span class="math notranslate nohighlight">\(w_1 \to 0\)</span> (i.e. <span class="math notranslate nohighlight">\(\lambda \to \infty\)</span>), the leaves shrink to the
+single null-model point <span class="math notranslate nohighlight">\(P^*\)</span>.</p>
 <figure class="align-default" id="id1">
 <a class="reference internal image-reference" href="../_images/elastic_net_leaf_space.png"><img alt="../_images/elastic_net_leaf_space.png" src="../_images/elastic_net_leaf_space.png" style="width: 100%;" />
 </a>
 <figcaption>
-<p><span class="caption-number">Fig. 2 </span><span class="caption-text"><strong>Left</strong> – The <span class="math notranslate nohighlight">\((\alpha, w_1)\)</span> parameter rectangle.
-The highlighted crimson edge at <span class="math notranslate nohighlight">\(w_1 = 1\)</span> (<span class="math notranslate nohighlight">\(\lambda = 0\)</span>) is
-identified to the single vertex <span class="math notranslate nohighlight">\((1, 0, 0)\)</span> of the simplex.
-Coloured horizontal lines are the sampled <em>leaves</em> at each <span class="math notranslate nohighlight">\(\lambda\)</span> level
-(log-spaced, <code class="docutils literal notranslate"><span class="pre">base=10</span></code>).
-<strong>Right</strong> – The same leaves and grid points on the 2-simplex after the
-identification.  Colour encodes <span class="math notranslate nohighlight">\(w_1\)</span>.</span><a class="headerlink" href="#id1" title="Link to this image"></a></p>
+<p><span class="caption-number">Fig. 2 </span><span class="caption-text">All points are coloured by <span class="math notranslate nohighlight">\((w_1, w_2, w_3) \mapsto (R, G, B)\)</span>,
+so the same weight vector has the same colour in every panel.
+<strong>Left</strong> – The <span class="math notranslate nohighlight">\((\lambda, \alpha)\)</span> hyperparameter space (x: regularisation
+strength, y: L1 mixing ratio).
+The red line at <span class="math notranslate nohighlight">\(\lambda = 0\)</span> is the identified edge; all points on it
+share the colour <span class="math notranslate nohighlight">\((1, 0, 0)\)</span> = red because <span class="math notranslate nohighlight">\(w = (1, 0, 0)\)</span> there.
+<strong>Centre</strong> – The 2-simplex with vertices <span class="math notranslate nohighlight">\((1,0,0)\)</span> at the bottom-left (red),
+<span class="math notranslate nohighlight">\((0,1,0)\)</span> at the top (green), and <span class="math notranslate nohighlight">\((0,0,1)\)</span> at the
+bottom-right (blue).
+The gradient right edge (green→blue) is the null-model base edge to be identified.
+<strong>Right</strong> – The quotient space rotated 90° counterclockwise: vertex <span class="math notranslate nohighlight">\(A\)</span> =
+<span class="math notranslate nohighlight">\((1,0,0)\)</span> (red) at the left, and the null-model point <span class="math notranslate nohighlight">\(P^*\)</span> at the
+right shown as a large green dot <span class="math notranslate nohighlight">\((0,1,0)\)</span> behind a smaller blue dot
+<span class="math notranslate nohighlight">\((0,0,1)\)</span>, reflecting that both endpoints of the base edge are identified
+to <span class="math notranslate nohighlight">\(P^*\)</span>.</span><a class="headerlink" href="#id1" title="Link to this image"></a></p>
 </figcaption>
 </figure>
 </section>
@@ -319,6 +338,8 @@ selection using PyTorch-BSF.</p></li>
             <dd><a href="../../../v0.14.2/index.html">v0.14.2</a></dd>
             <dd><a href="../../../v0.14.3/index.html">v0.14.3</a></dd>
             <dd><a href="../../../v0.15.0/index.html">v0.15.0</a></dd>
+            <dd><a href="../../../v0.15.1/index.html">v0.15.1</a></dd>
+            <dd><a href="../../../v0.16.0/index.html">v0.16.0</a></dd>
             <dd><a href="../../../v0.2.0/index.html">v0.2.0</a></dd>
             <dd><a href="../../../v0.3.0/index.html">v0.3.0</a></dd>
             <dd><a href="../../../v0.3.1/index.html">v0.3.1</a></dd>
