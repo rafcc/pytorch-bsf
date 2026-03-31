@@ -107,7 +107,7 @@
              
   <section id="elastic-net-grid-sampling">
 <h1>Elastic Net Grid Sampling<a class="headerlink" href="#elastic-net-grid-sampling" title="Link to this heading"></a></h1>
-<p>When fitting a Bézier simplex to the elastic-net regularisation map you first need to
+<p>When fitting a Bézier simplex to the elastic-net regularization map you first need to
 choose a set of weight vectors on the standard 2-simplex <span class="math notranslate nohighlight">\(\Delta^2\)</span> at which to
 evaluate the model.
 The <code class="xref py py-func docutils literal notranslate"><span class="pre">elastic_net_grid()</span></code> function
@@ -122,7 +122,7 @@ hyperparameter space.</p>
             + w_3 \, f_{\text{smooth}}(\beta),
 \qquad (w_1, w_2, w_3) \in \Delta^2.\]</div>
 <p>The conventional elastic-net parameters <span class="math notranslate nohighlight">\(\lambda \ge 0\)</span> (overall
-regularisation strength) and <span class="math notranslate nohighlight">\(\alpha \in [0, 1]\)</span> (L1 mixing ratio) relate to the
+regularization strength) and <span class="math notranslate nohighlight">\(\alpha \in [0, 1]\)</span> (L1 mixing ratio) relate to the
 simplex weight vector by:</p>
 <div class="math notranslate nohighlight">
 \[w_1 = \frac{1}{1+\lambda}, \qquad
@@ -130,37 +130,40 @@ w_2 = \frac{\lambda\,\alpha}{1+\lambda}, \qquad
 w_3 = \frac{\lambda\,(1-\alpha)}{1+\lambda}.\]</div>
 <p>The <span class="math notranslate nohighlight">\((\lambda, \alpha)\)</span> parameter space is a semi-infinite rectangle
 <span class="math notranslate nohighlight">\([0,\infty) \times [0,1]\)</span>.
-When <span class="math notranslate nohighlight">\(\lambda = 0\)</span> the regularisation terms vanish and the solution depends only
+When <span class="math notranslate nohighlight">\(\lambda = 0\)</span> the regularization terms vanish and the solution depends only
 on the data, <em>regardless of</em> <span class="math notranslate nohighlight">\(\alpha\)</span>.
 Therefore the entire edge <span class="math notranslate nohighlight">\(\{\lambda = 0\} \times [0, 1]\)</span> maps to the single
 vertex <span class="math notranslate nohighlight">\((w_1, w_2, w_3) = (1, 0, 0)\)</span> of the simplex.
 Identifying this edge with a single point transforms the rectangle into a triangle —
 the 2-simplex <span class="math notranslate nohighlight">\(\Delta^2\)</span>.</p>
-<p>Conversely, as <span class="math notranslate nohighlight">\(\lambda \to \infty\)</span> the regularisation overwhelms the data term
+<p>Conversely, as <span class="math notranslate nohighlight">\(\lambda \to \infty\)</span> the regularization overwhelms the data term
 and drives all model coefficients to zero, regardless of <span class="math notranslate nohighlight">\(\alpha\)</span>.
 In the elastic net this limit is called the <strong>null model</strong> (all <span class="math notranslate nohighlight">\(\beta_i = 0\)</span>).
 All weight vectors on the opposite edge of the simplex
 <span class="math notranslate nohighlight">\(\{(w_1, w_2, w_3) : w_1 = 0\}\)</span> — the <em>base edge</em> connecting
 <span class="math notranslate nohighlight">\((0, 1, 0)\)</span> and <span class="math notranslate nohighlight">\((0, 0, 1)\)</span> — therefore correspond to the same solution.
-Since the Bézier simplex must assign a single output to each input weight, these
-identical solutions are identified to a single point <span class="math notranslate nohighlight">\(P^*\)</span> before the grid is
-constructed.
-The resulting quotient space is a <strong>leaf/eye-shaped CW complex</strong>: two 0-cells (<span class="math notranslate nohighlight">\(A\)</span>
-and <span class="math notranslate nohighlight">\(P^*\)</span>), two 1-cells (the former edges <span class="math notranslate nohighlight">\(AB\)</span> and <span class="math notranslate nohighlight">\(AC\)</span>, now
-connecting <span class="math notranslate nohighlight">\(A\)</span> to <span class="math notranslate nohighlight">\(P^*\)</span> as curves), and one 2-cell (the interior).</p>
+Since the Bézier simplex (and the underlying solution map) must assign a single output
+to each input weight, all of these base-edge weights are identified with a single
+null-model point <span class="math notranslate nohighlight">\(P^*\)</span> in the solution space. The
+<code class="xref py py-func docutils literal notranslate"><span class="pre">elastic_net_grid()</span></code> function still
+returns multiple distinct base-edge weights (<span class="math notranslate nohighlight">\(w_1 = 0\)</span> with varying <span class="math notranslate nohighlight">\(w_2\)</span>,
+<span class="math notranslate nohighlight">\(w_3\)</span>), but they all evaluate to this same null-model solution. The resulting
+quotient space is a <strong>leaf/eye-shaped CW complex</strong>: two 0-cells (<span class="math notranslate nohighlight">\(A\)</span> and
+<span class="math notranslate nohighlight">\(P^*\)</span>), two 1-cells (the former edges <span class="math notranslate nohighlight">\(AB\)</span> and <span class="math notranslate nohighlight">\(AC\)</span>, now connecting
+<span class="math notranslate nohighlight">\(A\)</span> to <span class="math notranslate nohighlight">\(P^*\)</span> as curves), and one 2-cell (the interior).</p>
 <p>This identification gives the interior a <strong>leaf (foliation) structure</strong>: for each fixed
 value of <span class="math notranslate nohighlight">\(w_1 \in (0, 1]\)</span>, the set of corresponding weight vectors
 <span class="math notranslate nohighlight">\(\{(w_1, w_2, w_3) : w_2 + w_3 = 1 - w_1,\; w_2, w_3 \ge 0\}\)</span>
 is a line segment (a <em>leaf</em>) parametrised by <span class="math notranslate nohighlight">\(\alpha\)</span>.
-As <span class="math notranslate nohighlight">\(w_1 \to 0\)</span> (i.e. <span class="math notranslate nohighlight">\(\lambda \to \infty\)</span>), the leaves shrink to the
-single null-model point <span class="math notranslate nohighlight">\(P^*\)</span>.</p>
+As <span class="math notranslate nohighlight">\(w_1 \to 0\)</span> (i.e. <span class="math notranslate nohighlight">\(\lambda \to \infty\)</span>), the images of these leaves
+under the solution map shrink to the single null-model point <span class="math notranslate nohighlight">\(P^*\)</span>.</p>
 <figure class="align-default" id="id1">
 <a class="reference internal image-reference" href="../_images/elastic_net_leaf_space.png"><img alt="../_images/elastic_net_leaf_space.png" src="../_images/elastic_net_leaf_space.png" style="width: 100%;" />
 </a>
 <figcaption>
 <p><span class="caption-number">Fig. 2 </span><span class="caption-text">All points are coloured by <span class="math notranslate nohighlight">\((w_1, w_2, w_3) \mapsto (R, G, B)\)</span>,
 so the same weight vector has the same colour in every panel.
-<strong>Left</strong> – The <span class="math notranslate nohighlight">\((\lambda, \alpha)\)</span> hyperparameter space (x: regularisation
+<strong>Left</strong> – The <span class="math notranslate nohighlight">\((\lambda, \alpha)\)</span> hyperparameter space (x: regularization
 strength, y: L1 mixing ratio).
 The red line at <span class="math notranslate nohighlight">\(\lambda = 0\)</span> is the identified edge; all points on it
 share the colour <span class="math notranslate nohighlight">\((1, 0, 0)\)</span> = red because <span class="math notranslate nohighlight">\(w = (1, 0, 0)\)</span> there.
@@ -230,7 +233,7 @@ which is appropriate when you expect the optimal model to have small
 </div>
 <p>The returned array can be saved to a CSV file and passed as the <code class="docutils literal notranslate"><span class="pre">params</span></code> argument to
 <a class="reference internal" href="../torch_bsf.html#torch_bsf.fit" title="torch_bsf.fit"><code class="xref py py-func docutils literal notranslate"><span class="pre">torch_bsf.fit()</span></code></a> (or to the <code class="docutils literal notranslate"><span class="pre">--params</span></code> CLI option) to train a Bézier simplex
-over the elastic-net regularisation map.</p>
+over the elastic-net regularization map.</p>
 </section>
 <section id="as-a-python-module-cli">
 <h3>As a Python module (CLI)<a class="headerlink" href="#as-a-python-module-cli" title="Link to this heading"></a></h3>
