@@ -70,8 +70,8 @@ single null-model point :math:`P^*`.
    The red line at :math:`\lambda = 0` is the identified edge; all points on it
    share the colour :math:`(1, 0, 0)` = red because :math:`w = (1, 0, 0)` there.
    **Centre** – The 2-simplex with vertices :math:`(1,0,0)` at the bottom-left (red),
-   :math:`(0,1,0)` at the bottom-right (green), and :math:`(0,0,1)` at the
-   top (blue).
+   :math:`(0,1,0)` at the top (green), and :math:`(0,0,1)` at the
+   bottom-right (blue).
    The gradient right edge (green→blue) is the null-model base edge to be identified.
    **Right** – The quotient space rotated 90° counterclockwise: vertex :math:`A` =
    :math:`(1,0,0)` (red) at the left, and the null-model point :math:`P^*` at the

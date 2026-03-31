@@ -6,7 +6,7 @@ The figure has three panels:
 1. The (λ, α) parameter half-plane with the identified edge λ=0 highlighted.
    x-axis: λ (regularisation strength), y-axis: α (L1 mixing ratio).
 2. The elastic-net grid on the 2-simplex with vertices (1,0,0) at bottom-left,
-   (0,1,0) at bottom-right, and (0,0,1) at the top.
+   (0,1,0) at the top, and (0,0,1) at bottom-right.
 3. The quotient space obtained by collapsing the base edge of the simplex to a
    single point P* (the null model), shown as a leaf/eye-shaped CW complex,
    rotated 90° counterclockwise (A at left, P* at right).
@@ -51,12 +51,12 @@ def project_to_2d(points):
     Vertex mapping::
 
         (1, 0, 0)  ->  (0,   0      )  # data-only vertex (lambda=0), bottom-left
-        (0, 1, 0)  ->  (1,   0      )  # pure-L1 vertex, bottom-right
-        (0, 0, 1)  ->  (0.5, sqrt3/2)  # pure-L2 vertex, top
+        (0, 1, 0)  ->  (0.5, sqrt3/2)  # pure-L1 vertex, top
+        (0, 0, 1)  ->  (1,   0      )  # pure-L2 vertex, bottom-right
     """
     w1, w2, w3 = points[:, 0], points[:, 1], points[:, 2]
-    px = w2 + 0.5 * w3
-    py = np.sqrt(3) / 2 * w3
+    px = 0.5 * w2 + w3
+    py = np.sqrt(3) / 2 * w2
     return px, py
 
 
@@ -210,7 +210,7 @@ ax.tick_params(axis="both", which="both", length=3)
 
 # ===========================================================================
 # Centre panel – 2-simplex with foliation (leaves) and grid points
-# Vertices: (1,0,0) at bottom-left, (0,1,0) at bottom-right, (0,0,1) at top.
+# Vertices: (1,0,0) at bottom-left, (0,1,0) at top, (0,0,1) at bottom-right.
 # Points are coloured by (w1, w2, w3) = (R, G, B).
 # ===========================================================================
 ax = ax_simplex
@@ -223,11 +223,11 @@ ax.set_title("Elastic-net grid on the 2-simplex\n(after identification)", fontsi
 draw_simplex_boundary(ax)
 
 # Highlight the base edge connecting (0,1,0) and (0,0,1)
-# In this layout: (0,1,0) → (1,0) bottom-right; (0,0,1) → (0.5, sqrt3/2) top
+# In this layout: (0,1,0) → (0.5, sqrt3/2) top; (0,0,1) → (1,0) bottom-right
 # This is the right side of the triangle.
 t_base = np.linspace(0.0, 1.0, 100)
-x_base = 1.0 - 0.5 * t_base      # from (1,0) to (0.5, sqrt3/2)
-y_base = h3 * t_base
+x_base = 0.5 + 0.5 * t_base      # from (0.5, sqrt3/2) to (1, 0)
+y_base = h3 * (1.0 - t_base)
 pts_base = np.column_stack([x_base, y_base])
 segs_base = np.stack([pts_base[:-1], pts_base[1:]], axis=1)
 t_base_mids = 0.5 * (t_base[:-1] + t_base[1:])
@@ -236,17 +236,17 @@ c_base = np.stack([np.zeros(99), 1.0 - t_base_mids, t_base_mids], axis=-1)
 ax.add_collection(LineCollection(segs_base, colors=c_base, lw=2.5, zorder=2))
 
 # Leaf lines: iso-w1 segments (in this layout these are diagonal)
-# At fixed w1: from (w1, 1-w1, 0) → (1-w1, 0) to (w1, 0, 1-w1) → (0.5*(1-w1), h3*(1-w1))
+# At fixed w1: from (w1, 1-w1, 0) → (0.5*(1-w1), h3*(1-w1)) to (w1, 0, 1-w1) → (1-w1, 0)
 # Color: from (w1, 1-w1, 0) [green end] to (w1, 0, 1-w1) [blue end]
 # Skip w1=0 (that is the base edge itself, already drawn above)
 for w1 in unique_w1_finite:
-    x_r = 1.0 - w1                  # (w1, 1-w1, 0)  bottom-right end
+    x_t = 0.5 * (1.0 - w1)          # (w1, 1-w1, 0)  top end
+    y_t = h3 * (1.0 - w1)
+    x_r = 1.0 - w1                  # (w1, 0, 1-w1)  bottom-right end
     y_r = 0.0
-    x_l = 0.5 * (1.0 - w1)          # (w1, 0, 1-w1)  top-left end
-    y_l = h3 * (1.0 - w1)
     t_lf = np.linspace(0.0, 1.0, 30)
-    x_lf = np.linspace(x_r, x_l, 30)
-    y_lf_arr = np.linspace(y_r, y_l, 30)
+    x_lf = np.linspace(x_t, x_r, 30)
+    y_lf_arr = np.linspace(y_t, y_r, 30)
     w2_lf = (1.0 - t_lf) * (1.0 - w1)   # 1-w1 → 0
     w3_lf = t_lf * (1.0 - w1)            # 0 → 1-w1
     c_lf = weights_to_rgb(np.full(30, w1), w2_lf, w3_lf)
@@ -261,16 +261,16 @@ ax.scatter(px, py, c=rgb_all, s=20, zorder=3, edgecolors="none")
 
 # Vertex markers and labels
 ax.plot(0.0, 0.0, "o", color=(1.0, 0.0, 0.0), markersize=8, zorder=5)
-ax.plot(1.0, 0.0, "o", color=(0.0, 1.0, 0.0), markersize=8, zorder=5)
-ax.plot(0.5, h3, "o", color=(0.0, 0.0, 1.0), markersize=8, zorder=5)
+ax.plot(0.5, h3, "o", color=(0.0, 1.0, 0.0), markersize=8, zorder=5)
+ax.plot(1.0, 0.0, "o", color=(0.0, 0.0, 1.0), markersize=8, zorder=5)
 
 offset = 0.05
 ax.text(0.0 - offset, 0.0, r"$(1,0,0)$" "\n" r"$\lambda=0$",
         ha="right", va="center", fontsize=8.5, color=(0.8, 0.0, 0.0))
-ax.text(1.0 + offset, 0.0, r"$(0,1,0)$" "\n" r"$(\lambda\!\to\!\infty,\ \alpha\!=\!1)$",
-        ha="left", va="center", fontsize=8.5, color=(0.0, 0.65, 0.0))
-ax.text(0.5, h3 + offset, r"$(0,0,1)$" "\n" r"$(\lambda\!\to\!\infty,\ \alpha\!=\!0)$",
-        ha="center", va="bottom", fontsize=8.5, color=(0.0, 0.0, 0.9))
+ax.text(0.5, h3 + offset, r"$(0,1,0)$" "\n" r"$(\lambda\!\to\!\infty,\ \alpha\!=\!1)$",
+        ha="center", va="bottom", fontsize=8.5, color=(0.0, 0.65, 0.0))
+ax.text(1.0 + offset, 0.0, r"$(0,0,1)$" "\n" r"$(\lambda\!\to\!\infty,\ \alpha\!=\!0)$",
+        ha="left", va="center", fontsize=8.5, color=(0.0, 0.0, 0.9))
 ax.text(0.82, h3 * 0.45, "base edge\n(null model)", fontsize=7.5, ha="center",
         color="dimgray", rotation=-60)
 
