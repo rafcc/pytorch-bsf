@@ -59,19 +59,19 @@ quotient space is a **leaf/eye-shaped CW complex**: two 0-cells (:math:`A` and
 This identification gives the interior a **leaf (foliation) structure**: for each fixed
 value of :math:`w_1 \in (0, 1]`, the set of corresponding weight vectors
 :math:`\{(w_1, w_2, w_3) : w_2 + w_3 = 1 - w_1,\; w_2, w_3 \ge 0\}`
-is a line segment (a *leaf*) parametrised by :math:`\alpha`.
+is a line segment (a *leaf*) parametrized by :math:`\alpha`.
 As :math:`w_1 \to 0` (i.e. :math:`\lambda \to \infty`), the images of these leaves
 under the solution map shrink to the single null-model point :math:`P^*`.
 
 .. figure:: ../_static/elastic_net_leaf_space.png
    :width: 100%
 
-   All points are coloured by :math:`(w_1, w_2, w_3) \mapsto (R, G, B)`,
-   so the same weight vector has the same colour in every panel.
+   All points are colored by :math:`(w_1, w_2, w_3) \mapsto (R, G, B)`,
+   so the same weight vector has the same color in every panel.
    **Left** – The :math:`(\lambda, \alpha)` hyperparameter space (x: regularization
    strength, y: L1 mixing ratio).
    The red line at :math:`\lambda = 0` is the identified edge; all points on it
-   share the colour :math:`(1, 0, 0)` = red because :math:`w = (1, 0, 0)` there.
+   share the color :math:`(1, 0, 0)` = red because :math:`w = (1, 0, 0)` there.
    **Centre** – The 2-simplex with vertices :math:`(1,0,0)` at the bottom-left (red),
    :math:`(0,1,0)` at the top (green), and :math:`(0,0,1)` at the
    bottom-right (blue).
