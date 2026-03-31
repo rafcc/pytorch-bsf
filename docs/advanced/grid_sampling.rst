@@ -50,46 +50,49 @@ When :math:`\lambda = 0` the regularization terms vanish and the solution depend
 on the data, *regardless of* :math:`\alpha`.
 Therefore the entire edge :math:`\{\lambda = 0\} \times [0, 1]` maps to the single
 vertex :math:`(w_1, w_2, w_3) = (1, 0, 0)` of the simplex.
-Identifying this edge with a single point transforms the rectangle into a triangle  Ethe 2-simplex :math:`\Delta^2`.
+Identifying this edge with a single point transforms the rectangle into a triangle – the 2-simplex :math:`\Delta^2`.
 
 Conversely, as :math:`\lambda \to \infty` the regularization overwhelms the data term
 and drives all model coefficients to zero, regardless of :math:`\alpha`.
 In the elastic net this limit is called the **null model** (all :math:`\beta_i = 0`).
 All weight vectors on the opposite edge of the simplex
-:math:`\{(w_1, w_2, w_3) : w_1 = 0\}`  Ethe *base edge* connecting
-:math:`(0, 1, 0)` and :math:`(0, 0, 1)`  Etherefore correspond to the same solution.
-Since the Bézier simplex must assign a single output to each input weight, these
-identical solutions are identified to a single point :math:`P^*` before the grid is
-constructed.
-The resulting quotient space is a **leaf/eye-shaped CW complex**: two 0-cells (:math:`A`
-and :math:`P^*`), two 1-cells (the former edges :math:`AB` and :math:`AC`, now
-connecting :math:`A` to :math:`P^*` as curves), and one 2-cell (the interior).
+:math:`\{(w_1, w_2, w_3) : w_1 = 0\}` — the *base edge* connecting
+:math:`(0, 1, 0)` and :math:`(0, 0, 1)` — therefore correspond to the same solution.
+Since the Bézier simplex (and the underlying solution map) must assign a single output
+to each input weight, all of these base-edge weights are identified with a single
+null-model point :math:`P^*` in the solution space. The
+:func:`~torch_bsf.model_selection.elastic_net_grid.elastic_net_grid` function still
+returns multiple distinct base-edge weights (:math:`w_1 = 0` with varying :math:`w_2`,
+:math:`w_3`), but they all evaluate to this same null-model solution. The resulting
+quotient space is a **leaf/eye-shaped CW complex**: two 0-cells (:math:`A` and
+:math:`P^*`), two 1-cells (the former edges :math:`AB` and :math:`AC`, now connecting
+:math:`A` to :math:`P^*` as curves), and one 2-cell (the interior).
 
 This identification gives the interior a **leaf (foliation) structure**: for each fixed
 value of :math:`w_1 \in (0, 1]`, the set of corresponding weight vectors
 :math:`\{(w_1, w_2, w_3) : w_2 + w_3 = 1 - w_1,\; w_2, w_3 \ge 0\}`
-is a line segment (a *leaf*) parametrised by :math:`\alpha`.
-As :math:`w_1 \to 0` (i.e. :math:`\lambda \to \infty`), the leaves shrink to the
-single null-model point :math:`P^*`.
+is a line segment (a *leaf*) parametrized by :math:`\alpha`.
+As :math:`w_1 \to 0` (i.e. :math:`\lambda \to \infty`), the images of these leaves
+under the solution map shrink to the single null-model point :math:`P^*`.
 
 .. figure:: ../_static/elastic_net_leaf_space.png
    :width: 100%
 
    All points are colored by :math:`(w_1, w_2, w_3) \mapsto (R, G, B)`,
    so the same weight vector has the same color in every panel.
-   **Left**  EThe :math:`(\alpha, \lambda)` hyperparameter space (x: L1 mixing ratio,
-   y: regularization strength).
+   **Left** – The :math:`(\lambda, \alpha)` hyperparameter space (x: regularization
+   strength, y: L1 mixing ratio).
    The red line at :math:`\lambda = 0` is the identified edge; all points on it
    share the color :math:`(1, 0, 0)` = red because :math:`w = (1, 0, 0)` there.
-   **Centre**  EThe 2-simplex with vertices :math:`(1,0,0)` at the top (red),
-   :math:`(0,1,0)` at the bottom-left (green), and :math:`(0,0,1)` at the
+   **Center** – The 2-simplex with vertices :math:`(1,0,0)` at the bottom-left (red),
+   :math:`(0,1,0)` at the top (green), and :math:`(0,0,1)` at the
    bottom-right (blue).
-   colored horizontal segments are constant-:math:`\lambda` *leaves*; the gradient
-   base edge (green→blue at the bottom) is the null-model edge to be identified.
-   **Right**  EThe quotient space: vertex :math:`A` = :math:`(1,0,0)` (red, top),
-   and the null-model point :math:`P^*` (bottom) shown as a large green dot
-   :math:`(0,1,0)` behind a smaller blue dot :math:`(0,0,1)`, reflecting that
-   both endpoints of the base edge are identified to :math:`P^*`.
+   The gradient right edge (green→blue) is the null-model base edge to be identified.
+   **Right** – The quotient space rotated 90° counterclockwise: vertex :math:`A` =
+   :math:`(1,0,0)` (red) at the left, and the null-model point :math:`P^*` at the
+   right shown as a large green dot :math:`(0,1,0)` behind a smaller blue dot
+   :math:`(0,0,1)`, reflecting that both endpoints of the base edge are identified
+   to :math:`P^*`.
 
 
 Grid Structure
@@ -99,20 +102,26 @@ A uniform grid in :math:`(\lambda, \alpha)` is sub-optimal because solutions cha
 rapidly near :math:`\lambda = 0` and slowly for large :math:`\lambda`.
 :func:`~torch_bsf.model_selection.elastic_net_grid.elastic_net_grid` therefore uses:
 
-* **Log-scale spacing along** :math:`\lambda`  Ethe ``n_lambdas`` break points are
-  generated by
-  :func:`~torch_bsf.model_selection.elastic_net_grid.reverse_logspace`, placing more
-  samples close to :math:`\lambda = 0` (i.e. close to the data-fidelity vertex).
-  The steepness of the log scale is controlled by the ``base`` parameter: ``base=1``
-  gives uniform spacing, larger values concentrate points further towards the vertex.
+* **Log-scale spacing of the identified-edge weight** :math:`w_1` – the
+  :func:`~torch_bsf.model_selection.elastic_net_grid.reverse_logspace` routine
+  generates ``n_lambdas - 1`` values of :math:`w_1 \in (0, 1)` along the identified
+  edge, and the vertex at :math:`w_1 = 1` (i.e. :math:`\lambda = 0`) is appended
+  separately.
+  This produces more samples close to the data-fidelity vertex and therefore near
+  :math:`\lambda = 0`.
+  The steepness of this clustering is controlled by the ``base`` parameter:
+  ``base=1`` gives uniform spacing in :math:`w_1`, while larger values concentrate
+  points further towards the vertex.
 
-* **Uniform spacing along** :math:`\alpha`  Eon each leaf the ``n_alphas`` values of
+* **Uniform spacing along** :math:`\alpha` – on each leaf the ``n_alphas`` values of
   :math:`\alpha` are placed uniformly in :math:`[0, 1]`.
 
 The ``n_vertex_copies`` parameter adds extra copies of each simplex vertex.
 This is useful when the grid is passed to k-fold cross-validation
-(see :doc:`auto_degree`) so that each fold is guaranteed to contain every vertex at
-least once.
+(see :doc:`auto_degree`): set ``n_vertex_copies >= k`` for k-fold CV so that,
+when the fold-splitting procedure distributes rows approximately evenly, each fold
+will contain every vertex at least once.  Using fewer copies than folds can inflate
+cross-validation variance.
 
 .. figure:: ../_static/elastic_net_grid_comparison.png
    :width: 100%
@@ -143,13 +152,14 @@ As a Python function
        n_vertex_copies=10,
        base=10,
    )
-   # grid.shape == (1232, 3)
+   # grid.shape == (1240, 3)
    # Each row is a weight vector (w1, w2, w3) on the 2-simplex.
 
    np.savetxt("weights.csv", grid, delimiter=",", fmt="%.17e")
 
-The returned array can be saved to a CSV file and passed as the ``params`` argument to
-:func:`torch_bsf.fit` (or to the ``--params`` CLI option) to train a Bézier simplex
+The returned array can be saved to a CSV file and then either (a) loaded back into an
+array or tensor and passed as the ``params`` argument to :func:`torch_bsf.fit`, or
+(b) passed as a file path to the ``--params`` CLI option, to train a Bézier simplex
 over the elastic-net regularization map.
 
 As a Python module (CLI)
@@ -198,10 +208,11 @@ subsequent training run:
 
 .. seealso::
 
-   * :func:`torch_bsf.model_selection.elastic_net_grid.elastic_net_grid`  EAPI
+   * :func:`torch_bsf.model_selection.elastic_net_grid.elastic_net_grid` – API
      reference with parameter descriptions and examples.
-   * :func:`torch_bsf.model_selection.elastic_net_grid.reverse_logspace`  Ehelper that
-     generates the log-spaced :math:`\lambda` values.
-   * :doc:`auto_degree`  Eautomatic degree selection via k-fold cross-validation.
-   * :doc:`../applications/elastic_net`  Eend-to-end example of elastic-net model
+   * :func:`torch_bsf.model_selection.elastic_net_grid.reverse_logspace` – helper that
+     generates log-spaced samples for the first weight component :math:`w_1`, from
+     which the :math:`\lambda = (1 - w_1) / w_1` values are derived.
+   * :doc:`auto_degree` – automatic degree selection via k-fold cross-validation.
+   * :doc:`../applications/elastic_net` – end-to-end example of elastic-net model
      selection using PyTorch-BSF.

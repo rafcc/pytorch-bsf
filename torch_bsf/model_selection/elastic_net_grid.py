@@ -182,7 +182,7 @@ if __name__ == "__main__":
     )
     parser.add_argument("--n_lambdas", help="Number of samples for lambda values", type=int, default=102)
     parser.add_argument("--n_alphas", help="Number of samples for alpha values", type=int, default=12)
-    parser.add_argument("--n_vertex_copies", help="Number of copies of each vertex", type=int, default=10)
+    parser.add_argument("--n_vertex_copies", help="Number of copies of each vertex", type=int, default=1)
     parser.add_argument("--base", help="Base of the log space", type=float, default=10)
     args = parser.parse_args()
 
