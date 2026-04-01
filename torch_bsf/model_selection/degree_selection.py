@@ -176,7 +176,11 @@ if __name__ == "__main__":
     if args.min_degree > args.max_degree:
         parser.error(f"--min_degree ({args.min_degree}) must be <= --max_degree ({args.max_degree})")
 
-    logging.basicConfig(level=getattr(logging, args.loglevel), format="%(levelname)s:%(name)s:%(message)s")
+    logging.basicConfig(
+        level=getattr(logging, args.loglevel),
+        format="%(levelname)s:%(name)s:%(message)s",
+        force=True,
+    )
 
     def _load_csv(path: Path, header: int) -> torch.Tensor:
         delimiter = "," if path.suffix == ".csv" else None
