@@ -69,14 +69,18 @@ def elastic_net_grid(
     """Return an array of 3D grid points on the standard 2-simplex, which is suitable for grid search for elastic net's hyperparameters.
 
     The returned array is of shape ``((n_lambdas - 1) * n_alphas + 3 * n_vertex_copies - 2, 3)``.
-    The first column values are spaced evenly on a log scale.
+    The first column (``w_1``) values are log-spaced: :func:`reverse_logspace` generates
+    ``n_lambdas - 1`` values of ``w_1`` in ``[0, 1)`` and the vertex ``w_1 = 1`` is appended separately.
+    The regularization strength is derived as ``λ = (1 - w_1) / w_1``.
     The second and third column values are spaced evenly over a specified interval.
 
     Parameters
     ----------
     n_lambdas : int, optional
-        Number of samples to generate along `lambda` axis.
-        The values are equally spaced on a log scale.
+        Number of samples to generate along the regularization-strength axis.
+        :func:`reverse_logspace` generates ``n_lambdas - 1`` values of the
+        data-fidelity weight ``w_1`` log-spaced in ``[0, 1)``, and the
+        data-fidelity vertex (``w_1 = 1``, i.e. ``λ = 0``) is appended separately.
         Default is ``102``. Must be non-negative.
     n_alphas : int, optional
         Number of samples to generate along `alpha` axis.
