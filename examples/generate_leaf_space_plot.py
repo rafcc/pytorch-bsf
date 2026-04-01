@@ -137,16 +137,6 @@ def main():
     alphas_per_row = np.linspace(0.0, 1.0, N_ALPHAS, endpoint=True)
     h3 = np.sqrt(3) / 2   # used in both center and right panels
 
-    # TODO: plotting and file-output code that previously ran at import time
-    # should be moved here so that it only executes when main() is called.
-    # For example:
-    #
-    # fig, axes = plt.subplots(...)
-    # ... plotting using px, py, rgb_all, lambda_unique, etc. ...
-    # output_path = Path("docs/_static/elastic_net_leaf_space.png")
-    # fig.savefig(output_path, bbox_inches="tight", dpi=300)
-
-
     # ---------------------------------------------------------------------------
     # Figure layout: three panels side by side
     # ---------------------------------------------------------------------------
