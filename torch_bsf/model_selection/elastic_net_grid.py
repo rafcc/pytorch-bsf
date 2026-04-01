@@ -85,7 +85,7 @@ def elastic_net_grid(
     n_vertex_copies : int, optional
         Number of duplicated samples to generate vertices.
         Each vertex is sampled ``n_vertex_copies`` times.
-        Default is ``1``. Must be non-negative.
+        Default is ``1``. Must be a positive integer (>= 1).
         Useful for k-fold cross validation.
     base : float, optional
         The base of the log space.
