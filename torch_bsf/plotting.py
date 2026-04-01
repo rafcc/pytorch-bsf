@@ -32,6 +32,22 @@ def plot_bezier_simplex(
 
 
 def _plot_bezier_curve(model, num, ax, show_control_points, **kwargs):
+    """Plots a Bézier curve (n_params == 2).
+
+    Args:
+        model (BezierSimplex): The Bézier simplex model to plot.
+        num (int): The number of grid points along the curve.
+        ax (matplotlib.axes.Axes or None): The matplotlib axes to plot on.
+            If None, a new figure is created.
+        show_control_points (bool): Whether to overlay the control points.
+        **kwargs: Additional keyword arguments forwarded to the plot call.
+
+    Returns:
+        matplotlib.axes.Axes: The axes containing the plot.
+
+    Raises:
+        ImportError: If matplotlib is not installed.
+    """
     try:
         import matplotlib.pyplot as plt
     except ImportError as e:
@@ -68,6 +84,22 @@ def _plot_bezier_curve(model, num, ax, show_control_points, **kwargs):
 
 
 def _plot_bezier_triangle(model, num, ax, show_control_points, **kwargs):
+    """Plots a Bézier triangle as a triangulated surface (n_params == 3).
+
+    Args:
+        model (BezierSimplex): The Bézier simplex model to plot.
+        num (int): The number of grid points along each edge of the triangle.
+        ax (matplotlib.axes.Axes or None): The matplotlib axes to plot on.
+            If None, a new figure is created.
+        show_control_points (bool): Whether to overlay the control points.
+        **kwargs: Additional keyword arguments forwarded to the surface plot call.
+
+    Returns:
+        matplotlib.axes.Axes: The axes containing the plot.
+
+    Raises:
+        ImportError: If matplotlib or scipy is not installed.
+    """
     # This requires a bit more complex triangulation for plotting a surface
     try:
         import matplotlib.pyplot as plt
