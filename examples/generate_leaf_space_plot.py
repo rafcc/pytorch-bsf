@@ -21,14 +21,11 @@ Usage::
 The script writes ``docs/_static/elastic_net_leaf_space.png``.
 """
 
-import matplotlib
-matplotlib.use("Agg")
-import matplotlib.pyplot as plt  # noqa: E402
-from matplotlib.collections import LineCollection  # noqa: E402
-import numpy as np  # noqa: E402
-from pathlib import Path  # noqa: E402
+import matplotlib.patches
+import numpy as np
+from pathlib import Path
 
-from torch_bsf.model_selection.elastic_net_grid import elastic_net_grid  # noqa: E402
+from torch_bsf.model_selection.elastic_net_grid import elastic_net_grid
 
 
 # ---------------------------------------------------------------------------
@@ -61,7 +58,7 @@ def project_to_2d(points):
 
 def draw_simplex_boundary(ax, **kwargs):
     """Draw the triangle boundary on *ax*."""
-    triangle = plt.Polygon(
+    triangle = matplotlib.patches.Polygon(
         [[0, 0], [1, 0], [0.5, np.sqrt(3) / 2]],
         fill=False,
         edgecolor="black",
@@ -106,11 +103,12 @@ BASE = 10
 
 
 def main():
-    """Generate the elastic-net leaf-space figure and write it to disk.
+    """Generate the elastic-net leaf-space figure and write it to disk."""
+    import matplotlib
+    matplotlib.use("Agg")
+    import matplotlib.pyplot as plt
+    from matplotlib.collections import LineCollection
 
-    This function performs all substantial computation and plotting so that
-    importing this module does not trigger side effects.
-    """
     grid = elastic_net_grid(
         n_lambdas=N_LAMBDAS,
         n_alphas=N_ALPHAS,
