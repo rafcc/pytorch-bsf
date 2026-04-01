@@ -1,4 +1,4 @@
-Multi-task and federated learning
+Multi-Task and Federated Learning
 =================================
 
 In modern machine learning, models are frequently tasked with balancing strictly competing performance indicators. In multi-task learning (MTL), a single shared neural representation must simultaneously optimize losses across different tasks, often leading to "gradient conflict" where improving one task substantially degrades another. This same underlying tension appears when training models with explicit fairness constraints, where the expected loss over different population subgroups forms a multi-objective optimization problem. 

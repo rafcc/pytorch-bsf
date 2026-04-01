@@ -1,4 +1,4 @@
-Supply chain and logistics optimization
+Supply Chain and Logistics Optimization
 =======================================
 
 In modern supply chain management (SCM) and operations research, isolating physical material logistics from global financial flows regularly causes massive inefficiencies. Supply Chain Finance algorithms attempt to computationally integrate factory outputs, inventory storage, and monetary streams to achieve a single unified, profitable coordination strategy. 

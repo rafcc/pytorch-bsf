@@ -1,4 +1,4 @@
-Medical imaging and radiation therapy
+Medical Imaging and Radiation Therapy
 =====================================
 
 Optimizing diagnostic clarity and therapeutic safety simultaneously is paramount in medical fields, making multi-objective optimization frameworks indispensable.

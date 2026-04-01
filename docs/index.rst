@@ -28,9 +28,9 @@ The project is on `GitHub`_.
    :maxdepth: 2
    :caption: User guide
 
+   whatis
    quickstart
    advanced
-   whatis
    applications
    faq
    references

@@ -24,7 +24,7 @@ This method evaluates an ensemble (committee) of models. It suggests points wher
    # Assume an ensemble of trained models (models: List[BezierSimplex])
    suggestions = suggest_next_points(models, n_suggestions=5, method="qbc")
 
-Density-based Sampling
+Density-Based Sampling
 ^^^^^^^^^^^^^^^^^^^^^^
 
 This method suggests points that are furthest away from all existing training points in the parameter space. It is equivalent to a "max-min" distance strategy to ensure even coverage across the entire simplex.
