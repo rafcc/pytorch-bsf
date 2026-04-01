@@ -37,6 +37,9 @@ entry_points:
       max_degree: {type: int, default: 5}
       num_folds: {type: int, default: 5}
       max_epochs: {type: int, default: 2}
+      header: {type: int, default: 0}
+      accelerator: {type: str, default: "auto"}
+      devices: {type: str, default: "auto"}
     command: >-
       python -m torch_bsf.model_selection.degree_selection
       --params={params}
@@ -45,6 +48,9 @@ entry_points:
       --max_degree={max_degree}
       --num_folds={num_folds}
       --max_epochs={max_epochs}
+      --header={header}
+      --accelerator={accelerator}
+      --devices={devices}
   elastic_net_grid:
     parameters:
       n_lambdas: {type: int}

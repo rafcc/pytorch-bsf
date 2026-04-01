@@ -142,10 +142,13 @@ def select_degree(
 
 
 if __name__ == "__main__":
+    import logging
     from argparse import ArgumentParser
     from pathlib import Path
 
     import numpy as np
+
+    from torch_bsf.validator import int_or_str
 
     parser = ArgumentParser(
         prog="python -m torch_bsf.model_selection.degree_selection",
@@ -160,8 +163,17 @@ if __name__ == "__main__":
     parser.add_argument("--batch_size", type=int, default=None, help="Batch size for training (default: full-batch)")
     parser.add_argument("--max_epochs", type=int, default=2, help="Training epochs per fold (default: 2)")
     parser.add_argument("--accelerator", type=str, default="auto", help="Accelerator type (default: auto)")
-    parser.add_argument("--devices", type=str, default="auto", help="Devices to use (default: auto)")
+    parser.add_argument("--devices", type=int_or_str, default="auto", help="Devices to use, integer or 'auto' (default: auto)")
+    parser.add_argument(
+        "--loglevel",
+        type=str,
+        default="INFO",
+        choices=("DEBUG", "INFO", "WARNING", "ERROR", "CRITICAL"),
+        help="Python logging level for degree selection progress (default: INFO)",
+    )
     args = parser.parse_args()
+
+    logging.basicConfig(level=getattr(logging, args.loglevel), format="%(levelname)s:%(name)s:%(message)s")
 
     def _load_csv(path: Path, header: int) -> torch.Tensor:
         delimiter = "," if path.suffix == ".csv" else None
