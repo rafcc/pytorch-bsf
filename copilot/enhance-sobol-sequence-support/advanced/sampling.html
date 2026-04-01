@@ -157,7 +157,7 @@ initialization, quasi-Monte Carlo integration).</p></td>
 </section>
 <section id="sobol-sequence-usage-conditions">
 <h2>Sobol Sequence: Usage Conditions<a class="headerlink" href="#sobol-sequence-usage-conditions" title="Link to this heading"></a></h2>
-<p>The following conditions must be satisfied for <code class="docutils literal notranslate"><span class="pre">simplex_sobol</span></code> to work correctly.</p>
+<p>The following requirements and best-practice recommendations apply when using <code class="docutils literal notranslate"><span class="pre">simplex_sobol</span></code>.</p>
 <p><strong>scipy is required (optional dependency)</strong></p>
 <p><code class="docutils literal notranslate"><span class="pre">simplex_sobol</span></code> is built on top of <code class="xref py py-class docutils literal notranslate"><span class="pre">scipy.stats.qmc.Sobol</span></code>.
 <code class="docutils literal notranslate"><span class="pre">scipy</span></code> is an <em>optional</em> dependency of PyTorch-BSF and is not installed by default.</p>
@@ -218,8 +218,8 @@ grows quickly and the QMC advantage diminishes unless N is very large.
 Consider <code class="docutils literal notranslate"><span class="pre">simplex_random</span></code> for high-dimensional simplices.</p></li>
 </ul>
 <p><strong>Scrambled Sobol</strong></p>
-<p><code class="docutils literal notranslate"><span class="pre">simplex_sobol</span></code> always uses <code class="docutils literal notranslate"><span class="pre">scramble=True</span></code> (the scipy default for
-<code class="xref py py-class docutils literal notranslate"><span class="pre">Sobol</span></code>).  Scrambling applies a random digital shift
+<p><code class="docutils literal notranslate"><span class="pre">simplex_sobol</span></code> always uses <code class="docutils literal notranslate"><span class="pre">scramble=True</span></code> when constructing
+<code class="xref py py-class docutils literal notranslate"><span class="pre">Sobol</span></code>.  Scrambling applies a random digital shift
 to the sequence so that:</p>
 <ol class="arabic simple">
 <li><p>The resulting points are <em>still</em> low-discrepancy (coverage is preserved).</p></li>
