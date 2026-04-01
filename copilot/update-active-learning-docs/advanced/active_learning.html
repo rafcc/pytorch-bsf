@@ -130,14 +130,26 @@
 <li><p>With a single model, every point has zero variance, so QBC degenerates to random selection. Use the <code class="docutils literal notranslate"><span class="pre">&quot;density&quot;</span></code> method instead in that case.</p></li>
 <li><p>Combine QBC with <a class="reference internal" href="sklearn.html"><span class="doc">k-fold cross-validation</span></a> to obtain the ensemble cheaply:</p></li>
 </ul>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">torch_bsf</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">torch</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">torch_bsf</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">torch_bsf.active_learning</span><span class="w"> </span><span class="kn">import</span> <span class="n">suggest_next_points</span>
 
-<span class="c1"># Train an ensemble of 5 models with different random subsets of the data</span>
-<span class="n">models</span> <span class="o">=</span> <span class="p">[</span>
-    <span class="n">torch_bsf</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">params</span><span class="o">=</span><span class="n">params_train</span><span class="p">,</span> <span class="n">values</span><span class="o">=</span><span class="n">values_train</span><span class="p">,</span> <span class="n">degree</span><span class="o">=</span><span class="mi">3</span><span class="p">)</span>
-    <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">5</span><span class="p">)</span>
-<span class="p">]</span>
+<span class="c1"># Build a 5-fold ensemble: each model is trained on 4/5 of the data,</span>
+<span class="c1"># leaving out a different fold, so the committee members genuinely differ.</span>
+<span class="n">K</span> <span class="o">=</span> <span class="mi">5</span>
+<span class="n">perm</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">randperm</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">params_train</span><span class="p">))</span>
+<span class="n">folds</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">chunk</span><span class="p">(</span><span class="n">perm</span><span class="p">,</span> <span class="n">K</span><span class="p">)</span>  <span class="c1"># K roughly equal index groups</span>
+
+<span class="n">models</span> <span class="o">=</span> <span class="p">[]</span>
+<span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">K</span><span class="p">):</span>
+    <span class="n">train_idx</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">cat</span><span class="p">([</span><span class="n">folds</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">K</span><span class="p">)</span> <span class="k">if</span> <span class="n">i</span> <span class="o">!=</span> <span class="n">k</span><span class="p">])</span>
+    <span class="n">models</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>
+        <span class="n">torch_bsf</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span>
+            <span class="n">params</span><span class="o">=</span><span class="n">params_train</span><span class="p">[</span><span class="n">train_idx</span><span class="p">],</span>
+            <span class="n">values</span><span class="o">=</span><span class="n">values_train</span><span class="p">[</span><span class="n">train_idx</span><span class="p">],</span>
+            <span class="n">degree</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span>
+        <span class="p">)</span>
+    <span class="p">)</span>
 
 <span class="c1"># Suggest the 3 most uncertain points</span>
 <span class="n">suggestions</span> <span class="o">=</span> <span class="n">suggest_next_points</span><span class="p">(</span><span class="n">models</span><span class="p">,</span> <span class="n">n_suggestions</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span> <span class="n">method</span><span class="o">=</span><span class="s2">&quot;qbc&quot;</span><span class="p">)</span>
@@ -250,11 +262,22 @@
 <span class="n">N_CANDIDATES</span> <span class="o">=</span> <span class="mi">2000</span>   <span class="c1"># search resolution</span>
 
 <span class="k">for</span> <span class="n">round_idx</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">N_ROUNDS</span><span class="p">):</span>
-    <span class="c1"># Train an ensemble by fitting N_ENSEMBLE independent models</span>
-    <span class="n">ensemble</span> <span class="o">=</span> <span class="p">[</span>
-        <span class="n">torch_bsf</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">params</span><span class="o">=</span><span class="n">params</span><span class="p">,</span> <span class="n">values</span><span class="o">=</span><span class="n">values</span><span class="p">,</span> <span class="n">degree</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span> <span class="n">max_epochs</span><span class="o">=</span><span class="mi">300</span><span class="p">)</span>
-        <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">N_ENSEMBLE</span><span class="p">)</span>
-    <span class="p">]</span>
+    <span class="c1"># Build an N_ENSEMBLE-fold ensemble: each model is trained on a</span>
+    <span class="c1"># different (N_ENSEMBLE - 1)/N_ENSEMBLE portion of the data so the</span>
+    <span class="c1"># committee members genuinely disagree where the fit is uncertain.</span>
+    <span class="n">perm</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">randperm</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">params</span><span class="p">))</span>
+    <span class="n">folds</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">chunk</span><span class="p">(</span><span class="n">perm</span><span class="p">,</span> <span class="n">N_ENSEMBLE</span><span class="p">)</span>
+    <span class="n">ensemble</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">N_ENSEMBLE</span><span class="p">):</span>
+        <span class="n">train_idx</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">cat</span><span class="p">([</span><span class="n">folds</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">N_ENSEMBLE</span><span class="p">)</span> <span class="k">if</span> <span class="n">i</span> <span class="o">!=</span> <span class="n">k</span><span class="p">])</span>
+        <span class="n">ensemble</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>
+            <span class="n">torch_bsf</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span>
+                <span class="n">params</span><span class="o">=</span><span class="n">params</span><span class="p">[</span><span class="n">train_idx</span><span class="p">],</span>
+                <span class="n">values</span><span class="o">=</span><span class="n">values</span><span class="p">[</span><span class="n">train_idx</span><span class="p">],</span>
+                <span class="n">degree</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span>
+                <span class="n">max_epochs</span><span class="o">=</span><span class="mi">300</span><span class="p">,</span>
+            <span class="p">)</span>
+        <span class="p">)</span>
 
     <span class="c1"># Suggest the N_SUGGESTIONS most uncertain points using QBC</span>
     <span class="n">next_params</span> <span class="o">=</span> <span class="n">suggest_next_points</span><span class="p">(</span>
@@ -281,10 +304,18 @@
 <p><strong>Switching between methods mid-loop</strong></p>
 <p>Start with <code class="docutils literal notranslate"><span class="pre">method=&quot;density&quot;</span></code> for the first 1–2 rounds to ensure broad simplex coverage, then switch to <code class="docutils literal notranslate"><span class="pre">method=&quot;qbc&quot;</span></code> once the ensemble has enough data to produce meaningful uncertainty estimates:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">for</span> <span class="n">round_idx</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">N_ROUNDS</span><span class="p">):</span>
-    <span class="n">ensemble</span> <span class="o">=</span> <span class="p">[</span>
-        <span class="n">torch_bsf</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">params</span><span class="o">=</span><span class="n">params</span><span class="p">,</span> <span class="n">values</span><span class="o">=</span><span class="n">values</span><span class="p">,</span> <span class="n">degree</span><span class="o">=</span><span class="mi">3</span><span class="p">)</span>
-        <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">N_ENSEMBLE</span><span class="p">)</span>
-    <span class="p">]</span>
+    <span class="n">perm</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">randperm</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">params</span><span class="p">))</span>
+    <span class="n">folds</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">chunk</span><span class="p">(</span><span class="n">perm</span><span class="p">,</span> <span class="n">N_ENSEMBLE</span><span class="p">)</span>
+    <span class="n">ensemble</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">N_ENSEMBLE</span><span class="p">):</span>
+        <span class="n">train_idx</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">cat</span><span class="p">([</span><span class="n">folds</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">N_ENSEMBLE</span><span class="p">)</span> <span class="k">if</span> <span class="n">i</span> <span class="o">!=</span> <span class="n">k</span><span class="p">])</span>
+        <span class="n">ensemble</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>
+            <span class="n">torch_bsf</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span>
+                <span class="n">params</span><span class="o">=</span><span class="n">params</span><span class="p">[</span><span class="n">train_idx</span><span class="p">],</span>
+                <span class="n">values</span><span class="o">=</span><span class="n">values</span><span class="p">[</span><span class="n">train_idx</span><span class="p">],</span>
+                <span class="n">degree</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span>
+            <span class="p">)</span>
+        <span class="p">)</span>
 
     <span class="c1"># Use density for initial coverage, QBC once data is sufficient</span>
     <span class="k">if</span> <span class="n">round_idx</span> <span class="o">&lt;</span> <span class="mi">2</span><span class="p">:</span>

@@ -27,14 +27,26 @@ This method trains an *ensemble* (committee) of models and suggests points where
 
 .. code-block:: python
 
+   import torch
    import torch_bsf
    from torch_bsf.active_learning import suggest_next_points
 
-   # Train an ensemble of 5 models with different random subsets of the data
-   models = [
-       torch_bsf.fit(params=params_train, values=values_train, degree=3)
-       for _ in range(5)
-   ]
+   # Build a 5-fold ensemble: each model is trained on 4/5 of the data,
+   # leaving out a different fold, so the committee members genuinely differ.
+   K = 5
+   perm = torch.randperm(len(params_train))
+   folds = torch.chunk(perm, K)  # K roughly equal index groups
+
+   models = []
+   for k in range(K):
+       train_idx = torch.cat([folds[i] for i in range(K) if i != k])
+       models.append(
+           torch_bsf.fit(
+               params=params_train[train_idx],
+               values=values_train[train_idx],
+               degree=3,
+           )
+       )
 
    # Suggest the 3 most uncertain points
    suggestions = suggest_next_points(models, n_suggestions=3, method="qbc")
@@ -153,11 +165,22 @@ The following self-contained example illustrates the full workflow: starting fro
    N_CANDIDATES = 2000   # search resolution
 
    for round_idx in range(N_ROUNDS):
-       # Train an ensemble by fitting N_ENSEMBLE independent models
-       ensemble = [
-           torch_bsf.fit(params=params, values=values, degree=3, max_epochs=300)
-           for _ in range(N_ENSEMBLE)
-       ]
+       # Build an N_ENSEMBLE-fold ensemble: each model is trained on a
+       # different (N_ENSEMBLE - 1)/N_ENSEMBLE portion of the data so the
+       # committee members genuinely disagree where the fit is uncertain.
+       perm = torch.randperm(len(params))
+       folds = torch.chunk(perm, N_ENSEMBLE)
+       ensemble = []
+       for k in range(N_ENSEMBLE):
+           train_idx = torch.cat([folds[i] for i in range(N_ENSEMBLE) if i != k])
+           ensemble.append(
+               torch_bsf.fit(
+                   params=params[train_idx],
+                   values=values[train_idx],
+                   degree=3,
+                   max_epochs=300,
+               )
+           )
 
        # Suggest the N_SUGGESTIONS most uncertain points using QBC
        next_params = suggest_next_points(
@@ -187,10 +210,18 @@ Start with ``method="density"`` for the first 1–2 rounds to ensure broad simpl
 .. code-block:: python
 
    for round_idx in range(N_ROUNDS):
-       ensemble = [
-           torch_bsf.fit(params=params, values=values, degree=3)
-           for _ in range(N_ENSEMBLE)
-       ]
+       perm = torch.randperm(len(params))
+       folds = torch.chunk(perm, N_ENSEMBLE)
+       ensemble = []
+       for k in range(N_ENSEMBLE):
+           train_idx = torch.cat([folds[i] for i in range(N_ENSEMBLE) if i != k])
+           ensemble.append(
+               torch_bsf.fit(
+                   params=params[train_idx],
+                   values=values[train_idx],
+                   degree=3,
+               )
+           )
 
        # Use density for initial coverage, QBC once data is sufficient
        if round_idx < 2:
