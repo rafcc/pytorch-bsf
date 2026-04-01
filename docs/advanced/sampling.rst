@@ -50,7 +50,7 @@ When to Use Each Method
 Sobol Sequence: Usage Conditions
 ---------------------------------
 
-The following conditions must be satisfied for ``simplex_sobol`` to work correctly.
+The following requirements and best-practice recommendations apply when using ``simplex_sobol``.
 
 **scipy is required (optional dependency)**
 
