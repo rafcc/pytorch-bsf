@@ -155,6 +155,8 @@ def elastic_net_grid(
            [0.        , 1.        , 0.        ],
            [0.        , 0.        , 1.        ]])
     """
+    if n_vertex_copies < 1:
+        raise ValueError(f"n_vertex_copies must be >= 1, but given: {n_vertex_copies}")
     if n_lambdas < 1 or n_alphas < 1:
         return np.empty((0, 3))
     w1_values = reverse_logspace(n_lambdas - 1, base)
