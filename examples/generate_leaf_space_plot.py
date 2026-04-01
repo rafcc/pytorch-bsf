@@ -239,7 +239,7 @@ def main():
     segs_base = np.stack([pts_base[:-1], pts_base[1:]], axis=1)
     t_base_mids = 0.5 * (t_base[:-1] + t_base[1:])
     # (0,1,0)→green at t=0, (0,0,1)→blue at t=1
-    c_base = np.stack([np.zeros(99), 1.0 - t_base_mids, t_base_mids], axis=-1)
+    c_base = np.stack([np.zeros_like(t_base_mids), 1.0 - t_base_mids, t_base_mids], axis=-1)
     ax.add_collection(LineCollection(segs_base, colors=c_base, lw=2.5, zorder=2))
 
     # Leaf lines: iso-w1 segments (in this layout these are diagonal)
