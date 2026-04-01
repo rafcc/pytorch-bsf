@@ -1,4 +1,6 @@
 import itertools
+import warnings
+
 import torch
 
 
@@ -80,18 +82,42 @@ def simplex_random(n_params: int, n_samples: int) -> torch.Tensor:
 def simplex_sobol(n_params: int, n_samples: int) -> torch.Tensor:
     """Generates quasi-random points on a simplex using Sobol sequence.
 
+    Uses a scrambled Sobol sequence projected onto the simplex via the
+    sorted-differences mapping.  Sobol sequences are *low-discrepancy*:
+    they fill space more uniformly than pseudo-random draws, giving a
+    convergence rate of roughly O((log N)^(d-1) / N) instead of the
+    O(1/sqrt(N)) rate of Monte Carlo sampling (where d = ``n_params - 1``).
+
+    .. note::
+        **Power-of-two sample sizes are strongly recommended.**
+        Sobol sequences are constructed in base 2 and achieve their best
+        uniformity guarantees when ``n_samples`` is an exact power of 2
+        (e.g. 64, 128, 256, …).  For other sizes, unused points are simply
+        discarded, which can leave portions of the simplex under-sampled.
+        A ``UserWarning`` is emitted automatically when a non-power-of-two
+        value is requested.
+
+    .. note::
+        **scipy is required.**
+        This function relies on :class:`scipy.stats.qmc.Sobol`.
+        Install it with ``pip install scipy`` or
+        ``pip install pytorch-bsf[sampling]``.
+
     Parameters
     ----------
     n_params : int
         The number of parameters (vertices of the simplex).
-        Must be at least 2.
+        Must be at least 2.  The Sobol sequence is drawn in
+        ``n_params - 1`` dimensions and then mapped to the simplex.
     n_samples : int
-        The number of samples.
+        The number of samples.  For best coverage, use a power of 2
+        (e.g. 64, 128, 256).
 
     Returns
     -------
     torch.Tensor
         Array of sample points in shape (n_samples, n_params).
+        Each row is non-negative and sums to 1.
 
     Raises
     ------
@@ -99,6 +125,21 @@ def simplex_sobol(n_params: int, n_samples: int) -> torch.Tensor:
         If SciPy is not installed.
     ValueError
         If ``n_params`` is less than 2 or ``n_samples`` is negative.
+
+    Warns
+    -----
+    UserWarning
+        If ``n_samples`` is not a power of 2.  The samples are still
+        returned, but the low-discrepancy coverage guarantee is weakened.
+
+    Examples
+    --------
+    >>> from torch_bsf.sampling import simplex_sobol
+    >>> pts = simplex_sobol(n_params=3, n_samples=128)
+    >>> pts.shape
+    torch.Size([128, 3])
+    >>> pts.sum(dim=1).allclose(torch.ones(128))
+    True
     """
     if n_params < 2:
         raise ValueError(f"n_params must be at least 2 for Sobol sampling, got {n_params}")
@@ -107,18 +148,37 @@ def simplex_sobol(n_params: int, n_samples: int) -> torch.Tensor:
     if n_samples == 0:
         return torch.empty((0, n_params), dtype=torch.float32)
 
+    # Warn when n_samples is not a power of 2 (Sobol sequences are base-2).
+    # Powers of 2 have exactly one bit set, so (n & (n-1)) == 0 iff n is a power of 2.
+    if n_samples & (n_samples - 1) != 0:
+        warnings.warn(
+            f"simplex_sobol: n_samples={n_samples} is not a power of 2. "
+            "Sobol sequences achieve their best low-discrepancy coverage "
+            "when n_samples is a power of 2 (e.g. 64, 128, 256). "
+            "Consider rounding up to the next power of 2 for better uniformity.",
+            UserWarning,
+            stacklevel=2,
+        )
+
     import numpy as np
     try:
         from scipy.stats import qmc
     except ImportError as e:
         raise ImportError(
             "SciPy is required for simplex_sobol. "
-            "Install it with: pip install scipy"
+            "Install it with: pip install scipy or pip install pytorch-bsf[sampling]"
         ) from e
 
-    # Sobol sequence generator for (n_params - 1) dimensions in [0, 1]
-    sampler = qmc.Sobol(d=n_params - 1, scramble=True)
-    q = sampler.random(n=n_samples)
+    # Sobol sequence generator for (n_params - 1) dimensions in [0, 1].
+    # Suppress scipy's own power-of-2 warning; we already emitted a clearer one above.
+    with warnings.catch_warnings():
+        warnings.filterwarnings(
+            "ignore",
+            message="The balance properties of Sobol",
+            category=UserWarning,
+        )
+        sampler = qmc.Sobol(d=n_params - 1, scramble=True)
+        q = sampler.random(n=n_samples)
 
     # Project Sobol samples to the simplex via the uniform sorted-differences mapping:
     # 1. Sort each (n_params - 1)-dim sample in ascending order.

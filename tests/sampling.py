@@ -1,3 +1,5 @@
+import warnings
+
 import pytest
 import torch
 
@@ -176,3 +178,24 @@ def test_simplex_sobol_invalid_n_params():
 def test_simplex_sobol_invalid_n_samples():
     with pytest.raises(ValueError, match="non-negative"):
         simplex_sobol(2, -1)
+
+
+@_scipy_skip
+def test_simplex_sobol_power_of_two_no_warning():
+    """Power-of-2 sample sizes should produce no UserWarning."""
+    with warnings.catch_warnings(record=True) as w:
+        warnings.simplefilter("always")
+        simplex_sobol(3, 128)
+    user_warnings = [x for x in w if issubclass(x.category, UserWarning)]
+    assert len(user_warnings) == 0, f"Unexpected UserWarnings: {user_warnings}"
+
+
+@_scipy_skip
+@pytest.mark.parametrize("n_samples", [3, 5, 100, 200])
+def test_simplex_sobol_non_power_of_two_warns(n_samples):
+    """Non-power-of-2 sample sizes should emit a UserWarning."""
+    with pytest.warns(UserWarning, match="not a power of 2"):
+        result = simplex_sobol(3, n_samples)
+    # Result is still valid despite the warning.
+    assert result.shape == (n_samples, 3)
+    assert torch.allclose(result.sum(dim=1), torch.ones(n_samples), atol=1e-5)
