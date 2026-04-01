@@ -30,7 +30,7 @@ def plot_bezier_simplex(
 
     Returns
     -------
-    matplotlib.axes.Axes
+    matplotlib.axes.Axes or mpl_toolkits.mplot3d.axes3d.Axes3D
         The axes containing the plot.
 
     Raises
@@ -54,6 +54,8 @@ def _plot_bezier_curve(model, num, ax, show_control_points, **kwargs):
     only the first three output components (``xs[:, 0]``, ``xs[:, 1]``,
     and ``xs[:, 2]``); any additional output dimensions are ignored for
     visualization.
+    For ``model.n_values < 2``, no data is plotted and the axes are
+    returned empty.
 
     Parameters
     ----------
@@ -70,8 +72,10 @@ def _plot_bezier_curve(model, num, ax, show_control_points, **kwargs):
 
     Returns
     -------
-    matplotlib.axes.Axes
-        The axes containing the plot.
+    matplotlib.axes.Axes or mpl_toolkits.mplot3d.axes3d.Axes3D
+        The axes containing the plot. Returns a 2D ``Axes`` when
+        ``model.n_values == 2``, or a 3D ``Axes3D`` when
+        ``model.n_values >= 3``.
 
     Raises
     ------
@@ -137,8 +141,10 @@ def _plot_bezier_triangle(model, num, ax, show_control_points, **kwargs):
 
     Returns
     -------
-    matplotlib.axes.Axes
-        The axes containing the plot.
+    matplotlib.axes.Axes or mpl_toolkits.mplot3d.axes3d.Axes3D
+        The axes containing the plot. Returns a 2D ``Axes`` when
+        ``model.n_values == 2``, or a 3D ``Axes3D`` when
+        ``model.n_values >= 3``.
 
     Raises
     ------
