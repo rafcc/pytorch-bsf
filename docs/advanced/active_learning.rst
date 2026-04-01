@@ -30,6 +30,11 @@ This method trains an *ensemble* (committee) of models and suggests points where
    import torch
    import torch_bsf
    from torch_bsf.active_learning import suggest_next_points
+   from torch_bsf.sampling import simplex_grid
+
+   # Training data: simplex vertices plus midpoints (replace with your own data)
+   params_train = simplex_grid(n_params=3, degree=2)          # shape (6, 3)
+   values_train = params_train.pow(2).sum(dim=1, keepdim=True)  # shape (6, 1)
 
    # Build a 5-fold ensemble: each model is trained on 4/5 of the data,
    # leaving out a different fold, so the committee members genuinely differ.
