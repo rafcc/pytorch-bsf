@@ -8,6 +8,7 @@ The ``init`` argument accepts a dictionary mapping multi-index tuples to value v
 When working from a file in Python, load the control points or Bézier simplex first (for example, via :func:`torch_bsf.bezier_simplex.load(path)`) and then pass the resulting object as ``init``. The command-line interface instead accepts a file path directly via ``--init``.
 
 Supported file formats for saving and loading control points (and for use with the CLI ``--init`` option) are described below. In every format the key is the string representation of the multi-index tuple (e.g., ``"(2, 0)"`` for the control point at index :math:`(2, 0)`) and the value is a list of floats.
+
 Pickled PyTorch
 ---------------
 
