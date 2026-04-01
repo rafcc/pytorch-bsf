@@ -132,7 +132,6 @@ class TestSelectDegreeKwargForwarding:
 # CLI tests
 # ---------------------------------------------------------------------------
 
-import os
 import subprocess
 import sys
 from pathlib import Path
