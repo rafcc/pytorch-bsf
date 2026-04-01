@@ -1,7 +1,15 @@
+import subprocess
+import sys
 import torch
+from pathlib import Path
 from unittest.mock import MagicMock, patch
 
 from torch_bsf.model_selection.degree_selection import select_degree
+
+_REPO_ROOT = Path(__file__).parent.parent.parent
+_PARAMS_CSV = _REPO_ROOT / "params.csv"
+_VALUES_CSV = _REPO_ROOT / "values.csv"
+_CLI_TIMEOUT = 300  # seconds
 
 
 def _make_simplex_data(n_params: int = 3, n_values: int = 2, n_samples: int = 20, *, seed: int = 0):
@@ -126,3 +134,140 @@ class TestSelectDegreeKwargForwarding:
                 params, values, min_degree=1, max_degree=1, num_folds=2,
                 datamodule=dm, batch_size=16,
             )
+
+
+def _run_cli(*args, cwd=None):
+    """Run `python -m torch_bsf.model_selection.degree_selection` with the given arguments."""
+    workdir = cwd or _REPO_ROOT
+    return subprocess.run(
+        [sys.executable, "-m", "torch_bsf.model_selection.degree_selection"] + list(args),
+        capture_output=True,
+        text=True,
+        cwd=workdir,
+        timeout=_CLI_TIMEOUT,
+    )
+
+
+class TestDegreeSelectionCLI:
+    def test_cli_basic_run(self, tmp_path):
+        """CLI should complete successfully with minimal required arguments."""
+        result = _run_cli(
+            f"--params={_PARAMS_CSV}",
+            f"--values={_VALUES_CSV}",
+            "--min_degree=1",
+            "--max_degree=2",
+            "--num_folds=2",
+            "--max_epochs=1",
+            "--loglevel=WARNING",
+            cwd=tmp_path,
+        )
+        assert result.returncode == 0, result.stderr
+        assert any(line.startswith("Best degree:") for line in result.stdout.splitlines())
+
+    def test_cli_output_is_valid_degree(self, tmp_path):
+        """CLI stdout should contain 'Best degree: N' where N is in [min_degree, max_degree]."""
+        result = _run_cli(
+            f"--params={_PARAMS_CSV}",
+            f"--values={_VALUES_CSV}",
+            "--min_degree=1",
+            "--max_degree=3",
+            "--num_folds=2",
+            "--max_epochs=1",
+            "--loglevel=WARNING",
+            cwd=tmp_path,
+        )
+        assert result.returncode == 0, result.stderr
+        # "Best degree: N" may appear among other Lightning stdout lines
+        matching = [line for line in result.stdout.splitlines() if line.startswith("Best degree:")]
+        assert matching, f"'Best degree:' not found in stdout:\n{result.stdout}"
+        degree = int(matching[0].split(":")[1].strip())
+        assert 1 <= degree <= 3
+
+    def test_cli_missing_params_fails(self):
+        """CLI should exit non-zero when --params is missing."""
+        result = _run_cli(f"--values={_VALUES_CSV}")
+        assert result.returncode != 0
+
+    def test_cli_missing_values_fails(self):
+        """CLI should exit non-zero when --values is missing."""
+        result = _run_cli(f"--params={_PARAMS_CSV}")
+        assert result.returncode != 0
+
+    def test_cli_inverted_degree_range_fails(self):
+        """CLI should exit non-zero when --min_degree > --max_degree."""
+        result = _run_cli(
+            f"--params={_PARAMS_CSV}",
+            f"--values={_VALUES_CSV}",
+            "--min_degree=5",
+            "--max_degree=1",
+        )
+        assert result.returncode != 0
+        assert "min_degree" in result.stderr.lower() or "max_degree" in result.stderr.lower()
+
+    def test_cli_devices_auto(self, tmp_path):
+        """CLI should accept --devices auto (string) without error."""
+        result = _run_cli(
+            f"--params={_PARAMS_CSV}",
+            f"--values={_VALUES_CSV}",
+            "--min_degree=1",
+            "--max_degree=1",
+            "--num_folds=2",
+            "--max_epochs=1",
+            "--devices=auto",
+            "--loglevel=WARNING",
+            cwd=tmp_path,
+        )
+        assert result.returncode == 0, result.stderr
+
+    def test_cli_devices_integer(self, tmp_path):
+        """CLI should accept --devices 1 (integer) without error."""
+        result = _run_cli(
+            f"--params={_PARAMS_CSV}",
+            f"--values={_VALUES_CSV}",
+            "--min_degree=1",
+            "--max_degree=1",
+            "--num_folds=2",
+            "--max_epochs=1",
+            "--devices=1",
+            "--loglevel=WARNING",
+            cwd=tmp_path,
+        )
+        assert result.returncode == 0, result.stderr
+
+    def test_cli_loglevel_info_shows_progress(self, tmp_path):
+        """With --loglevel INFO, degree progress messages should appear in stderr."""
+        result = _run_cli(
+            f"--params={_PARAMS_CSV}",
+            f"--values={_VALUES_CSV}",
+            "--min_degree=1",
+            "--max_degree=1",
+            "--num_folds=2",
+            "--max_epochs=1",
+            "--loglevel=INFO",
+            cwd=tmp_path,
+        )
+        assert result.returncode == 0, result.stderr
+        assert "Checking degree" in result.stderr
+
+    def test_cli_loglevel_warning_suppresses_progress(self, tmp_path):
+        """With --loglevel WARNING, degree progress messages should not appear."""
+        result = _run_cli(
+            f"--params={_PARAMS_CSV}",
+            f"--values={_VALUES_CSV}",
+            "--min_degree=1",
+            "--max_degree=1",
+            "--num_folds=2",
+            "--max_epochs=1",
+            "--loglevel=WARNING",
+            cwd=tmp_path,
+        )
+        assert result.returncode == 0, result.stderr
+        assert "Checking degree" not in result.stderr
+
+    def test_cli_help(self):
+        """CLI should print help and exit 0."""
+        result = _run_cli("--help")
+        assert result.returncode == 0
+        assert "--params" in result.stdout
+        assert "--loglevel" in result.stdout
+        assert "--devices" in result.stdout
