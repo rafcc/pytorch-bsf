@@ -104,29 +104,51 @@ N_LAMBDAS = 12
 N_ALPHAS = 8
 BASE = 10
 
-grid = elastic_net_grid(n_lambdas=N_LAMBDAS, n_alphas=N_ALPHAS, base=BASE)
-px, py = project_to_2d(grid)
 
-w1_all = grid[:, 0]
-w2_all = grid[:, 1]
-w3_all = grid[:, 2]
-rgb_all = weights_to_rgb(w1_all, w2_all, w3_all)
+def main():
+    """Generate the elastic-net leaf-space figure and write it to disk.
 
-# Main grid points (excluding vertex copies added for CV compatibility)
-n_main = (N_LAMBDAS - 1) * N_ALPHAS
+    This function performs all substantial computation and plotting so that
+    importing this module does not trigger side effects.
+    """
+    grid = elastic_net_grid(
+        n_lambdas=N_LAMBDAS,
+        n_alphas=N_ALPHAS,
+        base=BASE,
+    )
+    px, py = project_to_2d(grid)
 
-# Unique λ levels and corresponding w1 values
-# w1=0 corresponds to λ→∞ (base edge) – filter to finite λ only for the
-# left panel and leaf lines.
-unique_w1 = np.unique(grid[:n_main, 0])
-unique_w1_finite = unique_w1[unique_w1 > 1e-10]   # finite-λ levels only
-lambda_unique = (1.0 - unique_w1_finite) / unique_w1_finite  # λ = (1-w1)/w1
-lambda_max = lambda_unique.max() * 1.15                       # axis upper limit
+    w1_all = grid[:, 0]
+    w2_all = grid[:, 1]
+    w3_all = grid[:, 2]
+    rgb_all = weights_to_rgb(w1_all, w2_all, w3_all)
 
-alphas_per_row = np.linspace(0.0, 1.0, N_ALPHAS, endpoint=True)
-h3 = np.sqrt(3) / 2   # used in both center and right panels
+    # Main grid points (excluding vertex copies added for CV compatibility)
+    n_main = (N_LAMBDAS - 1) * N_ALPHAS
+
+    # Unique λ levels and corresponding w1 values
+    # w1=0 corresponds to λ→∞ (base edge) – filter to finite λ only for the
+    # left panel and leaf lines.
+    unique_w1 = np.unique(grid[:n_main, 0])
+    unique_w1_finite = unique_w1[unique_w1 > 1e-10]   # finite-λ levels only
+    lambda_unique = (1.0 - unique_w1_finite) / unique_w1_finite  # λ = (1-w1)/w1
+    lambda_max = lambda_unique.max() * 1.15                       # axis upper limit
+
+    alphas_per_row = np.linspace(0.0, 1.0, N_ALPHAS, endpoint=True)
+    h3 = np.sqrt(3) / 2   # used in both center and right panels
+
+    # TODO: plotting and file-output code that previously ran at import time
+    # should be moved here so that it only executes when main() is called.
+    # For example:
+    #
+    # fig, axes = plt.subplots(...)
+    # ... plotting using px, py, rgb_all, lambda_unique, etc. ...
+    # output_path = Path("docs/_static/elastic_net_leaf_space.png")
+    # fig.savefig(output_path, bbox_inches="tight", dpi=300)
 
 
+if __name__ == "__main__":
+    main()
 # ---------------------------------------------------------------------------
 # Figure layout: three panels side by side
 # ---------------------------------------------------------------------------
