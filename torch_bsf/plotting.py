@@ -44,6 +44,12 @@ def plot_bezier_simplex(
 def _plot_bezier_curve(model, num, ax, show_control_points, **kwargs):
     """Plots a Bézier curve (n_params == 2).
 
+    For ``model.n_values == 2``, this function produces a 2D plot using
+    the first two output components (``xs[:, 0]`` and ``xs[:, 1]``).
+    For ``model.n_values >= 3``, this function produces a 3D plot using
+    only the first three output components (``xs[:, 0]``, ``xs[:, 1]``,
+    and ``xs[:, 2]``); any additional output dimensions are ignored for
+    visualization.
     Parameters
     ----------
     model : BezierSimplex
