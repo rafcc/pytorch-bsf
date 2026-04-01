@@ -23,7 +23,7 @@ This method trains an *ensemble* (committee) of models and suggests points where
 
 *   A committee of **3–10 models** is usually sufficient. More models give a more reliable uncertainty estimate but increase training time proportionally.
 *   With a single model, every point has zero variance, so QBC degenerates to random selection. Use the ``"density"`` method instead in that case.
-*   Combine QBC with :doc:`k-fold cross-validation <../advanced/sklearn>` to obtain the ensemble cheaply:
+*   Combine QBC with :doc:`k-fold cross-validation <sklearn>` to obtain the ensemble cheaply:
 
 .. code-block:: python
 
@@ -83,6 +83,8 @@ This method suggests points that are as far as possible from **all** existing tr
        [0.0, 0.0, 1.0],
    ])
 
+   # Placeholder training values derived from the existing parameters
+   existing_values = existing_params.sum(dim=1, keepdim=True)
    model = torch_bsf.fit(params=existing_params, values=existing_values, degree=2)
 
    # Suggest the 2 points furthest from all existing samples
@@ -119,7 +121,7 @@ Internally, ``suggest_next_points()`` draws ``n_candidates`` random points on th
 *   **Increase to 5,000–10,000** when ``n_params`` is large (≥ 5) or when you need more precise placement of suggestions.
 *   **Decrease to 200–500** during early prototyping to keep iteration time short; increase to the default 1,000 (or higher) once the workflow is validated.
 
-The tradeoff is purely between **search quality and wall-clock time**: a higher ``n_candidates`` cannot cause incorrect results, only slower ones.
+The practical tradeoff is between **search quality and computational cost** (runtime and memory): increasing ``n_candidates`` generally improves the chance of finding better points but also increases resource usage, and very large values may be impractical or even fail on limited hardware. It does not change the objective being optimized, but different random candidate sets can still lead to slightly different suggested points.
 
 A Complete Active Learning Loop
 ---------------------------------

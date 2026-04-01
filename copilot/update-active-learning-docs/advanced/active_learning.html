@@ -184,6 +184,8 @@
     <span class="p">[</span><span class="mf">0.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">],</span>
 <span class="p">])</span>
 
+<span class="c1"># Placeholder training values derived from the existing parameters</span>
+<span class="n">existing_values</span> <span class="o">=</span> <span class="n">existing_params</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">dim</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">keepdim</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 <span class="n">model</span> <span class="o">=</span> <span class="n">torch_bsf</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">params</span><span class="o">=</span><span class="n">existing_params</span><span class="p">,</span> <span class="n">values</span><span class="o">=</span><span class="n">existing_values</span><span class="p">,</span> <span class="n">degree</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
 
 <span class="c1"># Suggest the 2 points furthest from all existing samples</span>
@@ -219,7 +221,7 @@
 <li><p><strong>Increase to 5,000–10,000</strong> when <code class="docutils literal notranslate"><span class="pre">n_params</span></code> is large (≥ 5) or when you need more precise placement of suggestions.</p></li>
 <li><p><strong>Decrease to 200–500</strong> during early prototyping to keep iteration time short; increase to the default 1,000 (or higher) once the workflow is validated.</p></li>
 </ul>
-<p>The tradeoff is purely between <strong>search quality and wall-clock time</strong>: a higher <code class="docutils literal notranslate"><span class="pre">n_candidates</span></code> cannot cause incorrect results, only slower ones.</p>
+<p>The practical tradeoff is between <strong>search quality and computational cost</strong> (runtime and memory): increasing <code class="docutils literal notranslate"><span class="pre">n_candidates</span></code> generally improves the chance of finding better points but also increases resource usage, and very large values may be impractical or even fail on limited hardware. It does not change the objective being optimized, but different random candidate sets can still lead to slightly different suggested points.</p>
 </section>
 </section>
 <section id="a-complete-active-learning-loop">
