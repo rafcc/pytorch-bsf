@@ -175,7 +175,12 @@ def simplex_sobol(n_params: int, n_samples: int) -> torch.Tensor:
     with warnings.catch_warnings():
         warnings.filterwarnings(
             "ignore",
-            message=r"Sobol'? points require n to be a power of 2",
+            message=r"Sobol'? (?:points )?require n to be a power of 2",
+            category=UserWarning,
+        )
+        warnings.filterwarnings(
+            "ignore",
+            message=r".*balance properties of Sobol.*",
             category=UserWarning,
         )
         sampler = qmc.Sobol(d=n_params - 1, scramble=True)
