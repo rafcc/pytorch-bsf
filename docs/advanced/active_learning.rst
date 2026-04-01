@@ -168,18 +168,19 @@ The following self-contained example illustrates the full workflow: starting fro
    # ── 2. Active learning loop ────────────────────────────────────────────────
    N_ROUNDS = 5          # number of active learning iterations
    N_SUGGESTIONS = 3     # new points per round
-   N_ENSEMBLE = 5        # committee size for QBC
+   N_ENSEMBLE = 5        # committee size for QBC (upper bound; actual folds
+                         # per round are limited by the current dataset size)
    N_CANDIDATES = 2000   # search resolution
 
    for round_idx in range(N_ROUNDS):
-       # Build an N_ENSEMBLE-fold ensemble: each model is trained on a
-       # different (N_ENSEMBLE - 1)/N_ENSEMBLE portion of the data so the
-       # committee members genuinely disagree where the fit is uncertain.
+       # Build an ensemble via k-fold-style splits. The actual number of folds
+       # cannot exceed the current dataset size to avoid empty folds.
+       n_folds = min(N_ENSEMBLE, len(params))
        perm = torch.randperm(len(params))
-       folds = torch.chunk(perm, N_ENSEMBLE)
+       folds = torch.chunk(perm, n_folds)
        ensemble = []
-       for k in range(N_ENSEMBLE):
-           train_idx = torch.cat([folds[i] for i in range(N_ENSEMBLE) if i != k])
+       for k in range(n_folds):
+           train_idx = torch.cat([folds[i] for i in range(n_folds) if i != k])
            ensemble.append(
                torch_bsf.fit(
                    params=params[train_idx],
@@ -218,10 +219,11 @@ Start with ``method="density"`` for the first 1–2 rounds to ensure broad simpl
 
    for round_idx in range(N_ROUNDS):
        perm = torch.randperm(len(params))
-       folds = torch.chunk(perm, N_ENSEMBLE)
+       n_folds = min(N_ENSEMBLE, len(params))
+       folds = torch.chunk(perm, n_folds)
        ensemble = []
-       for k in range(N_ENSEMBLE):
-           train_idx = torch.cat([folds[i] for i in range(N_ENSEMBLE) if i != k])
+       for k in range(n_folds):
+           train_idx = torch.cat([folds[i] for i in range(n_folds) if i != k])
            ensemble.append(
                torch_bsf.fit(
                    params=params[train_idx],
