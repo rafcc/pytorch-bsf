@@ -365,7 +365,9 @@ def main():
     # Use a fallback of 0.5 when w2 + w3 is (numerically) zero to avoid division
     # by zero in degenerate cases; this does not occur for the current grid_main
     # but is kept as a defensive default.
-    alpha_m = np.where(w23_sum > 1e-10, w2_m / w23_sum, 0.5)
+    mask = w23_sum > 1e-10
+    alpha_m = np.full_like(w23_sum, 0.5, dtype=float)
+    np.divide(w2_m, w23_sum, out=alpha_m, where=mask)
     x_eye, y_eye = to_eye_coords(w1_m, alpha_m, r=R)
     x_eye_rot, y_eye_rot = rot90ccw(x_eye, y_eye)
     ax.scatter(x_eye_rot, y_eye_rot, c=rgb_m, s=20, zorder=3, edgecolors="none")
