@@ -62,7 +62,7 @@ Install it with one of:
 .. code-block:: bash
 
    pip install scipy
-   # or, to install all optional extras at once:
+   # or, to install the sampling extras:
    pip install pytorch-bsf[sampling]
 
 If ``scipy`` is not available, an :exc:`ImportError` is raised at call time with a clear message.
