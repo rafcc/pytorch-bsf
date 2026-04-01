@@ -92,7 +92,8 @@ def _plot_bezier_triangle(model, num, ax, show_control_points, **kwargs):
         ax (matplotlib.axes.Axes or None): The matplotlib axes to plot on.
             If None, a new figure is created.
         show_control_points (bool): Whether to overlay the control points.
-        **kwargs: Additional keyword arguments forwarded to the surface plot call.
+        **kwargs: Additional keyword arguments forwarded to the 3D surface
+            plot call (``ax.plot_trisurf``) when ``model.n_values >= 3``.
 
     Returns:
         matplotlib.axes.Axes: The axes containing the plot.
