@@ -1,5 +1,18 @@
 # Changelog
 
+## [0.16.1](https://github.com/opthub-org/pytorch-bsf/compare/v0.16.0...v0.16.1) (2026-04-01)
+
+
+### Bug Fixes
+
+* elastic_net_grid returns empty (0, 3) when n_alphas == 0 ([#287](https://github.com/opthub-org/pytorch-bsf/issues/287)) ([99215db](https://github.com/opthub-org/pytorch-bsf/commit/99215db6f45c3f5ba354288c7598d9166eea1bc3))
+
+
+### Documentation
+
+* add documents of sampling ([#285](https://github.com/opthub-org/pytorch-bsf/issues/285)) ([8637677](https://github.com/opthub-org/pytorch-bsf/commit/8637677e31952dbfa57ec7c59fb40f303c9d37db))
+* fix chapter ordering, unify Title Case headings, fix typos, and expand thin sections ([#289](https://github.com/opthub-org/pytorch-bsf/issues/289)) ([166f6c4](https://github.com/opthub-org/pytorch-bsf/commit/166f6c4fc4e093b966d08630468c37d8f3161a73))
+
 ## [0.16.0](https://github.com/opthub-org/pytorch-bsf/compare/v0.15.1...v0.16.0) (2026-03-30)
 
 
