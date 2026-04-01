@@ -199,7 +199,7 @@ for alpha_val in alphas_per_row:
 
 
 # ===========================================================================
-# Centre panel – 2-simplex with foliation (leaves) and grid points
+# Center panel – 2-simplex with foliation (leaves) and grid points
 # Vertices: (1,0,0) at bottom-left, (0,1,0) at top, (0,0,1) at bottom-right.
 # Points are colored by (w1, w2, w3) = (R, G, B).
 # ===========================================================================
