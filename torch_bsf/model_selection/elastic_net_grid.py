@@ -172,7 +172,7 @@ def elastic_net_grid(
         raise ValueError(
             f"n_lambdas and n_alphas must be >= 0, but given: n_lambdas={n_lambdas}, n_alphas={n_alphas}"
         )
-    if n_lambdas == 0:
+    if n_lambdas == 0 or n_alphas == 0:
         return np.empty((0, 3))
     w1_values = reverse_logspace(n_lambdas - 1, base)
     w2_values = np.linspace(0.0, 1.0 - w1_values, n_alphas, axis=1)
