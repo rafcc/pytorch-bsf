@@ -1,4 +1,4 @@
-Elastic net model selection
+Elastic Net Model Selection
 ===========================
 
 A canonical and highly practical application of this theory is hyperparameter optimization for the **Elastic Net**. In machine learning and statistics, selecting the correct regularization parameters is critical to balancing data fidelity, model sparsity, and numerical stability. 

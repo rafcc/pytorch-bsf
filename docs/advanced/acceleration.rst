@@ -35,7 +35,7 @@ Example: Mixed precision training
 
    python -m torch_bsf --params data.csv --values results.csv --accelerator gpu --precision 16-mixed
 
-Multi-node Training
+Multi-Node Training
 ^^^^^^^^^^^^^^^^^^^
 
 To scale training across multiple machines, use the ``--num_nodes`` flag.
@@ -95,7 +95,7 @@ For more granular control, you can pass any PyTorch Lightning `Trainer arguments
 Detailed Use Cases
 ------------------
 
-Large-scale Pareto Front Approximation
+Large-Scale Pareto Front Approximation
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 When dealing with thousands of Pareto optimal points and high-degree Bézier simplices (e.g., degree 10+), the number of control points increases significantly. In such cases:

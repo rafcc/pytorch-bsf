@@ -3,7 +3,7 @@ Advanced Sampling
 
 PyTorch-BSF provides utilities for generating parameter points on a simplex beyond the default uniform grid.
 
-The ``torch_bsf.sampling`` module
+The ``torch_bsf.sampling`` Module
 ----------------------------------
 
 Three functions are available:

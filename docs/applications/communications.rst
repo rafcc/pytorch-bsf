@@ -1,4 +1,4 @@
-Communication systems and routing
+Communication Systems and Routing
 =================================
 
 In modern communication networks, backbone infrastructure must dynamically adjust routes to accommodate wildly fluctuating traffic demands from streaming services, cloud computing, and IoT devices. Traffic Engineering (TE) utilizing Model Predictive Control (MPC) resolves these complex allocations but faces competing demands: operators must route packets efficiently to strictly avoid bandwidth congestion, yet they must also suppress erratic, sudden changes to the routing policies to maintain overall network stability.

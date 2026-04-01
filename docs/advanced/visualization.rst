@@ -3,7 +3,7 @@ Bézier Simplex Visualization
 
 Visualizing high-dimensional Bézier simplices is crucial for understanding the manifold structure and analyzing Pareto fronts. PyTorch-BSF provides high-level utilities to project and plot 2D and 3D Bézier manifolds.
 
-The ``torch_bsf.plotting`` module
+The ``torch_bsf.plotting`` Module
 ---------------------------------
 
 The ``plot_bezier_simplex()`` function provides a high-level API for visualization. It automatically handles the dimensionality of your model.
