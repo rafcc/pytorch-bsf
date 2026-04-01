@@ -92,9 +92,10 @@ def simplex_sobol(n_params: int, n_samples: int) -> torch.Tensor:
         **Power-of-two sample sizes are strongly recommended.**
         Sobol sequences are constructed in base 2 and achieve their best
         uniformity guarantees when ``n_samples`` is an exact power of 2
-        (e.g. 64, 128, 256, …).  For other sizes, unused points are simply
-        discarded, which can leave portions of the simplex under-sampled.
-        A ``UserWarning`` is emitted automatically when a non-power-of-two
+        (e.g. 64, 128, 256, …).  When ``n_samples`` is not a power of 2,
+        the strongest low-discrepancy guarantees no longer apply and the
+        coverage of the simplex can be somewhat less uniform.  A
+        ``UserWarning`` is emitted automatically when a non-power-of-two
         value is requested.
 
     .. note::
@@ -174,8 +175,10 @@ def simplex_sobol(n_params: int, n_samples: int) -> torch.Tensor:
     with warnings.catch_warnings():
         warnings.filterwarnings(
             "ignore",
-            message="The balance properties of Sobol",
+            # Use a regex that matches even if SciPy adds a prefix, and restrict to Sobol's module.
+            message=r".*balance properties of Sobol",
             category=UserWarning,
+            module=r"scipy\.stats\._?qmc",
         )
         sampler = qmc.Sobol(d=n_params - 1, scramble=True)
         q = sampler.random(n=n_samples)
