@@ -179,6 +179,12 @@ def test_fit_kfold():
     with pytest.raises(ValueError):
         tb.fit_kfold(params=ts, values=xs, n_folds=1, degree=3)
 
+    # Too few samples: even with n_folds=2, len(params)=1 can't be split
+    one_ts = ts[:1]
+    one_xs = xs[:1]
+    with pytest.raises(ValueError):
+        tb.fit_kfold(params=one_ts, values=one_xs, n_folds=5, degree=3)
+
 
 @pytest.mark.parametrize(
     "init_type",

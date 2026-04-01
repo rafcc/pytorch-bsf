@@ -1150,8 +1150,9 @@ def fit_kfold(
     Raises
     ------
     ValueError
-        If ``n_folds < 2``, or if neither / both of ``degree`` and ``init``
-        are provided.
+        If ``n_folds < 2``, if ``len(params) < 2`` (too few samples for any
+        fold split), or if neither / both of ``degree`` and ``init`` are
+        provided.
 
     Examples
     --------
@@ -1184,6 +1185,11 @@ def fit_kfold(
         raise ValueError(f"n_folds must be at least 2, got {n_folds}")
 
     actual_folds = min(n_folds, len(params))
+    if actual_folds < 2:
+        raise ValueError(
+            f"At least 2 training samples are required for k-fold cross-validation, "
+            f"got {len(params)}."
+        )
 
     # Build the base model (same logic as fit()).
     if degree is None and init is None:
