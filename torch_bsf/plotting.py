@@ -22,7 +22,11 @@ def plot_bezier_simplex(
     show_control_points : bool
         Whether to show control points.
     **kwargs
-        Additional keyword arguments forwarded to the underlying plot call.
+        Additional keyword arguments forwarded to the plot call.
+        For ``model.n_params == 2``, forwarded to ``ax.plot`` (curve).
+        For ``model.n_params == 3`` and ``model.n_values >= 3``, forwarded
+        to ``ax.plot_trisurf`` (3D surface).
+        For ``model.n_params == 3`` and ``model.n_values == 2``, ignored.
 
     Returns
     -------
@@ -32,7 +36,7 @@ def plot_bezier_simplex(
     Raises
     ------
     NotImplementedError
-        If ``model.n_params`` is not 2 or 3.
+        If ``model.n_params`` is neither 2 nor 3.
     """
     if model.n_params == 2:
         return _plot_bezier_curve(model, num, ax, show_control_points, **kwargs)
@@ -50,6 +54,7 @@ def _plot_bezier_curve(model, num, ax, show_control_points, **kwargs):
     only the first three output components (``xs[:, 0]``, ``xs[:, 1]``,
     and ``xs[:, 2]``); any additional output dimensions are ignored for
     visualization.
+
     Parameters
     ----------
     model : BezierSimplex
