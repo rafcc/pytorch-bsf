@@ -1,7 +1,15 @@
+import subprocess
+import sys
 import torch
+from pathlib import Path
 from unittest.mock import MagicMock, patch
 
 from torch_bsf.model_selection.degree_selection import select_degree
+
+_REPO_ROOT = Path(__file__).parent.parent.parent
+_PARAMS_CSV = _REPO_ROOT / "params.csv"
+_VALUES_CSV = _REPO_ROOT / "values.csv"
+_CLI_TIMEOUT = 300  # seconds
 
 
 def _make_simplex_data(n_params: int = 3, n_values: int = 2, n_samples: int = 20, *, seed: int = 0):
@@ -128,20 +136,6 @@ class TestSelectDegreeKwargForwarding:
             )
 
 
-# ---------------------------------------------------------------------------
-# CLI tests
-# ---------------------------------------------------------------------------
-
-import subprocess
-import sys
-from pathlib import Path
-
-_REPO_ROOT = Path(__file__).parent.parent.parent
-_PARAMS_CSV = _REPO_ROOT / "params.csv"
-_VALUES_CSV = _REPO_ROOT / "values.csv"
-_CLI_TIMEOUT = 300  # seconds
-
-
 def _run_cli(*args, cwd=None):
     """Run `python -m torch_bsf.model_selection.degree_selection` with the given arguments."""
     workdir = cwd or _REPO_ROOT
@@ -198,6 +192,17 @@ class TestDegreeSelectionCLI:
         """CLI should exit non-zero when --values is missing."""
         result = _run_cli(f"--params={_PARAMS_CSV}")
         assert result.returncode != 0
+
+    def test_cli_inverted_degree_range_fails(self):
+        """CLI should exit non-zero when --min_degree > --max_degree."""
+        result = _run_cli(
+            f"--params={_PARAMS_CSV}",
+            f"--values={_VALUES_CSV}",
+            "--min_degree=5",
+            "--max_degree=1",
+        )
+        assert result.returncode != 0
+        assert "min_degree" in result.stderr.lower() or "max_degree" in result.stderr.lower()
 
     def test_cli_devices_auto(self, tmp_path):
         """CLI should accept --devices auto (string) without error."""
