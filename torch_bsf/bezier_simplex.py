@@ -67,7 +67,7 @@ class BezierSimplexDataModule(L.LightningDataModule):
         if batch_size is not None and batch_size < 1:
             raise ValueError(f"{batch_size=}. Must be positive or None.")
         if split_ratio <= 0.0 or 1.0 < split_ratio:
-            raise ValueError(f"{split_ratio=}. Must be 0.0 < sprit_ratio <= 1.0.")
+            raise ValueError(f"{split_ratio=}. Must be 0.0 < split_ratio <= 1.0.")
         if normalize not in ("max", "std", "quantile", "none"):
             raise ValueError(f"{normalize=}. Must be one of ['max', 'std', 'quantile', 'none'].")
 
