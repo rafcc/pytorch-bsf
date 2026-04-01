@@ -9,20 +9,22 @@ def plot_bezier_simplex(
     show_control_points: bool = True,
     **kwargs,
 ):
-    """Plots the Bezier simplex.
+    """Plots the Bézier simplex.
 
-    Parameters
-    ----------
-    model
-        The Bezier simplex model.
-    num
-        The number of grid points for each edge.
-    ax
-        The matplotlib axes to plot on.
-    show_control_points
-        Whether to show control points.
-    kwargs
-        Additional arguments for the plot.
+    Args:
+        model (BezierSimplex): The Bézier simplex model to plot.
+        num (int): The number of grid points for each edge.
+        ax (matplotlib.axes.Axes or None): The matplotlib axes to plot on.
+            If None, a new figure is created.
+        show_control_points (bool): Whether to show control points.
+        **kwargs: Additional keyword arguments forwarded to the underlying
+            plot call.
+
+    Returns:
+        matplotlib.axes.Axes: The axes containing the plot.
+
+    Raises:
+        NotImplementedError: If ``model.n_params`` is not 2 or 3.
     """
     if model.n_params == 2:
         return _plot_bezier_curve(model, num, ax, show_control_points, **kwargs)
@@ -84,7 +86,12 @@ def _plot_bezier_curve(model, num, ax, show_control_points, **kwargs):
 
 
 def _plot_bezier_triangle(model, num, ax, show_control_points, **kwargs):
-    """Plots a Bézier triangle as a triangulated surface (n_params == 3).
+    """Plots a Bézier triangle using triangulation (n_params == 3).
+
+    Depending on ``model.n_values``, this produces either:
+
+    * a 2D triangulated plot plus scattered points when ``model.n_values == 2``, or
+    * a 3D triangulated surface plot when ``model.n_values >= 3``.
 
     Args:
         model (BezierSimplex): The Bézier simplex model to plot.
