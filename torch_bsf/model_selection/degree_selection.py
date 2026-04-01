@@ -183,7 +183,7 @@ if __name__ == "__main__":
     )
 
     def _load_csv(path: Path, header: int) -> torch.Tensor:
-        delimiter = "," if path.suffix == ".csv" else None
+        delimiter = "," if path.suffix.lower() == ".csv" else None
         return torch.from_numpy(
             np.loadtxt(path, delimiter=delimiter, skiprows=header, ndmin=2)
         ).to(torch.get_default_dtype())
