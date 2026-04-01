@@ -9,20 +9,34 @@ def plot_bezier_simplex(
     show_control_points: bool = True,
     **kwargs,
 ):
-    """Plots the Bezier simplex.
+    """Plots the Bézier simplex.
 
     Parameters
     ----------
-    model
-        The Bezier simplex model.
-    num
+    model : BezierSimplex
+        The Bézier simplex model to plot.
+    num : int
         The number of grid points for each edge.
-    ax
-        The matplotlib axes to plot on.
-    show_control_points
+    ax : matplotlib.axes.Axes or None
+        The matplotlib axes to plot on. If None, a new figure is created.
+    show_control_points : bool
         Whether to show control points.
-    kwargs
-        Additional arguments for the plot.
+    **kwargs
+        Additional keyword arguments forwarded to the plot call.
+        For ``model.n_params == 2``, forwarded to ``ax.plot`` (curve).
+        For ``model.n_params == 3`` and ``model.n_values >= 3``, forwarded
+        to ``ax.plot_trisurf`` (3D surface).
+        For ``model.n_params == 3`` and ``model.n_values == 2``, ignored.
+
+    Returns
+    -------
+    matplotlib.axes.Axes or mpl_toolkits.mplot3d.axes3d.Axes3D
+        The axes containing the plot.
+
+    Raises
+    ------
+    NotImplementedError
+        If ``model.n_params`` is neither 2 nor 3.
     """
     if model.n_params == 2:
         return _plot_bezier_curve(model, num, ax, show_control_points, **kwargs)
@@ -32,6 +46,42 @@ def plot_bezier_simplex(
 
 
 def _plot_bezier_curve(model, num, ax, show_control_points, **kwargs):
+    """Plots a Bézier curve (n_params == 2).
+
+    For ``model.n_values == 2``, this function produces a 2D plot using
+    the first two output components (``xs[:, 0]`` and ``xs[:, 1]``).
+    For ``model.n_values >= 3``, this function produces a 3D plot using
+    only the first three output components (``xs[:, 0]``, ``xs[:, 1]``,
+    and ``xs[:, 2]``); any additional output dimensions are ignored for
+    visualization.
+    For ``model.n_values < 2``, no data is plotted and the axes are
+    returned empty.
+
+    Parameters
+    ----------
+    model : BezierSimplex
+        The Bézier simplex model to plot.
+    num : int
+        The number of grid points along the curve.
+    ax : matplotlib.axes.Axes or None
+        The matplotlib axes to plot on. If None, a new figure is created.
+    show_control_points : bool
+        Whether to overlay the control points.
+    **kwargs
+        Additional keyword arguments forwarded to the plot call.
+
+    Returns
+    -------
+    matplotlib.axes.Axes or mpl_toolkits.mplot3d.axes3d.Axes3D
+        The axes containing the plot. Returns a 2D ``Axes`` when
+        ``model.n_values == 2``, or a 3D ``Axes3D`` when
+        ``model.n_values >= 3``.
+
+    Raises
+    ------
+    ImportError
+        If matplotlib is not installed.
+    """
     try:
         import matplotlib.pyplot as plt
     except ImportError as e:
@@ -68,6 +118,39 @@ def _plot_bezier_curve(model, num, ax, show_control_points, **kwargs):
 
 
 def _plot_bezier_triangle(model, num, ax, show_control_points, **kwargs):
+    """Plots a Bézier triangle using triangulation (n_params == 3).
+
+    Depending on ``model.n_values``, this produces either:
+
+    * a 2D triangulated plot plus scattered points when ``model.n_values == 2``, or
+    * a 3D triangulated surface plot when ``model.n_values >= 3``.
+
+    Parameters
+    ----------
+    model : BezierSimplex
+        The Bézier simplex model to plot.
+    num : int
+        The number of grid points along each edge of the triangle.
+    ax : matplotlib.axes.Axes or None
+        The matplotlib axes to plot on. If None, a new figure is created.
+    show_control_points : bool
+        Whether to overlay the control points.
+    **kwargs
+        Additional keyword arguments forwarded to the 3D surface plot
+        (``ax.plot_trisurf``) when ``model.n_values >= 3``.
+
+    Returns
+    -------
+    matplotlib.axes.Axes or mpl_toolkits.mplot3d.axes3d.Axes3D
+        The axes containing the plot. Returns a 2D ``Axes`` when
+        ``model.n_values == 2``, or a 3D ``Axes3D`` when
+        ``model.n_values >= 3``.
+
+    Raises
+    ------
+    ImportError
+        If matplotlib or scipy is not installed.
+    """
     # This requires a bit more complex triangulation for plotting a surface
     try:
         import matplotlib.pyplot as plt
