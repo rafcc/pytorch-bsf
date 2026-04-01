@@ -45,6 +45,7 @@
         </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
               <p class="caption" role="heading"><span class="caption-text">User guide</span></p>
 <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../whatis.html">What is Bézier simplex fitting?</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../quickstart.html">Quickstart</a></li>
 <li class="toctree-l1 current"><a class="reference internal" href="../advanced.html">Advanced Topics</a><ul class="current">
 <li class="toctree-l2"><a class="reference internal" href="normalization.html">Data Normalization</a></li>
@@ -57,7 +58,7 @@
 <li class="toctree-l3"><a class="reference internal" href="#cli-mlflow">CLI / MLflow</a><ul>
 <li class="toctree-l4"><a class="reference internal" href="#accelerator-and-devices">Accelerator and Devices</a></li>
 <li class="toctree-l4"><a class="reference internal" href="#precision">Precision</a></li>
-<li class="toctree-l4"><a class="reference internal" href="#multi-node-training">Multi-node Training</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#multi-node-training">Multi-Node Training</a></li>
 </ul>
 </li>
 <li class="toctree-l3"><a class="reference internal" href="#python-api">Python API</a><ul>
@@ -66,7 +67,7 @@
 </ul>
 </li>
 <li class="toctree-l3"><a class="reference internal" href="#detailed-use-cases">Detailed Use Cases</a><ul>
-<li class="toctree-l4"><a class="reference internal" href="#large-scale-pareto-front-approximation">Large-scale Pareto Front Approximation</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#large-scale-pareto-front-approximation">Large-Scale Pareto Front Approximation</a></li>
 <li class="toctree-l4"><a class="reference internal" href="#distributed-training-on-clusters">Distributed Training on Clusters</a></li>
 </ul>
 </li>
@@ -79,7 +80,6 @@
 <li class="toctree-l2"><a class="reference internal" href="active_learning.html">Active Learning</a></li>
 </ul>
 </li>
-<li class="toctree-l1"><a class="reference internal" href="../whatis.html">What is Bézier simplex fitting?</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../applications.html">Applications</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../faq.html">Frequently Asked Questions</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../references.html">References</a></li>
@@ -147,7 +147,7 @@
 </div></blockquote>
 </section>
 <section id="multi-node-training">
-<h3>Multi-node Training<a class="headerlink" href="#multi-node-training" title="Link to this heading"></a></h3>
+<h3>Multi-Node Training<a class="headerlink" href="#multi-node-training" title="Link to this heading"></a></h3>
 <p>To scale training across multiple machines, use the <code class="docutils literal notranslate"><span class="pre">--num_nodes</span></code> flag.</p>
 <ul class="simple">
 <li><p><code class="docutils literal notranslate"><span class="pre">--num_nodes</span></code>: The number of machines (nodes) to use.</p></li>
@@ -202,7 +202,7 @@ python -m torch_bsf –params data.csv –values results.csv –accelerator gpu 
 <section id="detailed-use-cases">
 <h2>Detailed Use Cases<a class="headerlink" href="#detailed-use-cases" title="Link to this heading"></a></h2>
 <section id="large-scale-pareto-front-approximation">
-<h3>Large-scale Pareto Front Approximation<a class="headerlink" href="#large-scale-pareto-front-approximation" title="Link to this heading"></a></h3>
+<h3>Large-Scale Pareto Front Approximation<a class="headerlink" href="#large-scale-pareto-front-approximation" title="Link to this heading"></a></h3>
 <p>When dealing with thousands of Pareto optimal points and high-degree Bézier simplices (e.g., degree 10+), the number of control points increases significantly. In such cases:</p>
 <ol class="arabic simple">
 <li><p><strong>Use GPUs</strong>: Fitting is highly parallelizable.</p></li>

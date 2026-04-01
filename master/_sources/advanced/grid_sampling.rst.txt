@@ -143,7 +143,7 @@ cross-validation variance.
 Usage
 -----
 
-As a Python function
+As a Python Function
 ~~~~~~~~~~~~~~~~~~~~
 
 .. code-block:: python
@@ -169,7 +169,7 @@ array or tensor and passed as the ``params`` argument to :func:`torch_bsf.fit`, 
 (b) passed as a file path to the ``--params`` CLI option, to train a Bézier simplex
 over the elastic-net regularization map.
 
-As a Python module (CLI)
+As a Python Module (CLI)
 ~~~~~~~~~~~~~~~~~~~~~~~~
 
 Run the module directly to print the grid as a CSV file to *stdout*:

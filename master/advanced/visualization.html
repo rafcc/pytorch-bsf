@@ -46,6 +46,7 @@
         </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
               <p class="caption" role="heading"><span class="caption-text">User guide</span></p>
 <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../whatis.html">What is Bézier simplex fitting?</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../quickstart.html">Quickstart</a></li>
 <li class="toctree-l1 current"><a class="reference internal" href="../advanced.html">Advanced Topics</a><ul class="current">
 <li class="toctree-l2"><a class="reference internal" href="normalization.html">Data Normalization</a></li>
@@ -56,7 +57,7 @@
 <li class="toctree-l2"><a class="reference internal" href="partial.html">Partial Training</a></li>
 <li class="toctree-l2"><a class="reference internal" href="acceleration.html">Hardware Acceleration</a></li>
 <li class="toctree-l2 current"><a class="current reference internal" href="#">Bézier Simplex Visualization</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="#the-torch-bsf-plotting-module">The <code class="docutils literal notranslate"><span class="pre">torch_bsf.plotting</span></code> module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#the-torch-bsf-plotting-module">The <code class="docutils literal notranslate"><span class="pre">torch_bsf.plotting</span></code> Module</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#supported-plot-types">Supported Plot Types</a><ul>
 <li class="toctree-l4"><a class="reference internal" href="#bezier-curves-n-params-2">Bézier Curves (<span class="math notranslate nohighlight">\(n\_params=2\)</span>)</a></li>
 <li class="toctree-l4"><a class="reference internal" href="#bezier-triangles-n-params-3">Bézier Triangles (<span class="math notranslate nohighlight">\(n\_params=3\)</span>)</a></li>
@@ -71,7 +72,6 @@
 <li class="toctree-l2"><a class="reference internal" href="active_learning.html">Active Learning</a></li>
 </ul>
 </li>
-<li class="toctree-l1"><a class="reference internal" href="../whatis.html">What is Bézier simplex fitting?</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../applications.html">Applications</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../faq.html">Frequently Asked Questions</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../references.html">References</a></li>
@@ -110,7 +110,7 @@
 <h1>Bézier Simplex Visualization<a class="headerlink" href="#bezier-simplex-visualization" title="Link to this heading"></a></h1>
 <p>Visualizing high-dimensional Bézier simplices is crucial for understanding the manifold structure and analyzing Pareto fronts. PyTorch-BSF provides high-level utilities to project and plot 2D and 3D Bézier manifolds.</p>
 <section id="the-torch-bsf-plotting-module">
-<h2>The <code class="docutils literal notranslate"><span class="pre">torch_bsf.plotting</span></code> module<a class="headerlink" href="#the-torch-bsf-plotting-module" title="Link to this heading"></a></h2>
+<h2>The <code class="docutils literal notranslate"><span class="pre">torch_bsf.plotting</span></code> Module<a class="headerlink" href="#the-torch-bsf-plotting-module" title="Link to this heading"></a></h2>
 <p>The <code class="docutils literal notranslate"><span class="pre">plot_bezier_simplex()</span></code> function provides a high-level API for visualization. It automatically handles the dimensionality of your model.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">torch_bsf</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">torch_bsf.plotting</span><span class="w"> </span><span class="kn">import</span> <span class="n">plot_bezier_simplex</span>

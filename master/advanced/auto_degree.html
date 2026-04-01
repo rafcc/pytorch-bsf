@@ -46,6 +46,7 @@
         </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
               <p class="caption" role="heading"><span class="caption-text">User guide</span></p>
 <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../whatis.html">What is Bézier simplex fitting?</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../quickstart.html">Quickstart</a></li>
 <li class="toctree-l1 current"><a class="reference internal" href="../advanced.html">Advanced Topics</a><ul class="current">
 <li class="toctree-l2"><a class="reference internal" href="normalization.html">Data Normalization</a></li>
@@ -54,7 +55,7 @@
 <li class="toctree-l2"><a class="reference internal" href="grid_sampling.html">Elastic Net Grid Sampling</a></li>
 <li class="toctree-l2 current"><a class="current reference internal" href="#">Automatic Degree Selection</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="#how-to-use">How to Use</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#how-it-works">How it Works</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#how-it-works">How It Works</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#configuration">Configuration</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#when-to-use">When to Use</a></li>
 </ul>
@@ -67,7 +68,6 @@
 <li class="toctree-l2"><a class="reference internal" href="active_learning.html">Active Learning</a></li>
 </ul>
 </li>
-<li class="toctree-l1"><a class="reference internal" href="../whatis.html">What is Bézier simplex fitting?</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../applications.html">Applications</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../faq.html">Frequently Asked Questions</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../references.html">References</a></li>
@@ -133,7 +133,7 @@
 </div>
 </section>
 <section id="how-it-works">
-<h2>How it Works<a class="headerlink" href="#how-it-works" title="Link to this heading"></a></h2>
+<h2>How It Works<a class="headerlink" href="#how-it-works" title="Link to this heading"></a></h2>
 <ol class="arabic simple">
 <li><p><strong>Iteration</strong>: The tool trains Bézier simplices for degrees from <code class="docutils literal notranslate"><span class="pre">min_degree</span></code> to <code class="docutils literal notranslate"><span class="pre">max_degree</span></code>.</p></li>
 <li><p><strong>K-Fold CV</strong>: For each degree, it performs <span class="math notranslate nohighlight">\(k\)</span>-fold cross-validation. The mean MSE across all validation folds is calculated.</p></li>

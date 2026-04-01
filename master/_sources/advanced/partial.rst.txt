@@ -1,7 +1,17 @@
 Partial Training
 ================
 
-The ``fit()`` function provides parameters for partial training, i.e., training some control points while the others are fixed.
+By default, ``fit()`` trains all control points of the Bézier simplex simultaneously. The ``fix`` argument lets you hold a subset of control points constant during training, so that only the remaining (free) control points are updated.
+
+This is useful when:
+
+*   **Boundary constraints are known** — If single-objective optimizations have already determined the vertex solutions, you can fix those vertices and train only the interior and edge control points.
+*   **Incremental refinement** — Fit a low-degree model first, reuse its control points as the initialization for a higher-degree model, and fix the already-accurate points to stabilize training.
+*   **Encoding prior knowledge** — Pin control points whose values are theoretically or physically determined.
+
+The example below demonstrates how to fix the two vertices of a Bézier curve while training its interior control points.
+
+The ``fix`` argument takes a list of multi-index lists (e.g., ``[[3, 0], [0, 3]]``). Any control point whose multi-index appears in ``fix`` is excluded from gradient updates.
 
 .. testcode::
    :pyversion: >= 3.10, < 3.15

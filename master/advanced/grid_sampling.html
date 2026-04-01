@@ -46,6 +46,7 @@
         </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
               <p class="caption" role="heading"><span class="caption-text">User guide</span></p>
 <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../whatis.html">What is Bézier simplex fitting?</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../quickstart.html">Quickstart</a></li>
 <li class="toctree-l1 current"><a class="reference internal" href="../advanced.html">Advanced Topics</a><ul class="current">
 <li class="toctree-l2"><a class="reference internal" href="normalization.html">Data Normalization</a></li>
@@ -55,8 +56,8 @@
 <li class="toctree-l3"><a class="reference internal" href="#the-hyperparameter-space">The Hyperparameter Space</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#grid-structure">Grid Structure</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#usage">Usage</a><ul>
-<li class="toctree-l4"><a class="reference internal" href="#as-a-python-function">As a Python function</a></li>
-<li class="toctree-l4"><a class="reference internal" href="#as-a-python-module-cli">As a Python module (CLI)</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#as-a-python-function">As a Python Function</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#as-a-python-module-cli">As a Python Module (CLI)</a></li>
 <li class="toctree-l4"><a class="reference internal" href="#via-mlproject">Via MLproject</a></li>
 </ul>
 </li>
@@ -71,7 +72,6 @@
 <li class="toctree-l2"><a class="reference internal" href="active_learning.html">Active Learning</a></li>
 </ul>
 </li>
-<li class="toctree-l1"><a class="reference internal" href="../whatis.html">What is Bézier simplex fitting?</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../applications.html">Applications</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../faq.html">Frequently Asked Questions</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../references.html">References</a></li>
@@ -170,7 +170,7 @@ under the solution map shrink to the single null-model point <span class="math n
 <a class="reference internal image-reference" href="../_images/elastic_net_leaf_space.png"><img alt="../_images/elastic_net_leaf_space.png" src="../_images/elastic_net_leaf_space.png" style="width: 100%;" />
 </a>
 <figcaption>
-<p><span class="caption-number">Fig. 2 </span><span class="caption-text">All points are colored by <span class="math notranslate nohighlight">\((w_1, w_2, w_3) \mapsto (R, G, B)\)</span>,
+<p><span class="caption-number">Fig. 6 </span><span class="caption-text">All points are colored by <span class="math notranslate nohighlight">\((w_1, w_2, w_3) \mapsto (R, G, B)\)</span>,
 so the same weight vector has the same color in every panel.
 <strong>Left</strong> – The <span class="math notranslate nohighlight">\((\lambda, \alpha)\)</span> hyperparameter space (x: regularization
 strength, y: L1 mixing ratio).
@@ -224,7 +224,7 @@ cross-validation variance.</p>
 <a class="reference internal image-reference" href="../_images/elastic_net_grid_comparison.png"><img alt="../_images/elastic_net_grid_comparison.png" src="../_images/elastic_net_grid_comparison.png" style="width: 100%;" />
 </a>
 <figcaption>
-<p><span class="caption-number">Fig. 3 </span><span class="caption-text">Grid points on the 2-simplex for different values of the <code class="docutils literal notranslate"><span class="pre">base</span></code> parameter
+<p><span class="caption-number">Fig. 7 </span><span class="caption-text">Grid points on the 2-simplex for different values of the <code class="docutils literal notranslate"><span class="pre">base</span></code> parameter
 (<code class="docutils literal notranslate"><span class="pre">n_lambdas=20</span></code>, <code class="docutils literal notranslate"><span class="pre">n_alphas=10</span></code>).  Larger bases push more points towards the
 data-fidelity vertex <span class="math notranslate nohighlight">\((1, 0, 0)\)</span> (bottom-left corner in the figure),
 which is appropriate when you expect the optimal model to have small
@@ -235,7 +235,7 @@ which is appropriate when you expect the optimal model to have small
 <section id="usage">
 <h2>Usage<a class="headerlink" href="#usage" title="Link to this heading"></a></h2>
 <section id="as-a-python-function">
-<h3>As a Python function<a class="headerlink" href="#as-a-python-function" title="Link to this heading"></a></h3>
+<h3>As a Python Function<a class="headerlink" href="#as-a-python-function" title="Link to this heading"></a></h3>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">torch_bsf.model_selection.elastic_net_grid</span><span class="w"> </span><span class="kn">import</span> <span class="n">elastic_net_grid</span>
 
@@ -259,7 +259,7 @@ array or tensor and passed as the <code class="docutils literal notranslate"><sp
 over the elastic-net regularization map.</p>
 </section>
 <section id="as-a-python-module-cli">
-<h3>As a Python module (CLI)<a class="headerlink" href="#as-a-python-module-cli" title="Link to this heading"></a></h3>
+<h3>As a Python Module (CLI)<a class="headerlink" href="#as-a-python-module-cli" title="Link to this heading"></a></h3>
 <p>Run the module directly to print the grid as a CSV file to <em>stdout</em>:</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>python<span class="w"> </span>-m<span class="w"> </span>torch_bsf.model_selection.elastic_net_grid<span class="w"> </span><span class="se">\</span>
 <span class="w">    </span>--n_lambdas<span class="o">=</span><span class="m">102</span><span class="w"> </span><span class="se">\</span>
@@ -303,7 +303,7 @@ reference with parameter descriptions and examples.</p></li>
 generates log-spaced samples for the first weight component <span class="math notranslate nohighlight">\(w_1\)</span>, from
 which the <span class="math notranslate nohighlight">\(\lambda = (1 - w_1) / w_1\)</span> values are derived.</p></li>
 <li><p><a class="reference internal" href="auto_degree.html"><span class="doc">Automatic Degree Selection</span></a> – automatic degree selection via k-fold cross-validation.</p></li>
-<li><p><a class="reference internal" href="../applications/elastic_net.html"><span class="doc">Elastic net model selection</span></a> – end-to-end example of elastic-net model
+<li><p><a class="reference internal" href="../applications/elastic_net.html"><span class="doc">Elastic Net Model Selection</span></a> – end-to-end example of elastic-net model
 selection using PyTorch-BSF.</p></li>
 </ul>
 </div>

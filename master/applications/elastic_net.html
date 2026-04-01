@@ -6,7 +6,7 @@
   <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Elastic net model selection &mdash; PyTorch-BSF 0.16.0 documentation</title>
+  <title>Elastic Net Model Selection &mdash; PyTorch-BSF 0.16.0 documentation</title>
       <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=b86133f3" />
       <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=9edc463e" />
       <link rel="stylesheet" type="text/css" href="../_static/proof.css" />
@@ -21,7 +21,7 @@
     <script src="../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
-    <link rel="next" title="Robust portfolio management" href="portfolio.html" />
+    <link rel="next" title="Robust Portfolio Management" href="portfolio.html" />
     <link rel="prev" title="Applications" href="../applications.html" /> 
 </head>
 
@@ -46,11 +46,11 @@
         </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
               <p class="caption" role="heading"><span class="caption-text">User guide</span></p>
 <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../whatis.html">What is Bézier simplex fitting?</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../quickstart.html">Quickstart</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../advanced.html">Advanced Topics</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../whatis.html">What is Bézier simplex fitting?</a></li>
 <li class="toctree-l1 current"><a class="reference internal" href="../applications.html">Applications</a><ul class="current">
-<li class="toctree-l2 current"><a class="current reference internal" href="#">Elastic net model selection</a><ul>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">Elastic Net Model Selection</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="#unified-framework-for-sparse-modeling">Unified Framework for Sparse Modeling</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#elastic-net-formulation">Elastic Net Formulation</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#model-selection-on-the-regularization-map">Model Selection on the Regularization Map</a></li>
@@ -58,14 +58,14 @@
 <li class="toctree-l3"><a class="reference internal" href="#empirical-evaluation">Empirical Evaluation</a></li>
 </ul>
 </li>
-<li class="toctree-l2"><a class="reference internal" href="portfolio.html">Robust portfolio management</a></li>
-<li class="toctree-l2"><a class="reference internal" href="smart_grids.html">Distributed smart grids and energy operations</a></li>
-<li class="toctree-l2"><a class="reference internal" href="federated_learning.html">Multi-task and federated learning</a></li>
-<li class="toctree-l2"><a class="reference internal" href="model_predictive_control.html">Multi-objective model predictive control</a></li>
-<li class="toctree-l2"><a class="reference internal" href="communications.html">Communication systems and routing</a></li>
-<li class="toctree-l2"><a class="reference internal" href="supply_chain.html">Supply chain and logistics optimization</a></li>
-<li class="toctree-l2"><a class="reference internal" href="medical_imaging.html">Medical imaging and radiation therapy</a></li>
-<li class="toctree-l2"><a class="reference internal" href="facility_location.html">Facility location and continuous approximations</a></li>
+<li class="toctree-l2"><a class="reference internal" href="portfolio.html">Robust Portfolio Management</a></li>
+<li class="toctree-l2"><a class="reference internal" href="smart_grids.html">Distributed Smart Grids and Energy Operations</a></li>
+<li class="toctree-l2"><a class="reference internal" href="federated_learning.html">Multi-Task and Federated Learning</a></li>
+<li class="toctree-l2"><a class="reference internal" href="model_predictive_control.html">Multi-Objective Model Predictive Control</a></li>
+<li class="toctree-l2"><a class="reference internal" href="communications.html">Communication Systems and Routing</a></li>
+<li class="toctree-l2"><a class="reference internal" href="supply_chain.html">Supply Chain and Logistics Optimization</a></li>
+<li class="toctree-l2"><a class="reference internal" href="medical_imaging.html">Medical Imaging and Radiation Therapy</a></li>
+<li class="toctree-l2"><a class="reference internal" href="facility_location.html">Facility Location and Continuous Approximations</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="../faq.html">Frequently Asked Questions</a></li>
@@ -91,7 +91,7 @@
   <ul class="wy-breadcrumbs">
       <li><a href="../index.html" class="icon icon-home" aria-label="Home"></a></li>
           <li class="breadcrumb-item"><a href="../applications.html">Applications</a></li>
-      <li class="breadcrumb-item active">Elastic net model selection</li>
+      <li class="breadcrumb-item active">Elastic Net Model Selection</li>
       <li class="wy-breadcrumbs-aside">
             <a href="../_sources/applications/elastic_net.rst.txt" rel="nofollow"> View page source</a>
       </li>
@@ -102,7 +102,7 @@
            <div itemprop="articleBody">
              
   <section id="elastic-net-model-selection">
-<h1>Elastic net model selection<a class="headerlink" href="#elastic-net-model-selection" title="Link to this heading"></a></h1>
+<h1>Elastic Net Model Selection<a class="headerlink" href="#elastic-net-model-selection" title="Link to this heading"></a></h1>
 <p>A canonical and highly practical application of this theory is hyperparameter optimization for the <strong>Elastic Net</strong>. In machine learning and statistics, selecting the correct regularization parameters is critical to balancing data fidelity, model sparsity, and numerical stability.</p>
 <p>Traditional approaches rely on exhaustive grid searches or cross-validation over a discrete set of hyperparameter combinations <span class="math notranslate nohighlight">\((\alpha, \lambda)\)</span>. This process is computationally expensive. By formulating the hyperparameter tuning as a multi-objective optimization problem over a <strong>regularization map</strong> <span id="id1">[<a class="reference internal" href="../references.html#id18" title="Henri Bonnel and Corinne Schneider. Post-pareto analysis and a new algorithm for the optimal parameter tuning of the elastic net. Journal of Optimization Theory and Applications, 183(3):993–1027, 2019. doi:10.1007/s10957-019-01592-x.">BS19</a>]</span>, PyTorch-BSF allows for a continuous exploration of the model space, often reducing the computational cost by orders of magnitude (e.g., achieving speeds up to 2,000 times faster than exhaustive search for a 3-objective problem).</p>
 <section id="unified-framework-for-sparse-modeling">
@@ -284,7 +284,7 @@ w_3 &amp;= \frac{\lambda (1-\alpha)}{1 + \lambda}\end{split}\]</div>
           </div>
           <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
         <a href="../applications.html" class="btn btn-neutral float-left" title="Applications" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
-        <a href="portfolio.html" class="btn btn-neutral float-right" title="Robust portfolio management" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+        <a href="portfolio.html" class="btn btn-neutral float-right" title="Robust Portfolio Management" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
     </div>
 
   <hr/>

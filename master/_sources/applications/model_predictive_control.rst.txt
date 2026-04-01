@@ -1,4 +1,4 @@
-Multi-objective model predictive control
+Multi-Objective Model Predictive Control
 ========================================
 
 In industrial automation and robotics, Model Predictive Control (MPC) and Linear Quadratic Regulators (LQR) are foundational algorithms used to optimize future behavior in real-time. Operating chemical plant processes, for instance, requires rigorously balancing product quality tracking (setpoint proximity) against the suppression of abrupt heater and valve modifications (machinery wear). 

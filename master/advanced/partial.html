@@ -45,6 +45,7 @@
         </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
               <p class="caption" role="heading"><span class="caption-text">User guide</span></p>
 <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../whatis.html">What is Bézier simplex fitting?</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../quickstart.html">Quickstart</a></li>
 <li class="toctree-l1 current"><a class="reference internal" href="../advanced.html">Advanced Topics</a><ul class="current">
 <li class="toctree-l2"><a class="reference internal" href="normalization.html">Data Normalization</a></li>
@@ -60,7 +61,6 @@
 <li class="toctree-l2"><a class="reference internal" href="active_learning.html">Active Learning</a></li>
 </ul>
 </li>
-<li class="toctree-l1"><a class="reference internal" href="../whatis.html">What is Bézier simplex fitting?</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../applications.html">Applications</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../faq.html">Frequently Asked Questions</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../references.html">References</a></li>
@@ -97,7 +97,15 @@
              
   <section id="partial-training">
 <h1>Partial Training<a class="headerlink" href="#partial-training" title="Link to this heading"></a></h1>
-<p>The <code class="docutils literal notranslate"><span class="pre">fit()</span></code> function provides parameters for partial training, i.e., training some control points while the others are fixed.</p>
+<p>By default, <code class="docutils literal notranslate"><span class="pre">fit()</span></code> trains all control points of the Bézier simplex simultaneously. The <code class="docutils literal notranslate"><span class="pre">fix</span></code> argument lets you hold a subset of control points constant during training, so that only the remaining (free) control points are updated.</p>
+<p>This is useful when:</p>
+<ul class="simple">
+<li><p><strong>Boundary constraints are known</strong> — If single-objective optimizations have already determined the vertex solutions, you can fix those vertices and train only the interior and edge control points.</p></li>
+<li><p><strong>Incremental refinement</strong> — Fit a low-degree model first, reuse its control points as the initialization for a higher-degree model, and fix the already-accurate points to stabilize training.</p></li>
+<li><p><strong>Encoding prior knowledge</strong> — Pin control points whose values are theoretically or physically determined.</p></li>
+</ul>
+<p>The example below demonstrates how to fix the two vertices of a Bézier curve while training its interior control points.</p>
+<p>The <code class="docutils literal notranslate"><span class="pre">fix</span></code> argument takes a list of multi-index lists (e.g., <code class="docutils literal notranslate"><span class="pre">[[3,</span> <span class="pre">0],</span> <span class="pre">[0,</span> <span class="pre">3]]</span></code>). Any control point whose multi-index appears in <code class="docutils literal notranslate"><span class="pre">fix</span></code> is excluded from gradient updates.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">torch</span>
 <span class="kn">import</span><span class="w"> </span><span class="nn">torch_bsf</span>
 

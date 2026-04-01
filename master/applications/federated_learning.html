@@ -6,7 +6,7 @@
   <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Multi-task and federated learning &mdash; PyTorch-BSF 0.16.0 documentation</title>
+  <title>Multi-Task and Federated Learning &mdash; PyTorch-BSF 0.16.0 documentation</title>
       <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=b86133f3" />
       <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=9edc463e" />
       <link rel="stylesheet" type="text/css" href="../_static/proof.css" />
@@ -21,8 +21,8 @@
     <script src="../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
-    <link rel="next" title="Multi-objective model predictive control" href="model_predictive_control.html" />
-    <link rel="prev" title="Distributed smart grids and energy operations" href="smart_grids.html" /> 
+    <link rel="next" title="Multi-Objective Model Predictive Control" href="model_predictive_control.html" />
+    <link rel="prev" title="Distributed Smart Grids and Energy Operations" href="smart_grids.html" /> 
 </head>
 
 <body class="wy-body-for-nav"> 
@@ -46,19 +46,19 @@
         </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
               <p class="caption" role="heading"><span class="caption-text">User guide</span></p>
 <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../whatis.html">What is Bézier simplex fitting?</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../quickstart.html">Quickstart</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../advanced.html">Advanced Topics</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../whatis.html">What is Bézier simplex fitting?</a></li>
 <li class="toctree-l1 current"><a class="reference internal" href="../applications.html">Applications</a><ul class="current">
-<li class="toctree-l2"><a class="reference internal" href="elastic_net.html">Elastic net model selection</a></li>
-<li class="toctree-l2"><a class="reference internal" href="portfolio.html">Robust portfolio management</a></li>
-<li class="toctree-l2"><a class="reference internal" href="smart_grids.html">Distributed smart grids and energy operations</a></li>
-<li class="toctree-l2 current"><a class="current reference internal" href="#">Multi-task and federated learning</a></li>
-<li class="toctree-l2"><a class="reference internal" href="model_predictive_control.html">Multi-objective model predictive control</a></li>
-<li class="toctree-l2"><a class="reference internal" href="communications.html">Communication systems and routing</a></li>
-<li class="toctree-l2"><a class="reference internal" href="supply_chain.html">Supply chain and logistics optimization</a></li>
-<li class="toctree-l2"><a class="reference internal" href="medical_imaging.html">Medical imaging and radiation therapy</a></li>
-<li class="toctree-l2"><a class="reference internal" href="facility_location.html">Facility location and continuous approximations</a></li>
+<li class="toctree-l2"><a class="reference internal" href="elastic_net.html">Elastic Net Model Selection</a></li>
+<li class="toctree-l2"><a class="reference internal" href="portfolio.html">Robust Portfolio Management</a></li>
+<li class="toctree-l2"><a class="reference internal" href="smart_grids.html">Distributed Smart Grids and Energy Operations</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">Multi-Task and Federated Learning</a></li>
+<li class="toctree-l2"><a class="reference internal" href="model_predictive_control.html">Multi-Objective Model Predictive Control</a></li>
+<li class="toctree-l2"><a class="reference internal" href="communications.html">Communication Systems and Routing</a></li>
+<li class="toctree-l2"><a class="reference internal" href="supply_chain.html">Supply Chain and Logistics Optimization</a></li>
+<li class="toctree-l2"><a class="reference internal" href="medical_imaging.html">Medical Imaging and Radiation Therapy</a></li>
+<li class="toctree-l2"><a class="reference internal" href="facility_location.html">Facility Location and Continuous Approximations</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="../faq.html">Frequently Asked Questions</a></li>
@@ -84,7 +84,7 @@
   <ul class="wy-breadcrumbs">
       <li><a href="../index.html" class="icon icon-home" aria-label="Home"></a></li>
           <li class="breadcrumb-item"><a href="../applications.html">Applications</a></li>
-      <li class="breadcrumb-item active">Multi-task and federated learning</li>
+      <li class="breadcrumb-item active">Multi-Task and Federated Learning</li>
       <li class="wy-breadcrumbs-aside">
             <a href="../_sources/applications/federated_learning.rst.txt" rel="nofollow"> View page source</a>
       </li>
@@ -95,7 +95,7 @@
            <div itemprop="articleBody">
              
   <section id="multi-task-and-federated-learning">
-<h1>Multi-task and federated learning<a class="headerlink" href="#multi-task-and-federated-learning" title="Link to this heading"></a></h1>
+<h1>Multi-Task and Federated Learning<a class="headerlink" href="#multi-task-and-federated-learning" title="Link to this heading"></a></h1>
 <p>In modern machine learning, models are frequently tasked with balancing strictly competing performance indicators. In multi-task learning (MTL), a single shared neural representation must simultaneously optimize losses across different tasks, often leading to “gradient conflict” where improving one task substantially degrades another. This same underlying tension appears when training models with explicit fairness constraints, where the expected loss over different population subgroups forms a multi-objective optimization problem.</p>
 <p>Furthermore, this principle is critically important in Federated Learning (FL), such as the MOCHA framework, where massive data is distributed across edge devices and a global model must balance diverse local losses against consensus.</p>
 <p>By imposing strongly convex regularizations (e.g., Tikhonov/Ridge) on the model parameters alongside the local losses, the optimization formulations become naturally resolvable:</p>
@@ -112,8 +112,8 @@ f_m(\theta) &amp;= \mathcal{L}_m(\theta) + \lambda\|\theta\|^2\end{split}\]</div
            </div>
           </div>
           <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
-        <a href="smart_grids.html" class="btn btn-neutral float-left" title="Distributed smart grids and energy operations" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
-        <a href="model_predictive_control.html" class="btn btn-neutral float-right" title="Multi-objective model predictive control" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+        <a href="smart_grids.html" class="btn btn-neutral float-left" title="Distributed Smart Grids and Energy Operations" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="model_predictive_control.html" class="btn btn-neutral float-right" title="Multi-Objective Model Predictive Control" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
     </div>
 
   <hr/>

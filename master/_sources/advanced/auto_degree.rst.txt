@@ -33,7 +33,7 @@ The ``select_degree()`` function iterates through multiple degrees and evaluates
    # Use the best degree for final fitting
    bs = torch_bsf.fit(params=ts, values=xs, degree=best_d)
 
-How it Works
+How It Works
 ------------
 
 1.  **Iteration**: The tool trains Bézier simplices for degrees from ``min_degree`` to ``max_degree``.
