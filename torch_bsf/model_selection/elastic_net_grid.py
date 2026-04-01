@@ -68,9 +68,10 @@ def elastic_net_grid(
 ) -> np.ndarray:
     """Return an array of 3D grid points on the standard 2-simplex, which is suitable for grid search for elastic net's hyperparameters.
 
-    When ``n_lambdas >= 1``, the returned array always contains at least the data-fidelity
-    vertex ``[1, 0, 0]`` (plus any additional vertex copies).  When ``n_lambdas == 0``, an
-    empty ``(0, 3)`` array is returned.  Otherwise the shape is
+    The grid is structured as ``n_lambdas`` height levels (regularization-strength slices)
+    each containing ``n_alphas`` equally-spaced points along the alpha axis.  When either
+    ``n_lambdas == 0`` or ``n_alphas == 0`` (i.e. the product ``n_lambdas * n_alphas == 0``),
+    an empty ``(0, 3)`` array is returned.  Otherwise the shape is
     ``((n_lambdas - 1) * n_alphas + 3 * n_vertex_copies - 2, 3)``.
     The first column (``w_1``) values are log-spaced: :func:`reverse_logspace` generates
     ``n_lambdas - 1`` values of ``w_1`` in ``[0, 1)`` and the vertex ``w_1 = 1`` is appended separately.
@@ -106,7 +107,8 @@ def elastic_net_grid(
     Returns
     -------
     samples : ndarray
-        ``(n_lambdas - 1) * n_alphas + 3 * n_vertex_copies - 2`` samples.
+        An empty ``(0, 3)`` array when ``n_lambdas == 0`` or ``n_alphas == 0``;
+        otherwise an array of shape ``((n_lambdas - 1) * n_alphas + 3 * n_vertex_copies - 2, 3)``.
 
     Examples
     --------
