@@ -193,9 +193,10 @@ def test_simplex_sobol_power_of_two_no_warning():
 @_scipy_skip
 @pytest.mark.parametrize("n_samples", [3, 5, 100, 200])
 def test_simplex_sobol_non_power_of_two_warns(n_samples):
-    """Non-power-of-2 sample sizes should emit a UserWarning."""
-    with pytest.warns(UserWarning, match="not a power of 2"):
+    """Non-power-of-2 sample sizes should emit exactly one UserWarning."""
+    with pytest.warns(UserWarning, match="not a power of 2") as w:
         result = simplex_sobol(3, n_samples)
+    assert len(w) == 1, f"Expected exactly 1 UserWarning, got {len(w)}: {w}"
     # Result is still valid despite the warning.
     assert result.shape == (n_samples, 3)
     assert torch.allclose(result.sum(dim=1), torch.ones(n_samples), atol=1e-5)

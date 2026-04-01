@@ -175,10 +175,8 @@ def simplex_sobol(n_params: int, n_samples: int) -> torch.Tensor:
     with warnings.catch_warnings():
         warnings.filterwarnings(
             "ignore",
-            # Use a regex that matches even if SciPy adds a prefix, and restrict to Sobol's module.
             message=r".*balance properties of Sobol",
             category=UserWarning,
-            module=r"scipy\.stats\._?qmc",
         )
         sampler = qmc.Sobol(d=n_params - 1, scramble=True)
         q = sampler.random(n=n_samples)
