@@ -152,7 +152,17 @@ def test_fit_kfold():
     xs = 1 - ts * ts  # values corresponding to the parameters
 
     # Normal case: returns n_folds models
-    models = tb.fit_kfold(params=ts, values=xs, n_folds=5, degree=3)
+    models = tb.fit_kfold(
+        params=ts,
+        values=xs,
+        n_folds=5,
+        degree=3,
+        trainer_kwargs=dict(
+            max_epochs=1,
+            enable_progress_bar=False,
+            logger=False,
+        ),
+    )
     assert len(models) == 5
     for m in models:
         assert isinstance(m, tb.BezierSimplex)
