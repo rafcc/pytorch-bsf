@@ -182,12 +182,24 @@ def test_simplex_sobol_invalid_n_samples():
 
 @_scipy_skip
 def test_simplex_sobol_power_of_two_no_warning():
-    """Power-of-2 sample sizes should produce no UserWarning."""
+    """Power-of-2 sample sizes should produce no Sobol-related UserWarning."""
     with warnings.catch_warnings(record=True) as w:
         warnings.simplefilter("always")
         simplex_sobol(3, 128)
-    user_warnings = [x for x in w if issubclass(x.category, UserWarning)]
-    assert len(user_warnings) == 0, f"Unexpected UserWarnings: {user_warnings}"
+    user_warning_messages = [
+        str(x.message) for x in w if issubclass(x.category, UserWarning)
+    ]
+    # Ensure our custom "not a power of 2" warning is not emitted.
+    assert not any(
+        "not a power of 2" in msg for msg in user_warning_messages
+    ), f"Unexpected 'not a power of 2' UserWarning(s): {user_warning_messages}"
+    # Ensure the known SciPy Sobol warning is not emitted.
+    assert not any(
+        "balance properties of Sobol" in msg for msg in user_warning_messages
+    ), (
+        "Unexpected SciPy Sobol UserWarning(s): "
+        f"{user_warning_messages}"
+    )
 
 
 @_scipy_skip

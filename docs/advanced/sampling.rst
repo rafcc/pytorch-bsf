@@ -134,8 +134,8 @@ In practice this means:
 
 **Scrambled Sobol**
 
-``simplex_sobol`` always uses ``scramble=True`` (the scipy default for
-:class:`~scipy.stats.qmc.Sobol`).  Scrambling applies a random digital shift
+``simplex_sobol`` always uses ``scramble=True`` when constructing
+:class:`~scipy.stats.qmc.Sobol`.  Scrambling applies a random digital shift
 to the sequence so that:
 
 1. The resulting points are *still* low-discrepancy (coverage is preserved).
