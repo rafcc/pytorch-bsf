@@ -139,3 +139,54 @@ def select_degree(
                 break
                 
     return best_degree
+
+
+if __name__ == "__main__":
+    from argparse import ArgumentParser
+    from pathlib import Path
+
+    import numpy as np
+
+    parser = ArgumentParser(
+        prog="python -m torch_bsf.model_selection.degree_selection",
+        description="Automatic degree selection for Bezier simplex via k-fold cross-validation",
+    )
+    parser.add_argument("--params", type=Path, required=True, help="Path to the input parameters CSV file")
+    parser.add_argument("--values", type=Path, required=True, help="Path to the output values CSV file")
+    parser.add_argument("--header", type=int, default=0, help="Number of header rows to skip (default: 0)")
+    parser.add_argument("--min_degree", type=int, default=1, help="Minimum degree to search (default: 1)")
+    parser.add_argument("--max_degree", type=int, default=5, help="Maximum degree to search (default: 5)")
+    parser.add_argument("--num_folds", type=int, default=5, help="Number of cross-validation folds (default: 5)")
+    parser.add_argument("--batch_size", type=int, default=None, help="Batch size for training (default: full-batch)")
+    parser.add_argument("--max_epochs", type=int, default=2, help="Training epochs per fold (default: 2)")
+    parser.add_argument("--accelerator", type=str, default="auto", help="Accelerator type (default: auto)")
+    parser.add_argument("--devices", type=str, default="auto", help="Devices to use (default: auto)")
+    args = parser.parse_args()
+
+    def _load_csv(path: Path, header: int) -> torch.Tensor:
+        delimiter = "," if path.suffix == ".csv" else None
+        return torch.from_numpy(
+            np.loadtxt(path, delimiter=delimiter, skiprows=header, ndmin=2)
+        ).to(torch.get_default_dtype())
+
+    params_tensor = _load_csv(args.params, args.header)
+    values_tensor = _load_csv(args.values, args.header)
+
+    trainer_kwargs: dict = {
+        "max_epochs": args.max_epochs,
+        "accelerator": args.accelerator,
+        "devices": args.devices,
+    }
+    if args.batch_size is not None:
+        trainer_kwargs["batch_size"] = args.batch_size
+
+    best_degree = select_degree(
+        params=params_tensor,
+        values=values_tensor,
+        min_degree=args.min_degree,
+        max_degree=args.max_degree,
+        num_folds=args.num_folds,
+        **trainer_kwargs,
+    )
+
+    print(f"Best degree: {best_degree}")
