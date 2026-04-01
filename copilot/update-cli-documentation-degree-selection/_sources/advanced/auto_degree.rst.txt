@@ -88,8 +88,8 @@ defaults (``--min_degree 1``, ``--max_degree 5``, ``--num_folds 5``,
 Example Output
 ~~~~~~~~~~~~~~
 
-After training, the command prints progress via Python's logging system and then
-writes the selected degree to *stdout*:
+With the default ``--loglevel INFO``, the command prints per-degree progress to
+*stderr* and writes the selected degree to *stdout*:
 
 .. code-block:: text
 
@@ -102,17 +102,8 @@ writes the selected degree to *stdout*:
    INFO:torch_bsf.model_selection.degree_selection:MSE increased at degree 3, stopping.
    Best degree: 2
 
-The final line ``Best degree: <N>`` is the only output written to *stdout*; all log
-messages go to *stderr* via the logging system.  To enable log output, configure
-logging in a wrapper script before invoking ``select_degree`` directly:
-
-.. code-block:: python
-
-   import logging
-   logging.basicConfig(level=logging.INFO)
-
-   from torch_bsf.model_selection.degree_selection import select_degree
-   # …
+The final line ``Best degree: <N>`` is the only output written to *stdout*.
+Pass ``--loglevel WARNING`` to suppress the per-degree progress messages.
 
 Available Options
 ~~~~~~~~~~~~~~~~~
@@ -132,6 +123,7 @@ Run with ``--help`` to see all available options:
                                                                 [--max_epochs MAX_EPOCHS]
                                                                 [--accelerator ACCELERATOR]
                                                                 [--devices DEVICES]
+                                                                [--loglevel {DEBUG,INFO,WARNING,ERROR,CRITICAL}]
 
    Automatic degree selection for Bezier simplex via k-fold cross-validation
 
@@ -152,7 +144,10 @@ Run with ``--help`` to see all available options:
                            Training epochs per fold (default: 2)
      --accelerator ACCELERATOR
                            Accelerator type (default: auto)
-     --devices DEVICES     Devices to use (default: auto)
+     --devices DEVICES     Devices to use, integer or 'auto' (default: auto)
+     --loglevel {DEBUG,INFO,WARNING,ERROR,CRITICAL}
+                           Python logging level for degree selection progress
+                           (default: INFO)
 
 Via MLproject
 ~~~~~~~~~~~~~
@@ -168,9 +163,15 @@ The ``degree_selection`` entry point in ``MLproject`` calls the same module:
        -P min_degree=1 \
        -P max_degree=5 \
        -P num_folds=5 \
-       -P max_epochs=2
+       -P max_epochs=2 \
+       -P accelerator=auto \
+       -P devices=auto
 
 The best degree is printed to the run's stdout and can be reviewed in the MLflow UI.
+The ``header``, ``accelerator``, and ``devices`` parameters are also exposed and
+default to ``0``, ``"auto"``, and ``"auto"`` respectively.  The ``batch_size`` option
+is not exposed through the MLproject entry point; the default full-batch loading is
+used for all MLflow runs.
 
 .. seealso::
 

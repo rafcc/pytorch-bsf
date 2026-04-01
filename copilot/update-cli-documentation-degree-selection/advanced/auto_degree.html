@@ -189,8 +189,8 @@ defaults (<code class="docutils literal notranslate"><span class="pre">--min_deg
 </section>
 <section id="example-output">
 <h3>Example Output<a class="headerlink" href="#example-output" title="Link to this heading"></a></h3>
-<p>After training, the command prints progress via Python’s logging system and then
-writes the selected degree to <em>stdout</em>:</p>
+<p>With the default <code class="docutils literal notranslate"><span class="pre">--loglevel</span> <span class="pre">INFO</span></code>, the command prints per-degree progress to
+<em>stderr</em> and writes the selected degree to <em>stdout</em>:</p>
 <div class="highlight-text notranslate"><div class="highlight"><pre><span></span>INFO:torch_bsf.model_selection.degree_selection:Checking degree 1...
 INFO:torch_bsf.model_selection.degree_selection:Degree 1: Mean MSE = 0.012345
 INFO:torch_bsf.model_selection.degree_selection:Checking degree 2...
@@ -201,16 +201,8 @@ INFO:torch_bsf.model_selection.degree_selection:MSE increased at degree 3, stopp
 Best degree: 2
 </pre></div>
 </div>
-<p>The final line <code class="docutils literal notranslate"><span class="pre">Best</span> <span class="pre">degree:</span> <span class="pre">&lt;N&gt;</span></code> is the only output written to <em>stdout</em>; all log
-messages go to <em>stderr</em> via the logging system.  To enable log output, configure
-logging in a wrapper script before invoking <code class="docutils literal notranslate"><span class="pre">select_degree</span></code> directly:</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">logging</span>
-<span class="n">logging</span><span class="o">.</span><span class="n">basicConfig</span><span class="p">(</span><span class="n">level</span><span class="o">=</span><span class="n">logging</span><span class="o">.</span><span class="n">INFO</span><span class="p">)</span>
-
-<span class="kn">from</span><span class="w"> </span><span class="nn">torch_bsf.model_selection.degree_selection</span><span class="w"> </span><span class="kn">import</span> <span class="n">select_degree</span>
-<span class="c1"># …</span>
-</pre></div>
-</div>
+<p>The final line <code class="docutils literal notranslate"><span class="pre">Best</span> <span class="pre">degree:</span> <span class="pre">&lt;N&gt;</span></code> is the only output written to <em>stdout</em>.
+Pass <code class="docutils literal notranslate"><span class="pre">--loglevel</span> <span class="pre">WARNING</span></code> to suppress the per-degree progress messages.</p>
 </section>
 <section id="available-options">
 <h3>Available Options<a class="headerlink" href="#available-options" title="Link to this heading"></a></h3>
@@ -226,6 +218,7 @@ logging in a wrapper script before invoking <code class="docutils literal notran
                                                              [--max_epochs MAX_EPOCHS]
                                                              [--accelerator ACCELERATOR]
                                                              [--devices DEVICES]
+                                                             [--loglevel {DEBUG,INFO,WARNING,ERROR,CRITICAL}]
 
 Automatic degree selection for Bezier simplex via k-fold cross-validation
 
@@ -246,7 +239,10 @@ options:
                         Training epochs per fold (default: 2)
   --accelerator ACCELERATOR
                         Accelerator type (default: auto)
-  --devices DEVICES     Devices to use (default: auto)
+  --devices DEVICES     Devices to use, integer or &#39;auto&#39; (default: auto)
+  --loglevel {DEBUG,INFO,WARNING,ERROR,CRITICAL}
+                        Python logging level for degree selection progress
+                        (default: INFO)
 </pre></div>
 </div>
 </section>
@@ -260,10 +256,16 @@ options:
 <span class="w">    </span>-P<span class="w"> </span><span class="nv">min_degree</span><span class="o">=</span><span class="m">1</span><span class="w"> </span><span class="se">\</span>
 <span class="w">    </span>-P<span class="w"> </span><span class="nv">max_degree</span><span class="o">=</span><span class="m">5</span><span class="w"> </span><span class="se">\</span>
 <span class="w">    </span>-P<span class="w"> </span><span class="nv">num_folds</span><span class="o">=</span><span class="m">5</span><span class="w"> </span><span class="se">\</span>
-<span class="w">    </span>-P<span class="w"> </span><span class="nv">max_epochs</span><span class="o">=</span><span class="m">2</span>
+<span class="w">    </span>-P<span class="w"> </span><span class="nv">max_epochs</span><span class="o">=</span><span class="m">2</span><span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>-P<span class="w"> </span><span class="nv">accelerator</span><span class="o">=</span>auto<span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>-P<span class="w"> </span><span class="nv">devices</span><span class="o">=</span>auto
 </pre></div>
 </div>
-<p>The best degree is printed to the run’s stdout and can be reviewed in the MLflow UI.</p>
+<p>The best degree is printed to the run’s stdout and can be reviewed in the MLflow UI.
+The <code class="docutils literal notranslate"><span class="pre">header</span></code>, <code class="docutils literal notranslate"><span class="pre">accelerator</span></code>, and <code class="docutils literal notranslate"><span class="pre">devices</span></code> parameters are also exposed and
+default to <code class="docutils literal notranslate"><span class="pre">0</span></code>, <code class="docutils literal notranslate"><span class="pre">&quot;auto&quot;</span></code>, and <code class="docutils literal notranslate"><span class="pre">&quot;auto&quot;</span></code> respectively.  The <code class="docutils literal notranslate"><span class="pre">batch_size</span></code> option
+is not exposed through the MLproject entry point; the default full-batch loading is
+used for all MLflow runs.</p>
 <div class="admonition seealso">
 <p class="admonition-title">See also</p>
 <ul class="simple">
