@@ -38,20 +38,12 @@ This method trains an *ensemble* (committee) of models and suggests points where
 
    # Build a 5-fold ensemble: each model is trained on 4/5 of the data,
    # leaving out a different fold, so the committee members genuinely differ.
-   K = 5
-   perm = torch.randperm(len(params_train))
-   folds = torch.chunk(perm, K)  # K roughly equal index groups
-
-   models = []
-   for k in range(K):
-       train_idx = torch.cat([folds[i] for i in range(K) if i != k])
-       models.append(
-           torch_bsf.fit(
-               params=params_train[train_idx],
-               values=values_train[train_idx],
-               degree=3,
-           )
-       )
+   models = torch_bsf.fit_kfold(
+       params=params_train,
+       values=values_train,
+       n_folds=5,
+       degree=3,
+   )
 
    # Suggest the 3 most uncertain points
    suggestions = suggest_next_points(models, n_suggestions=3, method="qbc")
@@ -168,27 +160,19 @@ The following self-contained example illustrates the full workflow: starting fro
    # ── 2. Active learning loop ────────────────────────────────────────────────
    N_ROUNDS = 5          # number of active learning iterations
    N_SUGGESTIONS = 3     # new points per round
-   N_ENSEMBLE = 5        # committee size for QBC (upper bound; actual folds
-                         # per round are limited by the current dataset size)
+   N_ENSEMBLE = 5        # committee size for QBC
    N_CANDIDATES = 2000   # search resolution
 
    for round_idx in range(N_ROUNDS):
-       # Build an ensemble via k-fold-style splits. The actual number of folds
-       # cannot exceed the current dataset size to avoid empty folds.
-       n_folds = min(N_ENSEMBLE, len(params))
-       perm = torch.randperm(len(params))
-       folds = torch.chunk(perm, n_folds)
-       ensemble = []
-       for k in range(n_folds):
-           train_idx = torch.cat([folds[i] for i in range(n_folds) if i != k])
-           ensemble.append(
-               torch_bsf.fit(
-                   params=params[train_idx],
-                   values=values[train_idx],
-                   degree=3,
-                   max_epochs=300,
-               )
-           )
+       # Build a k-fold ensemble; fit_kfold caps folds to len(params)
+       # automatically so there are never empty training subsets.
+       ensemble = torch_bsf.fit_kfold(
+           params=params,
+           values=values,
+           n_folds=N_ENSEMBLE,
+           degree=3,
+           max_epochs=300,
+       )
 
        # Suggest the N_SUGGESTIONS most uncertain points using QBC
        next_params = suggest_next_points(
@@ -218,19 +202,12 @@ Start with ``method="density"`` for the first 1–2 rounds to ensure broad simpl
 .. code-block:: python
 
    for round_idx in range(N_ROUNDS):
-       perm = torch.randperm(len(params))
-       n_folds = min(N_ENSEMBLE, len(params))
-       folds = torch.chunk(perm, n_folds)
-       ensemble = []
-       for k in range(n_folds):
-           train_idx = torch.cat([folds[i] for i in range(n_folds) if i != k])
-           ensemble.append(
-               torch_bsf.fit(
-                   params=params[train_idx],
-                   values=values[train_idx],
-                   degree=3,
-               )
-           )
+       ensemble = torch_bsf.fit_kfold(
+           params=params,
+           values=values,
+           n_folds=N_ENSEMBLE,
+           degree=3,
+       )
 
        # Use density for initial coverage, QBC once data is sufficient
        if round_idx < 2:
@@ -257,3 +234,5 @@ API Reference
 -------------
 
 See :func:`torch_bsf.active_learning.suggest_next_points` in the `API Documentation <../modules.html#torch_bsf.active_learning.suggest_next_points>`_ for the full parameter reference.
+
+See :func:`torch_bsf.fit_kfold` for the k-fold ensemble builder used in QBC examples above.

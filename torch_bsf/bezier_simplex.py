@@ -1091,3 +1091,116 @@ def fit(
     trainer = L.Trainer(**kwargs)
     trainer.fit(bs, dl)
     return bs
+
+
+def fit_kfold(
+    params: torch.Tensor,
+    values: torch.Tensor,
+    n_folds: int = 5,
+    degree: int | None = None,
+    init: BezierSimplex | ControlPoints | ControlPointsData | None = None,
+    smoothness_weight: float = 0.0,
+    fix: Iterable[Index] | None = None,
+    batch_size: int | None = None,
+    seed: int | None = None,
+    **kwargs,
+) -> list[BezierSimplex]:
+    r"""Fits an ensemble of Bezier simplices using k-fold cross-validation.
+
+    Splits the training data into ``n_folds`` folds and trains one model per
+    fold on the data from the remaining ``n_folds - 1`` folds.  The resulting
+    list of models can be passed directly to
+    :func:`torch_bsf.active_learning.suggest_next_points` to drive a
+    Query-By-Committee active learning loop.
+
+    If ``len(params) < n_folds``, the actual number of folds is capped at
+    ``len(params)`` to avoid empty training subsets.
+
+    Parameters
+    ----------
+    params
+        The parameter data on the simplex.
+    values
+        The label data.
+    n_folds
+        The number of cross-validation folds (committee size).  Defaults to 5.
+    degree
+        The degree of the Bezier simplex.
+    init
+        The initial values of a Bezier simplex or control points.
+    smoothness_weight
+        The weight of the smoothness penalty.
+    fix
+        The indices of control points to exclude from training.
+    batch_size
+        The size of a minibatch.
+    seed
+        Optional integer seed for the fold permutation.  When provided, the
+        same ``seed`` produces identical fold splits across runs, which is
+        useful for reproducible experiments.  Defaults to ``None`` (random).
+    kwargs
+        All arguments forwarded to :class:`lightning.pytorch.Trainer`.
+
+    Returns
+    -------
+    list[BezierSimplex]
+        A list of ``min(n_folds, len(params))`` trained models, one per fold.
+
+    Raises
+    ------
+    ValueError
+        If ``n_folds < 2``, or if neither / both of ``degree`` and ``init``
+        are provided.
+
+    Examples
+    --------
+    >>> import torch
+    >>> import torch_bsf
+    >>> from torch_bsf.active_learning import suggest_next_points
+    >>> from torch_bsf.sampling import simplex_grid
+
+    Prepare training data
+
+    >>> params = simplex_grid(n_params=3, degree=3)
+    >>> values = params.pow(2).sum(dim=1, keepdim=True)
+
+    Build a 5-fold ensemble and suggest the 2 most uncertain points
+
+    >>> models = torch_bsf.fit_kfold(params=params, values=values, degree=3)
+    >>> suggestions = suggest_next_points(models, n_suggestions=2, method="qbc")
+    >>> suggestions.shape
+    torch.Size([2, 3])
+
+    See Also
+    --------
+    fit : Fit a single Bezier simplex.
+    torch_bsf.active_learning.suggest_next_points : Use the ensemble for
+        active learning.
+    """
+    if n_folds < 2:
+        raise ValueError(f"n_folds must be at least 2, got {n_folds}")
+
+    n = len(params)
+    actual_folds = min(n_folds, n)
+
+    generator = torch.Generator().manual_seed(seed) if seed is not None else None
+    perm = torch.randperm(n, generator=generator)
+    fold_indices = torch.chunk(perm, actual_folds)
+
+    models: list[BezierSimplex] = []
+    for k in range(actual_folds):
+        train_idx = torch.cat([fold_indices[i] for i in range(actual_folds) if i != k])
+        models.append(
+            fit(
+                params=params[train_idx],
+                values=values[train_idx],
+                degree=degree,
+                init=init,
+                smoothness_weight=smoothness_weight,
+                fix=fix,
+                batch_size=batch_size,
+                **kwargs,
+            )
+        )
+
+    return models

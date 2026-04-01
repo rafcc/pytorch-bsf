@@ -134,6 +134,42 @@ def test_fit():
     print(f"{t} -> {x}")
 
 
+def test_fit_kfold():
+    ts = torch.tensor(  # parameters on a simplex
+        [
+            [3 / 3, 0 / 3, 0 / 3],
+            [2 / 3, 1 / 3, 0 / 3],
+            [2 / 3, 0 / 3, 1 / 3],
+            [1 / 3, 2 / 3, 0 / 3],
+            [1 / 3, 1 / 3, 1 / 3],
+            [1 / 3, 0 / 3, 2 / 3],
+            [0 / 3, 3 / 3, 0 / 3],
+            [0 / 3, 2 / 3, 1 / 3],
+            [0 / 3, 1 / 3, 2 / 3],
+            [0 / 3, 0 / 3, 3 / 3],
+        ]
+    )
+    xs = 1 - ts * ts  # values corresponding to the parameters
+
+    # Normal case: returns n_folds models
+    models = tb.fit_kfold(params=ts, values=xs, n_folds=5, degree=3)
+    assert len(models) == 5
+    for m in models:
+        assert isinstance(m, tb.BezierSimplex)
+        assert m.n_params == 3
+        assert m.n_values == 3
+
+    # Edge case: n_folds > len(params) — capped automatically
+    few_ts = ts[:3]
+    few_xs = xs[:3]
+    models_capped = tb.fit_kfold(params=few_ts, values=few_xs, n_folds=10, degree=1)
+    assert len(models_capped) == 3  # capped to len(params)
+
+    # Invalid n_folds
+    with pytest.raises(ValueError):
+        tb.fit_kfold(params=ts, values=xs, n_folds=1, degree=3)
+
+
 @pytest.mark.parametrize(
     "init_type",
     ("instance", "rand", "file"),
