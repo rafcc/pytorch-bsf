@@ -68,7 +68,7 @@ def elastic_net_grid(
 ) -> np.ndarray:
     """Return an array of 3D grid points on the standard 2-simplex, which is suitable for grid search for elastic net's hyperparameters.
 
-    The returned array is of shape ``((n_lambdas - 1) * n_alphas + 3 * n_copy_vertices - 2, 3)``.
+    The returned array is of shape ``((n_lambdas - 1) * n_alphas + 3 * n_vertex_copies - 2, 3)``.
     The first column values are spaced evenly on a log scale.
     The second and third column values are spaced evenly over a specified interval.
 
@@ -82,9 +82,9 @@ def elastic_net_grid(
         Number of samples to generate along `alpha` axis.
         The values are equally spaced.
         Default is ``12``. Must be non-negative.
-    n_copy_vertices : int, optional
+    n_vertex_copies : int, optional
         Number of duplicated samples to generate vertices.
-        Each vertices is sampled ``n_copy_vertices`` times.
+        Each vertex is sampled ``n_vertex_copies`` times.
         Default is ``1``. Must be non-negative.
         Useful for k-fold cross validation.
     base : float, optional
@@ -95,7 +95,7 @@ def elastic_net_grid(
     Returns
     -------
     samples : ndarray
-        ``(n_lambdas - 1) * n_alphas + 3 * n_copy_vertices - 2`` samples.
+        ``(n_lambdas - 1) * n_alphas + 3 * n_vertex_copies - 2`` samples.
 
     Examples
     --------
