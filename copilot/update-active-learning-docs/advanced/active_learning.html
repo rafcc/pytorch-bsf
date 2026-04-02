@@ -120,7 +120,7 @@
 <p>This method trains an <em>ensemble</em> (committee) of models and suggests points where the models disagree most—i.e., where the prediction variance across the ensemble is highest.</p>
 <p><strong>When to use QBC:</strong></p>
 <ul class="simple">
-<li><p>You already perform k-fold cross-validation as part of your training pipeline (reuse the k fold models at no extra cost).</p></li>
+<li><p>You already perform k-fold cross-validation as part of your training pipeline (reuse the k-fold models at no extra cost).</p></li>
 <li><p>You suspect the manifold has steep or irregular regions that a single model might miss.</p></li>
 <li><p>You want <em>uncertainty-driven</em> exploration: focus new samples where the current fit is least confident.</p></li>
 </ul>
@@ -167,7 +167,7 @@
 <p><strong>Practical tips:</strong></p>
 <ul class="simple">
 <li><p>Pass the full history of sampled parameters as <code class="docutils literal notranslate"><span class="pre">params</span></code> so the strategy avoids revisiting already-covered areas.</p></li>
-<li><p>Density sampling is deterministic given the same random seed for candidate generation; QBC results vary with the model ensemble.</p></li>
+<li><p>Density sampling is deterministic when you reuse the same random seed in the RNG used for candidate generation (currently NumPy’s RNG, so you must seed <code class="docutils literal notranslate"><span class="pre">numpy.random</span></code> in addition to any PyTorch seeds); QBC results also vary with how your ensemble is trained.</p></li>
 <li><p>Switch from density to QBC once you have enough data to train a reliable ensemble (typically after 2–3 initial rounds).</p></li>
 </ul>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">torch</span>
