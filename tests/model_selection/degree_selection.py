@@ -1,5 +1,6 @@
 import subprocess
 import sys
+import pytest
 import torch
 from pathlib import Path
 from unittest.mock import MagicMock, patch
@@ -340,4 +341,16 @@ class TestSelectDegreePatience:
             )
         # All 4 degrees (1..4) should have been evaluated
         assert call_count == 4
+
+    def test_patience_zero_raises(self):
+        """patience=0 is invalid and should raise ValueError."""
+        params, values = _make_simplex_data()
+        with pytest.raises(ValueError, match="patience"):
+            select_degree(params, values, patience=0)
+
+    def test_patience_negative_raises(self):
+        """Negative patience is invalid and should raise ValueError."""
+        params, values = _make_simplex_data()
+        with pytest.raises(ValueError, match="patience"):
+            select_degree(params, values, patience=-1)
 

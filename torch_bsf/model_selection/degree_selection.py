@@ -71,6 +71,11 @@ def select_degree(
     int
         The best degree found.
     """
+    if patience < 1:
+        raise ValueError(
+            f"patience must be a positive integer (>= 1), got {patience!r}."
+        )
+
     from torch_bsf.bezier_simplex import _KFoldTrainer, randn
 
     # Build the dataset once – it doesn't change across degree iterations.
