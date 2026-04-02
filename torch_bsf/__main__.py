@@ -101,11 +101,6 @@ parser.add_argument(
 
 args = parser.parse_args()
 
-if args.degree is None and args.init is None:
-    raise ValueError("Either --degree or --init must be specified")
-if args.degree is not None and args.init is not None:
-    raise ValueError("Either --degree or --init must be specified, not both")
-
 meshgrid: Path = args.params if (args.meshgrid is None or args.meshgrid.is_dir()) else args.meshgrid
 
 autolog(
