@@ -44,7 +44,7 @@ def simplex_grid(n_params: int, degree: int) -> torch.Tensor:
     return diffs.float() / degree
 
 
-def simplex_random(n_params: int, n_samples: int) -> torch.Tensor:
+def simplex_random(n_params: int, n_samples: int, seed: int | None = None) -> torch.Tensor:
     """Generates random points on a simplex using Dirichlet distribution.
 
     Parameters
@@ -53,6 +53,11 @@ def simplex_random(n_params: int, n_samples: int) -> torch.Tensor:
         The number of parameters (vertices of the simplex).
     n_samples : int
         The number of samples.
+    seed : int or None, optional
+        Random seed for reproducibility.  When provided, a new
+        :class:`numpy.random.Generator` is created with this seed so the
+        global NumPy random state is not affected.  When ``None`` (default),
+        the global :mod:`numpy.random` state is used.
 
     Returns
     -------
@@ -75,11 +80,15 @@ def simplex_random(n_params: int, n_samples: int) -> torch.Tensor:
 
     # Sample from Dirichlet distribution with concentration = ones
     # (Uniform distribution over the simplex)
-    samples = np.random.dirichlet([1.0] * n_params, n_samples)
+    if seed is not None:
+        rng = np.random.default_rng(seed)
+        samples = rng.dirichlet([1.0] * n_params, n_samples)
+    else:
+        samples = np.random.dirichlet([1.0] * n_params, n_samples)
     return torch.from_numpy(samples).float()
 
 
-def simplex_sobol(n_params: int, n_samples: int) -> torch.Tensor:
+def simplex_sobol(n_params: int, n_samples: int, seed: int | None = None) -> torch.Tensor:
     """Generates quasi-random points on a simplex using Sobol sequence.
 
     Uses a scrambled Sobol sequence projected onto the simplex via the
@@ -113,6 +122,11 @@ def simplex_sobol(n_params: int, n_samples: int) -> torch.Tensor:
     n_samples : int
         The number of samples.  For best coverage, use a power of 2
         (e.g. 64, 128, 256).
+    seed : int or None, optional
+        Random seed for the scrambled Sobol sequence, passed directly to
+        :class:`scipy.stats.qmc.Sobol` as its ``seed`` argument.  When
+        ``None`` (default), a random scramble is used on each call.
+        Pass an integer for reproducible sequences.
 
     Returns
     -------
@@ -186,7 +200,7 @@ def simplex_sobol(n_params: int, n_samples: int) -> torch.Tensor:
             message=r".*balance properties of Sobol.*",
             category=UserWarning,
         )
-        sampler = qmc.Sobol(d=n_params - 1, scramble=True)
+        sampler = qmc.Sobol(d=n_params - 1, scramble=True, seed=seed)
         q = sampler.random(n=n_samples)
 
     # Project Sobol samples to the simplex via the uniform sorted-differences mapping:
@@ -200,5 +214,3 @@ def simplex_sobol(n_params: int, n_samples: int) -> torch.Tensor:
     diffs = np.diff(q, axis=1)
 
     return torch.from_numpy(diffs).float()
-
-

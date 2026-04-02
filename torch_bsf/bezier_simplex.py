@@ -15,6 +15,7 @@ import torch.nn as nn
 import torch.optim
 import yaml
 from jsonschema import ValidationError, validate
+from pl_crossvalidate import KFoldTrainer
 from torch.nn import functional as F
 from torch.utils.data import DataLoader, Subset, TensorDataset, random_split
 
@@ -25,10 +26,37 @@ from torch_bsf.control_points import (
     simplex_indices,
     to_parameterdict_key,
 )
-from torch_bsf.preprocessing import MinMaxScaler, NoneScaler, QuantileScaler, StdScaler
+from torch_bsf.preprocessing import MinMaxScaler, NoneScaler, QuantileScaler, Scaler, StdScaler
 from torch_bsf.validator import validate_simplex_indices
 
 NormalizeType = Literal["max", "std", "quantile", "none"]
+
+
+class _KFoldTrainer(KFoldTrainer):
+    """Compatibility shim: pl_crossvalidate <=0.1.0 crashes in __init__ when
+    ``logger=False`` because it unconditionally accesses ``self.logger.version``
+    after ``super().__init__()``.  Catch that specific AttributeError and set
+    ``_version`` to ``None`` so the rest of the cross-validation logic works.
+    """
+
+    def __init__(self, *args, **kwargs):
+        try:
+            super().__init__(*args, **kwargs)
+        except AttributeError as e:
+            # In pl_crossvalidate <=0.1.0, __init__ crashes when logger=False
+            # because it unconditionally accesses self.logger.version after
+            # calling super().__init__().  Only suppress the error when that
+            # exact condition holds (logger explicitly disabled or missing and
+            # the AttributeError clearly comes from accessing `.version`);
+            # propagate all other cases.
+            logger_kwarg = kwargs.get("logger", None)
+            logger_attr = getattr(self, "logger", None)
+            attr_name = getattr(e, "name", None)
+            is_logger_version_error = attr_name == "version"
+            if is_logger_version_error and (logger_kwarg is False or logger_attr is None):
+                self._version = None
+            else:
+                raise
 
 
 class BezierSimplexDataModule(L.LightningDataModule):
@@ -80,7 +108,7 @@ class BezierSimplexDataModule(L.LightningDataModule):
         self.batch_size = batch_size
         self.split_ratio = split_ratio
         self.normalize = normalize
-        self.scaler: MinMaxScaler | StdScaler | QuantileScaler | NoneScaler
+        self.scaler: Scaler
         if normalize == "max":
             self.scaler = MinMaxScaler()
         elif normalize == "std":
@@ -983,6 +1011,7 @@ def fit(
     smoothness_weight: float = 0.0,
     fix: Iterable[Index] | None = None,
     batch_size: int | None = None,
+    seed: int | None = None,
     **kwargs,
 ) -> BezierSimplex:
     r"""Fits a Bezier simplex.
@@ -1003,6 +1032,11 @@ def fit(
         The indices of control points to exclude from training.
     batch_size
         The size of minibatch.
+    seed
+        Random seed passed to :func:`lightning.pytorch.seed_everything` to set RNG
+        seeds for improved reproducibility. When ``None`` (default), no seed is
+        set. For full determinism, also set ``Trainer(deterministic=True)`` and
+        use compatible settings.
     kwargs
         All arguments for lightning.pytorch.Trainer
 
@@ -1056,6 +1090,8 @@ def fit(
     lightning.pytorch.Trainer : Argument descriptions.
     torch.DataLoader : Argument descriptions.
     """
+    if seed is not None:
+        L.seed_everything(seed)
     data = TensorDataset(params, values)
     dl = DataLoader(data, batch_size=batch_size or len(data))
 
@@ -1105,6 +1141,7 @@ def fit_kfold(
     smoothness_weight: float = 0.0,
     fix: Iterable[Index] | None = None,
     batch_size: int | None = None,
+    seed: int | None = None,
     **kwargs,
 ) -> nn.ModuleList:
     r"""Fits an ensemble of Bezier simplices using k-fold cross-validation.
@@ -1138,6 +1175,9 @@ def fit_kfold(
     batch_size
         The size of a minibatch.  Defaults to full-batch (consistent with
         :func:`fit`).
+    seed
+        Random seed passed to :func:`lightning.pytorch.seed_everything` for
+        reproducible training.  When ``None`` (default), no seed is set.
     kwargs
         All arguments for :class:`~pl_crossvalidate.KFoldTrainer` (which
         itself accepts all :class:`lightning.pytorch.Trainer` arguments).
@@ -1195,33 +1235,8 @@ def fit_kfold(
     torch_bsf.active_learning.suggest_next_points : Use the ensemble for
         active learning.
     """
-    from pl_crossvalidate import KFoldTrainer
-
-    class _KFoldTrainer(KFoldTrainer):
-        """Compatibility shim: pl_crossvalidate <=0.1.0 crashes in __init__ when
-        ``logger=False`` because it unconditionally accesses ``self.logger.version``
-        after ``super().__init__()``.  Catch that specific AttributeError and set
-        ``_version`` to ``None`` so the rest of the cross-validation logic works.
-        """
-
-        def __init__(self, *args, **kwargs):
-            try:
-                super().__init__(*args, **kwargs)
-            except AttributeError as e:
-                # In pl_crossvalidate <=0.1.0, __init__ crashes when logger=False
-                # because it unconditionally accesses self.logger.version after
-                # calling super().__init__().  Only suppress the error when that
-                # exact condition holds (logger explicitly disabled or missing and
-                # the AttributeError clearly comes from accessing `.version`);
-                # propagate all other cases.
-                logger_kwarg = kwargs.get("logger", None)
-                logger_attr = getattr(self, "logger", None)
-                attr_name = getattr(e, "name", None)
-                is_logger_version_error = attr_name == "version"
-                if is_logger_version_error and (logger_kwarg is False or logger_attr is None):
-                    self._version = None
-                else:
-                    raise
+    if seed is not None:
+        L.seed_everything(seed)
 
     if n_folds < 2:
         raise ValueError(f"n_folds must be at least 2, got {n_folds}")

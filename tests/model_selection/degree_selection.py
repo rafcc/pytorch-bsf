@@ -1,5 +1,6 @@
 import subprocess
 import sys
+import pytest
 import torch
 from pathlib import Path
 from unittest.mock import MagicMock, patch
@@ -65,7 +66,7 @@ class TestSelectDegree:
 class TestSelectDegreeKwargForwarding:
     """Verify correct kwargs are forwarded to KFoldTrainer.cross_validate."""
 
-    _PATCH = "torch_bsf.model_selection.degree_selection.KFoldTrainer"
+    _PATCH = "torch_bsf.bezier_simplex._KFoldTrainer"
 
     def test_default_forces_limit_val_batches(self):
         """Without val_dataloaders/datamodule, limit_val_batches=0.0 is set."""
@@ -271,3 +272,85 @@ class TestDegreeSelectionCLI:
         assert "--params" in result.stdout
         assert "--loglevel" in result.stdout
         assert "--devices" in result.stdout
+        assert "--patience" in result.stdout
+
+
+class TestSelectDegreePatience:
+    """Tests for the patience-based early-stopping logic in select_degree."""
+
+    _PATCH = "torch_bsf.bezier_simplex._KFoldTrainer"
+
+    def _select_with_mse_sequence(self, mse_sequence, patience=1, min_degree=1):
+        """Run select_degree with a predetermined sequence of per-degree MSE values."""
+        params, values = _make_simplex_data(n_params=3, n_values=2, n_samples=20)
+        mse_iter = iter(mse_sequence)
+
+        def make_trainer(**kwargs):
+            mock = MagicMock()
+            mse = next(mse_iter)
+            mock.cross_validate.return_value = [[{"test_mse": mse}]]
+            return mock
+
+        max_degree = min_degree + len(mse_sequence) - 1
+        with patch(self._PATCH, side_effect=make_trainer):
+            return select_degree(
+                params,
+                values,
+                min_degree=min_degree,
+                max_degree=max_degree,
+                num_folds=2,
+                patience=patience,
+            )
+
+    def test_patience_1_stops_after_first_increase(self):
+        """With patience=1, stops as soon as MSE increases."""
+        # MSE decreases at degree 2, increases at degree 3 → should return 2
+        best = self._select_with_mse_sequence([0.5, 0.3, 0.4], patience=1)
+        assert best == 2
+
+    def test_patience_2_tolerates_one_increase(self):
+        """With patience=2, one transient increase is tolerated."""
+        # MSE: 0.5, 0.3, 0.35 (up), 0.2 (new best) → should return 4
+        best = self._select_with_mse_sequence([0.5, 0.3, 0.35, 0.2], patience=2, min_degree=1)
+        assert best == 4
+
+    def test_patience_2_stops_after_two_increases(self):
+        """With patience=2, two consecutive increases trigger early stop."""
+        # MSE: 0.5, 0.3, 0.35 (up 1), 0.4 (up 2) → stops, best is 2
+        best = self._select_with_mse_sequence([0.5, 0.3, 0.35, 0.4], patience=2, min_degree=1)
+        assert best == 2
+
+    def test_patience_high_traverses_all_degrees(self):
+        """Large patience causes all degrees to be checked."""
+        params, values = _make_simplex_data(n_params=3, n_values=2, n_samples=20)
+        call_count = 0
+
+        def make_trainer(**kwargs):
+            nonlocal call_count
+            call_count += 1
+            mock = MagicMock()
+            mock.cross_validate.return_value = [[{"test_mse": 1.0 + call_count}]]
+            return mock
+
+        with patch(self._PATCH, side_effect=make_trainer):
+            select_degree(
+                params, values,
+                min_degree=1, max_degree=4,
+                num_folds=2,
+                patience=10,
+            )
+        # All 4 degrees (1..4) should have been evaluated
+        assert call_count == 4
+
+    def test_patience_zero_raises(self):
+        """patience=0 is invalid and should raise ValueError."""
+        params, values = _make_simplex_data()
+        with pytest.raises(ValueError, match="patience"):
+            select_degree(params, values, patience=0)
+
+    def test_patience_negative_raises(self):
+        """Negative patience is invalid and should raise ValueError."""
+        params, values = _make_simplex_data()
+        with pytest.raises(ValueError, match="patience"):
+            select_degree(params, values, patience=-1)
+

@@ -113,6 +113,32 @@ def test_simplex_random_invalid_n_samples():
         simplex_random(3, -1)
 
 
+def test_simplex_random_seed_reproducibility():
+    """Same seed produces identical results."""
+    r1 = simplex_random(3, 50, seed=42)
+    r2 = simplex_random(3, 50, seed=42)
+    assert torch.equal(r1, r2)
+
+
+def test_simplex_random_different_seeds_differ():
+    """Different seeds produce different results (with very high probability)."""
+    r1 = simplex_random(3, 50, seed=0)
+    r2 = simplex_random(3, 50, seed=1)
+    assert not torch.equal(r1, r2)
+
+
+def test_simplex_random_seed_does_not_mutate_global_state():
+    """Using seed= should not change the global numpy random state."""
+    import numpy as np
+
+    rng_state_before = np.random.get_state()
+    simplex_random(3, 20, seed=99)
+    rng_state_after = np.random.get_state()
+    # Compare both the 'key' array and the position index in the MT state
+    assert (rng_state_before[1] == rng_state_after[1]).all()
+    assert rng_state_before[2] == rng_state_after[2]
+
+
 # ---------------------------------------------------------------------------
 # simplex_sobol
 # ---------------------------------------------------------------------------
@@ -212,3 +238,19 @@ def test_simplex_sobol_non_power_of_two_warns(n_samples):
     # Result is still valid despite the warning.
     assert result.shape == (n_samples, 3)
     assert torch.allclose(result.sum(dim=1), torch.ones(n_samples), atol=1e-5)
+
+
+@_scipy_skip
+def test_simplex_sobol_seed_reproducibility():
+    """Same seed produces identical Sobol samples."""
+    r1 = simplex_sobol(3, 64, seed=0)
+    r2 = simplex_sobol(3, 64, seed=0)
+    assert torch.equal(r1, r2)
+
+
+@_scipy_skip
+def test_simplex_sobol_different_seeds_differ():
+    """Different seeds produce different samples (with very high probability)."""
+    r1 = simplex_sobol(3, 64, seed=0)
+    r2 = simplex_sobol(3, 64, seed=1)
+    assert not torch.equal(r1, r2)
