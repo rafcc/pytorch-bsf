@@ -37,7 +37,7 @@ degree_init_group.add_argument(
     help="Path to a pretrained model file to initialize from (required when --degree is not given)",
 )
 parser.add_argument(
-    "--fix", type=index_list, metavar="INDICES",
+    "--freeze", type=index_list, metavar="INDICES",
     help=(
         "JSON-style list-of-lists of simplex indices of control points to freeze during training; "
         "each simplex index list must have length n_params and its entries must sum to the Bezier simplex degree "
@@ -110,7 +110,7 @@ else:
         smoothness_weight=args.smoothness_weight,
     )
 
-fix: list[list[int]] = args.fix or []
+fix: list[list[int]] = args.freeze or []
 validate_simplex_indices(fix, bs.n_params, bs.degree)
 
 for index in fix:
