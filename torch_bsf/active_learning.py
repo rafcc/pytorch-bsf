@@ -87,7 +87,7 @@ def suggest_next_points(
         if model_n_params is not None and model_n_params != n_params:
             raise ValueError(
                 f"models[{i}].n_params={model_n_params} does not match "
-                f"models[0].n_params={n_params}."
+                f"expected n_params={n_params}."
             )
         model_device = _infer_device(model)
         if model_device != device:
