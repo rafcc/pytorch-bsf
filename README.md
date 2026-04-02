@@ -14,17 +14,11 @@
 
 Key features:
 
-- **Simple API** — train a model in one line with `torch_bsf.fit()`, then call it like any PyTorch module.
-- **Fast and Scalable** — fully vectorized `forward` pass and built on [PyTorch Lightning](https://www.pytorchlightning.ai/) for distributed training across GPUs and nodes.
-- **Robust Fitting** — built-in **Smoothness Regularization** to handle noisy datasets and produce stable manifolds.
-- **Automated Tuning** — automatic degree selection via k-fold cross-validation.
-- **Scikit-learn Integration** — compatible with `BaseEstimator` for use in `Pipeline` and `GridSearchCV`.
-- **Active Learning** — suggest next sampling points via Query-By-Committee or Density-based strategies.
-- **Rich Visualization** — high-level utilities for plotting 2D curves and 3D surfaces in high dimensions.
-- **Advanced Sampling** — support for Dirichlet and Quasirandom (Sobol) parameter generation.
-- **MLflow integration** — experiments, metrics, and trained models are logged out of the box via [MLflow](https://mlflow.org/).
-- **Flexible I/O** — load and save control points in `.pt`, `.csv`, `.tsv`, `.json`, or `.yaml` formats.
-- **Batteries included** — CLI entry points, k-fold cross-validation, and elastic net grid search are ready to use.
+- **Simple, Pythonic API** — train a model in one line with `torch_bsf.fit()`, call it like any PyTorch module, and persist control points in `.pt`, `.csv`, `.tsv`, `.json`, or `.yaml` format.
+- **Scalable Training** — fully vectorized `forward` pass backed by [PyTorch Lightning](https://www.pytorchlightning.ai/) for seamless scaling from a single CPU to multi-GPU, multi-node clusters.
+- **Robust & Automatic Fitting** — built-in smoothness regularization tames noisy data, and automatic degree selection via k-fold cross-validation removes guesswork.
+- **Rich ML Ecosystem** — scikit-learn-compatible `BezierSimplexRegressor` for use in `Pipeline` and `GridSearchCV`; [MLflow](https://mlflow.org/) experiment tracking; active learning; and advanced sampling strategies (Dirichlet, Sobol).
+- **Ready to Run** — CLI entry points, a pre-built Docker image, and a Conda/MLflow project for zero-install execution.
 
 <img src="https://opthub-org.github.io/pytorch-bsf/master/_images/bezier-simplex.png" width="49%" alt="A Bézier simplex and its control points"><img src="https://opthub-org.github.io/pytorch-bsf/master/_images/bezier-simplex-fitting.png" width="49%" alt="A Bézier simplex that fits to a dataset">
 
@@ -33,11 +27,9 @@ See [Full Documentation](https://opthub-org.github.io/pytorch-bsf/) and the foll
 - Kobayashi, K., Hamada, N., Sannai, A., Tanaka, A., Bannai, K., & Sugiyama, M. (2019). Bézier Simplex Fitting: Describing Pareto Fronts of Simplicial Problems with Small Samples in Multi-Objective Optimization. Proceedings of the AAAI Conference on Artificial Intelligence, 33(01), 2304-2313. <https://doi.org/10.1609/aaai.v33i01.33012304>
 - Tanaka, A., Sannai, A., Kobayashi, K., & Hamada, N. (2020). Asymptotic Risk of Bézier Simplex Fitting. Proceedings of the AAAI Conference on Artificial Intelligence, 34(03), 2416-2424. <https://doi.org/10.1609/aaai.v34i03.5622>
 
-## Requirements
-
-Python >=3.10, <3.15.
-
 ## Quickstart
+
+**Requirements:** Python >=3.10, <3.15.
 
 First, prepare your data:
 
@@ -235,30 +227,18 @@ python -m torch_bsf.model_selection.elastic_net_grid \
 
 The output is printed to stdout as CSV with three columns (one row per grid point).
 
-## Visualization
+## Advanced Topics
 
-Plot a fitted Bézier simplex with a single call — 2D curves and 3D surfaces are both supported.
-See [Visualization](https://opthub-org.github.io/pytorch-bsf/master/advanced/visualization.html) for details.
+The library includes several capabilities beyond basic fitting.
+Full documentation for each topic is linked below.
 
-## Advanced Sampling
-
-Generate simplex parameter points via Dirichlet random sampling or quasi-random Sobol sequences, in addition to the default uniform grid.
-See [Advanced Sampling](https://opthub-org.github.io/pytorch-bsf/master/advanced/sampling.html) for details.
-
-## Automated Degree Selection
-
-Automatically pick the best polynomial degree using k-fold cross-validation.
-See [Automatic Degree Selection](https://opthub-org.github.io/pytorch-bsf/master/advanced/auto_degree.html) for details.
-
-## Scikit-learn Integration
-
-`BezierSimplexRegressor` exposes a standard `fit` / `predict` / `score` API compatible with `Pipeline` and `GridSearchCV`.
-See [Scikit-learn Integration](https://opthub-org.github.io/pytorch-bsf/master/advanced/sklearn.html) for details.
-
-## Active Learning
-
-Suggest the most informative next sampling points using Query-By-Committee or density-based strategies.
-See [Active Learning](https://opthub-org.github.io/pytorch-bsf/master/advanced/active_learning.html) for details.
+| Topic | Summary |
+| ----- | ------- |
+| [Visualization](https://opthub-org.github.io/pytorch-bsf/master/advanced/visualization.html) | Plot fitted 2D curves and 3D surfaces with a single call. |
+| [Advanced Sampling](https://opthub-org.github.io/pytorch-bsf/master/advanced/sampling.html) | Generate simplex parameter points via Dirichlet random sampling or quasi-random Sobol sequences, in addition to the default uniform grid. |
+| [Automatic Degree Selection](https://opthub-org.github.io/pytorch-bsf/master/advanced/auto_degree.html) | Automatically pick the best polynomial degree using k-fold cross-validation. |
+| [Scikit-learn Integration](https://opthub-org.github.io/pytorch-bsf/master/advanced/sklearn.html) | `BezierSimplexRegressor` exposes a standard `fit` / `predict` / `score` API compatible with `Pipeline` and `GridSearchCV`. |
+| [Active Learning](https://opthub-org.github.io/pytorch-bsf/master/advanced/active_learning.html) | Suggest the most informative next sampling points using Query-By-Committee or density-based strategies. |
 
 ## Author
 
