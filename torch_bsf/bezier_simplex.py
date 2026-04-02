@@ -1176,21 +1176,6 @@ def fit_kfold(
     seed
         Random seed passed to :func:`lightning.pytorch.seed_everything` for
         reproducible training.  When ``None`` (default), no seed is set.
-    trainer_kwargs
-        A dict of keyword arguments to pass to
-        :class:`lightning.pytorch.Trainer` (via
-        :class:`~pl_crossvalidate.KFoldTrainer`).  For example,
-        ``dict(max_epochs=10, enable_progress_bar=False, logger=False)``.
-        When ``None`` (default), only the internal defaults used by the
-        cross-validation helper are applied (notably
-        ``num_sanity_val_steps=0`` and ``limit_val_batches=0.0`` to disable
-        per-fold validation for speed), and no additional trainer arguments
-        are taken from this dict.  You can still pass Trainer or
-        :class:`~pl_crossvalidate.KFoldTrainer` options via ``**kwargs``
-        (which are always merged into ``kfold_kwargs``).  To re-enable
-        validation on each fold, explicitly supply suitable values here or in
-        ``**kwargs``, e.g. ``dict(num_sanity_val_steps=2,
-        limit_val_batches=1.0, ...)``.
     kwargs
         All arguments for :class:`~pl_crossvalidate.KFoldTrainer` (which
         itself accepts all :class:`lightning.pytorch.Trainer` arguments).
