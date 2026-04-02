@@ -29,7 +29,7 @@ See [Full Documentation](https://opthub-org.github.io/pytorch-bsf/) and the foll
 
 ## Quickstart
 
-**Requirements:** Python >=3.10.
+**Requirements:** For local installation and CLI/library usage, Python >=3.10. For Docker-only usage, only Docker is required.
 
 First, prepare your data:
 
