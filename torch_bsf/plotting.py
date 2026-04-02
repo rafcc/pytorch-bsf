@@ -308,6 +308,11 @@ def _plot_bezier_simplex_pairwise(model, num, show_control_points, max_control_p
             "Install it with: pip install matplotlib"
         ) from e
 
+    # Early return before any sampling when there are no output values.
+    n_v = model.n_values
+    if n_v == 0:
+        return np.empty((0, 0), dtype=object)
+
     n_p = model.n_params
     meshgrid_size = math.comb(num + n_p - 1, n_p - 1) if n_p > 0 else 1
     if meshgrid_size > _MAX_PAIRWISE_POINTS:
@@ -325,12 +330,6 @@ def _plot_bezier_simplex_pairwise(model, num, show_control_points, max_control_p
         with torch.no_grad():
             _ts, xs_t = model.meshgrid(num=num)
         xs = xs_t.detach().cpu().numpy()
-
-    n_v = model.n_values
-    if n_v == 0:
-        # Return an empty (0, 0) array to honor the documented (n_values, n_values)
-        # shape contract when there are no output values.
-        return np.empty((0, 0), dtype=object)
 
     panel_size = max(1, min(3, 12 // max(n_v, 1)))
     figsize_dim = min(12, panel_size * n_v)
