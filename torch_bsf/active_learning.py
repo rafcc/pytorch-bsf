@@ -1,22 +1,28 @@
-from typing import List, Optional
+from typing import Optional, Sequence
 import torch
-from torch_bsf.bezier_simplex import BezierSimplex
+import torch.nn as nn
 from torch_bsf.sampling import simplex_random
 
 
 def suggest_next_points(
-    models: List[BezierSimplex],
+    models: Sequence[nn.Module],
     n_suggestions: int = 1,
     n_candidates: int = 1000,
     method: str = "qbc",
     params: Optional[torch.Tensor] = None,
+    n_params: Optional[int] = None,
 ) -> torch.Tensor:
     """Suggest points on the simplex where new data should be sampled.
 
     Parameters
     ----------
-    models : List[BezierSimplex]
+    models : Sequence[nn.Module]
         An ensemble of models (e.g., from k-fold cross-validation).
+        Each model must be callable with a tensor of shape
+        ``(n_candidates, n_params)`` and return predictions.
+        Accepts any :class:`~collections.abc.Sequence` of
+        :class:`~torch.nn.Module` instances, including
+        :class:`~torch.nn.ModuleList`.
     n_suggestions : int, default=1
         The number of points to suggest.
     n_candidates : int, default=1000
@@ -27,6 +33,10 @@ def suggest_next_points(
         - "density": Suggests points that are furthest from existing training points.
     params : torch.Tensor, optional
         The existing training parameters. Required for method="density".
+    n_params : int, optional
+        The number of simplex parameters (input dimension).  When omitted,
+        the value is inferred from ``models[0].n_params`` if that attribute
+        exists.
 
     Returns
     -------
@@ -34,16 +44,29 @@ def suggest_next_points(
         The suggested points in shape (n_suggestions, n_params).
     """
     if not models:
-        raise ValueError("models must be a non-empty list of BezierSimplex instances")
+        raise ValueError("models must be a non-empty list of models")
 
-    n_params = models[0].n_params
-    device = models[0].device
+    if n_params is None:
+        n_params = getattr(models[0], "n_params", None)
+        if n_params is None:
+            raise ValueError(
+                "n_params must be provided when models do not have an 'n_params' attribute"
+            )
 
-    # Validate that all models share the same n_params and device
+    device = getattr(models[0], "device", None)
+    if device is None:
+        try:
+            device = next(models[0].parameters()).device
+        except StopIteration:
+            device = torch.device("cpu")
+
+    # Validate that all models share the same n_params and device (when available)
     for model in models[1:]:
-        if model.n_params != n_params:
+        model_n_params = getattr(model, "n_params", None)
+        if model_n_params is not None and model_n_params != n_params:
             raise ValueError("All models in 'models' must have the same 'n_params'.")
-        if model.device != device:
+        model_device = getattr(model, "device", None)
+        if model_device is not None and model_device != device:
             raise ValueError("All models in 'models' must be on the same device.")
     # Generate candidate points
     candidates = simplex_random(n_params, n_candidates).to(device)

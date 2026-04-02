@@ -1,5 +1,6 @@
 import pytest
 import torch
+import torch.nn as nn
 
 import torch_bsf.bezier_simplex as tbbs
 from torch_bsf.active_learning import suggest_next_points
@@ -8,6 +9,17 @@ from torch_bsf.active_learning import suggest_next_points
 def _make_models(n_params: int, n_values: int, degree: int, k: int = 2):
     """Return a list of k random BezierSimplex models."""
     return [tbbs.randn(n_params=n_params, n_values=n_values, degree=degree) for _ in range(k)]
+
+
+class _SimpleLinearModel(nn.Module):
+    """A minimal nn.Module that maps (batch, n_params) -> (batch, n_values)."""
+
+    def __init__(self, n_params: int, n_values: int):
+        super().__init__()
+        self.linear = nn.Linear(n_params, n_values)
+
+    def forward(self, x: torch.Tensor) -> torch.Tensor:
+        return self.linear(x)
 
 
 class TestSuggestNextPointsQBC:
@@ -74,3 +86,35 @@ class TestSuggestNextPointsDensity:
         models = _make_models(3, 2, 2)
         with pytest.raises(ValueError, match="params"):
             suggest_next_points(models, method="density", params=None)
+
+
+class TestSuggestNextPointsInteroperability:
+    """Tests for improved interoperability: nn.ModuleList and generic nn.Module."""
+
+    def test_accepts_module_list(self):
+        """nn.ModuleList (from EnsembleLightningModule.models) should work directly."""
+        bezier_list = _make_models(3, 2, 2)
+        module_list = nn.ModuleList(bezier_list)
+        result = suggest_next_points(module_list, n_suggestions=2, n_candidates=50)
+        assert result.shape == (2, 3)
+        assert (result >= 0).all()
+        assert torch.allclose(result.sum(dim=1), torch.ones(2), atol=1e-5)
+
+    def test_generic_module_with_explicit_n_params(self):
+        """Generic nn.Module without n_params attribute works when n_params is explicit."""
+        models = [_SimpleLinearModel(3, 2) for _ in range(2)]
+        result = suggest_next_points(models, n_suggestions=2, n_candidates=50, n_params=3)
+        assert result.shape == (2, 3)
+
+    def test_generic_module_missing_n_params_raises(self):
+        """Generic nn.Module without n_params attribute raises when n_params not given."""
+        models = [_SimpleLinearModel(3, 2)]
+        with pytest.raises(ValueError, match="n_params"):
+            suggest_next_points(models)
+
+    def test_explicit_n_params_accepted(self):
+        """Explicitly provided n_params is accepted and produces correct output shape."""
+        models = _make_models(3, 2, 2)
+        result = suggest_next_points(models, n_suggestions=1, n_candidates=50, n_params=3)
+        assert result.shape == (1, 3)
+
