@@ -6,13 +6,13 @@ from torch_bsf.sampling import simplex_random
 
 
 def _infer_device(model: nn.Module) -> torch.device:
-    """Infer the device of *model* from its parameters, then buffers, then CPU."""
+    """Infer the device of *model* preferring an explicit ``model.device`` attribute,
+    then its parameters, then its buffers, and finally falling back to CPU."""
     device = getattr(model, "device", None)
     if device is not None:
         return torch.device(device)
     try:
         return next(model.parameters()).device
-    except StopIteration:
         pass
     try:
         return next(model.buffers()).device

@@ -136,6 +136,12 @@ class TestSuggestNextPointsInteroperability:
         result = suggest_next_points(models, n_suggestions=1, n_candidates=50, n_params=3)
         assert result.shape == (1, 3)
 
+    def test_explicit_n_params_mismatch_raises(self):
+        """Mismatch between explicit n_params and models[0].n_params should raise."""
+        # Single-model "ensemble" to exercise the specific validation path.
+        models = _make_models(3, 2, 2, k=1)
+        with pytest.raises(ValueError, match="n_params"):
+            suggest_next_points(models, n_suggestions=1, n_candidates=50, n_params=4)
     def test_buffer_only_device_inference(self):
         """_infer_device falls back to buffer device for modules with no parameters."""
         models = [_BufferOnlyModel(3) for _ in range(2)]
