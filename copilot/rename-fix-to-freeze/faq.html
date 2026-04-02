@@ -67,7 +67,7 @@
 <li class="toctree-l3"><a class="reference internal" href="#can-i-use-gpu-or-multi-node-training">Can I use GPU or multi-node training?</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#how-do-i-save-and-load-a-trained-model">How do I save and load a trained model?</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#how-can-i-perform-cross-validation-or-grid-search">How can I perform cross-validation or grid search?</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#when-should-i-use-the-fix-argument">When should I use the <code class="docutils literal notranslate"><span class="pre">fix</span></code> argument?</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#when-should-i-use-the-freeze-argument">When should I use the <code class="docutils literal notranslate"><span class="pre">freeze</span></code> argument?</a></li>
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="#troubleshooting">Troubleshooting</a><ul>
@@ -192,12 +192,12 @@
 <li><p><strong>Elastic Net Grid Search:</strong> Run <cite>python -m torch_bsf.model_selection.elastic_net_grid</cite> to generate parameter grids specifically for Elastic Net regularization paths.</p></li>
 </ul>
 </section>
-<section id="when-should-i-use-the-fix-argument">
-<h3>When should I use the <code class="docutils literal notranslate"><span class="pre">fix</span></code> argument?<a class="headerlink" href="#when-should-i-use-the-fix-argument" title="Link to this heading"></a></h3>
-<p>The <code class="docutils literal notranslate"><span class="pre">fix</span></code> argument allows you to hold specific control points constant during training. This is useful for:</p>
+<section id="when-should-i-use-the-freeze-argument">
+<h3>When should I use the <code class="docutils literal notranslate"><span class="pre">freeze</span></code> argument?<a class="headerlink" href="#when-should-i-use-the-freeze-argument" title="Link to this heading"></a></h3>
+<p>The <code class="docutils literal notranslate"><span class="pre">freeze</span></code> argument allows you to hold specific control points constant during training. This is useful for:</p>
 <ul class="simple">
-<li><p><strong>Boundary constraints:</strong> If you know the exact values at the vertices of the simplex (e.g., results of single-objective optimizations), fix those vertices and fit only the interior.</p></li>
-<li><p><strong>Incremental refinement:</strong> Fit a low-degree model first, then use its control points as initialization for a higher-degree model, fixing the well-estimated parts to stabilize training.</p></li>
+<li><p><strong>Boundary constraints:</strong> If you know the exact values at the vertices of the simplex (e.g., results of single-objective optimizations), freeze those vertices and fit only the interior.</p></li>
+<li><p><strong>Incremental refinement:</strong> Fit a low-degree model first, then use its control points as initialization for a higher-degree model, freezing the well-estimated parts to stabilize training.</p></li>
 <li><p><strong>Encoding prior knowledge:</strong> If theoretical or physical constraints dictate the value at certain parameter combinations, you can pin those points to ensure the model respects them.</p></li>
 </ul>
 </section>

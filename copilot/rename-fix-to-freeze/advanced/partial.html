@@ -97,15 +97,15 @@
              
   <section id="partial-training">
 <h1>Partial Training<a class="headerlink" href="#partial-training" title="Link to this heading"></a></h1>
-<p>By default, <code class="docutils literal notranslate"><span class="pre">fit()</span></code> trains all control points of the Bézier simplex simultaneously. The <code class="docutils literal notranslate"><span class="pre">fix</span></code> argument lets you hold a subset of control points constant during training, so that only the remaining (free) control points are updated.</p>
+<p>By default, <code class="docutils literal notranslate"><span class="pre">fit()</span></code> trains all control points of the Bézier simplex simultaneously. The <code class="docutils literal notranslate"><span class="pre">freeze</span></code> argument lets you hold a subset of control points constant during training, so that only the remaining (free) control points are updated.</p>
 <p>This is useful when:</p>
 <ul class="simple">
-<li><p><strong>Boundary constraints are known</strong> — If single-objective optimizations have already determined the vertex solutions, you can fix those vertices and train only the interior and edge control points.</p></li>
-<li><p><strong>Incremental refinement</strong> — Fit a low-degree model first, reuse its control points as the initialization for a higher-degree model, and fix the already-accurate points to stabilize training.</p></li>
+<li><p><strong>Boundary constraints are known</strong> — If single-objective optimizations have already determined the vertex solutions, you can freeze those vertices and train only the interior and edge control points.</p></li>
+<li><p><strong>Incremental refinement</strong> — Fit a low-degree model first, reuse its control points as the initialization for a higher-degree model, and freeze the already-accurate points to stabilize training.</p></li>
 <li><p><strong>Encoding prior knowledge</strong> — Pin control points whose values are theoretically or physically determined.</p></li>
 </ul>
-<p>The example below demonstrates how to fix the two vertices of a Bézier curve while training its interior control points.</p>
-<p>The <code class="docutils literal notranslate"><span class="pre">fix</span></code> argument takes a list of multi-index lists (e.g., <code class="docutils literal notranslate"><span class="pre">[[3,</span> <span class="pre">0],</span> <span class="pre">[0,</span> <span class="pre">3]]</span></code>). Any control point whose multi-index appears in <code class="docutils literal notranslate"><span class="pre">fix</span></code> is excluded from gradient updates.</p>
+<p>The example below demonstrates how to freeze the two vertices of a Bézier curve while training its interior control points.</p>
+<p>The <code class="docutils literal notranslate"><span class="pre">freeze</span></code> argument takes a list of multi-index lists (e.g., <code class="docutils literal notranslate"><span class="pre">[[3,</span> <span class="pre">0],</span> <span class="pre">[0,</span> <span class="pre">3]]</span></code>). Any control point whose multi-index appears in <code class="docutils literal notranslate"><span class="pre">freeze</span></code> is excluded from gradient updates.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">torch</span>
 <span class="kn">import</span><span class="w"> </span><span class="nn">torch_bsf</span>
 
@@ -139,12 +139,12 @@
 <span class="c1"># Or, load control points from a file</span>
 <span class="n">init</span> <span class="o">=</span> <span class="n">torch_bsf</span><span class="o">.</span><span class="n">bezier_simplex</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="s2">&quot;control_points.yml&quot;</span><span class="p">)</span>
 
-<span class="c1"># Train the edge of a Bézier curve while its vertices are fixed</span>
+<span class="c1"># Train the edge of a Bézier curve while its vertices are frozen</span>
 <span class="n">bs</span> <span class="o">=</span> <span class="n">torch_bsf</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span>
    <span class="n">params</span><span class="o">=</span><span class="n">ts</span><span class="p">,</span>  <span class="c1"># input observations (training data)</span>
    <span class="n">values</span><span class="o">=</span><span class="n">xs</span><span class="p">,</span>  <span class="c1"># output observations (training data)</span>
    <span class="n">init</span><span class="o">=</span><span class="n">init</span><span class="p">,</span>  <span class="c1"># initial values of control points</span>
-   <span class="n">fix</span><span class="o">=</span><span class="p">[[</span><span class="mi">3</span><span class="p">,</span> <span class="mi">0</span><span class="p">],</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">3</span><span class="p">]],</span>  <span class="c1"># fix vertices of the Bézier curve</span>
+   <span class="n">freeze</span><span class="o">=</span><span class="p">[[</span><span class="mi">3</span><span class="p">,</span> <span class="mi">0</span><span class="p">],</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">3</span><span class="p">]],</span>  <span class="c1"># freeze vertices of the Bézier curve</span>
 <span class="p">)</span>
 
 <span class="c1"># Predict with the trained model</span>
