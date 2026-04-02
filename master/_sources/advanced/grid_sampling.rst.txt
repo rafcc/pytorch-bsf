@@ -12,17 +12,32 @@ hyperparameter space.
 The Hyperparameter Space
 ------------------------
 
-The elastic net is conventionally formulated with a regularization strength
-:math:`\lambda \ge 0` and an L1/L2 mixing ratio :math:`\alpha \in [0, 1]`:
+The standard Elastic Net regression problem is formulated as:
 
 .. math::
 
-   \min_{\beta} \; f_{\text{data}}(\beta) + \lambda \left(\alpha \, f_{\text{sparse}}(\beta)
-   + (1-\alpha) \, f_{\text{smooth}}(\beta)\right).
+   \min_{\beta \in \mathbb{R}^N} \frac{1}{2n}\|y - X\beta\|_2^2
+   + \lambda \Bigl(\alpha \|\beta\|_1 + \frac{1-\alpha}{2}\|\beta\|_2^2\Bigr)
 
-Here :math:`f_{\text{data}}` is the data-fidelity term, :math:`f_{\text{sparse}}` is the L1
-penalty and :math:`f_{\text{smooth}}` is the L2 penalty. This parameterization is a
-semi-infinite rectangle :math:`[0,\infty) \times [0,1]` in :math:`(\lambda,\alpha)`.
+where :math:`\lambda \ge 0` is the overall regularization strength and
+:math:`\alpha \in [0, 1]` controls the L1/L2 mixing ratio
+(setting :math:`\alpha = 1` recovers the Lasso; :math:`\alpha = 0` gives Ridge regression).
+
+To cast this into the multi-objective framework, we identify three objectives over
+:math:`\beta \in \mathbb{R}^N`:
+
+.. math::
+
+   f_{\text{data}}(\beta) &= \frac{1}{2n}\|y - X\beta\|_2^2 + \frac{\epsilon}{2}\|\beta\|_2^2 \\
+   f_{\text{sparse}}(\beta) &= \|\beta\|_1 + \frac{\epsilon}{2}\|\beta\|_2^2 \\
+   f_{\text{smooth}}(\beta) &= \frac{1 + \epsilon}{2}\|\beta\|_2^2
+
+where :math:`n` is the number of observations and :math:`\epsilon > 0` is a small constant.
+It appears as :math:`\frac{\epsilon}{2}\|\beta\|_2^2` in :math:`f_{\text{data}}` and
+:math:`f_{\text{sparse}}` to make those terms strongly convex, and it is absorbed into
+:math:`f_{\text{smooth}}` via the coefficient :math:`\frac{1+\epsilon}{2}`.
+This ensures all three objectives are strongly convex, which is required for the solution
+map to be weakly simplicial; see :doc:`advanced/elastic_net` for a detailed discussion.
 
 Equivalently, elastic-net optimization can be written as a convex combination of the
 same three objectives:
@@ -43,6 +58,11 @@ simplex weight vector by:
    w_1 = \frac{1}{1+\lambda}, \qquad
    w_2 = \frac{\lambda\,\alpha}{1+\lambda}, \qquad
    w_3 = \frac{\lambda\,(1-\alpha)}{1+\lambda}.
+
+With these weights the convex-combination objective equals the :math:`\epsilon`-regularized
+elastic net objective divided by the positive constant :math:`(1 + \lambda)`.
+Because this scale factor does not depend on :math:`\beta`, both formulations share the
+same minimizer.
 
 The :math:`(\lambda, \alpha)` parameter space is a semi-infinite rectangle
 :math:`[0,\infty) \times [0,1]`.

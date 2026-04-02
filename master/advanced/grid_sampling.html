@@ -116,14 +116,25 @@ generates a purpose-built grid that respects the intrinsic geometry of the elast
 hyperparameter space.</p>
 <section id="the-hyperparameter-space">
 <h2>The Hyperparameter Space<a class="headerlink" href="#the-hyperparameter-space" title="Link to this heading"></a></h2>
-<p>The elastic net is conventionally formulated with a regularization strength
-<span class="math notranslate nohighlight">\(\lambda \ge 0\)</span> and an L1/L2 mixing ratio <span class="math notranslate nohighlight">\(\alpha \in [0, 1]\)</span>:</p>
+<p>The standard Elastic Net regression problem is formulated as:</p>
 <div class="math notranslate nohighlight">
-\[\min_{\beta} \; f_{\text{data}}(\beta) + \lambda \left(\alpha \, f_{\text{sparse}}(\beta)
-+ (1-\alpha) \, f_{\text{smooth}}(\beta)\right).\]</div>
-<p>Here <span class="math notranslate nohighlight">\(f_{\text{data}}\)</span> is the data-fidelity term, <span class="math notranslate nohighlight">\(f_{\text{sparse}}\)</span> is the L1
-penalty and <span class="math notranslate nohighlight">\(f_{\text{smooth}}\)</span> is the L2 penalty. This parameterization is a
-semi-infinite rectangle <span class="math notranslate nohighlight">\([0,\infty) \times [0,1]\)</span> in <span class="math notranslate nohighlight">\((\lambda,\alpha)\)</span>.</p>
+\[\min_{\beta \in \mathbb{R}^N} \frac{1}{2n}\|y - X\beta\|_2^2
++ \lambda \Bigl(\alpha \|\beta\|_1 + \frac{1-\alpha}{2}\|\beta\|_2^2\Bigr)\]</div>
+<p>where <span class="math notranslate nohighlight">\(\lambda \ge 0\)</span> is the overall regularization strength and
+<span class="math notranslate nohighlight">\(\alpha \in [0, 1]\)</span> controls the L1/L2 mixing ratio
+(setting <span class="math notranslate nohighlight">\(\alpha = 1\)</span> recovers the Lasso; <span class="math notranslate nohighlight">\(\alpha = 0\)</span> gives Ridge regression).</p>
+<p>To cast this into the multi-objective framework, we identify three objectives over
+<span class="math notranslate nohighlight">\(\beta \in \mathbb{R}^N\)</span>:</p>
+<div class="math notranslate nohighlight">
+\[\begin{split}f_{\text{data}}(\beta) &amp;= \frac{1}{2n}\|y - X\beta\|_2^2 + \frac{\epsilon}{2}\|\beta\|_2^2 \\
+f_{\text{sparse}}(\beta) &amp;= \|\beta\|_1 + \frac{\epsilon}{2}\|\beta\|_2^2 \\
+f_{\text{smooth}}(\beta) &amp;= \frac{1 + \epsilon}{2}\|\beta\|_2^2\end{split}\]</div>
+<p>where <span class="math notranslate nohighlight">\(n\)</span> is the number of observations and <span class="math notranslate nohighlight">\(\epsilon &gt; 0\)</span> is a small constant.
+It appears as <span class="math notranslate nohighlight">\(\frac{\epsilon}{2}\|\beta\|_2^2\)</span> in <span class="math notranslate nohighlight">\(f_{\text{data}}\)</span> and
+<span class="math notranslate nohighlight">\(f_{\text{sparse}}\)</span> to make those terms strongly convex, and it is absorbed into
+<span class="math notranslate nohighlight">\(f_{\text{smooth}}\)</span> via the coefficient <span class="math notranslate nohighlight">\(\frac{1+\epsilon}{2}\)</span>.
+This ensures all three objectives are strongly convex, which is required for the solution
+map to be weakly simplicial; see <span class="xref std std-doc">advanced/elastic_net</span> for a detailed discussion.</p>
 <p>Equivalently, elastic-net optimization can be written as a convex combination of the
 same three objectives:</p>
 <div class="math notranslate nohighlight">
@@ -138,6 +149,10 @@ simplex weight vector by:</p>
 \[w_1 = \frac{1}{1+\lambda}, \qquad
 w_2 = \frac{\lambda\,\alpha}{1+\lambda}, \qquad
 w_3 = \frac{\lambda\,(1-\alpha)}{1+\lambda}.\]</div>
+<p>With these weights the convex-combination objective equals the <span class="math notranslate nohighlight">\(\epsilon\)</span>-regularized
+elastic net objective divided by the positive constant <span class="math notranslate nohighlight">\((1 + \lambda)\)</span>.
+Because this scale factor does not depend on <span class="math notranslate nohighlight">\(\beta\)</span>, both formulations share the
+same minimizer.</p>
 <p>The <span class="math notranslate nohighlight">\((\lambda, \alpha)\)</span> parameter space is a semi-infinite rectangle
 <span class="math notranslate nohighlight">\([0,\infty) \times [0,1]\)</span>.
 When <span class="math notranslate nohighlight">\(\lambda = 0\)</span> the regularization terms vanish and the solution depends only
