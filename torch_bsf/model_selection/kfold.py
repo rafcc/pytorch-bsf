@@ -37,7 +37,10 @@ degree_init_group.add_argument(
 )
 parser.add_argument(
     "--fix", type=index_list, metavar="INDICES",
-    help="JSON-style list-of-lists of simplex indices of control points to freeze during training (e.g. '[[0],[1,2]]')",
+    help=(
+        "JSON-style list-of-lists of simplex indices of control points to freeze during training; "
+        "each simplex index list must have length n_params (e.g. '[[0,0],[1,1]]' for n_params=2)"
+    ),
 )
 parser.add_argument(
     "--header", type=int, default=0, metavar="N",
