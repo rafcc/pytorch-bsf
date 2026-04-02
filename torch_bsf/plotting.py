@@ -38,12 +38,26 @@ def plot_bezier_simplex(
         ``Axes`` (or ``Axes3D``) is returned.  For ``model.n_params >= 4`` a
         2-D ``numpy.ndarray`` of ``Axes`` with shape
         ``(n_values, n_values)`` is returned (pairwise scatter plot).
+
+    Raises
+    ------
+    ImportError
+        If matplotlib is not installed. This dependency is required for all
+        plotting backends used by this function.
+    ImportError
+        If SciPy is not installed and ``model.n_params == 3``. SciPy is
+        required for the triangulation-based plotting used in the
+        Bézier triangle case.
     """
     if model.n_params == 2:
         return _plot_bezier_curve(model, num, ax, show_control_points, **kwargs)
     if model.n_params == 3:
         return _plot_bezier_triangle(model, num, ax, show_control_points, **kwargs)
-    return _plot_bezier_simplex_pairwise(model, num, show_control_points, **kwargs)
+    if model.n_params >= 4:
+        return _plot_bezier_simplex_pairwise(model, num, show_control_points, **kwargs)
+    raise ValueError(
+        f"plot_bezier_simplex only supports models with n_params >= 2; got n_params = {model.n_params}"
+    )
 
 
 def _plot_bezier_curve(model, num, ax, show_control_points, **kwargs):
@@ -242,7 +256,7 @@ def _plot_bezier_simplex_pairwise(model, num, show_control_points, **kwargs):
             "Install it with: pip install matplotlib"
         ) from e
 
-    ts, xs = model.meshgrid(num=num)
+    _ts, xs = model.meshgrid(num=num)
     xs = xs.detach().cpu().numpy()
 
     n_v = model.n_values
@@ -250,7 +264,7 @@ def _plot_bezier_simplex_pairwise(model, num, show_control_points, **kwargs):
         fig, single_ax = plt.subplots(1, 1)
         return np.array([[single_ax]])
 
-    panel_size = min(3, 12 // max(n_v, 1))
+    panel_size = max(1, min(3, 12 // max(n_v, 1)))
     fig, axes = plt.subplots(
         n_v, n_v, squeeze=False, figsize=(panel_size * n_v, panel_size * n_v)
     )
