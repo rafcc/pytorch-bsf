@@ -43,12 +43,10 @@ This method trains an *ensemble* (committee) of models and suggests points where
        values=values_train,
        n_folds=5,
        degree=3,
-       trainer_kwargs=dict(
-           max_epochs=1,
-           enable_progress_bar=False,
-           logger=False,
-           enable_checkpointing=False,
-       ),
+       max_epochs=1,
+       enable_progress_bar=False,
+       logger=False,
+       enable_checkpointing=False,
    )
 
    # Suggest the 3 most uncertain points
