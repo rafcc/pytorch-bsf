@@ -18,7 +18,7 @@ Key features:
 - **Scalable Training** — fully vectorized `forward` pass backed by [PyTorch Lightning](https://www.pytorchlightning.ai/) for seamless scaling from a single CPU to multi-GPU, multi-node clusters.
 - **Robust & Automatic Fitting** — built-in smoothness regularization tames noisy data, and automatic degree selection via k-fold cross-validation removes guesswork.
 - **Rich ML Ecosystem** — scikit-learn-compatible `BezierSimplexRegressor` for use in `Pipeline` and `GridSearchCV`; [MLflow](https://mlflow.org/) experiment tracking; active learning; and advanced sampling strategies (Dirichlet, Sobol).
-- **Ready to Run** — CLI entry points, a pre-built Docker image, and a Conda/MLflow project for zero-install execution.
+- **Ready to Run** — CLI entry points, a pre-built Docker image, and a Conda/MLflow project so you can run `pytorch-bsf` without installing it into your local environment.
 
 <img src="https://opthub-org.github.io/pytorch-bsf/master/_images/bezier-simplex.png" width="49%" alt="A Bézier simplex and its control points"><img src="https://opthub-org.github.io/pytorch-bsf/master/_images/bezier-simplex-fitting.png" width="49%" alt="A Bézier simplex that fits to a dataset">
 
