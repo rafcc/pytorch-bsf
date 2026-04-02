@@ -14,7 +14,7 @@
 
 Key features:
 
-- **Simple, Pythonic API** — train a model in one line with `torch_bsf.fit()`, call it like any PyTorch module, and persist control points in `.pt`, `.csv`, `.tsv`, `.json`, or `.yaml` format.
+- **Simple, Pythonic API** — train a model in one line with `torch_bsf.fit()`, call it like any PyTorch module, and persist control points in `.pt`, `.csv`, `.tsv`, `.json`, or `.yaml` formats.
 - **Scalable Training** — fully vectorized `forward` pass backed by [PyTorch Lightning](https://www.pytorchlightning.ai/) for seamless scaling from a single CPU to multi-GPU, multi-node clusters.
 - **Robust & Automatic Fitting** — built-in smoothness regularization tames noisy data, and automatic degree selection via k-fold cross-validation removes guesswork.
 - **Rich ML Ecosystem** — scikit-learn-compatible `BezierSimplexRegressor` for use in `Pipeline` and `GridSearchCV`; [MLflow](https://mlflow.org/) experiment tracking; active learning; and advanced sampling strategies (Dirichlet, Sobol).
@@ -29,7 +29,7 @@ See [Full Documentation](https://opthub-org.github.io/pytorch-bsf/) and the foll
 
 ## Quickstart
 
-**Requirements:** Python >=3.10, <3.15.
+**Requirements:** Python >=3.10.
 
 First, prepare your data:
 
