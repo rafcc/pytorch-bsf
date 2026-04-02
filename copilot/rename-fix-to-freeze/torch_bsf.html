@@ -277,17 +277,6 @@ Automatically saved to, and restored from, Lightning checkpoints.</p></li>
 </dd></dl>
 
 <dl class="py method">
-<dt class="sig sig-object py" id="torch_bsf.bezier_simplex.BezierSimplex.fix_row">
-<span class="sig-name descname"><span class="pre">fix_row</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">index</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">torch_bsf.bezier_simplex.Index</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.14)"><span class="pre">None</span></a></span></span><a class="reference external" href="https://github.com/opthub-org/pytorch-bsf/blob/master/torch_bsf/bezier_simplex.py#L398-L411"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#torch_bsf.bezier_simplex.BezierSimplex.fix_row" title="Link to this definition"></a></dt>
-<dd><p>Freeze a control point so its gradient is zeroed after every backward.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>index</strong> – The index of the control point to freeze.</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py method">
 <dt class="sig sig-object py" id="torch_bsf.bezier_simplex.BezierSimplex.forward">
 <span class="sig-name descname"><span class="pre">forward</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">t</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.pytorch.org/docs/stable/tensors.html#torch.Tensor" title="(in PyTorch v2.11)"><span class="pre">Tensor</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.pytorch.org/docs/stable/tensors.html#torch.Tensor" title="(in PyTorch v2.11)"><span class="pre">Tensor</span></a></span></span><a class="reference external" href="https://github.com/opthub-org/pytorch-bsf/blob/master/torch_bsf/bezier_simplex.py#L421-L449"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#torch_bsf.bezier_simplex.BezierSimplex.forward" title="Link to this definition"></a></dt>
 <dd><p>Process a forwarding step of training.</p>
@@ -297,6 +286,17 @@ Automatically saved to, and restored from, Lightning checkpoints.</p></li>
 </dd>
 <dt class="field-even">Return type<span class="colon">:</span></dt>
 <dd class="field-even"><p>A minibatch of value vectors.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="torch_bsf.bezier_simplex.BezierSimplex.freeze_row">
+<span class="sig-name descname"><span class="pre">freeze_row</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">index</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">torch_bsf.bezier_simplex.Index</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.14)"><span class="pre">None</span></a></span></span><a class="reference external" href="https://github.com/opthub-org/pytorch-bsf/blob/master/torch_bsf/bezier_simplex.py#L398-L411"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#torch_bsf.bezier_simplex.BezierSimplex.freeze_row" title="Link to this definition"></a></dt>
+<dd><p>Freeze a control point so its gradient is zeroed after every backward.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>index</strong> – The index of the control point to freeze.</p>
 </dd>
 </dl>
 </dd></dl>
@@ -1910,17 +1910,6 @@ Automatically saved to, and restored from, Lightning checkpoints.</p></li>
 </dd></dl>
 
 <dl class="py method">
-<dt class="sig sig-object py" id="torch_bsf.BezierSimplex.fix_row">
-<span class="sig-name descname"><span class="pre">fix_row</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">index</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">torch_bsf.bezier_simplex.Index</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.14)"><span class="pre">None</span></a></span></span><a class="reference external" href="https://github.com/opthub-org/pytorch-bsf/blob/master/torch_bsf/bezier_simplex.py#L398-L411"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#torch_bsf.BezierSimplex.fix_row" title="Link to this definition"></a></dt>
-<dd><p>Freeze a control point so its gradient is zeroed after every backward.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>index</strong> – The index of the control point to freeze.</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py method">
 <dt class="sig sig-object py" id="torch_bsf.BezierSimplex.forward">
 <span class="sig-name descname"><span class="pre">forward</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">t</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.pytorch.org/docs/stable/tensors.html#torch.Tensor" title="(in PyTorch v2.11)"><span class="pre">Tensor</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.pytorch.org/docs/stable/tensors.html#torch.Tensor" title="(in PyTorch v2.11)"><span class="pre">Tensor</span></a></span></span><a class="reference external" href="https://github.com/opthub-org/pytorch-bsf/blob/master/torch_bsf/bezier_simplex.py#L421-L449"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#torch_bsf.BezierSimplex.forward" title="Link to this definition"></a></dt>
 <dd><p>Process a forwarding step of training.</p>
@@ -1930,6 +1919,17 @@ Automatically saved to, and restored from, Lightning checkpoints.</p></li>
 </dd>
 <dt class="field-even">Return type<span class="colon">:</span></dt>
 <dd class="field-even"><p>A minibatch of value vectors.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="torch_bsf.BezierSimplex.freeze_row">
+<span class="sig-name descname"><span class="pre">freeze_row</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">index</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">torch_bsf.bezier_simplex.Index</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.14)"><span class="pre">None</span></a></span></span><a class="reference external" href="https://github.com/opthub-org/pytorch-bsf/blob/master/torch_bsf/bezier_simplex.py#L398-L411"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#torch_bsf.BezierSimplex.freeze_row" title="Link to this definition"></a></dt>
+<dd><p>Freeze a control point so its gradient is zeroed after every backward.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>index</strong> – The index of the control point to freeze.</p>
 </dd>
 </dl>
 </dd></dl>
