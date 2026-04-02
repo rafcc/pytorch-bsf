@@ -4,12 +4,13 @@ from typing import Iterable, Iterator, Sequence, TypeAlias, cast
 import torch
 import torch.nn as nn
 
+#: The index type of control points of a Bézier simplex.
 Index: TypeAlias = str | Sequence[int] | torch.Tensor
-r"""The index type of control points of a Bézier simplex."""
 
+#: The value type of control points of a Bézier simplex.
 Value: TypeAlias = Sequence[float] | torch.Tensor
-r"""The value type of control points of a Bézier simplex."""
 
+#: The data type of control points of a Bézier simplex.
 ControlPointsData: TypeAlias = (
     # we can't use dict[Index, Value] because TypeVar of Dict is invariant.
     dict[str, torch.Tensor]
@@ -22,7 +23,6 @@ ControlPointsData: TypeAlias = (
     | dict[torch.Tensor, list[float]]
     | dict[torch.Tensor, tuple[float, ...]]
 )
-r"""The data type of control points of a Bézier simplex."""
 
 
 def simplex_indices(n_params: int, degree: int) -> Iterable[tuple[int, ...]]:
