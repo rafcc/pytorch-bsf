@@ -27,8 +27,10 @@ def plot_bezier_simplex(
         The number of grid points for each edge.
     ax : matplotlib.axes.Axes or None
         The matplotlib axes to plot on. If None, a new figure is created.
-        Ignored when ``model.n_params >= 4`` (a new figure is always created
-        for pairwise plots).
+        Ignored when ``model.n_params >= 4``; for pairwise plots a new
+        figure is created only when ``model.n_values > 0`` (when
+        ``model.n_values == 0`` an empty ``(0, 0)`` ndarray is returned
+        without creating a figure).
     show_control_points : bool
         Whether to show control points.
     **kwargs
