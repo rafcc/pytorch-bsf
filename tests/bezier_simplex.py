@@ -788,19 +788,19 @@ def test_fit_with_dict_init():
 
 
 # ---------------------------------------------------------------------------
-# fix_row / on_after_backward
+# freeze_row / on_after_backward
 # ---------------------------------------------------------------------------
 
 
-def test_fix_row_zeros_gradient():
-    """fix_row() must zero out the gradient for the fixed control point after backward."""
+def test_freeze_row_zeros_gradient():
+    """freeze_row() must zero out the gradient for the fixed control point after backward."""
     ts = torch.tensor([[1.0, 0.0], [0.5, 0.5], [0.0, 1.0]])
     xs = ts * ts
     bs = tbbs.randn(n_params=2, n_values=2, degree=1)
 
     # Fix the first vertex
     first_index = (1, 0)
-    bs.fix_row(first_index)
+    bs.freeze_row(first_index)
 
     # Manual forward + backward
     pred = bs(ts)

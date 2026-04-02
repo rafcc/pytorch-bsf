@@ -105,7 +105,7 @@ freeze: list[list[int]] = args.freeze or []
 validate_simplex_indices(freeze, bs.n_params, bs.degree)
 
 for index in freeze:
-    bs.fix_row(index)
+    bs.freeze_row(index)
 
 trainer = Trainer(
     accelerator=args.accelerator,

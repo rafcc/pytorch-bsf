@@ -395,7 +395,7 @@ class BezierSimplex(L.LightningModule):
         r"""The degree of the Bezier simplex."""
         return self.control_points.degree
 
-    def fix_row(self, index: "Index") -> None:
+    def freeze_row(self, index: "Index") -> None:
         """Freeze a control point so its gradient is zeroed after every backward.
 
         Parameters
@@ -1125,7 +1125,7 @@ def fit(
     validate_simplex_indices(fix, bs.n_params, bs.degree)
 
     for index in fix:
-        bs.fix_row(index)
+        bs.freeze_row(index)
 
     trainer = L.Trainer(**kwargs)
     trainer.fit(bs, dl)
@@ -1275,7 +1275,7 @@ def fit_kfold(
         fix = []
     validate_simplex_indices(fix, bs.n_params, bs.degree)
     for index in fix:
-        bs.fix_row(index)
+        bs.freeze_row(index)
 
     # Build full-batch DataLoader (same default as fit()).
     dataset = TensorDataset(params, values)
