@@ -1,22 +1,47 @@
-from typing import List, Optional
+import itertools
+from typing import Optional, Sequence
 import torch
-from torch_bsf.bezier_simplex import BezierSimplex
+import torch.nn as nn
 from torch_bsf.sampling import simplex_random
 
 
+def _infer_device(model: nn.Module) -> torch.device:
+    """Infer the device of *model* preferring an explicit ``model.device`` attribute,
+    then its parameters, then its buffers, and finally falling back to CPU."""
+    device = getattr(model, "device", None)
+    if device is not None:
+        return torch.device(device)
+    # Try to infer device from parameters
+    first_param = next(model.parameters(), None)
+    if first_param is not None:
+        return first_param.device
+    # Try to infer device from buffers
+    first_buffer = next(model.buffers(), None)
+    if first_buffer is not None:
+        return first_buffer.device
+    # Model has neither parameters nor buffers; fall back to CPU
+    return torch.device("cpu")
+
+
 def suggest_next_points(
-    models: List[BezierSimplex],
+    models: Sequence[nn.Module],
     n_suggestions: int = 1,
     n_candidates: int = 1000,
     method: str = "qbc",
     params: Optional[torch.Tensor] = None,
+    n_params: Optional[int] = None,
 ) -> torch.Tensor:
     """Suggest points on the simplex where new data should be sampled.
 
     Parameters
     ----------
-    models : List[BezierSimplex]
+    models : Sequence[nn.Module]
         An ensemble of models (e.g., from k-fold cross-validation).
+        Each model must be callable with a tensor of shape
+        ``(n_candidates, n_params)`` and return predictions.
+        Accepts any :class:`~collections.abc.Sequence` of
+        :class:`~torch.nn.Module` instances, including
+        :class:`~torch.nn.ModuleList`.
     n_suggestions : int, default=1
         The number of points to suggest.
     n_candidates : int, default=1000
@@ -27,6 +52,12 @@ def suggest_next_points(
         - "density": Suggests points that are furthest from existing training points.
     params : torch.Tensor, optional
         The existing training parameters. Required for method="density".
+    n_params : int, optional
+        The number of simplex parameters (input dimension).  When omitted,
+        the value is inferred from ``models[0].n_params`` if that attribute
+        exists.  When provided and ``models[0]`` exposes an ``n_params``
+        attribute, the two values must agree; a ``ValueError`` is raised on
+        mismatch.
 
     Returns
     -------
@@ -34,17 +65,36 @@ def suggest_next_points(
         The suggested points in shape (n_suggestions, n_params).
     """
     if not models:
-        raise ValueError("models must be a non-empty list of BezierSimplex instances")
+        raise ValueError("models must be a non-empty sequence of models")
 
-    n_params = models[0].n_params
-    device = models[0].device
+    model_n_params = getattr(models[0], "n_params", None)
+    if n_params is None:
+        n_params = model_n_params
+        if n_params is None:
+            raise ValueError(
+                "n_params must be provided when models do not have an 'n_params' attribute"
+            )
+    elif model_n_params is not None and n_params != model_n_params:
+        raise ValueError(
+            f"n_params mismatch: explicit n_params={n_params} but models[0].n_params={model_n_params}"
+        )
+
+    device = _infer_device(models[0])
 
     # Validate that all models share the same n_params and device
-    for model in models[1:]:
-        if model.n_params != n_params:
-            raise ValueError("All models in 'models' must have the same 'n_params'.")
-        if model.device != device:
-            raise ValueError("All models in 'models' must be on the same device.")
+    for i, model in enumerate(itertools.islice(models, 1, None), start=1):
+        model_n_params = getattr(model, "n_params", None)
+        if model_n_params is not None and model_n_params != n_params:
+            raise ValueError(
+                f"models[{i}].n_params={model_n_params} does not match "
+                f"expected n_params={n_params}."
+            )
+        model_device = _infer_device(model)
+        if model_device != device:
+            raise ValueError(
+                f"models[{i}] is on device '{model_device}' but models[0] is on "
+                f"device '{device}'. All models in 'models' must be on the same device."
+            )
     # Generate candidate points
     candidates = simplex_random(n_params, n_candidates).to(device)
 
