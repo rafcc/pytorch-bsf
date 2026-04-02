@@ -266,8 +266,9 @@ def _plot_bezier_simplex_pairwise(model, num, show_control_points, **kwargs):
         return np.empty((0, 0), dtype=object)
 
     panel_size = max(1, min(3, 12 // max(n_v, 1)))
+    figsize_dim = min(12, panel_size * n_v)
     fig, axes = plt.subplots(
-        n_v, n_v, squeeze=False, figsize=(panel_size * n_v, panel_size * n_v)
+        n_v, n_v, squeeze=False, figsize=(figsize_dim, figsize_dim)
     )
     cp = (
         model.control_points.matrix.detach().cpu().numpy()

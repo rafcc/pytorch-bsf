@@ -92,6 +92,36 @@ def test_plot_bezier_simplex_high_dim_no_control_points():
     plt.close(result[0, 0].figure)
 
 
+def test_plot_bezier_simplex_pairwise_zero_n_values():
+    """n_values == 0 must return an empty (0, 0) ndarray, not (1, 1)."""
+    import numpy as np
+
+    model = tbbs.randn(n_params=4, n_values=0, degree=1)
+    result = plot_bezier_simplex(model, num=3)
+    assert isinstance(result, np.ndarray)
+    assert result.shape == (0, 0)
+
+
+def test_plot_bezier_simplex_pairwise_large_n_values_bounded_figsize():
+    """Figure size must be capped at 12 inches even for large n_values."""
+    import matplotlib.pyplot as plt
+
+    model = tbbs.randn(n_params=4, n_values=15, degree=1)
+    result = plot_bezier_simplex(model, num=3)
+    fig = result[0, 0].figure
+    w, h = fig.get_size_inches()
+    assert w <= 12.0, f"Figure width {w} exceeds 12-inch cap"
+    assert h <= 12.0, f"Figure height {h} exceeds 12-inch cap"
+    plt.close(fig)
+
+
+def test_plot_bezier_simplex_raises_for_low_n_params():
+    """plot_bezier_simplex must raise ValueError for n_params < 2."""
+    model = tbbs.randn(n_params=1, n_values=2, degree=1)
+    with pytest.raises(ValueError, match="n_params"):
+        plot_bezier_simplex(model, num=3)
+
+
 def test_plot_curve_with_existing_axes(bezier_curve_2d):
     import matplotlib.pyplot as plt
 
