@@ -263,11 +263,11 @@ def test_fit_kfold():
         )
 
     # freeze parameter: freeze vertex [3,0,0]
-    models_fix = tb.fit_kfold(
+    models_freeze = tb.fit_kfold(
         params=ts, values=xs, n_folds=3, degree=3, freeze=[[3, 0, 0]],
         **fast,
     )
-    assert len(models_fix) == 3
+    assert len(models_freeze) == 3
 
 
 @pytest.mark.parametrize(
