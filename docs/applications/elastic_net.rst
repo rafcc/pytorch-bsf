@@ -61,13 +61,19 @@ three functions:
    + w_3 \, f_{\text{smooth}}(\beta),
    \quad (w_1, w_2, w_3) \in \Delta^2.
 
-The conventional elastic-net parameters :math:`\lambda` and :math:`\alpha` relate to the simplex weight vector :math:`w = (w_1, w_2, w_3)` by:
+The conventional elastic-net parameters :math:`\lambda` and :math:`\alpha` relate to the
+simplex weight vector :math:`w = (w_1, w_2, w_3)` by:
 
 .. math::
 
    w_1 = \frac{1}{1 + \lambda}, \qquad
    w_2 = \frac{\lambda\,\alpha}{1 + \lambda}, \qquad
    w_3 = \frac{\lambda\,(1-\alpha)}{1 + \lambda}.
+
+With these weights the convex-combination objective equals the :math:`\epsilon`-regularized
+elastic net objective divided by the positive constant :math:`(1 + \lambda)`.
+Because this scale factor does not depend on :math:`\beta`, both formulations share the
+same minimizer.
 
 This maps the semi-infinite rectangle :math:`[0, \infty) \times [0, 1]` in
 :math:`(\lambda, \alpha)` onto the 2-simplex :math:`\Delta^2`. When
