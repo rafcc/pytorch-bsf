@@ -69,11 +69,14 @@ The conventional elastic-net parameters :math:`\lambda` and :math:`\alpha` relat
    w_2 = \frac{\lambda\,\alpha}{1 + \lambda}, \qquad
    w_3 = \frac{\lambda\,(1-\alpha)}{1 + \lambda}.
 
-This maps the semi-infinite rectangle :math:`[0, \infty) \times [0, 1]` in :math:`(\lambda, \alpha)` onto
-the 2-simplex :math:`\Delta^2`. When :math:`\lambda = 0` the entire edge :math:`\{0\} \times [0, 1]` collapses
-to the single vertex :math:`(1, 0, 0)` (all regularization vanishes), so the mapping is not injective at
-:math:`\lambda = 0`. For :math:`\lambda > 0`, different :math:`(\lambda, \alpha)` pairs map to distinct interior
-points, enabling a single Bézier simplex to represent the entire elastic-net regularization path.
+This maps the semi-infinite rectangle :math:`[0, \infty) \times [0, 1]` in
+:math:`(\lambda, \alpha)` onto the 2-simplex :math:`\Delta^2`. When
+:math:`\lambda = 0` the entire edge :math:`\{0\} \times [0, 1]` collapses to
+the single vertex :math:`(1, 0, 0)` (all regularization vanishes), so the
+mapping is not injective at :math:`\lambda = 0`. For :math:`\lambda > 0`,
+different :math:`(\lambda, \alpha)` pairs map to distinct interior points,
+enabling a single Bézier simplex to represent the entire elastic-net
+regularization path.
 
 By training the model on a sparse subset of weight vectors :math:`w` and fitting a Bézier simplex, we obtain a continuous **solution map** :math:`(x^*, f \circ x^*): \Delta^{M-1} \to G^*(f)` that maps any weight :math:`w` to the optimal weights :math:`\beta` and the corresponding objective values.
 
