@@ -23,7 +23,7 @@ parser.add_argument(
     help="Path to the output values CSV file",
 )
 parser.add_argument(
-    "--meshgrid", type=Path, metavar="CSV",
+    "--meshgrid", type=Path, metavar="CSV|DIR",
     help=(
         "Path to the meshgrid CSV file used for prediction output; if omitted or if a "
         "directory path is given, the parameters CSV specified by --params is used instead"
