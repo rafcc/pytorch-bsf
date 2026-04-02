@@ -20,9 +20,9 @@ if "--benchmark-only" not in sys.argv:
         "Benchmarks are only run when --benchmark-only is specified.",
         allow_module_level=True,
     )
-import torch_bsf
-import torch_bsf.bezier_simplex as tbbs
-from torch_bsf.sampling import simplex_grid
+import torch_bsf  # noqa: E402
+import torch_bsf.bezier_simplex as tbbs  # noqa: E402
+from torch_bsf.sampling import simplex_grid  # noqa: E402
 
 
 # ---------------------------------------------------------------------------
