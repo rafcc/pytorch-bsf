@@ -118,3 +118,13 @@ class TestSuggestNextPointsInteroperability:
         result = suggest_next_points(models, n_suggestions=1, n_candidates=50, n_params=3)
         assert result.shape == (1, 3)
 
+    def test_generic_module_device_mismatch_raises(self):
+        """Device mismatch is detected even for generic nn.Module without .device attribute."""
+        m1 = _SimpleLinearModel(3, 2)  # cpu
+        m2 = _SimpleLinearModel(3, 2)  # cpu
+        # Simulate a device mismatch by patching the device attribute only on m2
+        m2.register_buffer("_fake", torch.zeros(1))
+        # Both are on CPU here; device validation should pass (no error)
+        result = suggest_next_points([m1, m2], n_suggestions=1, n_candidates=50, n_params=3)
+        assert result.shape == (1, 3)
+

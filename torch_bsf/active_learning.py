@@ -4,6 +4,21 @@ import torch.nn as nn
 from torch_bsf.sampling import simplex_random
 
 
+def _infer_device(model: nn.Module) -> torch.device:
+    """Infer the device of *model* from its parameters, then buffers, then CPU."""
+    device = getattr(model, "device", None)
+    if device is not None:
+        return device
+    try:
+        return next(model.parameters()).device
+    except StopIteration:
+        pass
+    try:
+        return next(model.buffers()).device
+    except StopIteration:
+        return torch.device("cpu")
+
+
 def suggest_next_points(
     models: Sequence[nn.Module],
     n_suggestions: int = 1,
@@ -53,20 +68,14 @@ def suggest_next_points(
                 "n_params must be provided when models do not have an 'n_params' attribute"
             )
 
-    device = getattr(models[0], "device", None)
-    if device is None:
-        try:
-            device = next(models[0].parameters()).device
-        except StopIteration:
-            device = torch.device("cpu")
+    device = _infer_device(models[0])
 
-    # Validate that all models share the same n_params and device (when available)
+    # Validate that all models share the same n_params and device
     for model in models[1:]:
         model_n_params = getattr(model, "n_params", None)
         if model_n_params is not None and model_n_params != n_params:
             raise ValueError("All models in 'models' must have the same 'n_params'.")
-        model_device = getattr(model, "device", None)
-        if model_device is not None and model_device != device:
+        if _infer_device(model) != device:
             raise ValueError("All models in 'models' must be on the same device.")
     # Generate candidate points
     candidates = simplex_random(n_params, n_candidates).to(device)
