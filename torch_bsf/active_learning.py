@@ -44,7 +44,7 @@ def suggest_next_points(
         The suggested points in shape (n_suggestions, n_params).
     """
     if not models:
-        raise ValueError("models must be a non-empty list of models")
+        raise ValueError("models must be a non-empty sequence of models")
 
     if n_params is None:
         n_params = getattr(models[0], "n_params", None)
