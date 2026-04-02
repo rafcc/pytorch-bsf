@@ -172,7 +172,17 @@ def test_fit_kfold():
     # Edge case: n_folds > len(params) — capped automatically
     few_ts = ts[:3]
     few_xs = xs[:3]
-    models_capped = tb.fit_kfold(params=few_ts, values=few_xs, n_folds=10, degree=1)
+    models_capped = tb.fit_kfold(
+        params=few_ts,
+        values=few_xs,
+        n_folds=10,
+        degree=1,
+        trainer_kwargs=dict(
+            max_epochs=1,
+            enable_progress_bar=False,
+            logger=False,
+        ),
+    )
     assert len(models_capped) == 3  # capped to len(params)
 
     # Invalid n_folds
