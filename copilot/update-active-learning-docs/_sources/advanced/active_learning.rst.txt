@@ -92,12 +92,10 @@ This method suggests points that are as far as possible from **all** existing tr
        params=existing_params,
        values=existing_values,
        degree=2,
-       trainer_kwargs=dict(
-           max_epochs=3,
-           enable_progress_bar=False,
-           logger=False,
-           enable_checkpointing=False,
-       ),
+       max_epochs=3,
+       enable_progress_bar=False,
+       logger=False,
+       enable_checkpointing=False,
    )
 
    # Suggest the 2 points furthest from all existing samples
