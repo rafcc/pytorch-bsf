@@ -14,27 +14,83 @@ from torch_bsf.validator import index_list, int_or_str, validate_simplex_indices
 parser = ArgumentParser(
     prog="python -m torch_bsf", description="Bezier simplex fitting"
 )
-parser.add_argument("--params", type=Path, required=True)
-parser.add_argument("--values", type=Path, required=True)
-parser.add_argument("--meshgrid", type=Path)
-parser.add_argument("--degree", type=int)
-parser.add_argument("--init", type=Path)
-parser.add_argument("--fix", type=index_list)
-parser.add_argument("--header", type=int, default=0)
 parser.add_argument(
-    "--normalize", type=str, choices=("none", "max", "std", "quantile"), default="none"
+    "--params", type=Path, required=True, metavar="CSV",
+    help="Path to the input parameters CSV file",
 )
-parser.add_argument("--split_ratio", type=float, default=1.0)
-parser.add_argument("--batch_size", type=int)
-parser.add_argument("--max_epochs", type=int, default=2)
-parser.add_argument("--smoothness_weight", type=float, default=0.0)
-parser.add_argument("--accelerator", type=str, default="auto")
-parser.add_argument("--strategy", type=str, default="auto")
-parser.add_argument("--devices", type=int_or_str, default="auto")
-parser.add_argument("--num_nodes", type=int, default=1)
-parser.add_argument("--precision", type=str, default="32-true")
-parser.add_argument("--enable_checkpointing", action="store_true")
-parser.add_argument("--log_every_n_steps", type=int, default=1)
+parser.add_argument(
+    "--values", type=Path, required=True, metavar="CSV",
+    help="Path to the output values CSV file",
+)
+parser.add_argument(
+    "--meshgrid", type=Path, metavar="CSV",
+    help="Path to the meshgrid CSV file used for prediction output; defaults to --params",
+)
+parser.add_argument(
+    "--degree", type=int, metavar="N",
+    help="Degree of the Bezier simplex (required when --init is not given)",
+)
+parser.add_argument(
+    "--init", type=Path, metavar="PT",
+    help="Path to a pretrained model file to initialize from (required when --degree is not given)",
+)
+parser.add_argument(
+    "--fix", type=index_list, metavar="INDICES",
+    help="Simplex index or comma-separated list of indices of control points to freeze during training",
+)
+parser.add_argument(
+    "--header", type=int, default=0, metavar="N",
+    help="Number of header rows to skip in CSV files (default: 0)",
+)
+parser.add_argument(
+    "--normalize", type=str, choices=("none", "max", "std", "quantile"), default="none",
+    metavar="{none,max,std,quantile}",
+    help="Normalization applied to values before training (default: none)",
+)
+parser.add_argument(
+    "--split_ratio", type=float, default=1.0, metavar="R",
+    help="Fraction of data used for training; the remainder becomes the validation set (default: 1.0)",
+)
+parser.add_argument(
+    "--batch_size", type=int, metavar="N",
+    help="Mini-batch size for training; omit to use full-batch loading",
+)
+parser.add_argument(
+    "--max_epochs", type=int, default=2, metavar="N",
+    help="Maximum number of training epochs (default: 2)",
+)
+parser.add_argument(
+    "--smoothness_weight", type=float, default=0.0, metavar="W",
+    help="Weight of the smoothness regularization term (default: 0.0)",
+)
+parser.add_argument(
+    "--accelerator", type=str, default="auto", metavar="TYPE",
+    help="Hardware accelerator for the Lightning trainer: 'cpu', 'gpu', 'tpu', 'mps', or 'auto' (default: auto)",
+)
+parser.add_argument(
+    "--strategy", type=str, default="auto", metavar="NAME",
+    help="Distributed training strategy for the Lightning trainer: 'ddp', 'fsdp', 'deepspeed', or 'auto' (default: auto)",
+)
+parser.add_argument(
+    "--devices", type=int_or_str, default="auto", metavar="N",
+    help="Number of devices to use, or 'auto' to let the Lightning trainer decide (default: auto)",
+)
+parser.add_argument(
+    "--num_nodes", type=int, default=1, metavar="N",
+    help="Number of compute nodes for distributed training (default: 1)",
+)
+parser.add_argument(
+    "--precision", type=str, default="32-true", metavar="PRECISION",
+    help="Floating-point precision for the Lightning trainer: '32-true', '16-mixed', 'bf16-mixed', etc. (default: 32-true)",
+)
+parser.add_argument(
+    "--enable_checkpointing", action="store_true",
+    help="Enable Lightning model checkpointing during training (disabled by default)",
+)
+parser.add_argument(
+    "--log_every_n_steps", type=int, default=1, metavar="N",
+    help="Log training metrics every N optimizer steps (default: 1)",
+)
 parser.add_argument(
     "--loglevel", type=int, choices=(0, 1, 2), default=2, help="0: nothing, 1: metrics, 2: metrics & models"
 )
