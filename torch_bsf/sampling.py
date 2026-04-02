@@ -135,6 +135,7 @@ def simplex_sobol(n_params: int, n_samples: int) -> torch.Tensor:
 
     Examples
     --------
+    >>> import torch
     >>> from torch_bsf.sampling import simplex_sobol
     >>> pts = simplex_sobol(n_params=3, n_samples=128)
     >>> pts.shape
@@ -149,8 +150,19 @@ def simplex_sobol(n_params: int, n_samples: int) -> torch.Tensor:
     if n_samples == 0:
         return torch.empty((0, n_params), dtype=torch.float32)
 
+    import numpy as np
+    try:
+        from scipy.stats import qmc
+    except ImportError as e:
+        raise ImportError(
+            "SciPy is required for simplex_sobol. "
+            "Install it with: pip install scipy or pip install pytorch-bsf[sampling]"
+        ) from e
+
     # Warn when n_samples is not a power of 2 (Sobol sequences are base-2).
     # Powers of 2 have exactly one bit set, so (n & (n-1)) == 0 iff n is a power of 2.
+    # This check is placed after the SciPy import so users only see the warning when
+    # sampling will actually proceed (not when SciPy is missing).
     if n_samples & (n_samples - 1) != 0:
         warnings.warn(
             f"simplex_sobol: n_samples={n_samples} is not a power of 2. "
@@ -160,15 +172,6 @@ def simplex_sobol(n_params: int, n_samples: int) -> torch.Tensor:
             UserWarning,
             stacklevel=2,
         )
-
-    import numpy as np
-    try:
-        from scipy.stats import qmc
-    except ImportError as e:
-        raise ImportError(
-            "SciPy is required for simplex_sobol. "
-            "Install it with: pip install scipy or pip install pytorch-bsf[sampling]"
-        ) from e
 
     # Sobol sequence generator for (n_params - 1) dimensions in [0, 1].
     # Suppress scipy's own power-of-2 warning; we already emitted a clearer one above.
