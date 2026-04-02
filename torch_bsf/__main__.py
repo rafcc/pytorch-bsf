@@ -42,7 +42,8 @@ parser.add_argument(
     "--fix", type=index_list, metavar="INDICES",
     help=(
         "JSON-style list-of-lists of simplex indices of control points to freeze during training; "
-        "each simplex index list must have length n_params (e.g. '[[0,0],[1,1]]' for n_params=2)"
+        "each simplex index list must have length n_params and its elements must sum to the same "
+        "degree (e.g. '[[2,0],[0,2]]' for n_params=2 and degree=2)"
     ),
 )
 parser.add_argument(

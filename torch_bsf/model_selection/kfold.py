@@ -23,7 +23,7 @@ parser.add_argument(
     help="Path to the output values CSV file",
 )
 parser.add_argument(
-    "--meshgrid", type=Path, metavar="CSV",
+    "--meshgrid", type=Path, metavar="CSV|DIR",
     help="Path to the meshgrid CSV file used for prediction output; if omitted or set to a directory, defaults to --params",
 )
 degree_init_group = parser.add_mutually_exclusive_group(required=True)
@@ -39,7 +39,8 @@ parser.add_argument(
     "--fix", type=index_list, metavar="INDICES",
     help=(
         "JSON-style list-of-lists of simplex indices of control points to freeze during training; "
-        "each simplex index list must have length n_params (e.g. '[[0,0],[1,1]]' for n_params=2)"
+        "each simplex index list must have length n_params and its entries must sum to the Bezier simplex degree "
+        "(e.g. '[[1,0],[0,1]]' for n_params=2, degree=1)"
     ),
 )
 parser.add_argument(
