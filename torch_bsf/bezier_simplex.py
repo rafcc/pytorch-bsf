@@ -1140,7 +1140,6 @@ def fit_kfold(
     fix: Iterable[Index] | None = None,
     batch_size: int | None = None,
     seed: int | None = None,
-    trainer_kwargs: dict | None = None,
     **kwargs,
 ) -> nn.ModuleList:
     r"""Fits an ensemble of Bezier simplices using k-fold cross-validation.
