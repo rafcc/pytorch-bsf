@@ -1,5 +1,7 @@
 import csv
 import json
+import numbers
+import operator
 from ast import literal_eval
 from functools import lru_cache
 from math import factorial
@@ -9,9 +11,11 @@ from typing import Any, Iterable, Literal, cast
 import lightning.pytorch as L
 import numpy as np
 import torch
+import torch.nn as nn
 import torch.optim
 import yaml
 from jsonschema import ValidationError, validate
+from pl_crossvalidate import KFoldTrainer
 from torch.nn import functional as F
 from torch.utils.data import DataLoader, Subset, TensorDataset, random_split
 
@@ -22,10 +26,37 @@ from torch_bsf.control_points import (
     simplex_indices,
     to_parameterdict_key,
 )
-from torch_bsf.preprocessing import MinMaxScaler, NoneScaler, QuantileScaler, StdScaler
+from torch_bsf.preprocessing import MinMaxScaler, NoneScaler, QuantileScaler, Scaler, StdScaler
 from torch_bsf.validator import validate_simplex_indices
 
 NormalizeType = Literal["max", "std", "quantile", "none"]
+
+
+class _KFoldTrainer(KFoldTrainer):
+    """Compatibility shim: pl_crossvalidate <=0.1.0 crashes in __init__ when
+    ``logger=False`` because it unconditionally accesses ``self.logger.version``
+    after ``super().__init__()``.  Catch that specific AttributeError and set
+    ``_version`` to ``None`` so the rest of the cross-validation logic works.
+    """
+
+    def __init__(self, *args, **kwargs):
+        try:
+            super().__init__(*args, **kwargs)
+        except AttributeError as e:
+            # In pl_crossvalidate <=0.1.0, __init__ crashes when logger=False
+            # because it unconditionally accesses self.logger.version after
+            # calling super().__init__().  Only suppress the error when that
+            # exact condition holds (logger explicitly disabled or missing and
+            # the AttributeError clearly comes from accessing `.version`);
+            # propagate all other cases.
+            logger_kwarg = kwargs.get("logger", None)
+            logger_attr = getattr(self, "logger", None)
+            attr_name = getattr(e, "name", None)
+            is_logger_version_error = attr_name == "version"
+            if is_logger_version_error and (logger_kwarg is False or logger_attr is None):
+                self._version = None
+            else:
+                raise
 
 
 class BezierSimplexDataModule(L.LightningDataModule):
@@ -67,7 +98,7 @@ class BezierSimplexDataModule(L.LightningDataModule):
         if batch_size is not None and batch_size < 1:
             raise ValueError(f"{batch_size=}. Must be positive or None.")
         if split_ratio <= 0.0 or 1.0 < split_ratio:
-            raise ValueError(f"{split_ratio=}. Must be 0.0 < sprit_ratio <= 1.0.")
+            raise ValueError(f"{split_ratio=}. Must be 0.0 < split_ratio <= 1.0.")
         if normalize not in ("max", "std", "quantile", "none"):
             raise ValueError(f"{normalize=}. Must be one of ['max', 'std', 'quantile', 'none'].")
 
@@ -77,7 +108,7 @@ class BezierSimplexDataModule(L.LightningDataModule):
         self.batch_size = batch_size
         self.split_ratio = split_ratio
         self.normalize = normalize
-        self.scaler: MinMaxScaler | StdScaler | QuantileScaler | NoneScaler
+        self.scaler: Scaler
         if normalize == "max":
             self.scaler = MinMaxScaler()
         elif normalize == "std":
@@ -980,6 +1011,7 @@ def fit(
     smoothness_weight: float = 0.0,
     fix: Iterable[Index] | None = None,
     batch_size: int | None = None,
+    seed: int | None = None,
     **kwargs,
 ) -> BezierSimplex:
     r"""Fits a Bézier simplex.
@@ -1000,6 +1032,11 @@ def fit(
         The indices of control points to exclude from training.
     batch_size
         The size of minibatch.
+    seed
+        Random seed passed to :func:`lightning.pytorch.seed_everything` to set RNG
+        seeds for improved reproducibility. When ``None`` (default), no seed is
+        set. For full determinism, also set ``Trainer(deterministic=True)`` and
+        use compatible settings.
     kwargs
         All arguments for lightning.pytorch.Trainer
 
@@ -1053,6 +1090,8 @@ def fit(
     lightning.pytorch.Trainer : Argument descriptions.
     torch.DataLoader : Argument descriptions.
     """
+    if seed is not None:
+        L.seed_everything(seed)
     data = TensorDataset(params, values)
     dl = DataLoader(data, batch_size=batch_size or len(data))
 
@@ -1091,3 +1130,188 @@ def fit(
     trainer = L.Trainer(**kwargs)
     trainer.fit(bs, dl)
     return bs
+
+
+def fit_kfold(
+    params: torch.Tensor,
+    values: torch.Tensor,
+    n_folds: int = 5,
+    degree: int | None = None,
+    init: BezierSimplex | ControlPoints | ControlPointsData | None = None,
+    smoothness_weight: float = 0.0,
+    fix: Iterable[Index] | None = None,
+    batch_size: int | None = None,
+    seed: int | None = None,
+    **kwargs,
+) -> nn.ModuleList:
+    r"""Fits an ensemble of Bezier simplices using k-fold cross-validation.
+
+    Splits the training data into ``n_folds`` folds via
+    :class:`~pl_crossvalidate.KFoldTrainer` and trains one model per fold on
+    the data from the remaining ``n_folds - 1`` folds.  The resulting
+    :class:`~torch.nn.ModuleList` can be passed directly to
+    :func:`torch_bsf.active_learning.suggest_next_points` to drive a
+    Query-By-Committee active learning loop.
+
+    If ``len(params) < n_folds``, the actual number of folds is capped at
+    ``len(params)`` to avoid empty training subsets.
+
+    Parameters
+    ----------
+    params
+        The parameter data on the simplex.
+    values
+        The label data.
+    n_folds
+        The number of cross-validation folds (committee size).  Defaults to 5.
+    degree
+        The degree of the Bezier simplex.
+    init
+        The initial values of a Bezier simplex or control points.
+    smoothness_weight
+        The weight of the smoothness penalty.
+    fix
+        The indices of control points to exclude from training.
+    batch_size
+        The size of a minibatch.  Defaults to full-batch (consistent with
+        :func:`fit`).
+    seed
+        Random seed passed to :func:`lightning.pytorch.seed_everything` for
+        reproducible training.  When ``None`` (default), no seed is set.
+    kwargs
+        All arguments for :class:`~pl_crossvalidate.KFoldTrainer` (which
+        itself accepts all :class:`lightning.pytorch.Trainer` arguments).
+        For example, ``max_epochs=10``, ``enable_progress_bar=False``,
+        ``logger=False``, ``shuffle=True``, or ``stratified=False``.
+        By default, ``num_sanity_val_steps=0`` and
+        ``limit_val_batches=0.0`` are set internally to disable per-fold
+        validation for speed; pass explicit values to override these
+        defaults, e.g. ``num_sanity_val_steps=2, limit_val_batches=1.0``.
+
+    Returns
+    -------
+    torch.nn.ModuleList
+        A :class:`~torch.nn.ModuleList` of ``min(n_folds, len(params))``
+        trained :class:`BezierSimplex` models, one per fold.
+
+    Raises
+    ------
+    ValueError
+        If ``n_folds < 2``, if ``len(params) < 2`` (too few samples for any
+        fold split), if neither / both of ``degree`` and ``init`` are
+        provided, if ``batch_size`` is truthy but not a positive integer, or
+        if the reserved argument ``num_folds`` is supplied via ``**kwargs``.
+
+    Examples
+    --------
+    >>> import torch
+    >>> import torch_bsf
+    >>> from torch_bsf.active_learning import suggest_next_points
+    >>> from torch_bsf.sampling import simplex_grid
+
+    Prepare training data
+
+    >>> params = simplex_grid(n_params=3, degree=3)
+    >>> values = params.pow(2).sum(dim=1, keepdim=True)
+
+    Build a 5-fold ensemble and suggest the 2 most uncertain points
+
+    >>> models = torch_bsf.fit_kfold(
+    ...     params=params,
+    ...     values=values,
+    ...     degree=3,
+    ...     max_epochs=1,
+    ...     enable_progress_bar=False,
+    ...     enable_model_summary=False,
+    ...     logger=False,
+    ... )
+    >>> suggestions = suggest_next_points(models, n_suggestions=2, method="qbc")
+    >>> suggestions.shape
+    torch.Size([2, 3])
+
+    See Also
+    --------
+    fit : Fit a single Bezier simplex.
+    torch_bsf.active_learning.suggest_next_points : Use the ensemble for
+        active learning.
+    """
+    if seed is not None:
+        L.seed_everything(seed)
+
+    if n_folds < 2:
+        raise ValueError(f"n_folds must be at least 2, got {n_folds}")
+
+    actual_folds = min(n_folds, len(params))
+    if actual_folds < 2:
+        raise ValueError(
+            f"At least 2 training samples are required for k-fold cross-validation, "
+            f"got {len(params)}."
+        )
+
+    # Build the base model (same logic as fit()).
+    if degree is None and init is None:
+        raise ValueError("Either degree or init must be specified")
+    if degree is not None and init is not None:
+        raise ValueError("Either degree or init must be specified, not both")
+
+    if isinstance(init, BezierSimplex):
+        same_weight = getattr(init, "smoothness_weight", None) == smoothness_weight
+        has_adjacency = hasattr(init, "adjacency_indices_")
+        if same_weight and has_adjacency:
+            bs = init
+        else:
+            bs = BezierSimplex(init.control_points, smoothness_weight=smoothness_weight)
+    elif init is not None:
+        bs = BezierSimplex(init, smoothness_weight=smoothness_weight)
+    else:
+        bs = randn(
+            n_params=int(params.shape[1]),
+            n_values=int(values.shape[1]),
+            degree=cast(int, degree),
+            smoothness_weight=smoothness_weight,
+        )
+
+    if fix is None:
+        fix = []
+    validate_simplex_indices(fix, bs.n_params, bs.degree)
+    for index in fix:
+        bs.fix_row(index)
+
+    # Build full-batch DataLoader (same default as fit()).
+    dataset = TensorDataset(params, values)
+
+    # Mirror fit()'s behavior: treat falsy/None as full-batch, and validate positivity.
+    # Accept any numbers.Integral (e.g. numpy.int64) but explicitly reject bool
+    # (True/False are int subclasses and would otherwise slip through).
+    if not batch_size:
+        effective_batch_size = len(dataset)
+    else:
+        if (
+            not isinstance(batch_size, numbers.Integral)
+            or isinstance(batch_size, bool)
+            or batch_size <= 0
+        ):
+            raise ValueError(
+                f"'batch_size' must be a positive integer or falsy/None for full-batch, got {batch_size!r}."
+            )
+        effective_batch_size = operator.index(batch_size)
+
+    dl = DataLoader(dataset, batch_size=effective_batch_size)
+    # Disable the validation loop inside each fold by default; the
+    # cross-validation estimate comes from KFoldTrainer's per-fold test step.
+    # Callers can override these by passing e.g. limit_val_batches=1.0.
+    kfold_kwargs: dict = {"num_sanity_val_steps": 0, "limit_val_batches": 0.0}
+    kfold_kwargs.update(kwargs)
+
+    # Guard against reserved/unsupported keys that would conflict with the
+    # public API or _KFoldTrainer's signature.
+    if "num_folds" in kfold_kwargs:
+        raise ValueError(
+            "'num_folds' must not be passed via **kwargs. "
+            "Use the 'n_folds' argument to control the number of folds."
+        )
+    trainer = _KFoldTrainer(num_folds=actual_folds, **kfold_kwargs)
+    trainer.cross_validate(bs, train_dataloader=dl)
+    ensemble = trainer.create_ensemble(bs)
+    # pl_crossvalidate is untyped; cast so mypy knows the return type is ModuleList.
+    return cast(nn.ModuleList, ensemble.models)

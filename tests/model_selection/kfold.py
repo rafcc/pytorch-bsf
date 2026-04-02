@@ -67,7 +67,7 @@ def test_cli_missing_values_fails():
 
 
 def test_cli_missing_degree_and_init_fails():
-    """CLI should raise when neither --degree nor --init is given."""
+    """CLI should fail with an argparse error when neither --degree nor --init is given."""
     result = _run_cli(
         f"--params={_PARAMS_CSV}",
         f"--values={_VALUES_CSV}",
@@ -76,8 +76,19 @@ def test_cli_missing_degree_and_init_fails():
     assert result.returncode != 0
 
 
+def test_cli_missing_degree_and_init_is_argparse_error():
+    """CLI should emit a clean argparse error (not a Python traceback) when --degree and --init are both omitted."""
+    result = _run_cli(
+        f"--params={_PARAMS_CSV}",
+        f"--values={_VALUES_CSV}",
+    )
+    assert result.returncode == 2
+    assert "error:" in result.stderr
+    assert "Traceback" not in result.stderr
+
+
 def test_cli_both_degree_and_init_fails(tmp_path):
-    """CLI should raise when both --degree and --init are specified."""
+    """CLI should fail with an argparse error when both --degree and --init are specified."""
     import torch_bsf.bezier_simplex as tbbs
 
     init_file = tmp_path / "model.pt"
@@ -92,6 +103,34 @@ def test_cli_both_degree_and_init_fails(tmp_path):
         cwd=tmp_path,
     )
     assert result.returncode != 0
+
+
+def test_cli_both_degree_and_init_is_argparse_error(tmp_path):
+    """CLI should emit a clean argparse error (not a Python traceback) when both --degree and --init are given."""
+    import torch_bsf.bezier_simplex as tbbs
+
+    init_file = tmp_path / "model.pt"
+    tbbs.save(str(init_file), tbbs.randn(n_params=2, n_values=2, degree=1))
+
+    result = _run_cli(
+        f"--params={_PARAMS_CSV}",
+        f"--values={_VALUES_CSV}",
+        "--degree=1",
+        f"--init={init_file}",
+        cwd=tmp_path,
+    )
+    assert result.returncode == 2
+    assert "error:" in result.stderr
+    assert "Traceback" not in result.stderr
+
+
+def test_cli_help_flag():
+    """CLI --help should exit 0 and include expected metavar/description text."""
+    result = _run_cli("--help")
+    assert result.returncode == 0
+    assert "--degree N" in result.stdout
+    assert "--init PT" in result.stdout
+    assert "--devices N|auto" in result.stdout
 
 
 def test_cli_init_flag(tmp_path):

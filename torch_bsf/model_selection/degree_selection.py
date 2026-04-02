@@ -1,8 +1,12 @@
 import logging
+from typing import Any
+
+import lightning.pytorch as L
 import torch
-from pl_crossvalidate import KFoldTrainer
+from torch.utils.data import DataLoader, TensorDataset
 
 _logger = logging.getLogger(__name__)
+
 
 def select_degree(
     params: torch.Tensor,
@@ -10,9 +14,10 @@ def select_degree(
     min_degree: int = 1,
     max_degree: int = 5,
     num_folds: int = 5,
-    val_dataloaders=None,
-    datamodule=None,
-    **trainer_kwargs
+    patience: int = 1,
+    val_dataloaders: Any | None = None,
+    datamodule: L.LightningDataModule | None = None,
+    **trainer_kwargs: Any,
 ) -> int:
     """Select the best degree for the Bézier simplex using cross-validation.
 
@@ -28,6 +33,12 @@ def select_degree(
         Ending degree to check.
     num_folds
         Number of folds for cross-validation.
+    patience
+        Number of consecutive degrees without improvement before early
+        stopping.  Defaults to ``1``, which stops as soon as the mean CV
+        MSE increases for the first time (after ``min_degree + 1``).
+        Increase this value to tolerate transient upswings caused by
+        numerical noise.
     val_dataloaders
         Optional validation dataloader(s) forwarded to
         :meth:`~pl_crossvalidate.KFoldTrainer.cross_validate` for fold-internal
@@ -57,10 +68,15 @@ def select_degree(
 
     Returns
     -------
+    int
         The best degree found.
     """
-    from torch_bsf.bezier_simplex import randn
-    from torch.utils.data import DataLoader, TensorDataset
+    if patience < 1:
+        raise ValueError(
+            f"patience must be a positive integer (>= 1), got {patience!r}."
+        )
+
+    from torch_bsf.bezier_simplex import _KFoldTrainer, randn
 
     # Build the dataset once – it doesn't change across degree iterations.
     # Use full-batch loading (consistent with bezier_simplex.fit()) unless the
@@ -85,7 +101,7 @@ def select_degree(
                 "Either provide a positive 'batch_size' in trainer_kwargs or omit it "
                 "to use the default (full-batch)."
             )
-        train_dl = DataLoader(dataset, batch_size=batch_size)
+        train_dl: DataLoader | None = DataLoader(dataset, batch_size=batch_size)
     else:
         train_dl = None  # datamodule provides its own dataloaders
 
@@ -93,24 +109,25 @@ def select_degree(
     # comes from test_step (the per-fold held-out subset produced by KFoldTrainer).
     # When the caller supplies val_dataloaders or a datamodule, respect those by
     # not forcing limit_val_batches=0.0.
-    kfold_kwargs: dict = {"num_sanity_val_steps": 0}
+    kfold_kwargs: dict[str, Any] = {"num_sanity_val_steps": 0}
     if val_dataloaders is None and datamodule is None:
         kfold_kwargs["limit_val_batches"] = 0.0
     kfold_kwargs.update(trainer_kwargs)
 
     best_degree = min_degree
-    best_mse = float('inf')
+    best_mse = float("inf")
+    no_improve_count = 0
 
     for d in range(min_degree, max_degree + 1):
         _logger.info("Checking degree %d...", d)
 
         model = randn(params.shape[1], values.shape[1], d)
 
-        trainer = KFoldTrainer(num_folds=num_folds, **kfold_kwargs)
+        trainer = _KFoldTrainer(num_folds=num_folds, **kfold_kwargs)
 
         # KFoldTrainer splits train_dl into per-fold train/test subsets;
         # test results (test_mse) give the unbiased cross-validation estimate.
-        cross_validate_kwargs: dict = {}
+        cross_validate_kwargs: dict[str, Any] = {}
         if datamodule is not None:
             cross_validate_kwargs["datamodule"] = datamodule
         else:
@@ -126,16 +143,97 @@ def select_degree(
             if "test_mse" in res
         ]
 
-        mean_mse = sum(test_mses) / len(test_mses) if test_mses else float('inf')
+        mean_mse = sum(test_mses) / len(test_mses) if test_mses else float("inf")
         _logger.info("Degree %d: Mean MSE = %.6f", d, mean_mse)
-        
+
         if mean_mse < best_mse:
             best_mse = mean_mse
             best_degree = d
+            no_improve_count = 0
         else:
-            # Simple heuristic: if MSE increases, stop
-            if d > min_degree + 1:
-                _logger.info("MSE increased at degree %d, stopping.", d)
+            no_improve_count += 1
+            if d > min_degree and no_improve_count >= patience:
+                _logger.info(
+                    "No improvement for %d consecutive degree(s) at degree %d, stopping.",
+                    no_improve_count,
+                    d,
+                )
                 break
-                
+
     return best_degree
+
+
+if __name__ == "__main__":
+    from argparse import ArgumentParser
+    from pathlib import Path
+
+    import numpy as np
+
+    from torch_bsf.validator import int_or_str
+
+    parser = ArgumentParser(
+        prog="python -m torch_bsf.model_selection.degree_selection",
+        description="Automatic degree selection for Bezier simplex via k-fold cross-validation",
+    )
+    parser.add_argument("--params", type=Path, required=True, help="Path to the input parameters CSV file")
+    parser.add_argument("--values", type=Path, required=True, help="Path to the output values CSV file")
+    parser.add_argument("--header", type=int, default=0, help="Number of header rows to skip (default: 0)")
+    parser.add_argument("--min_degree", type=int, default=1, help="Minimum degree to search (default: 1)")
+    parser.add_argument("--max_degree", type=int, default=5, help="Maximum degree to search (default: 5)")
+    parser.add_argument("--num_folds", type=int, default=5, help="Number of cross-validation folds (default: 5)")
+    parser.add_argument(
+        "--patience",
+        type=int,
+        default=1,
+        help="Consecutive non-improving degrees before stopping (default: 1)",
+    )
+    parser.add_argument("--batch_size", type=int, default=None, help="Batch size for training (default: full-batch)")
+    parser.add_argument("--max_epochs", type=int, default=2, help="Training epochs per fold (default: 2)")
+    parser.add_argument("--accelerator", type=str, default="auto", help="Accelerator type (default: auto)")
+    parser.add_argument("--devices", type=int_or_str, default="auto", help="Devices to use, integer or 'auto' (default: auto)")
+    parser.add_argument(
+        "--loglevel",
+        type=str,
+        default="INFO",
+        choices=("DEBUG", "INFO", "WARNING", "ERROR", "CRITICAL"),
+        help="Python logging level for degree selection progress (default: INFO)",
+    )
+    args = parser.parse_args()
+
+    if args.min_degree > args.max_degree:
+        parser.error(f"--min_degree ({args.min_degree}) must be <= --max_degree ({args.max_degree})")
+
+    logging.basicConfig(
+        level=getattr(logging, args.loglevel),
+        format="%(levelname)s:%(name)s:%(message)s",
+        force=True,
+    )
+
+    def _load_csv(path: Path, header: int) -> torch.Tensor:
+        delimiter = "," if path.suffix.lower() == ".csv" else None
+        return torch.from_numpy(
+            np.loadtxt(path, delimiter=delimiter, skiprows=header, ndmin=2)
+        ).to(torch.get_default_dtype())
+
+    params_tensor = _load_csv(args.params, args.header)
+    values_tensor = _load_csv(args.values, args.header)
+
+    trainer_kwargs_cli: dict[str, Any] = {
+        "max_epochs": args.max_epochs,
+        "accelerator": args.accelerator,
+        "devices": args.devices,
+    }
+    if args.batch_size is not None:
+        trainer_kwargs_cli["batch_size"] = args.batch_size
+
+    best_degree = select_degree(
+        params=params_tensor,
+        values=values_tensor,
+        min_degree=args.min_degree,
+        max_degree=args.max_degree,
+        num_folds=args.num_folds,
+        patience=args.patience,
+        **trainer_kwargs_cli,
+    )
+
+    print(f"Best degree: {best_degree}")
