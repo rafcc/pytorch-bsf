@@ -1,5 +1,7 @@
 import csv
 import json
+import numbers
+import operator
 from ast import literal_eval
 from functools import lru_cache
 from math import factorial
@@ -1091,3 +1093,221 @@ def fit(
     trainer = L.Trainer(**kwargs)
     trainer.fit(bs, dl)
     return bs
+
+
+def fit_kfold(
+    params: torch.Tensor,
+    values: torch.Tensor,
+    n_folds: int = 5,
+    degree: int | None = None,
+    init: BezierSimplex | ControlPoints | ControlPointsData | None = None,
+    smoothness_weight: float = 0.0,
+    fix: Iterable[Index] | None = None,
+    batch_size: int | None = None,
+    trainer_kwargs: dict | None = None,
+    **kwargs,
+) -> list[BezierSimplex]:
+    r"""Fits an ensemble of Bezier simplices using k-fold cross-validation.
+
+    Splits the training data into ``n_folds`` folds via
+    :class:`~pl_crossvalidate.KFoldTrainer` and trains one model per fold on
+    the data from the remaining ``n_folds - 1`` folds.  The resulting list of
+    models can be passed directly to
+    :func:`torch_bsf.active_learning.suggest_next_points` to drive a
+    Query-By-Committee active learning loop.
+
+    If ``len(params) < n_folds``, the actual number of folds is capped at
+    ``len(params)`` to avoid empty training subsets.
+
+    Parameters
+    ----------
+    params
+        The parameter data on the simplex.
+    values
+        The label data.
+    n_folds
+        The number of cross-validation folds (committee size).  Defaults to 5.
+    degree
+        The degree of the Bezier simplex.
+    init
+        The initial values of a Bezier simplex or control points.
+    smoothness_weight
+        The weight of the smoothness penalty.
+    fix
+        The indices of control points to exclude from training.
+    batch_size
+        The size of a minibatch.  Defaults to full-batch (consistent with
+        :func:`fit`).
+    trainer_kwargs
+        A dict of keyword arguments to pass to
+        :class:`lightning.pytorch.Trainer` (via
+        :class:`~pl_crossvalidate.KFoldTrainer`).  For example,
+        ``dict(max_epochs=10, enable_progress_bar=False, logger=False)``.
+        When ``None`` (default), only the internal defaults used by the
+        cross-validation helper are applied (notably
+        ``num_sanity_val_steps=0`` and ``limit_val_batches=0.0`` to disable
+        per-fold validation for speed), and no additional trainer arguments
+        are taken from this dict.  You can still pass Trainer or
+        :class:`~pl_crossvalidate.KFoldTrainer` options via ``**kwargs``
+        (which are always merged into ``kfold_kwargs``).  To re-enable
+        validation on each fold, explicitly supply suitable values here or in
+        ``**kwargs``, e.g. ``dict(num_sanity_val_steps=2,
+        limit_val_batches=1.0, ...)``.
+    kwargs
+        Additional arguments forwarded to
+        :class:`~pl_crossvalidate.KFoldTrainer` (which itself accepts all
+        :class:`lightning.pytorch.Trainer` arguments).  For example, pass
+        ``shuffle=True`` (default in KFoldTrainer) or ``stratified=False``
+        to control how the folds are constructed.
+
+    Returns
+    -------
+    list[BezierSimplex]
+        A list of ``min(n_folds, len(params))`` trained models, one per fold.
+
+    Raises
+    ------
+    ValueError
+        If ``n_folds < 2``, if ``len(params) < 2`` (too few samples for any
+        fold split), if neither / both of ``degree`` and ``init`` are
+        provided, if ``batch_size`` is truthy but not a positive integer, or
+        if reserved arguments such as ``num_folds`` or ``batch_size`` are
+        supplied via ``trainer_kwargs`` or ``**kwargs``.
+
+    Examples
+    --------
+    >>> import torch
+    >>> import torch_bsf
+    >>> from torch_bsf.active_learning import suggest_next_points
+    >>> from torch_bsf.sampling import simplex_grid
+
+    Prepare training data
+
+    >>> params = simplex_grid(n_params=3, degree=3)
+    >>> values = params.pow(2).sum(dim=1, keepdim=True)
+
+    Build a 5-fold ensemble and suggest the 2 most uncertain points
+
+    >>> models = torch_bsf.fit_kfold(
+    ...     params=params,
+    ...     values=values,
+    ...     degree=3,
+    ...     trainer_kwargs={"max_epochs": 1, "enable_progress_bar": False, "logger": False},
+    ... )
+    >>> suggestions = suggest_next_points(models, n_suggestions=2, method="qbc")
+    >>> suggestions.shape
+    torch.Size([2, 3])
+
+    See Also
+    --------
+    fit : Fit a single Bezier simplex.
+    torch_bsf.active_learning.suggest_next_points : Use the ensemble for
+        active learning.
+    """
+    from pl_crossvalidate import KFoldTrainer
+
+    class _KFoldTrainer(KFoldTrainer):
+        """Compatibility shim: pl_crossvalidate <=0.1.0 crashes in __init__ when
+        ``logger=False`` because it unconditionally accesses ``self.logger.version``
+        after ``super().__init__()``.  Catch that specific AttributeError and set
+        ``_version`` to ``None`` so the rest of the cross-validation logic works.
+        """
+
+        def __init__(self, *args, **kwargs):
+            try:
+                super().__init__(*args, **kwargs)
+            except AttributeError as e:
+                # In pl_crossvalidate <=0.1.0, __init__ crashes when logger=False
+                # because it unconditionally accesses self.logger.version after
+                # calling super().__init__().  Only suppress the error when that
+                # exact condition holds (logger explicitly disabled or missing and
+                # the AttributeError clearly comes from accessing `.version`);
+                # propagate all other cases.
+                logger_kwarg = kwargs.get("logger", None)
+                logger_attr = getattr(self, "logger", None)
+                attr_name = getattr(e, "name", None)
+                is_logger_version_error = attr_name == "version"
+                if is_logger_version_error and (logger_kwarg is False or logger_attr is None):
+                    self._version = None
+                else:
+                    raise
+
+    if n_folds < 2:
+        raise ValueError(f"n_folds must be at least 2, got {n_folds}")
+
+    actual_folds = min(n_folds, len(params))
+    if actual_folds < 2:
+        raise ValueError(
+            f"At least 2 training samples are required for k-fold cross-validation, "
+            f"got {len(params)}."
+        )
+
+    # Build the base model (same logic as fit()).
+    if degree is None and init is None:
+        raise ValueError("Either degree or init must be specified")
+    if degree is not None and init is not None:
+        raise ValueError("Either degree or init must be specified, not both")
+
+    if isinstance(init, BezierSimplex):
+        same_weight = getattr(init, "smoothness_weight", None) == smoothness_weight
+        has_adjacency = hasattr(init, "adjacency_indices_")
+        if same_weight and has_adjacency:
+            bs = init
+        else:
+            bs = BezierSimplex(init.control_points, smoothness_weight=smoothness_weight)
+    elif init is not None:
+        bs = BezierSimplex(init, smoothness_weight=smoothness_weight)
+    else:
+        bs = randn(
+            n_params=int(params.shape[1]),
+            n_values=int(values.shape[1]),
+            degree=cast(int, degree),
+            smoothness_weight=smoothness_weight,
+        )
+
+    if fix is None:
+        fix = []
+    validate_simplex_indices(fix, bs.n_params, bs.degree)
+    for index in fix:
+        bs.fix_row(index)
+
+    # Build full-batch DataLoader (same default as fit()).
+    dataset = TensorDataset(params, values)
+
+    # Mirror fit()'s behavior: treat falsy/None as full-batch, and validate positivity.
+    # Accept any numbers.Integral (e.g. numpy.int64) but explicitly reject bool
+    # (True/False are int subclasses and would otherwise slip through).
+    if not batch_size:
+        effective_batch_size = len(dataset)
+    else:
+        if (
+            not isinstance(batch_size, numbers.Integral)
+            or isinstance(batch_size, bool)
+            or batch_size <= 0
+        ):
+            raise ValueError(
+                f"'batch_size' must be a positive integer or falsy/None for full-batch, got {batch_size!r}."
+            )
+        effective_batch_size = operator.index(batch_size)
+
+    dl = DataLoader(dataset, batch_size=effective_batch_size)
+    # Disable the validation loop inside each fold by default; the
+    # cross-validation estimate comes from KFoldTrainer's per-fold test step.
+    # Callers can override these by passing e.g. limit_val_batches=1.0.
+    kfold_kwargs: dict = {"num_sanity_val_steps": 0, "limit_val_batches": 0.0}
+    kfold_kwargs.update(trainer_kwargs or {})
+    kfold_kwargs.update(kwargs)
+
+    # Guard against reserved/unsupported keys that would conflict with the
+    # public API or _KFoldTrainer's signature.
+    for _reserved in ("num_folds", "batch_size"):
+        if _reserved in kfold_kwargs:
+            raise ValueError(
+                f"'{_reserved}' must not be passed via trainer_kwargs/kwargs. "
+                "Use the 'n_folds' argument to control the number of folds and "
+                "the 'batch_size' argument to control DataLoader batching."
+            )
+    trainer = _KFoldTrainer(num_folds=actual_folds, **kfold_kwargs)
+    trainer.cross_validate(bs, train_dataloader=dl)
+    ensemble = trainer.create_ensemble(bs)
+    return list(ensemble.models)

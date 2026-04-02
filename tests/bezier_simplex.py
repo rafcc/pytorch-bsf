@@ -134,6 +134,147 @@ def test_fit():
     print(f"{t} -> {x}")
 
 
+def test_fit_kfold():
+    ts = torch.tensor(  # parameters on a simplex
+        [
+            [3 / 3, 0 / 3, 0 / 3],
+            [2 / 3, 1 / 3, 0 / 3],
+            [2 / 3, 0 / 3, 1 / 3],
+            [1 / 3, 2 / 3, 0 / 3],
+            [1 / 3, 1 / 3, 1 / 3],
+            [1 / 3, 0 / 3, 2 / 3],
+            [0 / 3, 3 / 3, 0 / 3],
+            [0 / 3, 2 / 3, 1 / 3],
+            [0 / 3, 1 / 3, 2 / 3],
+            [0 / 3, 0 / 3, 3 / 3],
+        ]
+    )
+    xs = 1 - ts * ts  # values corresponding to the parameters
+
+    # Shared fast Trainer settings to keep each training call to 1 epoch.
+    fast = dict(max_epochs=1, enable_progress_bar=False, logger=False, enable_checkpointing=False)
+
+    # Normal case: returns n_folds models
+    models = tb.fit_kfold(
+        params=ts,
+        values=xs,
+        n_folds=5,
+        degree=3,
+        trainer_kwargs=fast,
+    )
+    assert len(models) == 5
+    for m in models:
+        assert isinstance(m, tb.BezierSimplex)
+        assert m.n_params == 3
+        assert m.n_values == 3
+
+    # Edge case: n_folds > len(params) — capped automatically
+    few_ts = ts[:3]
+    few_xs = xs[:3]
+    models_capped = tb.fit_kfold(
+        params=few_ts,
+        values=few_xs,
+        n_folds=10,
+        degree=1,
+        trainer_kwargs=fast,
+    )
+    assert len(models_capped) == 3  # capped to len(params)
+
+    # Invalid n_folds
+    with pytest.raises(ValueError):
+        tb.fit_kfold(params=ts, values=xs, n_folds=1, degree=3)
+
+    # Too few samples: even with n_folds=2, len(params)=1 can't be split
+    one_ts = ts[:1]
+    one_xs = xs[:1]
+    with pytest.raises(ValueError):
+        tb.fit_kfold(params=one_ts, values=one_xs, n_folds=5, degree=3)
+
+    # Neither degree nor init — must raise ValueError
+    with pytest.raises(ValueError, match="Either degree or init"):
+        tb.fit_kfold(params=ts, values=xs, n_folds=3)
+
+    # Both degree and init — must raise ValueError
+    init_bs = tbbs.randn(n_params=3, n_values=3, degree=3)
+    with pytest.raises(ValueError, match="Either degree or init"):
+        tb.fit_kfold(params=ts, values=xs, n_folds=3, degree=3, init=init_bs)
+
+    # init as BezierSimplex (no adjacency_indices_; creates new from control_points)
+    init_bs2 = tbbs.randn(n_params=3, n_values=3, degree=3)
+    models_init_bs = tb.fit_kfold(
+        params=ts, values=xs, n_folds=3, init=init_bs2, trainer_kwargs=fast,
+    )
+    assert len(models_init_bs) == 3
+    for m in models_init_bs:
+        assert isinstance(m, tb.BezierSimplex)
+
+    # init as BezierSimplex with matching smoothness_weight and adjacency_indices_
+    # (hits the `bs = init` fast-path in fit_kfold)
+    init_smooth = tbbs.randn(n_params=3, n_values=3, degree=3, smoothness_weight=0.1)
+    assert hasattr(init_smooth, "adjacency_indices_")  # sanity check
+    models_reuse = tb.fit_kfold(
+        params=ts, values=xs, n_folds=3, init=init_smooth, smoothness_weight=0.1,
+        trainer_kwargs=fast,
+    )
+    assert len(models_reuse) == 3
+
+    # init as control-points dict (non-BezierSimplex)
+    from torch_bsf.bezier_simplex import simplex_indices
+    cp_dict = {idx: [0.0] * 3 for idx in simplex_indices(3, 1)}
+    models_init_cp = tb.fit_kfold(
+        params=ts, values=xs, n_folds=3, init=cp_dict, trainer_kwargs=fast,
+    )
+    assert len(models_init_cp) == 3
+
+    # Explicit positive batch_size
+    models_bs = tb.fit_kfold(
+        params=ts, values=xs, n_folds=3, degree=3, batch_size=5,
+        trainer_kwargs=fast,
+    )
+    assert len(models_bs) == 3
+
+    # Invalid batch_size: negative integer
+    with pytest.raises(ValueError, match="batch_size"):
+        tb.fit_kfold(params=ts, values=xs, n_folds=3, degree=3, batch_size=-1)
+
+    # Invalid batch_size: truthy non-integer (float)
+    with pytest.raises(ValueError, match="batch_size"):
+        tb.fit_kfold(params=ts, values=xs, n_folds=3, degree=3, batch_size=1.5)
+
+    # Invalid batch_size: bool True (Integral subclass but explicitly rejected)
+    with pytest.raises(ValueError, match="batch_size"):
+        tb.fit_kfold(params=ts, values=xs, n_folds=3, degree=3, batch_size=True)
+
+    # batch_size as numpy.int64 — numbers.Integral, should be accepted
+    import numpy as np
+    models_np_bs = tb.fit_kfold(
+        params=ts, values=xs, n_folds=3, degree=3, batch_size=np.int64(5),
+        trainer_kwargs=fast,
+    )
+    assert len(models_np_bs) == 3
+
+    # Reserved key 'num_folds' in trainer_kwargs
+    with pytest.raises(ValueError, match="num_folds"):
+        tb.fit_kfold(
+            params=ts, values=xs, n_folds=3, degree=3,
+            trainer_kwargs={"num_folds": 3},
+        )
+
+    # Reserved key 'batch_size' in trainer_kwargs
+    with pytest.raises(ValueError, match="batch_size"):
+        tb.fit_kfold(
+            params=ts, values=xs, n_folds=3, degree=3,
+            trainer_kwargs={"batch_size": 5},
+        )
+
+    # fix parameter: freeze vertex [3,0,0]
+    models_fix = tb.fit_kfold(
+        params=ts, values=xs, n_folds=3, degree=3, fix=[[3, 0, 0]],
+        trainer_kwargs=fast,
+    )
+    assert len(models_fix) == 3
+
+
 @pytest.mark.parametrize(
     "init_type",
     ("instance", "rand", "file"),
