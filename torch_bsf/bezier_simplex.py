@@ -1269,6 +1269,15 @@ def fit_kfold(
     kfold_kwargs.update(trainer_kwargs or {})
     kfold_kwargs.update(kwargs)
 
+    # Guard against reserved/unsupported keys that would conflict with the
+    # public API or _KFoldTrainer's signature.
+    for _reserved in ("num_folds", "batch_size"):
+        if _reserved in kfold_kwargs:
+            raise ValueError(
+                f"'{_reserved}' must not be passed via trainer_kwargs/kwargs. "
+                "Use the 'n_folds' argument to control the number of folds and "
+                "the 'batch_size' argument to control DataLoader batching."
+            )
     trainer = _KFoldTrainer(num_folds=actual_folds, **kfold_kwargs)
     trainer.cross_validate(bs, train_dataloader=dl)
     ensemble = trainer.create_ensemble(bs)
