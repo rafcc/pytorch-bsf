@@ -1,5 +1,5 @@
 import itertools
-from typing import Optional, Sequence
+from typing import Literal, Optional, Sequence
 import torch
 import torch.nn as nn
 from torch_bsf.sampling import simplex_random
@@ -27,7 +27,7 @@ def suggest_next_points(
     models: Sequence[nn.Module],
     n_suggestions: int = 1,
     n_candidates: int = 1000,
-    method: str = "qbc",
+    method: Literal["qbc", "density"] = "qbc",
     params: Optional[torch.Tensor] = None,
     n_params: Optional[int] = None,
 ) -> torch.Tensor:
@@ -46,7 +46,7 @@ def suggest_next_points(
         The number of points to suggest.
     n_candidates : int, default=1000
         The number of candidate points to evaluate.
-    method : str, default="qbc"
+    method : Literal["qbc", "density"], default="qbc"
         The method to use:
         - "qbc": Query-By-Committee. Suggests points where models disagree most.
         - "density": Suggests points that are furthest from existing training points.

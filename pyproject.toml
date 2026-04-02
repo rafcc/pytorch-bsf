@@ -13,7 +13,7 @@ authors = [
 ]
 requires-python = ">=3.10"
 classifiers = [
-  "Development Status :: 3 - Alpha",
+  "Development Status :: 4 - Beta",
   "Environment :: Console",
   "Intended Audience :: Developers",
   "Intended Audience :: Education",
@@ -39,8 +39,6 @@ dependencies = [
   "pl-crossvalidate>=0.1,<1",
   "protobuf>=6,<7",
   "mlflow>=3,<4",
-  # hotfix for mlflow's starlette 1.0.0 issue
-  "starlette<1",
   "jsonschema>=4,<5",
   "PyYAML>=6,<7",
 ]
@@ -68,10 +66,10 @@ develop = [
   "isort",
   "black",
   "flake8",
-  "tox",
   "pytest",
   "pytest-cov",
   "pytest-randomly",
+  "pytest-benchmark",
   "mypy",
   "types-jsonschema",
   "types-PyYAML",

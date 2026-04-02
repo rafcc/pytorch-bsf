@@ -1,4 +1,26 @@
 import torch
+from typing import Protocol
+
+
+class Scaler(Protocol):
+    """Protocol for data scalers with a fit/transform interface.
+
+    All concrete scaler classes (:class:`MinMaxScaler`, :class:`StdScaler`,
+    :class:`QuantileScaler`, :class:`NoneScaler`) satisfy this protocol via
+    structural subtyping — no explicit inheritance is required.
+    """
+
+    def fit(self, values: torch.Tensor) -> None:
+        """Fit the scaler to ``values``."""
+        ...
+
+    def fit_transform(self, values: torch.Tensor) -> torch.Tensor:
+        """Fit the scaler to ``values`` and return the transformed tensor."""
+        ...
+
+    def inverse_transform(self, values: torch.Tensor) -> torch.Tensor:
+        """Reverse the transformation applied by :meth:`fit_transform`."""
+        ...
 
 
 class MinMaxScaler:

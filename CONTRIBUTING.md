@@ -65,7 +65,6 @@ The `[develop]` extras include:
 | `mypy` + type stubs | Static type checking |
 | `black` | Code formatting |
 | `isort` | Import sorting |
-| `tox` | Test automation |
 
 ---
 
@@ -232,7 +231,7 @@ Add type hints to all public APIs. Use mypy for static analysis:
 mypy torch_bsf/
 ```
 
-Configuration in `setup.cfg` (`[mypy]` section):
+Configuration in `pyproject.toml` (`[tool.mypy]` section):
 
 - `python_version = 3.10` (type checking targets the minimum supported version)
 - `warn_return_any = True`
@@ -243,7 +242,7 @@ Configuration in `setup.cfg` (`[mypy]` section):
 - **Indentation**: 4 spaces
 - **Maximum line length**: 127 characters (matches `flake8 --max-line-length=127`; run `black` with `--line-length 127` accordingly)
 - **Strings**: Double quotes (black default)
-- **Docstrings**: Google style recommended
+- **Docstrings**: NumPy style (use ``Parameters\n----------``, ``Returns\n-------``, ``Raises\n------`` sections)
 - **Type hints**: Use Python 3.10 built-in type hint syntax without `from __future__ import annotations`
 
 ---
@@ -303,12 +302,27 @@ Write runnable examples in docstrings for all public APIs. They are verified aut
 def fit(params, values, degree):
     """Fit a Bézier simplex to the given data.
 
-    Example:
-        >>> import torch
-        >>> import torch_bsf
-        >>> params = torch.tensor([[0.0], [0.5], [1.0]])
-        >>> values = torch.tensor([[0.0], [0.25], [1.0]])
-        >>> bs = torch_bsf.fit(params=params, values=values, degree=2)
+    Parameters
+    ----------
+    params : torch.Tensor
+        The parameter data on the simplex.
+    values : torch.Tensor
+        The label data.
+    degree : int
+        The degree of the Bezier simplex.
+
+    Returns
+    -------
+    BezierSimplex
+        A trained Bezier simplex.
+
+    Examples
+    --------
+    >>> import torch
+    >>> import torch_bsf
+    >>> params = torch.tensor([[0.0], [0.5], [1.0]])
+    >>> values = torch.tensor([[0.0], [0.25], [1.0]])
+    >>> bs = torch_bsf.fit(params=params, values=values, degree=2)
     """
 ```
 
@@ -372,6 +386,8 @@ pytorch-bsf/
 ├── README.md                         # Project overview and usage
 ├── MLproject                         # MLflow project definition
 ├── environment.yml                   # Conda environment definition
-├── setup.cfg                         # Package configuration, dependencies, tool settings
-└── setup.py                          # setuptools entry point (minimal)
+├── pyproject.toml                    # Package configuration, dependencies, tool settings
+└── examples/                         # Example scripts
+    └── quickstart/
+        └── run.sh                    # Quickstart shell script
 ```

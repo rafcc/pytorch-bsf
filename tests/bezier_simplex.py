@@ -945,3 +945,51 @@ def test_data_module_invalid_normalize_raises():
     with pytest.raises(ValueError, match="normalize"):
         BezierSimplexDataModule(params=_PARAMS_CSV, values=_VALUES_CSV, normalize="unknown")
 
+
+
+# ---------------------------------------------------------------------------
+# fit() / fit_kfold() seed parameter
+# ---------------------------------------------------------------------------
+
+
+_TS = torch.tensor(
+    [
+        [3 / 3, 0 / 3, 0 / 3],
+        [2 / 3, 1 / 3, 0 / 3],
+        [1 / 3, 2 / 3, 0 / 3],
+        [0 / 3, 3 / 3, 0 / 3],
+    ]
+)
+_XS = 1 - _TS * _TS
+
+
+def test_fit_seed_reproducibility():
+    """fit() with the same seed must produce identical control point matrices."""
+    fast = dict(max_epochs=2, enable_progress_bar=False, logger=False, enable_checkpointing=False)
+    bs1 = tbbs.fit(params=_TS, values=_XS, degree=1, seed=42, **fast)
+    bs2 = tbbs.fit(params=_TS, values=_XS, degree=1, seed=42, **fast)
+    assert torch.equal(bs1.control_points.matrix, bs2.control_points.matrix)
+
+
+def test_fit_different_seeds_differ():
+    """fit() with different seeds should (almost certainly) produce different results."""
+    fast = dict(max_epochs=2, enable_progress_bar=False, logger=False, enable_checkpointing=False)
+    bs1 = tbbs.fit(params=_TS, values=_XS, degree=1, seed=0, **fast)
+    bs2 = tbbs.fit(params=_TS, values=_XS, degree=1, seed=1, **fast)
+    assert not torch.equal(bs1.control_points.matrix, bs2.control_points.matrix)
+
+
+def test_fit_seed_none_does_not_raise():
+    """fit() with seed=None (default) should still work without error."""
+    fast = dict(max_epochs=1, enable_progress_bar=False, logger=False, enable_checkpointing=False)
+    bs = tbbs.fit(params=_TS, values=_XS, degree=1, seed=None, **fast)
+    assert isinstance(bs, tbbs.BezierSimplex)
+
+
+def test_fit_kfold_seed_reproducibility():
+    """fit_kfold() with the same seed must produce identical control points across calls."""
+    fast = dict(max_epochs=1, enable_progress_bar=False, logger=False, enable_checkpointing=False)
+    models1 = tb.fit_kfold(params=_TS, values=_XS, degree=1, n_folds=2, seed=7, trainer_kwargs=fast)
+    models2 = tb.fit_kfold(params=_TS, values=_XS, degree=1, n_folds=2, seed=7, trainer_kwargs=fast)
+    for m1, m2 in zip(models1, models2):
+        assert torch.equal(m1.control_points.matrix, m2.control_points.matrix)
