@@ -1102,6 +1102,7 @@ def fit_kfold(
     smoothness_weight: float = 0.0,
     fix: Iterable[Index] | None = None,
     batch_size: int | None = None,
+    trainer_kwargs: dict | None = None,
     **kwargs,
 ) -> list[BezierSimplex]:
     r"""Fits an ensemble of Bezier simplices using k-fold cross-validation.
@@ -1135,6 +1136,12 @@ def fit_kfold(
     batch_size
         The size of a minibatch.  Defaults to full-batch (consistent with
         :func:`fit`).
+    trainer_kwargs
+        A dict of keyword arguments to pass to
+        :class:`lightning.pytorch.Trainer` (via
+        :class:`~pl_crossvalidate.KFoldTrainer`).  For example,
+        ``dict(max_epochs=10, enable_progress_bar=False, logger=False)``.
+        When ``None`` (default), no extra trainer arguments are passed.
     kwargs
         Additional arguments forwarded to
         :class:`~pl_crossvalidate.KFoldTrainer` (which itself accepts all
@@ -1180,6 +1187,26 @@ def fit_kfold(
         active learning.
     """
     from pl_crossvalidate import KFoldTrainer
+
+    class _KFoldTrainer(KFoldTrainer):
+        """Compatibility shim: pl_crossvalidate <=0.1.0 crashes in __init__ when
+        ``logger=False`` because it unconditionally accesses ``self.logger.version``
+        after ``super().__init__()``.  Catch that specific AttributeError and set
+        ``_version`` to ``None`` so the rest of the cross-validation logic works.
+        """
+
+        def __init__(self, num_folds=5, shuffle=False, stratified=False, *args, **kwargs):
+            try:
+                super().__init__(num_folds, shuffle, stratified, *args, **kwargs)
+            except AttributeError:
+                # In pl_crossvalidate <=0.1.0, __init__ crashes when logger=False
+                # because it unconditionally accesses self.logger.version after
+                # calling super().__init__().  Only suppress the error when that
+                # exact condition holds (no logger); propagate all other cases.
+                if getattr(self, "logger", None) is None:
+                    self._version = None
+                else:
+                    raise
 
     if n_folds < 2:
         raise ValueError(f"n_folds must be at least 2, got {n_folds}")
@@ -1227,9 +1254,10 @@ def fit_kfold(
     # cross-validation estimate comes from KFoldTrainer's per-fold test step.
     # Callers can override these by passing e.g. limit_val_batches=1.0.
     kfold_kwargs: dict = {"num_sanity_val_steps": 0, "limit_val_batches": 0.0}
+    kfold_kwargs.update(trainer_kwargs or {})
     kfold_kwargs.update(kwargs)
 
-    trainer = KFoldTrainer(num_folds=actual_folds, **kfold_kwargs)
+    trainer = _KFoldTrainer(num_folds=actual_folds, **kfold_kwargs)
     trainer.cross_validate(bs, train_dataloader=dl)
     ensemble = trainer.create_ensemble(bs)
     return list(ensemble.models)
