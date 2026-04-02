@@ -1025,7 +1025,7 @@ def fit(
     degree
         The degree of the Bézier simplex.
     init
-        The initial values of a bezier simplex or control points.
+        The initial values of a Bézier simplex or control points.
     smoothness_weight
         The weight of smoothness penalty.
     fix
