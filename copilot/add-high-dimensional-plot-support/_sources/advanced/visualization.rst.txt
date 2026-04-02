@@ -63,17 +63,18 @@ shape ``(n_values, n_values)``.
 .. code-block:: python
 
    import torch_bsf
+   from torch_bsf import bezier_simplex
    from torch_bsf.plotting import plot_bezier_simplex
    import matplotlib.pyplot as plt
 
-   # Fit a high-dimensional model (n_params=4 means a 3-simplex input)
-   bs = torch_bsf.fit(params=ts, values=xs, degree=2)  # ts has 4 columns
+   # Build a random 4-parameter, 3-output model (n_params=4 means a 3-simplex input)
+   model = bezier_simplex.randn(n_params=4, n_values=3, degree=2)
 
-   # Plot returns a grid of axes
-   axes = plot_bezier_simplex(bs, num=30)
+   # Plot returns an (n_values, n_values) grid of axes
+   axes = plot_bezier_simplex(model, num=30)
    axes[0, 1].set_xlabel("Objective 2")
    axes[1, 0].set_ylabel("Objective 1")
-   plt.suptitle("Pairwise Plot of High-Dimensional Bézier Simplex")
+   plt.suptitle("Pairwise Plot of High-Dimensional Bezier Simplex")
    plt.tight_layout()
    plt.show()
 
