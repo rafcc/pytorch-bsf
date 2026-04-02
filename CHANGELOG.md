@@ -1,5 +1,31 @@
 # Changelog
 
+## [0.17.0](https://github.com/opthub-org/pytorch-bsf/compare/v0.16.1...v0.17.0) (2026-04-02)
+
+
+### ⚠ BREAKING CHANGES
+
+* unify `fit_kfold()` interface with `fit()` and return `nn.ModuleList` ([#314](https://github.com/opthub-org/pytorch-bsf/issues/314))
+
+### Features
+
+* 15 code-quality improvements — reproducibility, type safety, architecture, docs ([#318](https://github.com/opthub-org/pytorch-bsf/issues/318)) ([588334f](https://github.com/opthub-org/pytorch-bsf/commit/588334f40a9c7c3c8a89d3052ce5a630360a2fb1))
+* support high-dimensional Bézier simplex plotting (n_params ≥ 4) via pairwise scatter plot ([#307](https://github.com/opthub-org/pytorch-bsf/issues/307)) ([5d43d24](https://github.com/opthub-org/pytorch-bsf/commit/5d43d2447d91cb0fb67a8ef8c920c9fc2721fab3))
+* unify `fit_kfold()` interface with `fit()` and return `nn.ModuleList` ([#314](https://github.com/opthub-org/pytorch-bsf/issues/314)) ([8ac7afb](https://github.com/opthub-org/pytorch-bsf/commit/8ac7afbc92151ee25011e4d72e168c7fc3646fd2))
+
+
+### Bug Fixes
+
+* typo in error message — "sprit_ratio" → "split_ratio" ([#290](https://github.com/opthub-org/pytorch-bsf/issues/290)) ([cd165e3](https://github.com/opthub-org/pytorch-bsf/commit/cd165e34fadd1131cdb74e4e30916c4262722fd5))
+* unify Bézier/Bezier spelling across source code, metadata, and CONTRIBUTING.md ([#321](https://github.com/opthub-org/pytorch-bsf/issues/321)) ([c57bf16](https://github.com/opthub-org/pytorch-bsf/commit/c57bf1643aa43c2ad87d7d38d78abee0201d6338))
+
+
+### Documentation
+
+* make README more readable — consolidate features, rebalance chapters ([#316](https://github.com/opthub-org/pytorch-bsf/issues/316)) ([5eb763a](https://github.com/opthub-org/pytorch-bsf/commit/5eb763acaf20427a089e7f82d44c046b532b98ea))
+* rename 'fix' option to 'freeze' in README ([6b9d03c](https://github.com/opthub-org/pytorch-bsf/commit/6b9d03cdacd3946db33f247714343821af5d5c5d))
+* start elastic net explanation from original λ/α formulation ([#310](https://github.com/opthub-org/pytorch-bsf/issues/310)) ([6fb5ed4](https://github.com/opthub-org/pytorch-bsf/commit/6fb5ed43c4579dae2f24060b580bc4b1a3dee997))
+
 ## [0.16.1](https://github.com/opthub-org/pytorch-bsf/compare/v0.16.0...v0.16.1) (2026-04-01)
 
 
