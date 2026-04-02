@@ -178,6 +178,35 @@ def test_plot_bezier_simplex_pairwise_max_control_points_invalid():
         plot_bezier_simplex(model, num=3, max_control_points=-1)
 
 
+def test_plot_bezier_simplex_pairwise_max_pairwise_points_custom():
+    """Custom max_pairwise_points value forces random sampling and returns correct shape."""
+    import matplotlib.pyplot as plt
+
+    model = tbbs.randn(n_params=4, n_values=2, degree=1)
+    # With max_pairwise_points=10, even a small meshgrid will exceed the cap
+    result = plot_bezier_simplex(model, num=100, max_pairwise_points=10)
+    assert result.shape == (2, 2)
+    plt.close(result[0, 0].figure)
+
+
+def test_plot_bezier_simplex_pairwise_max_pairwise_points_invalid():
+    """plot_bezier_simplex must raise ValueError for negative max_pairwise_points."""
+    model = tbbs.randn(n_params=4, n_values=2, degree=1)
+    with pytest.raises(ValueError, match="max_pairwise_points"):
+        plot_bezier_simplex(model, num=3, max_pairwise_points=-1)
+
+
+def test_plot_bezier_simplex_pairwise_max_pairwise_points_default():
+    """Default max_pairwise_points matches _MAX_PAIRWISE_POINTS and returns correct shape."""
+    import matplotlib.pyplot as plt
+    import torch_bsf.plotting as plotting_module
+
+    model = tbbs.randn(n_params=4, n_values=2, degree=1)
+    result = plot_bezier_simplex(model, num=3, max_pairwise_points=plotting_module._MAX_PAIRWISE_POINTS)
+    assert result.shape == (2, 2)
+    plt.close(result[0, 0].figure)
+
+
 def test_plot_curve_with_existing_axes(bezier_curve_2d):
     import matplotlib.pyplot as plt
 

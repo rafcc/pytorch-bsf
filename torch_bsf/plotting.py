@@ -20,7 +20,9 @@ def plot_bezier_simplex(
     num: int = 100,
     ax=None,
     show_control_points: bool = True,
+    *,
     max_control_points: int = _MAX_CONTROL_POINTS,
+    max_pairwise_points: int = _MAX_PAIRWISE_POINTS,
     **kwargs,
 ):
     """Plots the Bézier simplex.
@@ -34,7 +36,7 @@ def plot_bezier_simplex(
         this value is used only to decide whether to use a full meshgrid or
         random sampling: if the combinatorial meshgrid size
         ``comb(num + n_params - 1, n_params - 1)`` exceeds
-        ``_MAX_PAIRWISE_POINTS``, exactly ``_MAX_PAIRWISE_POINTS`` uniformly
+        ``max_pairwise_points``, exactly ``max_pairwise_points`` uniformly
         random simplex samples are drawn instead and ``num`` no longer
         controls the sample count.
     ax : matplotlib.axes.Axes or None
@@ -49,9 +51,16 @@ def plot_bezier_simplex(
         Maximum number of control points to render in pairwise plots
         (``model.n_params >= 4``).  When the model has more control points
         than this limit, a random subset of ``max_control_points`` is drawn
-        instead to avoid combinatorial slowdowns.  Defaults to
-        ``_MAX_CONTROL_POINTS``.  Ignored when ``show_control_points`` is
-        ``False`` or ``model.n_params < 4``.
+        instead to avoid combinatorial slowdowns.  Defaults to 500.
+        Ignored when ``show_control_points`` is ``False`` or
+        ``model.n_params < 4``.  Must be a non-negative integer.
+    max_pairwise_points : int
+        Maximum number of sample points for the pairwise scatter plot
+        (``model.n_params >= 4``).  When the combinatorial meshgrid size
+        would exceed this limit, ``max_pairwise_points`` uniformly random
+        simplex samples are drawn instead to bound memory usage and plot
+        time.  Defaults to 2000.  Ignored when ``model.n_params < 4``.
+        Must be a non-negative integer.
     **kwargs
         Additional keyword arguments forwarded to the plot call.
         For ``model.n_params == 2``, forwarded to ``ax.plot`` (curve).
@@ -87,7 +96,7 @@ def plot_bezier_simplex(
         return _plot_bezier_triangle(model, num, ax, show_control_points, **kwargs)
     if model.n_params >= 4:
         return _plot_bezier_simplex_pairwise(
-            model, num, show_control_points, max_control_points, **kwargs
+            model, num, show_control_points, max_control_points, max_pairwise_points, **kwargs
         )
     raise ValueError(
         f"plot_bezier_simplex only supports models with n_params >= 2; got n_params = {model.n_params}"
@@ -253,7 +262,7 @@ def _plot_bezier_triangle(model, num, ax, show_control_points, **kwargs):
     return ax
 
 
-def _plot_bezier_simplex_pairwise(model, num, show_control_points, max_control_points, **kwargs):
+def _plot_bezier_simplex_pairwise(model, num, show_control_points, max_control_points, max_pairwise_points, **kwargs):
     """Plots a high-dimensional Bézier simplex as a pairwise scatter plot.
 
     For ``model.n_params >= 4``, this function generates sample points from
@@ -269,8 +278,8 @@ def _plot_bezier_simplex_pairwise(model, num, show_control_points, max_control_p
         The number of grid points along each edge of the simplex.  Used to
         estimate the full meshgrid size via
         ``comb(num + n_params - 1, n_params - 1)``.  If that size exceeds
-        ``_MAX_PAIRWISE_POINTS``, ``num`` is ignored and exactly
-        ``_MAX_PAIRWISE_POINTS`` uniformly random simplex samples are drawn
+        ``max_pairwise_points``, ``num`` is ignored and exactly
+        ``max_pairwise_points`` uniformly random simplex samples are drawn
         instead; in this case ``num`` no longer controls the sample count.
     show_control_points : bool
         Whether to overlay control points on the off-diagonal scatter panels.
@@ -278,8 +287,14 @@ def _plot_bezier_simplex_pairwise(model, num, show_control_points, max_control_p
         Maximum number of control points to render.  When the model has more
         control points than this limit, a random subset of ``max_control_points``
         is drawn instead to prevent combinatorial slowdowns for high-degree
-        models.  Defaults to ``_MAX_CONTROL_POINTS``.  Ignored when
+        models.  Defaults to 500.  Ignored when
         ``show_control_points`` is ``False``.  Must be a non-negative integer.
+    max_pairwise_points : int
+        Maximum number of sample points for the pairwise scatter plot.  When
+        the combinatorial meshgrid size exceeds this limit,
+        ``max_pairwise_points`` uniformly random simplex samples are drawn
+        instead to bound memory usage and plot time.  Defaults to 2000.
+        Must be a non-negative integer.
     **kwargs
         Additional keyword arguments forwarded to ``ax.scatter``.
 
@@ -291,13 +306,18 @@ def _plot_bezier_simplex_pairwise(model, num, show_control_points, max_control_p
     Raises
     ------
     ValueError
-        If ``max_control_points`` is negative or not an integer.
+        If ``max_control_points`` or ``max_pairwise_points`` is negative or
+        not an integer.
     ImportError
         If matplotlib is not installed.
     """
     if not isinstance(max_control_points, int) or max_control_points < 0:
         raise ValueError(
             f"max_control_points must be a non-negative integer; got {max_control_points!r}"
+        )
+    if not isinstance(max_pairwise_points, int) or max_pairwise_points < 0:
+        raise ValueError(
+            f"max_pairwise_points must be a non-negative integer; got {max_pairwise_points!r}"
         )
 
     try:
@@ -315,13 +335,13 @@ def _plot_bezier_simplex_pairwise(model, num, show_control_points, max_control_p
 
     n_p = model.n_params
     meshgrid_size = math.comb(num + n_p - 1, n_p - 1) if n_p > 0 else 1
-    if meshgrid_size > _MAX_PAIRWISE_POINTS:
+    if meshgrid_size > max_pairwise_points:
         # The full combinatorial grid would be too large; use random simplex
         # samples instead to bound memory usage and plot time.
         from torch_bsf.sampling import simplex_random
 
         cp_matrix = model.control_points.matrix
-        ts = simplex_random(n_params=n_p, n_samples=_MAX_PAIRWISE_POINTS).to(
+        ts = simplex_random(n_params=n_p, n_samples=max_pairwise_points).to(
             device=cp_matrix.device, dtype=cp_matrix.dtype
         )
         with torch.no_grad():
