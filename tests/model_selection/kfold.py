@@ -170,3 +170,39 @@ def test_cli_output_files_created(tmp_path):
     assert result.returncode == 0, result.stderr
     output_files = list(tmp_path.iterdir())
     assert len(output_files) > 0, "Expected output files to be created"
+
+
+# ---------------------------------------------------------------------------
+# In-process tests for main() to get coverage of the module
+# ---------------------------------------------------------------------------
+
+
+class TestKFoldMainInProcess:
+    """Call torch_bsf.model_selection.kfold.main() directly with patched sys.argv."""
+
+    def test_main_basic(self, tmp_path, monkeypatch):
+        """main() should run k-fold training and save output CSV files."""
+        from torch_bsf.model_selection.kfold import main
+
+        monkeypatch.chdir(tmp_path)
+        monkeypatch.setenv("MLFLOW_TRACKING_URI", f"file://{tmp_path}")
+        for var in ("MLFLOW_TRACKING_USERNAME", "MLFLOW_TRACKING_PASSWORD", "MLFLOW_TRACKING_TOKEN"):
+            monkeypatch.delenv(var, raising=False)
+        monkeypatch.setattr(
+            "sys.argv",
+            [
+                "kfold",
+                f"--params={_PARAMS_CSV}",
+                f"--values={_VALUES_CSV}",
+                "--degree=1",
+                "--num_folds=2",
+                "--max_epochs=1",
+                "--loglevel=0",
+                "--no-stratified",
+                "--accelerator=cpu",
+                "--devices=1",
+            ],
+        )
+        main()
+        output_files = list(tmp_path.iterdir())
+        assert len(output_files) > 0, "Expected output files to be created"

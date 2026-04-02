@@ -239,3 +239,60 @@ def test_plot_triangle_without_control_points(bezier_triangle_2d):
     ax = plot_bezier_simplex(bezier_triangle_2d, num=5, show_control_points=False)
     assert ax is not None
     plt.close(ax.figure)
+
+
+# ---------------------------------------------------------------------------
+# ImportError handling tests (matplotlib / scipy not available)
+# ---------------------------------------------------------------------------
+
+
+def test_plot_bezier_curve_no_matplotlib(monkeypatch):
+    """plot_bezier_simplex should raise ImportError when matplotlib is unavailable (curve)."""
+    import sys
+    from torch_bsf.plotting import _plot_bezier_curve
+
+    model = tbbs.randn(n_params=2, n_values=2, degree=1)
+    with monkeypatch.context() as m:
+        m.setitem(sys.modules, "matplotlib", None)
+        m.setitem(sys.modules, "matplotlib.pyplot", None)
+        with pytest.raises((ImportError, TypeError)):
+            _plot_bezier_curve(model, 10, None, True)
+
+
+def test_plot_bezier_triangle_no_matplotlib(monkeypatch):
+    """plot_bezier_simplex should raise ImportError when matplotlib is unavailable (triangle)."""
+    import sys
+    from torch_bsf.plotting import _plot_bezier_triangle
+
+    model = tbbs.randn(n_params=3, n_values=3, degree=1)
+    with monkeypatch.context() as m:
+        m.setitem(sys.modules, "matplotlib", None)
+        m.setitem(sys.modules, "matplotlib.pyplot", None)
+        with pytest.raises((ImportError, TypeError)):
+            _plot_bezier_triangle(model, 5, None, True)
+
+
+def test_plot_bezier_triangle_no_scipy(monkeypatch):
+    """_plot_bezier_triangle should raise ImportError when scipy is unavailable."""
+    import sys
+    from torch_bsf.plotting import _plot_bezier_triangle
+
+    model = tbbs.randn(n_params=3, n_values=3, degree=1)
+    with monkeypatch.context() as m:
+        m.setitem(sys.modules, "scipy", None)
+        m.setitem(sys.modules, "scipy.spatial", None)
+        with pytest.raises((ImportError, TypeError)):
+            _plot_bezier_triangle(model, 5, None, True)
+
+
+def test_plot_pairwise_no_matplotlib(monkeypatch):
+    """_plot_bezier_simplex_pairwise should raise ImportError when matplotlib is unavailable."""
+    import sys
+    from torch_bsf.plotting import _plot_bezier_simplex_pairwise
+
+    model = tbbs.randn(n_params=4, n_values=2, degree=1)
+    with monkeypatch.context() as m:
+        m.setitem(sys.modules, "matplotlib", None)
+        m.setitem(sys.modules, "matplotlib.pyplot", None)
+        with pytest.raises((ImportError, TypeError)):
+            _plot_bezier_simplex_pairwise(model, 5, True, 500, 2000)

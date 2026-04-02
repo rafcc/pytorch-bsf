@@ -195,8 +195,8 @@ def elastic_net_grid(
     return grids
 
 
-if __name__ == "__main__":
-
+def _cli_main() -> None:
+    """Entry point for ``python -m torch_bsf.model_selection.elastic_net_grid``."""
     parser = ArgumentParser(
         prog="python -m torch_bsf.model_selection.elastic_net_grid",
         description="Grid search for elastic net's hyperparameters",
@@ -209,3 +209,7 @@ if __name__ == "__main__":
 
     grid = elastic_net_grid(args.n_lambdas, args.n_alphas, args.n_vertex_copies, base=args.base)
     print("\n".join(f"{p[0]:.17e},{p[1]:.17e},{p[2]:.17e}" for p in grid.tolist()))
+
+
+if __name__ == "__main__":
+    _cli_main()

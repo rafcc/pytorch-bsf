@@ -175,3 +175,37 @@ def test_cli_meshgrid_saved(tmp_path):
     )
     assert result.returncode == 0, result.stderr
     assert any(tmp_path.iterdir()), "Expected at least one output file in tmp_path"
+
+
+# ---------------------------------------------------------------------------
+# In-process tests for main() to get coverage of the module
+# ---------------------------------------------------------------------------
+
+
+class TestMainInProcess:
+    """Call torch_bsf.__main__.main() directly with patched sys.argv."""
+
+    def test_main_basic(self, tmp_path, monkeypatch):
+        """main() should run training and save a meshgrid CSV."""
+        import os
+        from torch_bsf.__main__ import main
+
+        monkeypatch.chdir(tmp_path)
+        monkeypatch.setenv("MLFLOW_TRACKING_URI", f"file://{tmp_path}")
+        for var in ("MLFLOW_TRACKING_USERNAME", "MLFLOW_TRACKING_PASSWORD", "MLFLOW_TRACKING_TOKEN"):
+            monkeypatch.delenv(var, raising=False)
+        monkeypatch.setattr(
+            "sys.argv",
+            [
+                "torch_bsf",
+                f"--params={_PARAMS_CSV}",
+                f"--values={_VALUES_CSV}",
+                "--degree=1",
+                "--max_epochs=1",
+                "--loglevel=0",
+                "--accelerator=cpu",
+                "--devices=1",
+            ],
+        )
+        main()
+        assert any(tmp_path.iterdir()), "Expected at least one output file"

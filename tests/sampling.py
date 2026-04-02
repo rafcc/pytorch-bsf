@@ -254,3 +254,20 @@ def test_simplex_sobol_different_seeds_differ():
     r1 = simplex_sobol(3, 64, seed=0)
     r2 = simplex_sobol(3, 64, seed=1)
     assert not torch.equal(r1, r2)
+
+
+def test_simplex_sobol_scipy_import_error(monkeypatch):
+    """simplex_sobol should raise ImportError when scipy is not available."""
+    import sys
+
+    monkeypatch.setitem(sys.modules, "scipy", None)
+    monkeypatch.setitem(sys.modules, "scipy.stats", None)
+    monkeypatch.setitem(sys.modules, "scipy.stats.qmc", None)
+
+    # Re-import the function from a fresh copy of the module to bypass the cached import.
+    import importlib
+    import torch_bsf.sampling as sampling_mod
+    importlib.reload(sampling_mod)
+
+    with pytest.raises((ImportError, TypeError)):
+        sampling_mod.simplex_sobol(3, 4)
