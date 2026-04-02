@@ -61,7 +61,7 @@ def indices_schema(n_params: int, degree: int) -> dict[str, Any]:
     n_params
         The number of index elements of control points.
     degree
-        The degree of a Bézier surface.
+        The degree of a Bézier simplex.
 
     Returns
     -------
