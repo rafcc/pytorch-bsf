@@ -88,7 +88,17 @@ This method suggests points that are as far as possible from **all** existing tr
 
    # Placeholder training values derived from the existing parameters
    existing_values = existing_params.sum(dim=1, keepdim=True)
-   model = torch_bsf.fit(params=existing_params, values=existing_values, degree=2)
+   model = torch_bsf.fit(
+       params=existing_params,
+       values=existing_values,
+       degree=2,
+       trainer_kwargs=dict(
+           max_epochs=3,
+           enable_progress_bar=False,
+           logger=False,
+           enable_checkpointing=False,
+       ),
+   )
 
    # Suggest the 2 points furthest from all existing samples
    suggestions = suggest_next_points(
