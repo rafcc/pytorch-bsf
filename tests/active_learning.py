@@ -164,4 +164,12 @@ class TestSuggestNextPointsInteroperability:
         with pytest.raises(ValueError, match="same device"):
             suggest_next_points([m1, m2], n_suggestions=1, n_candidates=50, n_params=3)
 
-
+    def test_string_cpu_device_normalization(self):
+        """String-valued .device='cpu' is normalized and does not cause mismatch."""
+        m1 = _SimpleLinearModel(3, 2)
+        m2 = _SimpleLinearModel(3, 2)
+        # Simulate a framework setting .device as a string instead of torch.device
+        m2.device = "cpu"
+        result = suggest_next_points([m1, m2], n_suggestions=1, n_candidates=50, n_params=3)
+        assert result.shape == (1, 3)
+        assert result.device.type == "cpu"
