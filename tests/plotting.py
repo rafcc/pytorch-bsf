@@ -171,6 +171,13 @@ def test_plot_bezier_simplex_pairwise_max_control_points_custom():
     plt.close(result[0, 0].figure)
 
 
+def test_plot_bezier_simplex_pairwise_max_control_points_invalid():
+    """plot_bezier_simplex must raise ValueError for negative max_control_points."""
+    model = tbbs.randn(n_params=4, n_values=2, degree=1)
+    with pytest.raises(ValueError, match="max_control_points"):
+        plot_bezier_simplex(model, num=3, max_control_points=-1)
+
+
 def test_plot_curve_with_existing_axes(bezier_curve_2d):
     import matplotlib.pyplot as plt
 

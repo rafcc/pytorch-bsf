@@ -276,7 +276,7 @@ def _plot_bezier_simplex_pairwise(model, num, show_control_points, max_control_p
         control points than this limit, a random subset of ``max_control_points``
         is drawn instead to prevent combinatorial slowdowns for high-degree
         models.  Defaults to ``_MAX_CONTROL_POINTS``.  Ignored when
-        ``show_control_points`` is ``False``.
+        ``show_control_points`` is ``False``.  Must be a non-negative integer.
     **kwargs
         Additional keyword arguments forwarded to ``ax.scatter``.
 
@@ -287,9 +287,16 @@ def _plot_bezier_simplex_pairwise(model, num, show_control_points, max_control_p
 
     Raises
     ------
+    ValueError
+        If ``max_control_points`` is negative or not an integer.
     ImportError
         If matplotlib is not installed.
     """
+    if not isinstance(max_control_points, int) or max_control_points < 0:
+        raise ValueError(
+            f"max_control_points must be a non-negative integer; got {max_control_points!r}"
+        )
+
     try:
         import matplotlib.pyplot as plt
     except ImportError as e:
