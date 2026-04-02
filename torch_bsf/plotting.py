@@ -261,8 +261,9 @@ def _plot_bezier_simplex_pairwise(model, num, show_control_points, **kwargs):
 
     n_v = model.n_values
     if n_v == 0:
-        fig, single_ax = plt.subplots(1, 1)
-        return np.array([[single_ax]])
+        # Return an empty (0, 0) array to honor the documented (n_values, n_values)
+        # shape contract when there are no output values.
+        return np.empty((0, 0), dtype=object)
 
     panel_size = max(1, min(3, 12 // max(n_v, 1)))
     fig, axes = plt.subplots(
