@@ -22,6 +22,24 @@ class _SimpleLinearModel(nn.Module):
         return self.linear(x)
 
 
+class _BufferOnlyModel(nn.Module):
+    """A minimal nn.Module with a registered buffer but no learnable parameters."""
+
+    def __init__(self, n_params: int):
+        super().__init__()
+        self.register_buffer("bias", torch.zeros(n_params))
+
+    def forward(self, x: torch.Tensor) -> torch.Tensor:
+        return x + self.bias
+
+
+class _EmptyModel(nn.Module):
+    """A minimal nn.Module with no parameters and no buffers."""
+
+    def forward(self, x: torch.Tensor) -> torch.Tensor:
+        return x
+
+
 class TestSuggestNextPointsQBC:
     def test_output_shape(self):
         models = _make_models(3, 2, 2)
@@ -118,13 +136,26 @@ class TestSuggestNextPointsInteroperability:
         result = suggest_next_points(models, n_suggestions=1, n_candidates=50, n_params=3)
         assert result.shape == (1, 3)
 
-    def test_generic_module_device_mismatch_raises(self):
-        """Device mismatch is detected even for generic nn.Module without .device attribute."""
-        m1 = _SimpleLinearModel(3, 2)  # cpu
-        m2 = _SimpleLinearModel(3, 2)  # cpu
-        # Simulate a device mismatch by patching the device attribute only on m2
-        m2.register_buffer("_fake", torch.zeros(1))
-        # Both are on CPU here; device validation should pass (no error)
-        result = suggest_next_points([m1, m2], n_suggestions=1, n_candidates=50, n_params=3)
+    def test_buffer_only_device_inference(self):
+        """_infer_device falls back to buffer device for modules with no parameters."""
+        models = [_BufferOnlyModel(3) for _ in range(2)]
+        result = suggest_next_points(models, n_suggestions=1, n_candidates=50, n_params=3)
         assert result.shape == (1, 3)
+
+    def test_empty_module_cpu_fallback(self):
+        """_infer_device returns CPU for modules with no parameters and no buffers."""
+        models = [_EmptyModel() for _ in range(2)]
+        result = suggest_next_points(models, n_suggestions=1, n_candidates=50, n_params=3)
+        assert result.shape == (1, 3)
+        assert result.device.type == "cpu"
+
+    def test_device_mismatch_raises(self):
+        """Device mismatch across models raises ValueError."""
+        m1 = _SimpleLinearModel(3, 2)
+        m2 = _SimpleLinearModel(3, 2)
+        # Override .device on m2 to simulate a different device
+        m2.device = torch.device("meta")
+        with pytest.raises(ValueError, match="same device"):
+            suggest_next_points([m1, m2], n_suggestions=1, n_candidates=50, n_params=3)
+
 
