@@ -1260,8 +1260,18 @@ def fit_kfold(
 
     # Build full-batch DataLoader (same default as fit()).
     dataset = TensorDataset(params, values)
-    dl = DataLoader(dataset, batch_size=len(dataset) if batch_size is None else batch_size)
 
+    # Mirror fit()'s behavior: treat falsy/None as full-batch, and validate positivity.
+    if not batch_size:
+        effective_batch_size = len(dataset)
+    else:
+        if not isinstance(batch_size, int) or batch_size <= 0:
+            raise ValueError(
+                f"'batch_size' must be a positive integer or falsy/None for full-batch, got {batch_size!r}."
+            )
+        effective_batch_size = batch_size
+
+    dl = DataLoader(dataset, batch_size=effective_batch_size)
     # Disable the validation loop inside each fold by default; the
     # cross-validation estimate comes from KFoldTrainer's per-fold test step.
     # Callers can override these by passing e.g. limit_val_batches=1.0.

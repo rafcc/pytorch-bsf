@@ -52,7 +52,7 @@ This method trains an *ensemble* (committee) of models and suggests points where
 Density-Based Sampling
 ^^^^^^^^^^^^^^^^^^^^^^
 
-This method suggests points that are as far as possible from **all** existing training points in parameter space—a *max-min distance* (farthest-point) strategy that maximises coverage of the simplex.
+This method suggests points that are as far as possible from **all** existing training points in parameter space—a *max-min distance* (farthest-point) strategy that maximizes coverage of the simplex.
 
 **When to use density-based sampling:**
 
