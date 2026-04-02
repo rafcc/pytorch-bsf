@@ -55,8 +55,9 @@ def suggest_next_points(
     n_params : int, optional
         The number of simplex parameters (input dimension).  When omitted,
         the value is inferred from ``models[0].n_params`` if that attribute
-        exists.  When provided, it is validated against ``models[0].n_params``
-        (if present) and a :exc:`ValueError` is raised on mismatch.
+        exists.  When provided and ``models[0]`` exposes an ``n_params``
+        attribute, the two values must agree; a ``ValueError`` is raised on
+        mismatch.
 
     Returns
     -------
@@ -66,16 +67,16 @@ def suggest_next_points(
     if not models:
         raise ValueError("models must be a non-empty sequence of models")
 
-    model0_n_params = getattr(models[0], "n_params", None)
+    model_n_params = getattr(models[0], "n_params", None)
     if n_params is None:
-        if model0_n_params is None:
+        n_params = model_n_params
+        if n_params is None:
             raise ValueError(
                 "n_params must be provided when models do not have an 'n_params' attribute"
             )
-        n_params = model0_n_params
-    elif model0_n_params is not None and model0_n_params != n_params:
+    elif model_n_params is not None and n_params != model_n_params:
         raise ValueError(
-            f"Explicit n_params={n_params} conflicts with models[0].n_params={model0_n_params}."
+            f"n_params mismatch: explicit n_params={n_params} but models[0].n_params={model_n_params}"
         )
 
     device = _infer_device(models[0])
