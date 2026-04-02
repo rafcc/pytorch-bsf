@@ -11,9 +11,15 @@ performance regressions in the forward pass and in :func:`torch_bsf.fit`.
 
 import pytest
 import torch
+import sys
 
 pytest.importorskip("pytest_benchmark")
 
+if "--benchmark-only" not in sys.argv:
+    pytest.skip(
+        "Benchmarks are only run when --benchmark-only is specified.",
+        allow_module_level=True,
+    )
 import torch_bsf
 import torch_bsf.bezier_simplex as tbbs
 from torch_bsf.sampling import simplex_grid
