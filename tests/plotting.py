@@ -2,7 +2,6 @@ import pytest
 
 matplotlib = pytest.importorskip("matplotlib")
 matplotlib.use("Agg")  # Non-interactive backend for tests
-pytest.importorskip("scipy.spatial")  # Required for triangle plotting via Delaunay
 
 import torch_bsf.bezier_simplex as tbbs
 from torch_bsf.plotting import plot_bezier_simplex
@@ -20,11 +19,13 @@ def bezier_curve_3d():
 
 @pytest.fixture
 def bezier_triangle_2d():
+    pytest.importorskip("scipy.spatial")
     return tbbs.randn(n_params=3, n_values=2, degree=2)
 
 
 @pytest.fixture
 def bezier_triangle_3d():
+    pytest.importorskip("scipy.spatial")
     return tbbs.randn(n_params=3, n_values=3, degree=2)
 
 
