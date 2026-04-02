@@ -62,7 +62,6 @@ shape ``(n_values, n_values)``.
 
 .. code-block:: python
 
-   import torch_bsf
    from torch_bsf import bezier_simplex
    from torch_bsf.plotting import plot_bezier_simplex
    import matplotlib.pyplot as plt
