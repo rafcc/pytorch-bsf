@@ -16,7 +16,7 @@ The standard Elastic Net regression problem is formulated as:
 
 .. math::
 
-   \min_{\beta \in \mathbb{R}^N} \frac{1}{2n}\|y - X\beta\|^2
+   \min_{\beta \in \mathbb{R}^N} \frac{1}{2n}\|y - X\beta\|_2^2
    + \lambda \Bigl(\alpha \|\beta\|_1 + \frac{1-\alpha}{2}\|\beta\|_2^2\Bigr)
 
 where :math:`\lambda \ge 0` is the overall regularization strength and
@@ -28,7 +28,7 @@ To cast this into the multi-objective framework, we identify three objectives ov
 
 .. math::
 
-   f_{\text{data}}(\beta) &= \frac{1}{2n}\|y - X\beta\|^2 + \frac{\epsilon}{2}\|\beta\|_2^2 \\
+   f_{\text{data}}(\beta) &= \frac{1}{2n}\|y - X\beta\|_2^2 + \frac{\epsilon}{2}\|\beta\|_2^2 \\
    f_{\text{sparse}}(\beta) &= \|\beta\|_1 + \frac{\epsilon}{2}\|\beta\|_2^2 \\
    f_{\text{smooth}}(\beta) &= \frac{1 + \epsilon}{2}\|\beta\|_2^2
 

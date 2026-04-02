@@ -30,7 +30,7 @@ The standard Elastic Net regression problem is formulated as:
 
 .. math::
 
-   \min_{\beta \in \mathbb{R}^N} \frac{1}{2n}\|y - X\beta\|^2
+   \min_{\beta \in \mathbb{R}^N} \frac{1}{2n}\|y - X\beta\|_2^2
    + \lambda \Bigl(\alpha \|\beta\|_1 + \frac{1-\alpha}{2}\|\beta\|_2^2\Bigr)
 
 where :math:`\lambda \ge 0` is the overall regularization strength and :math:`\alpha \in [0, 1]` controls the L1/L2 mixing ratio. Setting :math:`\alpha = 1` recovers the Lasso, and :math:`\alpha = 0` gives Ridge regression.
@@ -39,11 +39,20 @@ To cast this into the multi-objective framework required by PyTorch-BSF, we iden
 
 .. math::
 
-   f_{\text{data}}(\beta) &= \frac{1}{2n}\|y - X\beta\|^2 + \frac{\epsilon}{2}\|\beta\|_2^2 \\
+   f_{\text{data}}(\beta) &= \frac{1}{2n}\|y - X\beta\|_2^2 + \frac{\epsilon}{2}\|\beta\|_2^2 \\
    f_{\text{sparse}}(\beta) &= \|\beta\|_1 + \frac{\epsilon}{2}\|\beta\|_2^2 \\
    f_{\text{smooth}}(\beta) &= \frac{1 + \epsilon}{2}\|\beta\|_2^2
 
-where :math:`n` is the number of observations and :math:`\epsilon > 0` is a small constant. These definitions introduce an :math:`\epsilon`-regularized (strongly convex) surrogate of the classical Elastic Net objective: the additional :math:`\frac{\epsilon}{2}\|\beta\|_2^2` terms in :math:`f_{\text{data}}` and :math:`f_{\text{sparse}}` (and the corresponding adjustment in :math:`f_{\text{smooth}}`) ensure that all three objectives are strongly convex, which is required for the solution map to be weakly simplicial :cite:p:`mizota2021unconstrained`. This :math:`\epsilon`-perturbation slightly changes the minimizer for fixed :math:`(\alpha, \lambda)`, but the classical Elastic Net formulation is recovered in the limit as :math:`\epsilon \to 0`. We can then express this :math:`\epsilon`-regularized objective as a convex combination of these three functions:
+where :math:`n` is the number of observations and :math:`\epsilon > 0` is a small constant.
+These definitions introduce an :math:`\epsilon`-regularized (strongly convex) surrogate of the
+classical Elastic Net objective: the additional :math:`\frac{\epsilon}{2}\|\beta\|_2^2` terms in
+:math:`f_{\text{data}}` and :math:`f_{\text{sparse}}` (and the corresponding adjustment in
+:math:`f_{\text{smooth}}`) ensure that all three objectives are strongly convex, which is required
+for the solution map to be weakly simplicial :cite:p:`mizota2021unconstrained`.
+This :math:`\epsilon`-perturbation slightly changes the minimizer for fixed :math:`(\alpha, \lambda)`,
+but the classical Elastic Net formulation is recovered in the limit as :math:`\epsilon \to 0`.
+We can then express this :math:`\epsilon`-regularized objective as a convex combination of these
+three functions:
 
 .. math::
 
