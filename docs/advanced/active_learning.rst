@@ -15,7 +15,7 @@ This method trains an *ensemble* (committee) of models and suggests points where
 
 **When to use QBC:**
 
-*   You already perform k-fold cross-validation as part of your training pipeline (reuse the k fold models at no extra cost).
+*   You already perform k-fold cross-validation as part of your training pipeline (reuse the k-fold models at no extra cost).
 *   You suspect the manifold has steep or irregular regions that a single model might miss.
 *   You want *uncertainty-driven* exploration: focus new samples where the current fit is least confident.
 
@@ -64,7 +64,7 @@ This method suggests points that are as far as possible from **all** existing tr
 **Practical tips:**
 
 *   Pass the full history of sampled parameters as ``params`` so the strategy avoids revisiting already-covered areas.
-*   Density sampling is deterministic given the same random seed for candidate generation; QBC results vary with the model ensemble.
+*   Density sampling is deterministic when you reuse the same random seed in the RNG used for candidate generation (currently NumPy's RNG, so you must seed ``numpy.random`` in addition to any PyTorch seeds); QBC results also vary with how your ensemble is trained.
 *   Switch from density to QBC once you have enough data to train a reliable ensemble (typically after 2–3 initial rounds).
 
 .. code-block:: python

@@ -1175,7 +1175,12 @@ def fit_kfold(
 
     Build a 5-fold ensemble and suggest the 2 most uncertain points
 
-    >>> models = torch_bsf.fit_kfold(params=params, values=values, degree=3)
+    >>> models = torch_bsf.fit_kfold(
+    ...     params=params,
+    ...     values=values,
+    ...     degree=3,
+    ...     trainer_kwargs={"max_epochs": 1, "enable_progress_bar": False, "logger": False},
+    ... )
     >>> suggestions = suggest_next_points(models, n_suggestions=2, method="qbc")
     >>> suggestions.shape
     torch.Size([2, 3])
@@ -1195,15 +1200,21 @@ def fit_kfold(
         ``_version`` to ``None`` so the rest of the cross-validation logic works.
         """
 
-        def __init__(self, num_folds=5, shuffle=False, stratified=False, *args, **kwargs):
+        def __init__(self, *args, **kwargs):
             try:
-                super().__init__(num_folds, shuffle, stratified, *args, **kwargs)
-            except AttributeError:
+                super().__init__(*args, **kwargs)
+            except AttributeError as e:
                 # In pl_crossvalidate <=0.1.0, __init__ crashes when logger=False
                 # because it unconditionally accesses self.logger.version after
                 # calling super().__init__().  Only suppress the error when that
-                # exact condition holds (no logger); propagate all other cases.
-                if getattr(self, "logger", None) is None:
+                # exact condition holds (logger explicitly disabled or missing and
+                # the AttributeError clearly comes from accessing `.version`);
+                # propagate all other cases.
+                logger_kwarg = kwargs.get("logger", None)
+                logger_attr = getattr(self, "logger", None)
+                message = str(e)
+                is_logger_version_error = "version" in message
+                if is_logger_version_error and (logger_kwarg is False or logger_attr is None):
                     self._version = None
                 else:
                     raise
@@ -1241,7 +1252,8 @@ def fit_kfold(
             smoothness_weight=smoothness_weight,
         )
 
-    fix = fix or []
+    if fix is None:
+        fix = []
     validate_simplex_indices(fix, bs.n_params, bs.degree)
     for index in fix:
         bs.fix_row(index)
