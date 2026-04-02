@@ -1273,7 +1273,8 @@ def fit_kfold(
     if not batch_size:
         effective_batch_size = len(dataset)
     else:
-        if not isinstance(batch_size, int) or batch_size <= 0:
+        # Use a strict type check so that bools (True/False) are not accepted as valid batch sizes.
+        if type(batch_size) is not int or batch_size <= 0:
             raise ValueError(
                 f"'batch_size' must be a positive integer or falsy/None for full-batch, got {batch_size!r}."
             )
