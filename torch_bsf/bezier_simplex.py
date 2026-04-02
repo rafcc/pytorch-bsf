@@ -1298,4 +1298,5 @@ def fit_kfold(
     trainer = _KFoldTrainer(num_folds=actual_folds, **kfold_kwargs)
     trainer.cross_validate(bs, train_dataloader=dl)
     ensemble = trainer.create_ensemble(bs)
-    return ensemble.models
+    # pl_crossvalidate is untyped; cast so mypy knows the return type is ModuleList.
+    return cast(nn.ModuleList, ensemble.models)
