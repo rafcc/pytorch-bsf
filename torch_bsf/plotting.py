@@ -9,12 +9,12 @@ def plot_bezier_simplex(
     show_control_points: bool = True,
     **kwargs,
 ):
-    """Plots the Bezier simplex.
+    """Plots the Bézier simplex.
 
     Parameters
     ----------
     model
-        The Bezier simplex model.
+        The Bézier simplex model.
     num
         The number of grid points for each edge.
     ax

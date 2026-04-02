@@ -12,7 +12,7 @@ from torch_bsf.validator import index_list, int_or_str, validate_simplex_indices
 
 parser = ArgumentParser(
     prog="python -m torch_bsf.model_selection.kfold",
-    description="Bezier simplex fitting with k-fold cross validation",
+    description="Bézier simplex fitting with k-fold cross validation",
 )
 parser.add_argument("--params", type=Path, required=True)
 parser.add_argument("--values", type=Path, required=True)

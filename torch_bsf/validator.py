@@ -10,11 +10,11 @@ def validate_simplex_indices(instance: object, n_params: int, degree: int) -> No
     Parameters
     ----------
     instance
-        An index list of a Bezier simplex.
+        An index list of a Bézier simplex.
     n_params
-        The n_params of a Bezier simplex.
+        The n_params of a Bézier simplex.
     degree
-        The degree of a Bezier simplex.
+        The degree of a Bézier simplex.
 
     Raises
     ------
@@ -61,7 +61,7 @@ def indices_schema(n_params: int, degree: int) -> dict[str, Any]:
     n_params
         The number of index elements of control points.
     degree
-        The degree of a Bezier surface.
+        The degree of a Bézier surface.
 
     Returns
     -------

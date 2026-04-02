@@ -1,6 +1,6 @@
-"""Comparison of Parameter Distribution and Value Scaling for Bezier Simplex Fitting.
+"""Comparison of Parameter Distribution and Value Scaling for Bézier Simplex Fitting.
 
-This script demonstrates two key concepts in Bezier Simplex Fitting (BSF):
+This script demonstrates two key concepts in Bézier Simplex Fitting (BSF):
 1. How parameter distribution (uniform vs skewed) affects fitting accuracy.
 2. How target value scaling affects the balance between multiple objectives.
 """
@@ -54,7 +54,7 @@ def run_parameter_experiment():
 
     print(f"MSE (from Uniform samples): {mse_uni:2.2e}")
     print(f"MSE (from Skewed samples) : {mse_skew:2.2e}")
-    print(f"Bezier simplices perform best with uniform parameter coverage.")
+    print(f"Bézier simplices perform best with uniform parameter coverage.")
 
 def run_value_experiment():
     print("\n--- 2. Value Scaling Experiment ---")

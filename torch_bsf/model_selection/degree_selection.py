@@ -14,7 +14,7 @@ def select_degree(
     datamodule=None,
     **trainer_kwargs
 ) -> int:
-    """Select the best degree for the Bezier simplex using cross-validation.
+    """Select the best degree for the Bézier simplex using cross-validation.
 
     Parameters
     ----------
