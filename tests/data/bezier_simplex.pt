@@ -1,3 +1,10 @@
-version https://git-lfs.github.com/spec/v1
-oid sha256:601fa36e5c1da18bc1bab24fe2ce8d7876c89e23afa4b42e2b5d2db1a25121b7
-size 3936
+# Sample Bezier simplex .pt fixture
+# This file is intentionally kept as a small, plain-text artifact
+# to avoid Git LFS requirements for contributors and CI.
+#
+# Automated tests generate real .pt files at runtime (see
+# `test_load_case_insensitive_pt`), so this fixture is only
+# intended for lightweight documentation or manual inspection.
+#
+# If you need an actual binary .pt file, run the relevant tests
+# or use the library's save() functionality to generate one.
