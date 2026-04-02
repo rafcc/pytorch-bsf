@@ -134,8 +134,9 @@ def test_simplex_random_seed_does_not_mutate_global_state():
     rng_state_before = np.random.get_state()
     simplex_random(3, 20, seed=99)
     rng_state_after = np.random.get_state()
-    # Compare the 'key' array part of the Mersenne Twister state
+    # Compare both the 'key' array and the position index in the MT state
     assert (rng_state_before[1] == rng_state_after[1]).all()
+    assert rng_state_before[2] == rng_state_after[2]
 
 
 # ---------------------------------------------------------------------------
