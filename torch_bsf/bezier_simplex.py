@@ -1,5 +1,6 @@
 import csv
 import json
+import numbers
 from ast import literal_eval
 from functools import lru_cache
 from math import factorial
@@ -1270,15 +1271,20 @@ def fit_kfold(
     dataset = TensorDataset(params, values)
 
     # Mirror fit()'s behavior: treat falsy/None as full-batch, and validate positivity.
+    # Accept any numbers.Integral (e.g. numpy.int64) but explicitly reject bool
+    # (True/False are int subclasses and would otherwise slip through).
     if not batch_size:
         effective_batch_size = len(dataset)
     else:
-        # Use a strict type check so that bools (True/False) are not accepted as valid batch sizes.
-        if type(batch_size) is not int or batch_size <= 0:
+        if (
+            not isinstance(batch_size, numbers.Integral)
+            or isinstance(batch_size, bool)
+            or batch_size <= 0
+        ):
             raise ValueError(
                 f"'batch_size' must be a positive integer or falsy/None for full-batch, got {batch_size!r}."
             )
-        effective_batch_size = batch_size
+        effective_batch_size = int(batch_size)
 
     dl = DataLoader(dataset, batch_size=effective_batch_size)
     # Disable the validation loop inside each fold by default; the

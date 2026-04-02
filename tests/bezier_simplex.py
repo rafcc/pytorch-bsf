@@ -241,6 +241,18 @@ def test_fit_kfold():
     with pytest.raises(ValueError, match="batch_size"):
         tb.fit_kfold(params=ts, values=xs, n_folds=3, degree=3, batch_size=1.5)
 
+    # Invalid batch_size: bool True (Integral subclass but explicitly rejected)
+    with pytest.raises(ValueError, match="batch_size"):
+        tb.fit_kfold(params=ts, values=xs, n_folds=3, degree=3, batch_size=True)
+
+    # batch_size as numpy.int64 — numbers.Integral, should be accepted
+    import numpy as np
+    models_np_bs = tb.fit_kfold(
+        params=ts, values=xs, n_folds=3, degree=3, batch_size=np.int64(5),
+        trainer_kwargs=fast,
+    )
+    assert len(models_np_bs) == 3
+
     # Reserved key 'num_folds' in trainer_kwargs
     with pytest.raises(ValueError, match="num_folds"):
         tb.fit_kfold(
