@@ -333,7 +333,7 @@ class BezierSimplex(L.LightningModule):
         self.save_hyperparameters(ignore=["control_points"])
 
         # Track row indices whose gradients should be zeroed (frozen control points).
-        self._fixed_rows: set[int] = set()
+        self._frozen_rows: set[int] = set()
 
         # Cache indices and coefficients for vectorized forward
         if self.n_params > 0:
@@ -408,15 +408,15 @@ class BezierSimplex(L.LightningModule):
         k = to_parameterdict_key(index)
         idx = tuple(_literal_eval(k))
         row = self.control_points._index_to_row[idx]
-        self._fixed_rows.add(row)
+        self._frozen_rows.add(row)
 
     def on_after_backward(self) -> None:
         """Zero gradients for frozen control-point rows after each backward pass."""
-        if not self._fixed_rows:
+        if not self._frozen_rows:
             return
         grad = self.control_points.matrix.grad
         if grad is not None:
-            grad[list(self._fixed_rows)] = 0.0
+            grad[list(self._frozen_rows)] = 0.0
 
     def forward(self, t: torch.Tensor) -> torch.Tensor:
         r"""Process a forwarding step of training.
