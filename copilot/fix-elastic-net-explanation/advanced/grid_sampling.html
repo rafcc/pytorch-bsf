@@ -149,6 +149,10 @@ simplex weight vector by:</p>
 \[w_1 = \frac{1}{1+\lambda}, \qquad
 w_2 = \frac{\lambda\,\alpha}{1+\lambda}, \qquad
 w_3 = \frac{\lambda\,(1-\alpha)}{1+\lambda}.\]</div>
+<p>With these weights the convex-combination objective equals the <span class="math notranslate nohighlight">\(\epsilon\)</span>-regularized
+elastic net objective divided by the positive constant <span class="math notranslate nohighlight">\((1 + \lambda)\)</span>.
+Because this scale factor does not depend on <span class="math notranslate nohighlight">\(\beta\)</span>, both formulations share the
+same minimizer.</p>
 <p>The <span class="math notranslate nohighlight">\((\lambda, \alpha)\)</span> parameter space is a semi-infinite rectangle
 <span class="math notranslate nohighlight">\([0,\infty) \times [0,1]\)</span>.
 When <span class="math notranslate nohighlight">\(\lambda = 0\)</span> the regularization terms vanish and the solution depends only
