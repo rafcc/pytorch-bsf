@@ -13,7 +13,7 @@ from torch_bsf.bezier_simplex import BezierSimplex, load, randn
 from torch_bsf.validator import index_list, validate_simplex_indices
 
 parser = ArgumentParser(
-    prog="python -m torch_bsf", description="Bézier simplex fitting"
+    prog="python -m torch_bsf", description="Bezier simplex fitting"
 )
 parser.add_argument(
     "--params", type=Path, required=True, metavar="CSV",

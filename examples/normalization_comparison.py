@@ -54,7 +54,7 @@ def run_parameter_experiment():
 
     print(f"MSE (from Uniform samples): {mse_uni:2.2e}")
     print(f"MSE (from Skewed samples) : {mse_skew:2.2e}")
-    print(f"Bézier simplices perform best with uniform parameter coverage.")
+    print(f"Bezier simplices perform best with uniform parameter coverage.")
 
 def run_value_experiment():
     print("\n--- 2. Value Scaling Experiment ---")
