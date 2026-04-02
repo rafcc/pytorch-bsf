@@ -24,19 +24,20 @@ parser.add_argument(
 )
 parser.add_argument(
     "--meshgrid", type=Path, metavar="CSV",
-    help="Path to the meshgrid CSV file used for prediction output; defaults to --params",
+    help="Path to the meshgrid CSV file used for prediction output; if omitted or set to a directory, defaults to --params",
 )
-parser.add_argument(
+degree_init_group = parser.add_mutually_exclusive_group(required=True)
+degree_init_group.add_argument(
     "--degree", type=int, metavar="N",
     help="Degree of the Bezier simplex (required when --init is not given)",
 )
-parser.add_argument(
+degree_init_group.add_argument(
     "--init", type=Path, metavar="PT",
     help="Path to a pretrained model file to initialize from (required when --degree is not given)",
 )
 parser.add_argument(
     "--fix", type=index_list, metavar="INDICES",
-    help="Simplex index or comma-separated list of indices of control points to freeze during training",
+    help="JSON-style list-of-lists of simplex indices of control points to freeze during training (e.g. '[[0],[1,2]]')",
 )
 parser.add_argument(
     "--header", type=int, default=0, metavar="N",
@@ -77,14 +78,14 @@ parser.add_argument(
 )
 parser.add_argument(
     "--accelerator", type=str, default="auto", metavar="TYPE",
-    help="Hardware accelerator for the Lightning trainer: 'cpu', 'gpu', 'tpu', 'mps', or 'auto' (default: auto)",
+    help="Hardware accelerator for the Lightning trainer, e.g., 'cpu', 'gpu', 'tpu', 'mps', or 'auto' (default: auto)",
 )
 parser.add_argument(
     "--strategy", type=str, default="auto", metavar="NAME",
-    help="Distributed training strategy for the Lightning trainer: 'ddp', 'fsdp', 'deepspeed', or 'auto' (default: auto)",
+    help="Distributed training strategy for the Lightning trainer, e.g., 'ddp', 'fsdp', 'deepspeed', or 'auto' (default: auto)",
 )
 parser.add_argument(
-    "--devices", type=int_or_str, default="auto", metavar="N",
+    "--devices", type=int_or_str, default="auto", metavar="N|auto",
     help="Number of devices to use, or 'auto' to let the Lightning trainer decide (default: auto)",
 )
 parser.add_argument(
