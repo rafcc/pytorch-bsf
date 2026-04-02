@@ -793,7 +793,7 @@ def test_fit_with_dict_init():
 
 
 def test_freeze_row_zeros_gradient():
-    """freeze_row() must zero out the gradient for the fixed control point after backward."""
+    """freeze_row() must zero out the gradient for the frozen control point after backward."""
     ts = torch.tensor([[1.0, 0.0], [0.5, 0.5], [0.0, 1.0]])
     xs = ts * ts
     bs = tbbs.randn(n_params=2, n_values=2, degree=1)
@@ -808,7 +808,7 @@ def test_freeze_row_zeros_gradient():
     loss.backward()
     bs.on_after_backward()
 
-    # The gradient of the fixed row must be zero
+    # The gradient of the frozen row must be zero
     grad = bs.control_points.matrix.grad
     assert grad is not None
     row = bs.control_points._index_to_row[first_index]
