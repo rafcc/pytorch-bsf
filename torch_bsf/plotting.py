@@ -334,14 +334,17 @@ def _plot_bezier_simplex_pairwise(model, num, show_control_points, max_control_p
     fig, axes = plt.subplots(
         n_v, n_v, squeeze=False, figsize=(figsize_dim, figsize_dim)
     )
-    cp = (
-        model.control_points.matrix.detach().cpu().numpy()
-        if show_control_points
-        else None
-    )
-    if cp is not None and len(cp) > max_control_points:
-        idx = np.random.choice(len(cp), max_control_points, replace=False)
-        cp = cp[idx]
+    if show_control_points:
+        # Work on the torch tensor first to avoid transferring an enormous
+        # control-point matrix to CPU when max_control_points is small.
+        cp_t = model.control_points.matrix
+        cp_len = cp_t.shape[0]
+        if cp_len > max_control_points:
+            idx = torch.randperm(cp_len, device=cp_t.device)[:max_control_points]
+            cp_t = cp_t[idx]
+        cp = cp_t.detach().cpu().numpy()
+    else:
+        cp = None
 
     # Allow caller to override scatter defaults via kwargs
     scatter_s = kwargs.pop("s", 1)
