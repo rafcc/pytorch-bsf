@@ -67,7 +67,7 @@ def test_cli_missing_values_fails():
 
 
 def test_cli_missing_degree_and_init_fails():
-    """CLI should raise when neither --degree nor --init is given."""
+    """CLI should fail with an argparse error when neither --degree nor --init is given."""
     result = _run_cli(
         f"--params={_PARAMS_CSV}",
         f"--values={_VALUES_CSV}",
@@ -88,7 +88,7 @@ def test_cli_missing_degree_and_init_is_argparse_error():
 
 
 def test_cli_both_degree_and_init_fails(tmp_path):
-    """CLI should raise when both --degree and --init are specified."""
+    """CLI should fail with an argparse error when both --degree and --init are specified."""
     import torch_bsf.bezier_simplex as tbbs
 
     init_file = tmp_path / "model.pt"
