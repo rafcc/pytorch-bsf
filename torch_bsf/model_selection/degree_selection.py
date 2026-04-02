@@ -173,7 +173,7 @@ if __name__ == "__main__":
 
     parser = ArgumentParser(
         prog="python -m torch_bsf.model_selection.degree_selection",
-        description="Automatic degree selection for Bezier simplex via k-fold cross-validation",
+        description="Automatic degree selection for Bézier simplex via k-fold cross-validation",
     )
     parser.add_argument("--params", type=Path, required=True, help="Path to the input parameters CSV file")
     parser.add_argument("--values", type=Path, required=True, help="Path to the output values CSV file")

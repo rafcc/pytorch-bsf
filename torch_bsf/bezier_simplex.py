@@ -1144,7 +1144,7 @@ def fit_kfold(
     seed: int | None = None,
     **kwargs,
 ) -> nn.ModuleList:
-    r"""Fits an ensemble of Bezier simplices using k-fold cross-validation.
+    r"""Fits an ensemble of Bézier simplices using k-fold cross-validation.
 
     Splits the training data into ``n_folds`` folds via
     :class:`~pl_crossvalidate.KFoldTrainer` and trains one model per fold on
@@ -1165,9 +1165,9 @@ def fit_kfold(
     n_folds
         The number of cross-validation folds (committee size).  Defaults to 5.
     degree
-        The degree of the Bezier simplex.
+        The degree of the Bézier simplex.
     init
-        The initial values of a Bezier simplex or control points.
+        The initial values of a Bézier simplex or control points.
     smoothness_weight
         The weight of the smoothness penalty.
     fix
@@ -1231,7 +1231,7 @@ def fit_kfold(
 
     See Also
     --------
-    fit : Fit a single Bezier simplex.
+    fit : Fit a single Bézier simplex.
     torch_bsf.active_learning.suggest_next_points : Use the ensemble for
         active learning.
     """
