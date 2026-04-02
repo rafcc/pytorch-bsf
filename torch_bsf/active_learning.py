@@ -11,12 +11,17 @@ def _infer_device(model: nn.Module) -> torch.device:
     device = getattr(model, "device", None)
     if device is not None:
         return torch.device(device)
+    # Try to infer device from parameters
     try:
         return next(model.parameters()).device
+    except StopIteration:
+        # Model has no parameters; fall back to buffers
         pass
+    # Try to infer device from buffers
     try:
         return next(model.buffers()).device
     except StopIteration:
+        # Model has neither parameters nor buffers; fall back to CPU
         return torch.device("cpu")
 
 
