@@ -123,15 +123,24 @@
 <h2>Elastic Net Formulation<a class="headerlink" href="#elastic-net-formulation" title="Link to this heading"></a></h2>
 <p>The standard Elastic Net regression problem is formulated as:</p>
 <div class="math notranslate nohighlight">
-\[\min_{\beta \in \mathbb{R}^N} \frac{1}{2n}\|y - X\beta\|^2
+\[\min_{\beta \in \mathbb{R}^N} \frac{1}{2n}\|y - X\beta\|_2^2
 + \lambda \Bigl(\alpha \|\beta\|_1 + \frac{1-\alpha}{2}\|\beta\|_2^2\Bigr)\]</div>
 <p>where <span class="math notranslate nohighlight">\(\lambda \ge 0\)</span> is the overall regularization strength and <span class="math notranslate nohighlight">\(\alpha \in [0, 1]\)</span> controls the L1/L2 mixing ratio. Setting <span class="math notranslate nohighlight">\(\alpha = 1\)</span> recovers the Lasso, and <span class="math notranslate nohighlight">\(\alpha = 0\)</span> gives Ridge regression.</p>
 <p>To cast this into the multi-objective framework required by PyTorch-BSF, we identify three objectives over the model weights <span class="math notranslate nohighlight">\(\beta \in \mathbb{R}^N\)</span>:</p>
 <div class="math notranslate nohighlight">
-\[\begin{split}f_{\text{data}}(\beta) &amp;= \frac{1}{2n}\|y - X\beta\|^2 + \frac{\epsilon}{2}\|\beta\|_2^2 \\
+\[\begin{split}f_{\text{data}}(\beta) &amp;= \frac{1}{2n}\|y - X\beta\|_2^2 + \frac{\epsilon}{2}\|\beta\|_2^2 \\
 f_{\text{sparse}}(\beta) &amp;= \|\beta\|_1 + \frac{\epsilon}{2}\|\beta\|_2^2 \\
 f_{\text{smooth}}(\beta) &amp;= \frac{1 + \epsilon}{2}\|\beta\|_2^2\end{split}\]</div>
-<p>where <span class="math notranslate nohighlight">\(n\)</span> is the number of observations and <span class="math notranslate nohighlight">\(\epsilon &gt; 0\)</span> is a small constant. These definitions introduce an <span class="math notranslate nohighlight">\(\epsilon\)</span>-regularized (strongly convex) surrogate of the classical Elastic Net objective: the additional <span class="math notranslate nohighlight">\(\frac{\epsilon}{2}\|\beta\|_2^2\)</span> terms in <span class="math notranslate nohighlight">\(f_{\text{data}}\)</span> and <span class="math notranslate nohighlight">\(f_{\text{sparse}}\)</span> (and the corresponding adjustment in <span class="math notranslate nohighlight">\(f_{\text{smooth}}\)</span>) ensure that all three objectives are strongly convex, which is required for the solution map to be weakly simplicial <span id="id5">[<a class="reference internal" href="../references.html#id4" title="Yuto Mizota, Naoki Hamada, and Shunsuke Ichiki. All unconstrained strongly convex problems are weakly simplicial. 2021. URL: https://arxiv.org/abs/2106.12704, arXiv:2106.12704.">MHI21</a>]</span>. This <span class="math notranslate nohighlight">\(\epsilon\)</span>-perturbation slightly changes the minimizer for fixed <span class="math notranslate nohighlight">\((\alpha, \lambda)\)</span>, but the classical Elastic Net formulation is recovered in the limit as <span class="math notranslate nohighlight">\(\epsilon \to 0\)</span>. We can then express this <span class="math notranslate nohighlight">\(\epsilon\)</span>-regularized objective as a convex combination of these three functions:</p>
+<p>where <span class="math notranslate nohighlight">\(n\)</span> is the number of observations and <span class="math notranslate nohighlight">\(\epsilon &gt; 0\)</span> is a small constant.
+These definitions introduce an <span class="math notranslate nohighlight">\(\epsilon\)</span>-regularized (strongly convex) surrogate of the
+classical Elastic Net objective: the additional <span class="math notranslate nohighlight">\(\frac{\epsilon}{2}\|\beta\|_2^2\)</span> terms in
+<span class="math notranslate nohighlight">\(f_{\text{data}}\)</span> and <span class="math notranslate nohighlight">\(f_{\text{sparse}}\)</span> (and the corresponding adjustment in
+<span class="math notranslate nohighlight">\(f_{\text{smooth}}\)</span>) ensure that all three objectives are strongly convex, which is required
+for the solution map to be weakly simplicial <span id="id5">[<a class="reference internal" href="../references.html#id4" title="Yuto Mizota, Naoki Hamada, and Shunsuke Ichiki. All unconstrained strongly convex problems are weakly simplicial. 2021. URL: https://arxiv.org/abs/2106.12704, arXiv:2106.12704.">MHI21</a>]</span>.
+This <span class="math notranslate nohighlight">\(\epsilon\)</span>-perturbation slightly changes the minimizer for fixed <span class="math notranslate nohighlight">\((\alpha, \lambda)\)</span>,
+but the classical Elastic Net formulation is recovered in the limit as <span class="math notranslate nohighlight">\(\epsilon \to 0\)</span>.
+We can then express this <span class="math notranslate nohighlight">\(\epsilon\)</span>-regularized objective as a convex combination of these
+three functions:</p>
 <div class="math notranslate nohighlight">
 \[\min_{\beta \in \mathbb{R}^N} \; w_1 \, f_{\text{data}}(\beta)
 + w_2 \, f_{\text{sparse}}(\beta)
