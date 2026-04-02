@@ -24,12 +24,12 @@ def _check_sklearn() -> None:
 
 
 class BezierSimplexRegressor(BaseEstimator, RegressorMixin):
-    """Scikit-learn wrapper for Bezier Simplex Fitting.
+    """Scikit-learn wrapper for Bézier Simplex Fitting.
 
     Parameters
     ----------
     degree : int, default=3
-        The degree of the Bezier simplex.
+        The degree of the Bézier simplex.
     smoothness_weight : float, default=0.0
         The weight of smoothness penalty.
     init : BezierSimplex | ControlPointsData | None, default=None
@@ -76,7 +76,7 @@ class BezierSimplexRegressor(BaseEstimator, RegressorMixin):
         self.trainer_kwargs = trainer_kwargs
 
     def fit(self, X: Any, y: Any):
-        """Fit the Bezier simplex model.
+        """Fit the Bézier simplex model.
 
         Parameters
         ----------
@@ -121,7 +121,7 @@ class BezierSimplexRegressor(BaseEstimator, RegressorMixin):
         return self
 
     def predict(self, X: Any) -> np.ndarray:
-        """Predict using the Bezier simplex model.
+        """Predict using the Bézier simplex model.
 
         Parameters
         ----------

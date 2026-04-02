@@ -60,7 +60,7 @@ class _KFoldTrainer(KFoldTrainer):
 
 
 class BezierSimplexDataModule(L.LightningDataModule):
-    r"""A data module for training a Bezier simplex.
+    r"""A data module for training a Bézier simplex.
 
     Parameters
     ----------
@@ -222,12 +222,12 @@ def monomial(variable: Iterable[float], degree: Iterable[int]) -> torch.Tensor:
 
 
 class BezierSimplex(L.LightningModule):
-    r"""A Bezier simplex model.
+    r"""A Bézier simplex model.
 
     Parameters
     ----------
     control_points
-        The control points of the Bezier simplex.  Pass ``None`` only when
+        The control points of the Bézier simplex.  Pass ``None`` only when
         reconstructing a model from a Lightning checkpoint via
         :meth:`load_from_checkpoint` — in that case all three shape
         parameters (``_n_params``, ``_degree``, ``_n_values``) must be
@@ -244,7 +244,7 @@ class BezierSimplex(L.LightningModule):
         Automatically saved to, and restored from, Lightning checkpoints.
     _degree
         *Checkpoint-reconstruction parameter — do not set manually.*
-        The degree of the Bezier simplex used to build the placeholder when
+        The degree of the Bézier simplex used to build the placeholder when
         ``control_points`` is ``None``.
         Automatically saved to, and restored from, Lightning checkpoints.
     _n_values
@@ -392,7 +392,7 @@ class BezierSimplex(L.LightningModule):
 
     @property
     def degree(self) -> int:
-        r"""The degree of the Bezier simplex."""
+        r"""The degree of the Bézier simplex."""
         return self.control_points.degree
 
     def fix_row(self, index: "Index") -> None:
@@ -449,7 +449,7 @@ class BezierSimplex(L.LightningModule):
         return torch.matmul(monomials, wcp)
 
     def smoothness_penalty(self) -> torch.Tensor:
-        """Computes the smoothness penalty of the Bezier simplex.
+        """Computes the smoothness penalty of the Bézier simplex.
 
         Returns
         -------
@@ -504,7 +504,7 @@ class BezierSimplex(L.LightningModule):
         return optimizer
 
     def meshgrid(self, num: int = 100) -> tuple[torch.Tensor, torch.Tensor]:
-        r"""Computes a meshgrid of the Bezier simplex.
+        r"""Computes a meshgrid of the Bézier simplex.
 
         Parameters
         ----------
@@ -547,7 +547,7 @@ class BezierSimplex(L.LightningModule):
 def zeros(
     n_params: int, n_values: int, degree: int, smoothness_weight: float = 0.0
 ) -> BezierSimplex:
-    r"""Generates a Bezier simplex with control points at origin.
+    r"""Generates a Bézier simplex with control points at origin.
 
     Parameters
     ----------
@@ -556,13 +556,13 @@ def zeros(
     n_values
         The number of values, i.e., the target dimension.
     degree
-        The degree of the Bezier simplex.
+        The degree of the Bézier simplex.
     smoothness_weight
         The weight of smoothness penalty.
 
     Returns
     -------
-        A Bezier simplex filled with zeros.
+        A Bézier simplex filled with zeros.
 
     Raises
     ------
@@ -597,7 +597,7 @@ def zeros(
 def rand(
     n_params: int, n_values: int, degree: int, smoothness_weight: float = 0.0
 ) -> BezierSimplex:
-    r"""Generates a random Bezier simplex.
+    r"""Generates a random Bézier simplex.
 
     The control points are initialized by random values.
     The values are uniformly distributed in [0, 1).
@@ -609,13 +609,13 @@ def rand(
     n_values
         The number of values, i.e., the target dimension.
     degree
-        The degree of the Bezier simplex.
+        The degree of the Bézier simplex.
     smoothness_weight
         The weight of smoothness penalty.
 
     Returns
     -------
-        A random Bezier simplex.
+        A random Bézier simplex.
 
     Raises
     ------
@@ -650,7 +650,7 @@ def rand(
 def randn(
     n_params: int, n_values: int, degree: int, smoothness_weight: float = 0.0
 ) -> BezierSimplex:
-    r"""Generates a random Bezier simplex.
+    r"""Generates a random Bézier simplex.
 
     The control points are initialized by random values.
     The values are normally distributed with mean 0 and standard deviation 1.
@@ -662,13 +662,13 @@ def randn(
     n_values
         The number of values, i.e., the target dimension.
     degree
-        The degree of the Bezier simplex.
+        The degree of the Bézier simplex.
     smoothness_weight
         The weight of smoothness penalty.
 
     Returns
     -------
-        A random Bezier simplex.
+        A random Bézier simplex.
 
     Raises
     ------
@@ -701,14 +701,14 @@ def randn(
 
 
 def save(path: str | Path, data: BezierSimplex) -> None:
-    r"""Saves a Bezier simplex to a file.
+    r"""Saves a Bézier simplex to a file.
 
     Parameters
     ----------
     path
         The file path to save.
     data
-        The Bezier simplex to save.
+        The Bézier simplex to save.
 
     Raises
     ------
@@ -856,7 +856,7 @@ def load(
     *,
     pt_weights_only: bool | None = None,
 ) -> BezierSimplex:
-    r"""Loads a Bezier simplex from a file.
+    r"""Loads a Bézier simplex from a file.
 
     Parameters
     ----------
@@ -869,7 +869,7 @@ def load(
 
     Returns
     -------
-    A Bezier simplex.
+    A Bézier simplex.
 
     Raises
     ------
@@ -1014,7 +1014,7 @@ def fit(
     seed: int | None = None,
     **kwargs,
 ) -> BezierSimplex:
-    r"""Fits a Bezier simplex.
+    r"""Fits a Bézier simplex.
 
     Parameters
     ----------
@@ -1023,9 +1023,9 @@ def fit(
     values
         The label data.
     degree
-        The degree of the Bezier simplex.
+        The degree of the Bézier simplex.
     init
-        The initial values of a bezier simplex or control points.
+        The initial values of a Bézier simplex or control points.
     smoothness_weight
         The weight of smoothness penalty.
     fix
@@ -1042,7 +1042,7 @@ def fit(
 
     Returns
     -------
-    A trained Bezier simplex.
+    A trained Bézier simplex.
 
     Raises
     ------
@@ -1144,7 +1144,7 @@ def fit_kfold(
     seed: int | None = None,
     **kwargs,
 ) -> nn.ModuleList:
-    r"""Fits an ensemble of Bezier simplices using k-fold cross-validation.
+    r"""Fits an ensemble of Bézier simplices using k-fold cross-validation.
 
     Splits the training data into ``n_folds`` folds via
     :class:`~pl_crossvalidate.KFoldTrainer` and trains one model per fold on
@@ -1165,9 +1165,9 @@ def fit_kfold(
     n_folds
         The number of cross-validation folds (committee size).  Defaults to 5.
     degree
-        The degree of the Bezier simplex.
+        The degree of the Bézier simplex.
     init
-        The initial values of a Bezier simplex or control points.
+        The initial values of a Bézier simplex or control points.
     smoothness_weight
         The weight of the smoothness penalty.
     fix
@@ -1231,7 +1231,7 @@ def fit_kfold(
 
     See Also
     --------
-    fit : Fit a single Bezier simplex.
+    fit : Fit a single Bézier simplex.
     torch_bsf.active_learning.suggest_next_points : Use the ensemble for
         active learning.
     """

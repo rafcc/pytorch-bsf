@@ -245,6 +245,17 @@ Configuration in `pyproject.toml` (`[tool.mypy]` section):
 - **Docstrings**: NumPy style (use ``Parameters\n----------``, ``Returns\n-------``, ``Raises\n------`` sections)
 - **Type hints**: Use Python 3.10 built-in type hint syntax without `from __future__ import annotations`
 
+### "Bezier" vs "Bézier" spelling
+
+Use the spelling consistently depending on the context:
+
+| Spelling | Where to use |
+|----------|-------------|
+| `Bezier` (no accent) | Python identifiers (`BezierSimplex`, `bezier_simplex`, `plot_bezier_simplex`, …) and any string that may appear in a console (CLI `description`/`help` strings, `print()` output, log/warning/error messages) |
+| `Bézier` (with accent) | Everything else: docstrings, RST/Markdown documentation, code comments, `pyproject.toml` metadata, example script module docstrings |
+
+The rationale for keeping `Bezier` in console-facing text is that this library is used on HPC clusters where the locale may be `LANG=C`, causing non-ASCII characters to be displayed incorrectly or to raise encoding errors.
+
 ---
 
 ## Writing Tests

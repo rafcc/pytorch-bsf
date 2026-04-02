@@ -19,7 +19,7 @@ def select_degree(
     datamodule: L.LightningDataModule | None = None,
     **trainer_kwargs: Any,
 ) -> int:
-    """Select the best degree for the Bezier simplex using cross-validation.
+    """Select the best degree for the Bézier simplex using cross-validation.
 
     Parameters
     ----------

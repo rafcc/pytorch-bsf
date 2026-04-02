@@ -1,4 +1,4 @@
-"""torch_bsf: PyTorch implementation of Bezier simplex fitting.
+"""torch_bsf: PyTorch implementation of Bézier simplex fitting.
 
 """
 

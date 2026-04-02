@@ -4,12 +4,13 @@ from typing import Iterable, Iterator, Sequence, TypeAlias, cast
 import torch
 import torch.nn as nn
 
+#: The index type of control points of a Bézier simplex.
 Index: TypeAlias = str | Sequence[int] | torch.Tensor
-r"""The index type of control points of a Bezier simplex."""
 
+#: The value type of control points of a Bézier simplex.
 Value: TypeAlias = Sequence[float] | torch.Tensor
-r"""The value type of control points of a Bezier simplex."""
 
+#: The data type of control points of a Bézier simplex.
 ControlPointsData: TypeAlias = (
     # we can't use dict[Index, Value] because TypeVar of Dict is invariant.
     dict[str, torch.Tensor]
@@ -22,18 +23,17 @@ ControlPointsData: TypeAlias = (
     | dict[torch.Tensor, list[float]]
     | dict[torch.Tensor, tuple[float, ...]]
 )
-r"""The data type of control points of a Bezier simplex."""
 
 
 def simplex_indices(n_params: int, degree: int) -> Iterable[tuple[int, ...]]:
-    r"""Iterates the index of control points of a Bezier simplex.
+    r"""Iterates the index of control points of a Bézier simplex.
 
     Parameters
     ----------
     n_params
         The tuple length of each index.
     degree
-        The degree of the Bezier simplex.
+        The degree of the Bézier simplex.
 
     Returns
     -------
@@ -107,7 +107,7 @@ def to_parameterdict(data: ControlPointsData) -> dict[str, torch.Tensor]:
 
 
 class ControlPoints(nn.Module):
-    """Control points of a Bezier simplex stored as a single parameter matrix.
+    """Control points of a Bézier simplex stored as a single parameter matrix.
 
     All control points are stored in one ``nn.Parameter`` matrix of shape
     ``(n_indices, n_values)``.  This eliminates the Python-level loop and
@@ -120,7 +120,7 @@ class ControlPoints(nn.Module):
         ``nn.Parameter`` of shape ``(n_indices, n_values)`` holding all
         control points in canonical simplex-index order.
     degree
-        The degree of the Bezier simplex.
+        The degree of the Bézier simplex.
     n_params
         The number of parameters (source dimension + 1).
     n_values
@@ -149,7 +149,7 @@ class ControlPoints(nn.Module):
     """
 
     def __init__(self, data: ControlPointsData | None = None):
-        """Initialize the control points of a Bezier simplex.
+        """Initialize the control points of a Bézier simplex.
 
         The structure of control points is inferred from the data.
 
@@ -232,7 +232,7 @@ class ControlPoints(nn.Module):
         return len(self._indices)
 
     def indices(self) -> Iterator[tuple[int, ...]]:
-        """Iterates the index of control points of the Bezier simplex.
+        """Iterates the index of control points of the Bézier simplex.
 
         Returns
         -------

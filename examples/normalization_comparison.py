@@ -1,6 +1,6 @@
-"""Comparison of Parameter Distribution and Value Scaling for Bezier Simplex Fitting.
+"""Comparison of Parameter Distribution and Value Scaling for Bézier Simplex Fitting.
 
-This script demonstrates two key concepts in Bezier Simplex Fitting (BSF):
+This script demonstrates two key concepts in Bézier Simplex Fitting (BSF):
 1. How parameter distribution (uniform vs skewed) affects fitting accuracy.
 2. How target value scaling affects the balance between multiple objectives.
 """
