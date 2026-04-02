@@ -984,7 +984,7 @@ def test_fit_seed_none_does_not_raise():
 def test_fit_kfold_seed_reproducibility():
     """fit_kfold() with the same seed must produce identical control points across calls."""
     fast = dict(max_epochs=1, enable_progress_bar=False, logger=False, enable_checkpointing=False)
-    models1 = tb.fit_kfold(params=_TS, values=_XS, degree=1, n_folds=2, seed=7, trainer_kwargs=fast)
-    models2 = tb.fit_kfold(params=_TS, values=_XS, degree=1, n_folds=2, seed=7, trainer_kwargs=fast)
+    models1 = tb.fit_kfold(params=_TS, values=_XS, degree=1, n_folds=2, seed=7, **fast)
+    models2 = tb.fit_kfold(params=_TS, values=_XS, degree=1, n_folds=2, seed=7, **fast)
     for m1, m2 in zip(models1, models2):
         assert torch.equal(m1.control_points.matrix, m2.control_points.matrix)

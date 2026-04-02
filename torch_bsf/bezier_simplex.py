@@ -1140,7 +1140,6 @@ def fit_kfold(
     fix: Iterable[Index] | None = None,
     batch_size: int | None = None,
     seed: int | None = None,
-    trainer_kwargs: dict | None = None,
     **kwargs,
 ) -> nn.ModuleList:
     r"""Fits an ensemble of Bezier simplices using k-fold cross-validation.
@@ -1177,21 +1176,6 @@ def fit_kfold(
     seed
         Random seed passed to :func:`lightning.pytorch.seed_everything` for
         reproducible training.  When ``None`` (default), no seed is set.
-    trainer_kwargs
-        A dict of keyword arguments to pass to
-        :class:`lightning.pytorch.Trainer` (via
-        :class:`~pl_crossvalidate.KFoldTrainer`).  For example,
-        ``dict(max_epochs=10, enable_progress_bar=False, logger=False)``.
-        When ``None`` (default), only the internal defaults used by the
-        cross-validation helper are applied (notably
-        ``num_sanity_val_steps=0`` and ``limit_val_batches=0.0`` to disable
-        per-fold validation for speed), and no additional trainer arguments
-        are taken from this dict.  You can still pass Trainer or
-        :class:`~pl_crossvalidate.KFoldTrainer` options via ``**kwargs``
-        (which are always merged into ``kfold_kwargs``).  To re-enable
-        validation on each fold, explicitly supply suitable values here or in
-        ``**kwargs``, e.g. ``dict(num_sanity_val_steps=2,
-        limit_val_batches=1.0, ...)``.
     kwargs
         All arguments for :class:`~pl_crossvalidate.KFoldTrainer` (which
         itself accepts all :class:`lightning.pytorch.Trainer` arguments).
@@ -1315,8 +1299,6 @@ def fit_kfold(
     # cross-validation estimate comes from KFoldTrainer's per-fold test step.
     # Callers can override these by passing e.g. limit_val_batches=1.0.
     kfold_kwargs: dict = {"num_sanity_val_steps": 0, "limit_val_batches": 0.0}
-    if trainer_kwargs is not None:
-        kfold_kwargs.update(trainer_kwargs)
     kfold_kwargs.update(kwargs)
 
     # Guard against reserved/unsupported keys that would conflict with the
