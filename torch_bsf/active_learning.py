@@ -82,12 +82,19 @@ def suggest_next_points(
     device = _infer_device(models[0])
 
     # Validate that all models share the same n_params and device
-    for model in itertools.islice(models, 1, None):
+    for i, model in enumerate(itertools.islice(models, 1, None), start=1):
         model_n_params = getattr(model, "n_params", None)
         if model_n_params is not None and model_n_params != n_params:
-            raise ValueError("All models in 'models' must have the same 'n_params'.")
-        if _infer_device(model) != device:
-            raise ValueError("All models in 'models' must be on the same device.")
+            raise ValueError(
+                f"models[{i}].n_params={model_n_params} does not match "
+                f"models[0].n_params={n_params}."
+            )
+        model_device = _infer_device(model)
+        if model_device != device:
+            raise ValueError(
+                f"models[{i}] is on device '{model_device}' but models[0] is on "
+                f"device '{device}'. All models in 'models' must be on the same device."
+            )
     # Generate candidate points
     candidates = simplex_random(n_params, n_candidates).to(device)
 
