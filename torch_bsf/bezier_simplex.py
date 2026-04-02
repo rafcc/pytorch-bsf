@@ -1033,8 +1033,10 @@ def fit(
     batch_size
         The size of minibatch.
     seed
-        Random seed passed to :func:`lightning.pytorch.seed_everything` for
-        reproducible training.  When ``None`` (default), no seed is set.
+        Random seed passed to :func:`lightning.pytorch.seed_everything` to set RNG
+        seeds for improved reproducibility. When ``None`` (default), no seed is
+        set. For full determinism, also set ``Trainer(deterministic=True)`` and
+        use compatible settings.
     kwargs
         All arguments for lightning.pytorch.Trainer
 
