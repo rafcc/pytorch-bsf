@@ -1158,8 +1158,10 @@ def fit_kfold(
     ------
     ValueError
         If ``n_folds < 2``, if ``len(params) < 2`` (too few samples for any
-        fold split), or if neither / both of ``degree`` and ``init`` are
-        provided.
+        fold split), if neither / both of ``degree`` and ``init`` are
+        provided, if ``batch_size`` is truthy but not a positive integer, or
+        if reserved arguments such as ``num_folds`` or ``batch_size`` are
+        supplied via ``trainer_kwargs`` or ``**kwargs``.
 
     Examples
     --------
