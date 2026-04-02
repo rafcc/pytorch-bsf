@@ -119,9 +119,9 @@ Two parameters control how many points are requested and how thoroughly the simp
 
 This is the **batch size** for each active learning round: how many new simulation runs or experiments you can afford to run before re-training the model.
 
-*   **Small budget (1–3)**: Maximises information per sample but requires frequent re-training. Use when each evaluation is extremely expensive.
+*   **Small budget (1–3)**: Maximizes information per sample but requires frequent re-training. Use when each evaluation is extremely expensive.
 *   **Medium budget (5–10)**: A practical default for most engineering workflows. Balances exploration with re-training overhead.
-*   **Large budget (20+)**: Useful when evaluations can be parallelised (e.g., batch simulations on a cluster). The gain per sample diminishes as the batch size grows.
+*   **Large budget (20+)**: Useful when evaluations can be parallelized (e.g., batch simulations on a cluster). The gain per sample diminishes as the batch size grows.
 
 A rule of thumb: start with ``n_suggestions`` equal to roughly **10–20% of your current dataset size**, and reduce it as the model converges.
 
