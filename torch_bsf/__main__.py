@@ -101,10 +101,10 @@ else:
         smoothness_weight=args.smoothness_weight,
     )
 
-fix: list[list[int]] = args.freeze or []
-validate_simplex_indices(fix, bs.n_params, bs.degree)
+freeze: list[list[int]] = args.freeze or []
+validate_simplex_indices(freeze, bs.n_params, bs.degree)
 
-for index in fix:
+for index in freeze:
     bs.fix_row(index)
 
 trainer = Trainer(
