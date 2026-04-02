@@ -57,7 +57,10 @@
 <li class="toctree-l1 current"><a class="reference internal" href="modules.html">torch_bsf</a><ul class="current">
 <li class="toctree-l2 current"><a class="current reference internal" href="#">torch_bsf package</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="#submodules">Submodules</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#torch-bsf-active-learning-module">torch_bsf.active_learning module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#module-torch_bsf.active_learning">torch_bsf.active_learning module</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#torch_bsf.active_learning.suggest_next_points"><code class="docutils literal notranslate"><span class="pre">suggest_next_points()</span></code></a></li>
+</ul>
+</li>
 <li class="toctree-l3"><a class="reference internal" href="#module-torch_bsf.bezier_simplex">torch_bsf.bezier_simplex module</a><ul>
 <li class="toctree-l4"><a class="reference internal" href="#torch_bsf.bezier_simplex.BezierSimplex"><code class="docutils literal notranslate"><span class="pre">BezierSimplex</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="#torch_bsf.bezier_simplex.BezierSimplexDataModule"><code class="docutils literal notranslate"><span class="pre">BezierSimplexDataModule</span></code></a></li>
@@ -155,8 +158,41 @@
 <section id="submodules">
 <h2>Submodules<a class="headerlink" href="#submodules" title="Link to this heading"></a></h2>
 </section>
-<section id="torch-bsf-active-learning-module">
-<h2>torch_bsf.active_learning module<a class="headerlink" href="#torch-bsf-active-learning-module" title="Link to this heading"></a></h2>
+<section id="module-torch_bsf.active_learning">
+<span id="torch-bsf-active-learning-module"></span><h2>torch_bsf.active_learning module<a class="headerlink" href="#module-torch_bsf.active_learning" title="Link to this heading"></a></h2>
+<dl class="py function">
+<dt class="sig sig-object py" id="torch_bsf.active_learning.suggest_next_points">
+<span class="sig-prename descclassname"><span class="pre">torch_bsf.active_learning.</span></span><span class="sig-name descname"><span class="pre">suggest_next_points</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">models</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Sequence" title="(in Python v3.14)"><span class="pre">Sequence</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.pytorch.org/docs/stable/generated/torch.nn.Module.html#torch.nn.Module" title="(in PyTorch v2.11)"><span class="pre">Module</span></a><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">n_suggestions</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.14)"><span class="pre">int</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">n_candidates</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.14)"><span class="pre">int</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">1000</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">method</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><span class="pre">str</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'qbc'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">params</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.pytorch.org/docs/stable/tensors.html#torch.Tensor" title="(in PyTorch v2.11)"><span class="pre">Tensor</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.14)"><span class="pre">None</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">n_params</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.14)"><span class="pre">int</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.14)"><span class="pre">None</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.pytorch.org/docs/stable/tensors.html#torch.Tensor" title="(in PyTorch v2.11)"><span class="pre">Tensor</span></a></span></span><a class="reference external" href="https://github.com/opthub-org/pytorch-bsf/blob/master/torch_bsf/active_learning.py#L28-L128"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#torch_bsf.active_learning.suggest_next_points" title="Link to this definition"></a></dt>
+<dd><p>Suggest points on the simplex where new data should be sampled.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>models</strong> (<em>Sequence</em><em>[</em><em>nn.Module</em><em>]</em>) – An ensemble of models (e.g., from k-fold cross-validation).
+Each model must be callable with a tensor of shape
+<code class="docutils literal notranslate"><span class="pre">(n_candidates,</span> <span class="pre">n_params)</span></code> and return predictions.
+Accepts any <a class="reference external" href="https://docs.python.org/3/library/collections.abc.html#collections.abc.Sequence" title="(in Python v3.14)"><code class="xref py py-class docutils literal notranslate"><span class="pre">Sequence</span></code></a> of
+<a class="reference external" href="https://docs.pytorch.org/docs/stable/generated/torch.nn.Module.html#torch.nn.Module" title="(in PyTorch v2.11)"><code class="xref py py-class docutils literal notranslate"><span class="pre">Module</span></code></a> instances, including
+<a class="reference external" href="https://docs.pytorch.org/docs/stable/generated/torch.nn.ModuleList.html#torch.nn.ModuleList" title="(in PyTorch v2.11)"><code class="xref py py-class docutils literal notranslate"><span class="pre">ModuleList</span></code></a>.</p></li>
+<li><p><strong>n_suggestions</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.14)"><em>int</em></a><em>, </em><em>default=1</em>) – The number of points to suggest.</p></li>
+<li><p><strong>n_candidates</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.14)"><em>int</em></a><em>, </em><em>default=1000</em>) – The number of candidate points to evaluate.</p></li>
+<li><p><strong>method</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><em>str</em></a><em>, </em><em>default=&quot;qbc&quot;</em>) – The method to use:
+- “qbc”: Query-By-Committee. Suggests points where models disagree most.
+- “density”: Suggests points that are furthest from existing training points.</p></li>
+<li><p><strong>params</strong> (<a class="reference external" href="https://docs.pytorch.org/docs/stable/tensors.html#torch.Tensor" title="(in PyTorch v2.11)"><em>torch.Tensor</em></a><em>, </em><em>optional</em>) – The existing training parameters. Required for method=”density”.</p></li>
+<li><p><strong>n_params</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.14)"><em>int</em></a><em>, </em><em>optional</em>) – The number of simplex parameters (input dimension).  When omitted,
+the value is inferred from <code class="docutils literal notranslate"><span class="pre">models[0].n_params</span></code> if that attribute
+exists.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>The suggested points in shape (n_suggestions, n_params).</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.pytorch.org/docs/stable/tensors.html#torch.Tensor" title="(in PyTorch v2.11)">torch.Tensor</a></p>
+</dd>
+</dl>
+</dd></dl>
+
 </section>
 <section id="module-torch_bsf.bezier_simplex">
 <span id="torch-bsf-bezier-simplex-module"></span><h2>torch_bsf.bezier_simplex module<a class="headerlink" href="#module-torch_bsf.bezier_simplex" title="Link to this heading"></a></h2>
@@ -473,7 +509,7 @@ Either <code class="docutils literal notranslate"><span class="pre">&quot;max&qu
 <code class="xref py py-class docutils literal notranslate"><span class="pre">KFoldTrainer</span></code> and trains one model per fold on
 the data from the remaining <code class="docutils literal notranslate"><span class="pre">n_folds</span> <span class="pre">-</span> <span class="pre">1</span></code> folds.  The resulting list of
 models can be passed directly to
-<code class="xref py py-func docutils literal notranslate"><span class="pre">torch_bsf.active_learning.suggest_next_points()</span></code> to drive a
+<a class="reference internal" href="#torch_bsf.active_learning.suggest_next_points" title="torch_bsf.active_learning.suggest_next_points"><code class="xref py py-func docutils literal notranslate"><span class="pre">torch_bsf.active_learning.suggest_next_points()</span></code></a> to drive a
 Query-By-Committee active learning loop.</p>
 <p>If <code class="docutils literal notranslate"><span class="pre">len(params)</span> <span class="pre">&lt;</span> <span class="pre">n_folds</span></code>, the actual number of folds is capped at
 <code class="docutils literal notranslate"><span class="pre">len(params)</span></code> to avoid empty training subsets.</p>
@@ -553,7 +589,7 @@ to control how the folds are constructed.</p></li>
 <dl class="simple">
 <dt><a class="reference internal" href="#torch_bsf.bezier_simplex.fit" title="torch_bsf.bezier_simplex.fit"><code class="xref py py-obj docutils literal notranslate"><span class="pre">fit</span></code></a></dt><dd><p>Fit a single Bezier simplex.</p>
 </dd>
-<dt><code class="xref py py-obj docutils literal notranslate"><span class="pre">torch_bsf.active_learning.suggest_next_points</span></code></dt><dd><p>Use the ensemble for active learning.</p>
+<dt><a class="reference internal" href="#torch_bsf.active_learning.suggest_next_points" title="torch_bsf.active_learning.suggest_next_points"><code class="xref py py-obj docutils literal notranslate"><span class="pre">torch_bsf.active_learning.suggest_next_points</span></code></a></dt><dd><p>Use the ensemble for active learning.</p>
 </dd>
 </dl>
 </div>
@@ -2003,7 +2039,7 @@ Either <code class="docutils literal notranslate"><span class="pre">&quot;max&qu
 <code class="xref py py-class docutils literal notranslate"><span class="pre">KFoldTrainer</span></code> and trains one model per fold on
 the data from the remaining <code class="docutils literal notranslate"><span class="pre">n_folds</span> <span class="pre">-</span> <span class="pre">1</span></code> folds.  The resulting list of
 models can be passed directly to
-<code class="xref py py-func docutils literal notranslate"><span class="pre">torch_bsf.active_learning.suggest_next_points()</span></code> to drive a
+<a class="reference internal" href="#torch_bsf.active_learning.suggest_next_points" title="torch_bsf.active_learning.suggest_next_points"><code class="xref py py-func docutils literal notranslate"><span class="pre">torch_bsf.active_learning.suggest_next_points()</span></code></a> to drive a
 Query-By-Committee active learning loop.</p>
 <p>If <code class="docutils literal notranslate"><span class="pre">len(params)</span> <span class="pre">&lt;</span> <span class="pre">n_folds</span></code>, the actual number of folds is capped at
 <code class="docutils literal notranslate"><span class="pre">len(params)</span></code> to avoid empty training subsets.</p>
@@ -2083,7 +2119,7 @@ to control how the folds are constructed.</p></li>
 <dl class="simple">
 <dt><a class="reference internal" href="#torch_bsf.fit" title="torch_bsf.fit"><code class="xref py py-obj docutils literal notranslate"><span class="pre">fit</span></code></a></dt><dd><p>Fit a single Bezier simplex.</p>
 </dd>
-<dt><code class="xref py py-obj docutils literal notranslate"><span class="pre">torch_bsf.active_learning.suggest_next_points</span></code></dt><dd><p>Use the ensemble for active learning.</p>
+<dt><a class="reference internal" href="#torch_bsf.active_learning.suggest_next_points" title="torch_bsf.active_learning.suggest_next_points"><code class="xref py py-obj docutils literal notranslate"><span class="pre">torch_bsf.active_learning.suggest_next_points</span></code></a></dt><dd><p>Use the ensemble for active learning.</p>
 </dd>
 </dl>
 </div>
