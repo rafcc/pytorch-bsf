@@ -151,11 +151,14 @@ three functions:</p>
 \[w_1 = \frac{1}{1 + \lambda}, \qquad
 w_2 = \frac{\lambda\,\alpha}{1 + \lambda}, \qquad
 w_3 = \frac{\lambda\,(1-\alpha)}{1 + \lambda}.\]</div>
-<p>This maps the semi-infinite rectangle <span class="math notranslate nohighlight">\([0, \infty) \times [0, 1]\)</span> in <span class="math notranslate nohighlight">\((\lambda, \alpha)\)</span> onto
-the 2-simplex <span class="math notranslate nohighlight">\(\Delta^2\)</span>. When <span class="math notranslate nohighlight">\(\lambda = 0\)</span> the entire edge <span class="math notranslate nohighlight">\(\{0\} \times [0, 1]\)</span> collapses
-to the single vertex <span class="math notranslate nohighlight">\((1, 0, 0)\)</span> (all regularization vanishes), so the mapping is not injective at
-<span class="math notranslate nohighlight">\(\lambda = 0\)</span>. For <span class="math notranslate nohighlight">\(\lambda &gt; 0\)</span>, different <span class="math notranslate nohighlight">\((\lambda, \alpha)\)</span> pairs map to distinct interior
-points, enabling a single Bézier simplex to represent the entire elastic-net regularization path.</p>
+<p>This maps the semi-infinite rectangle <span class="math notranslate nohighlight">\([0, \infty) \times [0, 1]\)</span> in
+<span class="math notranslate nohighlight">\((\lambda, \alpha)\)</span> onto the 2-simplex <span class="math notranslate nohighlight">\(\Delta^2\)</span>. When
+<span class="math notranslate nohighlight">\(\lambda = 0\)</span> the entire edge <span class="math notranslate nohighlight">\(\{0\} \times [0, 1]\)</span> collapses to
+the single vertex <span class="math notranslate nohighlight">\((1, 0, 0)\)</span> (all regularization vanishes), so the
+mapping is not injective at <span class="math notranslate nohighlight">\(\lambda = 0\)</span>. For <span class="math notranslate nohighlight">\(\lambda &gt; 0\)</span>,
+different <span class="math notranslate nohighlight">\((\lambda, \alpha)\)</span> pairs map to distinct interior points,
+enabling a single Bézier simplex to represent the entire elastic-net
+regularization path.</p>
 <p>By training the model on a sparse subset of weight vectors <span class="math notranslate nohighlight">\(w\)</span> and fitting a Bézier simplex, we obtain a continuous <strong>solution map</strong> <span class="math notranslate nohighlight">\((x^*, f \circ x^*): \Delta^{M-1} \to G^*(f)\)</span> that maps any weight <span class="math notranslate nohighlight">\(w\)</span> to the optimal weights <span class="math notranslate nohighlight">\(\beta\)</span> and the corresponding objective values.</p>
 <table class="docutils align-default" id="id6">
 <caption><span class="caption-number">Table 2 </span><span class="caption-text">Regularization map of the elastic net.</span><a class="headerlink" href="#id6" title="Link to this table"></a></caption>
