@@ -309,12 +309,12 @@ def fit(params, values, degree):
     values : torch.Tensor
         The label data.
     degree : int
-        The degree of the Bezier simplex.
+        The degree of the Bézier simplex.
 
     Returns
     -------
     BezierSimplex
-        A trained Bezier simplex.
+        A trained Bézier simplex.
 
     Examples
     --------
