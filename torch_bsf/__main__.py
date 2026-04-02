@@ -25,8 +25,8 @@ parser.add_argument(
 parser.add_argument(
     "--meshgrid", type=Path, metavar="CSV|DIR",
     help=(
-        "Path to the meshgrid CSV file used for prediction output; if omitted or if a "
-        "directory path is given, the parameters CSV specified by --params is used instead"
+        "Path to the meshgrid CSV file used for prediction output; if omitted or if an "
+        "existing directory path is given, the parameters CSV specified by --params is used instead"
     ),
 )
 mutual_group = parser.add_mutually_exclusive_group(required=True)
