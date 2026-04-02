@@ -1,5 +1,18 @@
+import math
+
 import numpy as np
+import torch
 from torch_bsf.bezier_simplex import BezierSimplex
+
+# Maximum number of sample points for the pairwise scatter plot.
+# When the combinatorial meshgrid would exceed this count, uniformly-random
+# simplex samples are drawn instead to bound memory usage and plot time.
+_MAX_PAIRWISE_POINTS = 2000
+
+# Default maximum number of control points to render in the pairwise plot.
+# Control point count grows combinatorially with degree and n_params, so a cap
+# prevents worst-case slowdowns when show_control_points=True.
+_MAX_CONTROL_POINTS = 500
 
 
 def plot_bezier_simplex(
@@ -7,6 +20,9 @@ def plot_bezier_simplex(
     num: int = 100,
     ax=None,
     show_control_points: bool = True,
+    *,
+    max_control_points: int = _MAX_CONTROL_POINTS,
+    max_pairwise_points: int = _MAX_PAIRWISE_POINTS,
     **kwargs,
 ):
     """Plots the Bézier simplex.
@@ -16,33 +32,75 @@ def plot_bezier_simplex(
     model : BezierSimplex
         The Bézier simplex model to plot.
     num : int
-        The number of grid points for each edge.
+        The number of grid points for each edge.  For ``model.n_params >= 4``
+        this value is used only to decide whether to use a full meshgrid or
+        random sampling: if the combinatorial meshgrid size
+        ``comb(num + n_params - 1, n_params - 1)`` exceeds
+        ``max_pairwise_points``, exactly ``max_pairwise_points`` uniformly
+        random simplex samples are drawn instead and ``num`` no longer
+        controls the sample count.
     ax : matplotlib.axes.Axes or None
         The matplotlib axes to plot on. If None, a new figure is created.
+        Ignored when ``model.n_params >= 4``; for pairwise plots a new
+        figure is created only when ``model.n_values > 0`` (when
+        ``model.n_values == 0`` an empty ``(0, 0)`` ndarray is returned
+        without creating a figure).
     show_control_points : bool
         Whether to show control points.
+    max_control_points : int
+        Maximum number of control points to render in pairwise plots
+        (``model.n_params >= 4``).  When the model has more control points
+        than this limit, a random subset of ``max_control_points`` is drawn
+        instead to avoid combinatorial slowdowns.  Defaults to 500.
+        Ignored when ``show_control_points`` is ``False`` or
+        ``model.n_params < 4``.  Must be a non-negative integer.
+    max_pairwise_points : int
+        Maximum number of sample points for the pairwise scatter plot
+        (``model.n_params >= 4``).  When the combinatorial meshgrid size
+        would exceed this limit, ``max_pairwise_points`` uniformly random
+        simplex samples are drawn instead to bound memory usage and plot
+        time.  Defaults to 2000.  Ignored when ``model.n_params < 4``.
+        Must be a non-negative integer.
     **kwargs
         Additional keyword arguments forwarded to the plot call.
         For ``model.n_params == 2``, forwarded to ``ax.plot`` (curve).
         For ``model.n_params == 3`` and ``model.n_values >= 3``, forwarded
         to ``ax.plot_trisurf`` (3D surface).
         For ``model.n_params == 3`` and ``model.n_values == 2``, ignored.
+        For ``model.n_params >= 4``, forwarded to ``ax.scatter`` (pairwise).
 
     Returns
     -------
-    matplotlib.axes.Axes or mpl_toolkits.mplot3d.axes3d.Axes3D
-        The axes containing the plot.
+    matplotlib.axes.Axes or mpl_toolkits.mplot3d.axes3d.Axes3D or numpy.ndarray
+        The axes containing the plot.  For ``model.n_params <= 3`` a single
+        ``Axes`` (or ``Axes3D``) is returned.  For ``model.n_params >= 4`` a
+        2-D ``numpy.ndarray`` of ``Axes`` with shape
+        ``(n_values, n_values)`` is returned (pairwise scatter plot).
 
     Raises
     ------
-    NotImplementedError
-        If ``model.n_params`` is neither 2 nor 3.
+    ImportError
+        If matplotlib is not installed. This dependency is required for all
+        plotting backends used by this function.
+    ImportError
+        If SciPy is not installed and ``model.n_params == 3``. SciPy is
+        required for the triangulation-based plotting used in the
+        Bézier triangle case.
+    ValueError
+        If ``model.n_params < 2``. This function only supports Bézier simplex
+        models with at least two parameters.
     """
     if model.n_params == 2:
         return _plot_bezier_curve(model, num, ax, show_control_points, **kwargs)
     if model.n_params == 3:
         return _plot_bezier_triangle(model, num, ax, show_control_points, **kwargs)
-    raise NotImplementedError(f"Plotting for n_params={model.n_params} is not supported.")
+    if model.n_params >= 4:
+        return _plot_bezier_simplex_pairwise(
+            model, num, show_control_points, max_control_points, max_pairwise_points, **kwargs
+        )
+    raise ValueError(
+        f"plot_bezier_simplex only supports models with n_params >= 2; got n_params = {model.n_params}"
+    )
 
 
 def _plot_bezier_curve(model, num, ax, show_control_points, **kwargs):
@@ -202,3 +260,133 @@ def _plot_bezier_triangle(model, num, ax, show_control_points, **kwargs):
             ax.scatter(cp[:, 0], cp[:, 1], cp[:, 2], c="r", marker="o")
 
     return ax
+
+
+def _plot_bezier_simplex_pairwise(model, num, show_control_points, max_control_points, max_pairwise_points, **kwargs):
+    """Plots a high-dimensional Bézier simplex as a pairwise scatter plot.
+
+    For ``model.n_params >= 4``, this function generates sample points from
+    the simplex and creates a pairwise scatter plot (pair plot) of the output
+    values.  Diagonal panels show histograms of individual output dimensions;
+    off-diagonal panels show scatter plots of pairs of output dimensions.
+
+    Parameters
+    ----------
+    model : BezierSimplex
+        The Bézier simplex model to plot.
+    num : int
+        The number of grid points along each edge of the simplex.  Used to
+        estimate the full meshgrid size via
+        ``comb(num + n_params - 1, n_params - 1)``.  If that size exceeds
+        ``max_pairwise_points``, ``num`` is ignored and exactly
+        ``max_pairwise_points`` uniformly random simplex samples are drawn
+        instead; in this case ``num`` no longer controls the sample count.
+    show_control_points : bool
+        Whether to overlay control points on the off-diagonal scatter panels.
+    max_control_points : int
+        Maximum number of control points to render.  When the model has more
+        control points than this limit, a random subset of ``max_control_points``
+        is drawn instead to prevent combinatorial slowdowns for high-degree
+        models.  Defaults to 500.  Ignored when
+        ``show_control_points`` is ``False``.  Must be a non-negative integer.
+    max_pairwise_points : int
+        Maximum number of sample points for the pairwise scatter plot.  When
+        the combinatorial meshgrid size exceeds this limit,
+        ``max_pairwise_points`` uniformly random simplex samples are drawn
+        instead to bound memory usage and plot time.  Defaults to 2000.
+        Must be a non-negative integer.
+    **kwargs
+        Additional keyword arguments forwarded to ``ax.scatter``.
+
+    Returns
+    -------
+    numpy.ndarray of matplotlib.axes.Axes
+        A 2-D array of axes with shape ``(n_values, n_values)``.
+
+    Raises
+    ------
+    ValueError
+        If ``max_control_points`` or ``max_pairwise_points`` is negative or
+        not an integer.
+    ImportError
+        If matplotlib is not installed.
+    """
+    if not isinstance(max_control_points, int) or max_control_points < 0:
+        raise ValueError(
+            f"max_control_points must be a non-negative integer; got {max_control_points!r}"
+        )
+    if not isinstance(max_pairwise_points, int) or max_pairwise_points < 0:
+        raise ValueError(
+            f"max_pairwise_points must be a non-negative integer; got {max_pairwise_points!r}"
+        )
+
+    try:
+        import matplotlib.pyplot as plt
+    except ImportError as e:
+        raise ImportError(
+            "matplotlib is required for plotting. "
+            "Install it with: pip install matplotlib"
+        ) from e
+
+    # Early return before any sampling when there are no output values.
+    n_v = model.n_values
+    if n_v == 0:
+        return np.empty((0, 0), dtype=object)
+
+    n_p = model.n_params
+    meshgrid_size = math.comb(num + n_p - 1, n_p - 1) if n_p > 0 else 1
+    if meshgrid_size > max_pairwise_points:
+        # The full combinatorial grid would be too large; use random simplex
+        # samples instead to bound memory usage and plot time.
+        from torch_bsf.sampling import simplex_random
+
+        cp_matrix = model.control_points.matrix
+        ts = simplex_random(n_params=n_p, n_samples=max_pairwise_points).to(
+            device=cp_matrix.device, dtype=cp_matrix.dtype
+        )
+        with torch.no_grad():
+            xs = model(ts).detach().cpu().numpy()
+    else:
+        with torch.no_grad():
+            _ts, xs_t = model.meshgrid(num=num)
+        xs = xs_t.detach().cpu().numpy()
+
+    panel_size = max(1, min(3, 12 // max(n_v, 1)))
+    figsize_dim = min(12, panel_size * n_v)
+    fig, axes = plt.subplots(
+        n_v, n_v, squeeze=False, figsize=(figsize_dim, figsize_dim)
+    )
+    if show_control_points:
+        # Work on the torch tensor first to avoid transferring an enormous
+        # control-point matrix to CPU when max_control_points is small.
+        cp_t = model.control_points.matrix
+        cp_len = cp_t.shape[0]
+        if cp_len > max_control_points:
+            idx = torch.randperm(cp_len, device=cp_t.device)[:max_control_points]
+            cp_t = cp_t[idx]
+        cp = cp_t.detach().cpu().numpy()
+    else:
+        cp = None
+
+    # Allow caller to override scatter defaults via kwargs
+    scatter_s = kwargs.pop("s", 1)
+    scatter_alpha = kwargs.pop("alpha", 0.3)
+    # Compute a reasonable bin count (Sturges' rule, minimum 10)
+    n_samples = len(xs)
+    bins = max(10, int(np.ceil(np.log2(n_samples))) + 1) if n_samples > 1 else 10
+
+    for i in range(n_v):
+        for j in range(n_v):
+            a = axes[i, j]
+            if i == j:
+                a.hist(xs[:, i], bins=bins)
+                if cp is not None:
+                    x_vals = cp[:, i]
+                    ymin, ymax = a.get_ylim()
+                    a.vlines(x_vals, ymin, ymax, colors="r", alpha=0.5, linewidth=1)
+            else:
+                a.scatter(xs[:, j], xs[:, i], s=scatter_s, alpha=scatter_alpha, **kwargs)
+                if cp is not None:
+                    a.scatter(cp[:, j], cp[:, i], c="r", s=20, marker="o", zorder=5)
+
+    return axes

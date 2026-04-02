@@ -11,6 +11,7 @@ from typing import Any, Iterable, Literal, cast
 import lightning.pytorch as L
 import numpy as np
 import torch
+import torch.nn as nn
 import torch.optim
 import yaml
 from jsonschema import ValidationError, validate
@@ -1141,13 +1142,13 @@ def fit_kfold(
     seed: int | None = None,
     trainer_kwargs: dict | None = None,
     **kwargs,
-) -> list[BezierSimplex]:
+) -> nn.ModuleList:
     r"""Fits an ensemble of Bezier simplices using k-fold cross-validation.
 
     Splits the training data into ``n_folds`` folds via
     :class:`~pl_crossvalidate.KFoldTrainer` and trains one model per fold on
-    the data from the remaining ``n_folds - 1`` folds.  The resulting list of
-    models can be passed directly to
+    the data from the remaining ``n_folds - 1`` folds.  The resulting
+    :class:`~torch.nn.ModuleList` can be passed directly to
     :func:`torch_bsf.active_learning.suggest_next_points` to drive a
     Query-By-Committee active learning loop.
 
@@ -1192,16 +1193,20 @@ def fit_kfold(
         ``**kwargs``, e.g. ``dict(num_sanity_val_steps=2,
         limit_val_batches=1.0, ...)``.
     kwargs
-        Additional arguments forwarded to
-        :class:`~pl_crossvalidate.KFoldTrainer` (which itself accepts all
-        :class:`lightning.pytorch.Trainer` arguments).  For example, pass
-        ``shuffle=True`` (default in KFoldTrainer) or ``stratified=False``
-        to control how the folds are constructed.
+        All arguments for :class:`~pl_crossvalidate.KFoldTrainer` (which
+        itself accepts all :class:`lightning.pytorch.Trainer` arguments).
+        For example, ``max_epochs=10``, ``enable_progress_bar=False``,
+        ``logger=False``, ``shuffle=True``, or ``stratified=False``.
+        By default, ``num_sanity_val_steps=0`` and
+        ``limit_val_batches=0.0`` are set internally to disable per-fold
+        validation for speed; pass explicit values to override these
+        defaults, e.g. ``num_sanity_val_steps=2, limit_val_batches=1.0``.
 
     Returns
     -------
-    list[BezierSimplex]
-        A list of ``min(n_folds, len(params))`` trained models, one per fold.
+    torch.nn.ModuleList
+        A :class:`~torch.nn.ModuleList` of ``min(n_folds, len(params))``
+        trained :class:`BezierSimplex` models, one per fold.
 
     Raises
     ------
@@ -1209,8 +1214,7 @@ def fit_kfold(
         If ``n_folds < 2``, if ``len(params) < 2`` (too few samples for any
         fold split), if neither / both of ``degree`` and ``init`` are
         provided, if ``batch_size`` is truthy but not a positive integer, or
-        if reserved arguments such as ``num_folds`` or ``batch_size`` are
-        supplied via ``trainer_kwargs`` or ``**kwargs``.
+        if the reserved argument ``num_folds`` is supplied via ``**kwargs``.
 
     Examples
     --------
@@ -1230,7 +1234,10 @@ def fit_kfold(
     ...     params=params,
     ...     values=values,
     ...     degree=3,
-    ...     trainer_kwargs={"max_epochs": 1, "enable_progress_bar": False, "logger": False},
+    ...     max_epochs=1,
+    ...     enable_progress_bar=False,
+    ...     enable_model_summary=False,
+    ...     logger=False,
     ... )
     >>> suggestions = suggest_next_points(models, n_suggestions=2, method="qbc")
     >>> suggestions.shape
@@ -1308,19 +1315,17 @@ def fit_kfold(
     # cross-validation estimate comes from KFoldTrainer's per-fold test step.
     # Callers can override these by passing e.g. limit_val_batches=1.0.
     kfold_kwargs: dict = {"num_sanity_val_steps": 0, "limit_val_batches": 0.0}
-    kfold_kwargs.update(trainer_kwargs or {})
     kfold_kwargs.update(kwargs)
 
     # Guard against reserved/unsupported keys that would conflict with the
     # public API or _KFoldTrainer's signature.
-    for _reserved in ("num_folds", "batch_size"):
-        if _reserved in kfold_kwargs:
-            raise ValueError(
-                f"'{_reserved}' must not be passed via trainer_kwargs/kwargs. "
-                "Use the 'n_folds' argument to control the number of folds and "
-                "the 'batch_size' argument to control DataLoader batching."
-            )
+    if "num_folds" in kfold_kwargs:
+        raise ValueError(
+            "'num_folds' must not be passed via **kwargs. "
+            "Use the 'n_folds' argument to control the number of folds."
+        )
     trainer = _KFoldTrainer(num_folds=actual_folds, **kfold_kwargs)
     trainer.cross_validate(bs, train_dataloader=dl)
     ensemble = trainer.create_ensemble(bs)
-    return list(ensemble.models)
+    # pl_crossvalidate is untyped; cast so mypy knows the return type is ModuleList.
+    return cast(nn.ModuleList, ensemble.models)

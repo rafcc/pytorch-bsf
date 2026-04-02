@@ -154,14 +154,16 @@ def test_fit_kfold():
     # Shared fast Trainer settings to keep each training call to 1 epoch.
     fast = dict(max_epochs=1, enable_progress_bar=False, logger=False, enable_checkpointing=False)
 
-    # Normal case: returns n_folds models
+    # Normal case: returns an nn.ModuleList of n_folds models
+    import torch.nn as nn
     models = tb.fit_kfold(
         params=ts,
         values=xs,
         n_folds=5,
         degree=3,
-        trainer_kwargs=fast,
+        **fast,
     )
+    assert isinstance(models, nn.ModuleList)
     assert len(models) == 5
     for m in models:
         assert isinstance(m, tb.BezierSimplex)
@@ -176,7 +178,7 @@ def test_fit_kfold():
         values=few_xs,
         n_folds=10,
         degree=1,
-        trainer_kwargs=fast,
+        **fast,
     )
     assert len(models_capped) == 3  # capped to len(params)
 
@@ -202,7 +204,7 @@ def test_fit_kfold():
     # init as BezierSimplex (no adjacency_indices_; creates new from control_points)
     init_bs2 = tbbs.randn(n_params=3, n_values=3, degree=3)
     models_init_bs = tb.fit_kfold(
-        params=ts, values=xs, n_folds=3, init=init_bs2, trainer_kwargs=fast,
+        params=ts, values=xs, n_folds=3, init=init_bs2, **fast,
     )
     assert len(models_init_bs) == 3
     for m in models_init_bs:
@@ -214,7 +216,7 @@ def test_fit_kfold():
     assert hasattr(init_smooth, "adjacency_indices_")  # sanity check
     models_reuse = tb.fit_kfold(
         params=ts, values=xs, n_folds=3, init=init_smooth, smoothness_weight=0.1,
-        trainer_kwargs=fast,
+        **fast,
     )
     assert len(models_reuse) == 3
 
@@ -222,14 +224,14 @@ def test_fit_kfold():
     from torch_bsf.bezier_simplex import simplex_indices
     cp_dict = {idx: [0.0] * 3 for idx in simplex_indices(3, 1)}
     models_init_cp = tb.fit_kfold(
-        params=ts, values=xs, n_folds=3, init=cp_dict, trainer_kwargs=fast,
+        params=ts, values=xs, n_folds=3, init=cp_dict, **fast,
     )
     assert len(models_init_cp) == 3
 
     # Explicit positive batch_size
     models_bs = tb.fit_kfold(
         params=ts, values=xs, n_folds=3, degree=3, batch_size=5,
-        trainer_kwargs=fast,
+        **fast,
     )
     assert len(models_bs) == 3
 
@@ -249,28 +251,21 @@ def test_fit_kfold():
     import numpy as np
     models_np_bs = tb.fit_kfold(
         params=ts, values=xs, n_folds=3, degree=3, batch_size=np.int64(5),
-        trainer_kwargs=fast,
+        **fast,
     )
     assert len(models_np_bs) == 3
 
-    # Reserved key 'num_folds' in trainer_kwargs
+    # Reserved key 'num_folds' in **kwargs must raise ValueError
     with pytest.raises(ValueError, match="num_folds"):
         tb.fit_kfold(
             params=ts, values=xs, n_folds=3, degree=3,
-            trainer_kwargs={"num_folds": 3},
-        )
-
-    # Reserved key 'batch_size' in trainer_kwargs
-    with pytest.raises(ValueError, match="batch_size"):
-        tb.fit_kfold(
-            params=ts, values=xs, n_folds=3, degree=3,
-            trainer_kwargs={"batch_size": 5},
+            num_folds=3,
         )
 
     # fix parameter: freeze vertex [3,0,0]
     models_fix = tb.fit_kfold(
         params=ts, values=xs, n_folds=3, degree=3, fix=[[3, 0, 0]],
-        trainer_kwargs=fast,
+        **fast,
     )
     assert len(models_fix) == 3
 
