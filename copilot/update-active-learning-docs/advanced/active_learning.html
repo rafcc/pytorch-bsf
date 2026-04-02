@@ -189,7 +189,17 @@
 
 <span class="c1"># Placeholder training values derived from the existing parameters</span>
 <span class="n">existing_values</span> <span class="o">=</span> <span class="n">existing_params</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">dim</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">keepdim</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-<span class="n">model</span> <span class="o">=</span> <span class="n">torch_bsf</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">params</span><span class="o">=</span><span class="n">existing_params</span><span class="p">,</span> <span class="n">values</span><span class="o">=</span><span class="n">existing_values</span><span class="p">,</span> <span class="n">degree</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
+<span class="n">model</span> <span class="o">=</span> <span class="n">torch_bsf</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span>
+    <span class="n">params</span><span class="o">=</span><span class="n">existing_params</span><span class="p">,</span>
+    <span class="n">values</span><span class="o">=</span><span class="n">existing_values</span><span class="p">,</span>
+    <span class="n">degree</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span>
+    <span class="n">trainer_kwargs</span><span class="o">=</span><span class="nb">dict</span><span class="p">(</span>
+        <span class="n">max_epochs</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span>
+        <span class="n">enable_progress_bar</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+        <span class="n">logger</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+        <span class="n">enable_checkpointing</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+    <span class="p">),</span>
+<span class="p">)</span>
 
 <span class="c1"># Suggest the 2 points furthest from all existing samples</span>
 <span class="n">suggestions</span> <span class="o">=</span> <span class="n">suggest_next_points</span><span class="p">(</span>
