@@ -1,6 +1,6 @@
 # Changelog
 
-## [1.0.0](https://github.com/opthub-org/pytorch-bsf/compare/v0.16.1...v1.0.0) (2026-04-02)
+## [0.17.0](https://github.com/opthub-org/pytorch-bsf/compare/v0.16.1...v0.17.0) (2026-04-02)
 
 
 ### ⚠ BREAKING CHANGES
