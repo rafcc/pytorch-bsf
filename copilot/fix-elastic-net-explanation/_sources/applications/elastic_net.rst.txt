@@ -43,7 +43,7 @@ To cast this into the multi-objective framework required by PyTorch-BSF, we iden
    f_{\text{sparse}}(\beta) &= \|\beta\|_1 + \frac{\epsilon}{2}\|\beta\|_2^2 \\
    f_{\text{smooth}}(\beta) &= \frac{1 + \epsilon}{2}\|\beta\|_2^2
 
-where :math:`\epsilon > 0` is a small constant added to each term to ensure strong convexity (which is required for the solution map to be weakly simplicial). Rewriting the original problem as a convex combination of these three objectives gives:
+where :math:`n` is the number of observations and :math:`\epsilon > 0` is a small constant. It appears as :math:`\frac{\epsilon}{2}\|\beta\|_2^2` in :math:`f_{\text{data}}` and :math:`f_{\text{sparse}}` to make those terms strongly convex, and it is absorbed into :math:`f_{\text{smooth}}` via the coefficient :math:`\frac{1+\epsilon}{2}`. This ensures all three objectives are strongly convex, which is required for the solution map to be weakly simplicial :cite:p:`mizota2021unconstrained`. Rewriting the original problem as a convex combination of these three objectives gives:
 
 .. math::
 
@@ -60,7 +60,7 @@ The conventional elastic-net parameters :math:`\lambda` and :math:`\alpha` relat
    w_2 = \frac{\lambda\,\alpha}{1 + \lambda}, \qquad
    w_3 = \frac{\lambda\,(1-\alpha)}{1 + \lambda}.
 
-This maps the semi-infinite rectangle :math:`[0, \infty) \times [0, 1]` in :math:`(\lambda, \alpha)` bijectively onto the interior of the 2-simplex :math:`\Delta^2` (plus its data-fidelity vertex at :math:`(1, 0, 0)`), enabling a single Bézier simplex to represent the entire elastic-net regularization path.
+This maps the semi-infinite rectangle :math:`[0, \infty) \times [0, 1]` in :math:`(\lambda, \alpha)` onto the 2-simplex :math:`\Delta^2`. When :math:`\lambda = 0` the entire edge :math:`\{0\} \times [0, 1]` collapses to the single vertex :math:`(1, 0, 0)` (all regularization vanishes), so the mapping is not injective at :math:`\lambda = 0`. For :math:`\lambda > 0`, different :math:`(\lambda, \alpha)` pairs map to distinct interior points, enabling a single Bézier simplex to represent the entire elastic-net regularization path.
 
 By training the model on a sparse subset of weight vectors :math:`w` and fitting a Bézier simplex, we obtain a continuous **solution map** :math:`(x^*, f \circ x^*): \Delta^{M-1} \to G^*(f)` that maps any weight :math:`w` to the optimal weights :math:`\beta` and the corresponding objective values.
 
