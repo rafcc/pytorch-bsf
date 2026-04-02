@@ -312,8 +312,9 @@ def _plot_bezier_simplex_pairwise(model, num, show_control_points, **kwargs):
             if i == j:
                 a.hist(xs[:, i], bins=bins)
                 if cp is not None:
-                    for val in cp[:, i]:
-                        a.axvline(val, color="r", alpha=0.5, linewidth=1)
+                    x_vals = cp[:, i]
+                    ymin, ymax = a.get_ylim()
+                    a.vlines(x_vals, ymin, ymax, colors="r", alpha=0.5, linewidth=1)
             else:
                 a.scatter(xs[:, j], xs[:, i], s=scatter_s, alpha=scatter_alpha, **kwargs)
                 if cp is not None:
