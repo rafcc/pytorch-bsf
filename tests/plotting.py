@@ -122,6 +122,20 @@ def test_plot_bezier_simplex_raises_for_low_n_params():
         plot_bezier_simplex(model, num=3)
 
 
+def test_plot_bezier_simplex_pairwise_sampling_cap():
+    """When meshgrid would exceed _MAX_PAIRWISE_POINTS, random sampling is used
+    and the result still has the expected (n_values, n_values) shape."""
+    import matplotlib.pyplot as plt
+    import math
+
+    # n_params=4, num=30 => binom(33, 3) = 5456 > 2000, so random sampling triggers
+    model = tbbs.randn(n_params=4, n_values=2, degree=1)
+    assert math.comb(30 + 4 - 1, 4 - 1) > 2000, "precondition: meshgrid exceeds cap"
+    result = plot_bezier_simplex(model, num=30)
+    assert result.shape == (2, 2)
+    plt.close(result[0, 0].figure)
+
+
 def test_plot_curve_with_existing_axes(bezier_curve_2d):
     import matplotlib.pyplot as plt
 

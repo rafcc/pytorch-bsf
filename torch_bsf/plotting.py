@@ -1,5 +1,13 @@
+import math
+
 import numpy as np
+import torch
 from torch_bsf.bezier_simplex import BezierSimplex
+
+# Maximum number of sample points for the pairwise scatter plot.
+# When the combinatorial meshgrid would exceed this count, uniformly-random
+# simplex samples are drawn instead to bound memory usage and plot time.
+_MAX_PAIRWISE_POINTS = 2000
 
 
 def plot_bezier_simplex(
@@ -256,8 +264,22 @@ def _plot_bezier_simplex_pairwise(model, num, show_control_points, **kwargs):
             "Install it with: pip install matplotlib"
         ) from e
 
-    _ts, xs = model.meshgrid(num=num)
-    xs = xs.detach().cpu().numpy()
+    n_p = model.n_params
+    meshgrid_size = math.comb(num + n_p - 1, n_p - 1) if n_p > 0 else 1
+    if meshgrid_size > _MAX_PAIRWISE_POINTS:
+        # The full combinatorial grid would be too large; use random simplex
+        # samples instead to bound memory usage and plot time.
+        from torch_bsf.sampling import simplex_random
+
+        cp_matrix = model.control_points.matrix
+        ts = simplex_random(n_params=n_p, n_samples=_MAX_PAIRWISE_POINTS).to(
+            device=cp_matrix.device, dtype=cp_matrix.dtype
+        )
+        with torch.no_grad():
+            xs = model(ts).detach().cpu().numpy()
+    else:
+        _ts, xs_t = model.meshgrid(num=num)
+        xs = xs_t.detach().cpu().numpy()
 
     n_v = model.n_values
     if n_v == 0:
