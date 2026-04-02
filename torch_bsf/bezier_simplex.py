@@ -1222,8 +1222,8 @@ def fit_kfold(
                 # propagate all other cases.
                 logger_kwarg = kwargs.get("logger", None)
                 logger_attr = getattr(self, "logger", None)
-                message = str(e)
-                is_logger_version_error = "version" in message
+                attr_name = getattr(e, "name", None)
+                is_logger_version_error = attr_name == "version"
                 if is_logger_version_error and (logger_kwarg is False or logger_attr is None):
                     self._version = None
                 else:
