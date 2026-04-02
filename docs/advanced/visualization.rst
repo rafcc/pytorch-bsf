@@ -74,7 +74,7 @@ shape ``(n_values, n_values)``.
    axes = plot_bezier_simplex(model, num=30)
    axes[0, 1].set_xlabel("Objective 2")
    axes[1, 0].set_ylabel("Objective 1")
-   plt.suptitle("Pairwise Plot of High-Dimensional Bezier Simplex")
+   plt.suptitle("Pairwise Plot of High-Dimensional Bézier Simplex")
    plt.tight_layout()
    plt.show()
 
