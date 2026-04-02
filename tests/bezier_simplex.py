@@ -262,12 +262,12 @@ def test_fit_kfold():
             num_folds=3,
         )
 
-    # fix parameter: freeze vertex [3,0,0]
-    models_fix = tb.fit_kfold(
-        params=ts, values=xs, n_folds=3, degree=3, fix=[[3, 0, 0]],
+    # freeze parameter: freeze vertex [3,0,0]
+    models_freeze = tb.fit_kfold(
+        params=ts, values=xs, n_folds=3, degree=3, freeze=[[3, 0, 0]],
         **fast,
     )
-    assert len(models_fix) == 3
+    assert len(models_freeze) == 3
 
 
 @pytest.mark.parametrize(
@@ -307,12 +307,12 @@ def test_partial_fit(init_type):
         init = tbbs.load("control_points.yml")
     else:
         raise ValueError()
-    # Train the edge of a Bezier curve while its vertices are fixed
+    # Train the edge of a Bezier curve while its vertices are frozen
     bs = tbbs.fit(
         params=ts,  # input observations (training data)
         values=xs,  # output observations (training data)
         init=init,  # initial values of control points
-        fix=[[3, 0], [0, 3]],  # fix vertices of the Bezier curve
+        freeze=[[3, 0], [0, 3]],  # freeze vertices of the Bezier curve
     )
 
     # Predict by the trained model
@@ -788,19 +788,19 @@ def test_fit_with_dict_init():
 
 
 # ---------------------------------------------------------------------------
-# fix_row / on_after_backward
+# freeze_row / on_after_backward
 # ---------------------------------------------------------------------------
 
 
-def test_fix_row_zeros_gradient():
-    """fix_row() must zero out the gradient for the fixed control point after backward."""
+def test_freeze_row_zeros_gradient():
+    """freeze_row() must zero out the gradient for the frozen control point after backward."""
     ts = torch.tensor([[1.0, 0.0], [0.5, 0.5], [0.0, 1.0]])
     xs = ts * ts
     bs = tbbs.randn(n_params=2, n_values=2, degree=1)
 
-    # Fix the first vertex
+    # Freeze the first vertex
     first_index = (1, 0)
-    bs.fix_row(first_index)
+    bs.freeze_row(first_index)
 
     # Manual forward + backward
     pred = bs(ts)
@@ -808,7 +808,7 @@ def test_fix_row_zeros_gradient():
     loss.backward()
     bs.on_after_backward()
 
-    # The gradient of the fixed row must be zero
+    # The gradient of the frozen row must be zero
     grad = bs.control_points.matrix.grad
     assert grad is not None
     row = bs.control_points._index_to_row[first_index]

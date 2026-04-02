@@ -333,7 +333,7 @@ class BezierSimplex(L.LightningModule):
         self.save_hyperparameters(ignore=["control_points"])
 
         # Track row indices whose gradients should be zeroed (frozen control points).
-        self._fixed_rows: set[int] = set()
+        self._frozen_rows: set[int] = set()
 
         # Cache indices and coefficients for vectorized forward
         if self.n_params > 0:
@@ -395,7 +395,7 @@ class BezierSimplex(L.LightningModule):
         r"""The degree of the Bézier simplex."""
         return self.control_points.degree
 
-    def fix_row(self, index: "Index") -> None:
+    def freeze_row(self, index: "Index") -> None:
         """Freeze a control point so its gradient is zeroed after every backward.
 
         Parameters
@@ -408,15 +408,15 @@ class BezierSimplex(L.LightningModule):
         k = to_parameterdict_key(index)
         idx = tuple(_literal_eval(k))
         row = self.control_points._index_to_row[idx]
-        self._fixed_rows.add(row)
+        self._frozen_rows.add(row)
 
     def on_after_backward(self) -> None:
         """Zero gradients for frozen control-point rows after each backward pass."""
-        if not self._fixed_rows:
+        if not self._frozen_rows:
             return
         grad = self.control_points.matrix.grad
         if grad is not None:
-            grad[list(self._fixed_rows)] = 0.0
+            grad[list(self._frozen_rows)] = 0.0
 
     def forward(self, t: torch.Tensor) -> torch.Tensor:
         r"""Process a forwarding step of training.
@@ -1009,7 +1009,7 @@ def fit(
     degree: int | None = None,
     init: BezierSimplex | ControlPoints | ControlPointsData | None = None,
     smoothness_weight: float = 0.0,
-    fix: Iterable[Index] | None = None,
+    freeze: Iterable[Index] | None = None,
     batch_size: int | None = None,
     seed: int | None = None,
     **kwargs,
@@ -1028,7 +1028,7 @@ def fit(
         The initial values of a Bézier simplex or control points.
     smoothness_weight
         The weight of smoothness penalty.
-    fix
+    freeze
         The indices of control points to exclude from training.
     batch_size
         The size of minibatch.
@@ -1121,11 +1121,11 @@ def fit(
             smoothness_weight=smoothness_weight,
         )
 
-    fix = fix or []
-    validate_simplex_indices(fix, bs.n_params, bs.degree)
+    freeze = freeze or []
+    validate_simplex_indices(freeze, bs.n_params, bs.degree)
 
-    for index in fix:
-        bs.fix_row(index)
+    for index in freeze:
+        bs.freeze_row(index)
 
     trainer = L.Trainer(**kwargs)
     trainer.fit(bs, dl)
@@ -1139,7 +1139,7 @@ def fit_kfold(
     degree: int | None = None,
     init: BezierSimplex | ControlPoints | ControlPointsData | None = None,
     smoothness_weight: float = 0.0,
-    fix: Iterable[Index] | None = None,
+    freeze: Iterable[Index] | None = None,
     batch_size: int | None = None,
     seed: int | None = None,
     **kwargs,
@@ -1170,7 +1170,7 @@ def fit_kfold(
         The initial values of a Bézier simplex or control points.
     smoothness_weight
         The weight of the smoothness penalty.
-    fix
+    freeze
         The indices of control points to exclude from training.
     batch_size
         The size of a minibatch.  Defaults to full-batch (consistent with
@@ -1271,11 +1271,11 @@ def fit_kfold(
             smoothness_weight=smoothness_weight,
         )
 
-    if fix is None:
-        fix = []
-    validate_simplex_indices(fix, bs.n_params, bs.degree)
-    for index in fix:
-        bs.fix_row(index)
+    if freeze is None:
+        freeze = []
+    validate_simplex_indices(freeze, bs.n_params, bs.degree)
+    for index in freeze:
+        bs.freeze_row(index)
 
     # Build full-batch DataLoader (same default as fit()).
     dataset = TensorDataset(params, values)
