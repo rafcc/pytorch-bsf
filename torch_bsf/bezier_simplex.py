@@ -1009,7 +1009,7 @@ def fit(
     degree: int | None = None,
     init: BezierSimplex | ControlPoints | ControlPointsData | None = None,
     smoothness_weight: float = 0.0,
-    fix: Iterable[Index] | None = None,
+    freeze: Iterable[Index] | None = None,
     batch_size: int | None = None,
     seed: int | None = None,
     **kwargs,
@@ -1028,7 +1028,7 @@ def fit(
         The initial values of a bezier simplex or control points.
     smoothness_weight
         The weight of smoothness penalty.
-    fix
+    freeze
         The indices of control points to exclude from training.
     batch_size
         The size of minibatch.
@@ -1121,10 +1121,10 @@ def fit(
             smoothness_weight=smoothness_weight,
         )
 
-    fix = fix or []
-    validate_simplex_indices(fix, bs.n_params, bs.degree)
+    freeze = freeze or []
+    validate_simplex_indices(freeze, bs.n_params, bs.degree)
 
-    for index in fix:
+    for index in freeze:
         bs.freeze_row(index)
 
     trainer = L.Trainer(**kwargs)
@@ -1139,7 +1139,7 @@ def fit_kfold(
     degree: int | None = None,
     init: BezierSimplex | ControlPoints | ControlPointsData | None = None,
     smoothness_weight: float = 0.0,
-    fix: Iterable[Index] | None = None,
+    freeze: Iterable[Index] | None = None,
     batch_size: int | None = None,
     seed: int | None = None,
     **kwargs,
@@ -1170,7 +1170,7 @@ def fit_kfold(
         The initial values of a Bezier simplex or control points.
     smoothness_weight
         The weight of the smoothness penalty.
-    fix
+    freeze
         The indices of control points to exclude from training.
     batch_size
         The size of a minibatch.  Defaults to full-batch (consistent with
@@ -1271,10 +1271,10 @@ def fit_kfold(
             smoothness_weight=smoothness_weight,
         )
 
-    if fix is None:
-        fix = []
-    validate_simplex_indices(fix, bs.n_params, bs.degree)
-    for index in fix:
+    if freeze is None:
+        freeze = []
+    validate_simplex_indices(freeze, bs.n_params, bs.degree)
+    for index in freeze:
         bs.freeze_row(index)
 
     # Build full-batch DataLoader (same default as fit()).

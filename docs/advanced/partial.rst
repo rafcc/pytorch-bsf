@@ -1,17 +1,17 @@
 Partial Training
 ================
 
-By default, ``fit()`` trains all control points of the Bézier simplex simultaneously. The ``fix`` argument lets you hold a subset of control points constant during training, so that only the remaining (free) control points are updated.
+By default, ``fit()`` trains all control points of the Bézier simplex simultaneously. The ``freeze`` argument lets you hold a subset of control points constant during training, so that only the remaining (free) control points are updated.
 
 This is useful when:
 
-*   **Boundary constraints are known** — If single-objective optimizations have already determined the vertex solutions, you can fix those vertices and train only the interior and edge control points.
-*   **Incremental refinement** — Fit a low-degree model first, reuse its control points as the initialization for a higher-degree model, and fix the already-accurate points to stabilize training.
+*   **Boundary constraints are known** — If single-objective optimizations have already determined the vertex solutions, you can freeze those vertices and train only the interior and edge control points.
+*   **Incremental refinement** — Fit a low-degree model first, reuse its control points as the initialization for a higher-degree model, and freeze the already-accurate points to stabilize training.
 *   **Encoding prior knowledge** — Pin control points whose values are theoretically or physically determined.
 
-The example below demonstrates how to fix the two vertices of a Bézier curve while training its interior control points.
+The example below demonstrates how to freeze the two vertices of a Bézier curve while training its interior control points.
 
-The ``fix`` argument takes a list of multi-index lists (e.g., ``[[3, 0], [0, 3]]``). Any control point whose multi-index appears in ``fix`` is excluded from gradient updates.
+The ``freeze`` argument takes a list of multi-index lists (e.g., ``[[3, 0], [0, 3]]``). Any control point whose multi-index appears in ``freeze`` is excluded from gradient updates.
 
 .. testcode::
    :pyversion: >= 3.10, < 3.15
@@ -49,12 +49,12 @@ The ``fix`` argument takes a list of multi-index lists (e.g., ``[[3, 0], [0, 3]]
    # Or, load control points from a file
    init = torch_bsf.bezier_simplex.load("control_points.yml")
 
-   # Train the edge of a Bézier curve while its vertices are fixed
+   # Train the edge of a Bézier curve while its vertices are frozen
    bs = torch_bsf.fit(
       params=ts,  # input observations (training data)
       values=xs,  # output observations (training data)
       init=init,  # initial values of control points
-      fix=[[3, 0], [0, 3]],  # fix vertices of the Bézier curve
+      freeze=[[3, 0], [0, 3]],  # freeze vertices of the Bézier curve
    )
 
    # Predict with the trained model

@@ -262,9 +262,9 @@ def test_fit_kfold():
             num_folds=3,
         )
 
-    # fix parameter: freeze vertex [3,0,0]
+    # freeze parameter: freeze vertex [3,0,0]
     models_fix = tb.fit_kfold(
-        params=ts, values=xs, n_folds=3, degree=3, fix=[[3, 0, 0]],
+        params=ts, values=xs, n_folds=3, degree=3, freeze=[[3, 0, 0]],
         **fast,
     )
     assert len(models_fix) == 3
@@ -307,12 +307,12 @@ def test_partial_fit(init_type):
         init = tbbs.load("control_points.yml")
     else:
         raise ValueError()
-    # Train the edge of a Bezier curve while its vertices are fixed
+    # Train the edge of a Bezier curve while its vertices are frozen
     bs = tbbs.fit(
         params=ts,  # input observations (training data)
         values=xs,  # output observations (training data)
         init=init,  # initial values of control points
-        fix=[[3, 0], [0, 3]],  # fix vertices of the Bezier curve
+        freeze=[[3, 0], [0, 3]],  # freeze vertices of the Bezier curve
     )
 
     # Predict by the trained model
@@ -798,7 +798,7 @@ def test_freeze_row_zeros_gradient():
     xs = ts * ts
     bs = tbbs.randn(n_params=2, n_values=2, degree=1)
 
-    # Fix the first vertex
+    # Freeze the first vertex
     first_index = (1, 0)
     bs.freeze_row(first_index)
 

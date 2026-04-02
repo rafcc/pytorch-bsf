@@ -34,8 +34,8 @@ class BezierSimplexRegressor(BaseEstimator, RegressorMixin):
         The weight of smoothness penalty.
     init : BezierSimplex | ControlPointsData | None, default=None
         Initial control points or model.
-    fix : Iterable[Index] | None, default=None
-        Indices of control points to fix during training.
+    freeze : Iterable[Index] | None, default=None
+        Indices of control points to freeze during training.
     batch_size : int | None, default=None
         Size of minibatches.
     max_epochs : int, default=1000
@@ -55,7 +55,7 @@ class BezierSimplexRegressor(BaseEstimator, RegressorMixin):
         degree: int = 3,
         smoothness_weight: float = 0.0,
         init: BezierSimplex | ControlPointsData | None = None,
-        fix: Iterable[Index] | None = None,
+        freeze: Iterable[Index] | None = None,
         batch_size: int | None = None,
         max_epochs: int = 1000,
         accelerator: str = "auto",
@@ -67,7 +67,7 @@ class BezierSimplexRegressor(BaseEstimator, RegressorMixin):
         self.degree = degree
         self.smoothness_weight = smoothness_weight
         self.init = init
-        self.fix = fix
+        self.freeze = freeze
         self.batch_size = batch_size
         self.max_epochs = max_epochs
         self.accelerator = accelerator
@@ -106,7 +106,7 @@ class BezierSimplexRegressor(BaseEstimator, RegressorMixin):
             degree=self.degree,
             init=self.init,
             smoothness_weight=self.smoothness_weight,
-            fix=self.fix,
+            freeze=self.freeze,
             batch_size=self.batch_size,
             max_epochs=self.max_epochs,
             accelerator=self.accelerator,

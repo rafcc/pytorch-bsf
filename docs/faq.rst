@@ -100,13 +100,13 @@ PyTorch-BSF includes built-in tools for model selection and specific task automa
 *   **K-Fold Cross-Validation:** Run `python -m torch_bsf.model_selection.kfold` to evaluate model performance across different data splits.
 *   **Elastic Net Grid Search:** Run `python -m torch_bsf.model_selection.elastic_net_grid` to generate parameter grids specifically for Elastic Net regularization paths.
 
-When should I use the ``fix`` argument?
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+When should I use the ``freeze`` argument?
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-The ``fix`` argument allows you to hold specific control points constant during training. This is useful for:
+The ``freeze`` argument allows you to hold specific control points constant during training. This is useful for:
 
-*   **Boundary constraints:** If you know the exact values at the vertices of the simplex (e.g., results of single-objective optimizations), fix those vertices and fit only the interior.
-*   **Incremental refinement:** Fit a low-degree model first, then use its control points as initialization for a higher-degree model, fixing the well-estimated parts to stabilize training.
+*   **Boundary constraints:** If you know the exact values at the vertices of the simplex (e.g., results of single-objective optimizations), freeze those vertices and fit only the interior.
+*   **Incremental refinement:** Fit a low-degree model first, then use its control points as initialization for a higher-degree model, freezing the well-estimated parts to stabilize training.
 *   **Encoding prior knowledge:** If theoretical or physical constraints dictate the value at certain parameter combinations, you can pin those points to ensure the model respects them.
 
 
