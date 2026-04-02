@@ -209,3 +209,32 @@ class TestMainInProcess:
         )
         main()
         assert any(tmp_path.iterdir()), "Expected at least one output file"
+
+    def test_main_with_init(self, tmp_path, monkeypatch):
+        """main() should accept --init to load an existing model."""
+        import torch_bsf.bezier_simplex as tbbs
+        from torch_bsf.__main__ import main
+
+        # Create a model file to use as --init.
+        init_file = tmp_path / "model.pt"
+        tbbs.save(str(init_file), tbbs.randn(n_params=2, n_values=2, degree=1))
+
+        monkeypatch.chdir(tmp_path)
+        monkeypatch.setenv("MLFLOW_TRACKING_URI", f"file://{tmp_path}")
+        for var in ("MLFLOW_TRACKING_USERNAME", "MLFLOW_TRACKING_PASSWORD", "MLFLOW_TRACKING_TOKEN"):
+            monkeypatch.delenv(var, raising=False)
+        monkeypatch.setattr(
+            "sys.argv",
+            [
+                "torch_bsf",
+                f"--params={_PARAMS_CSV}",
+                f"--values={_VALUES_CSV}",
+                f"--init={init_file}",
+                "--max_epochs=1",
+                "--loglevel=0",
+                "--accelerator=cpu",
+                "--devices=1",
+            ],
+        )
+        main()
+        assert any(tmp_path.iterdir()), "Expected at least one output file"

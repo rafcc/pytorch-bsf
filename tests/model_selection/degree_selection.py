@@ -416,4 +416,22 @@ class TestDegreeSelectionCliMain:
         )
         _cli_main()
 
+    def test_cli_main_inverted_degrees_exits(self, monkeypatch):
+        """_cli_main() should call parser.error (SystemExit 2) when min > max."""
+        from torch_bsf.model_selection.degree_selection import _cli_main
+
+        monkeypatch.setattr(
+            "sys.argv",
+            [
+                "degree_selection",
+                f"--params={_PARAMS_CSV}",
+                f"--values={_VALUES_CSV}",
+                "--min_degree=5",
+                "--max_degree=1",
+            ],
+        )
+        with pytest.raises(SystemExit) as exc_info:
+            _cli_main()
+        assert exc_info.value.code != 0
+
 
