@@ -9,12 +9,18 @@ from torch_bsf.bezier_simplex import BezierSimplex
 # simplex samples are drawn instead to bound memory usage and plot time.
 _MAX_PAIRWISE_POINTS = 2000
 
+# Default maximum number of control points to render in the pairwise plot.
+# Control point count grows combinatorially with degree and n_params, so a cap
+# prevents worst-case slowdowns when show_control_points=True.
+_MAX_CONTROL_POINTS = 500
+
 
 def plot_bezier_simplex(
     model: BezierSimplex,
     num: int = 100,
     ax=None,
     show_control_points: bool = True,
+    max_control_points: int = _MAX_CONTROL_POINTS,
     **kwargs,
 ):
     """Plots the Bézier simplex.
@@ -39,6 +45,13 @@ def plot_bezier_simplex(
         without creating a figure).
     show_control_points : bool
         Whether to show control points.
+    max_control_points : int
+        Maximum number of control points to render in pairwise plots
+        (``model.n_params >= 4``).  When the model has more control points
+        than this limit, a random subset of ``max_control_points`` is drawn
+        instead to avoid combinatorial slowdowns.  Defaults to
+        ``_MAX_CONTROL_POINTS``.  Ignored when ``show_control_points`` is
+        ``False`` or ``model.n_params < 4``.
     **kwargs
         Additional keyword arguments forwarded to the plot call.
         For ``model.n_params == 2``, forwarded to ``ax.plot`` (curve).
@@ -70,7 +83,9 @@ def plot_bezier_simplex(
     if model.n_params == 3:
         return _plot_bezier_triangle(model, num, ax, show_control_points, **kwargs)
     if model.n_params >= 4:
-        return _plot_bezier_simplex_pairwise(model, num, show_control_points, **kwargs)
+        return _plot_bezier_simplex_pairwise(
+            model, num, show_control_points, max_control_points, **kwargs
+        )
     raise ValueError(
         f"plot_bezier_simplex only supports models with n_params >= 2; got n_params = {model.n_params}"
     )
@@ -235,7 +250,7 @@ def _plot_bezier_triangle(model, num, ax, show_control_points, **kwargs):
     return ax
 
 
-def _plot_bezier_simplex_pairwise(model, num, show_control_points, **kwargs):
+def _plot_bezier_simplex_pairwise(model, num, show_control_points, max_control_points, **kwargs):
     """Plots a high-dimensional Bézier simplex as a pairwise scatter plot.
 
     For ``model.n_params >= 4``, this function generates sample points from
@@ -256,6 +271,12 @@ def _plot_bezier_simplex_pairwise(model, num, show_control_points, **kwargs):
         instead; in this case ``num`` no longer controls the sample count.
     show_control_points : bool
         Whether to overlay control points on the off-diagonal scatter panels.
+    max_control_points : int
+        Maximum number of control points to render.  When the model has more
+        control points than this limit, a random subset of ``max_control_points``
+        is drawn instead to prevent combinatorial slowdowns for high-degree
+        models.  Defaults to ``_MAX_CONTROL_POINTS``.  Ignored when
+        ``show_control_points`` is ``False``.
     **kwargs
         Additional keyword arguments forwarded to ``ax.scatter``.
 
@@ -311,6 +332,9 @@ def _plot_bezier_simplex_pairwise(model, num, show_control_points, **kwargs):
         if show_control_points
         else None
     )
+    if cp is not None and len(cp) > max_control_points:
+        idx = np.random.choice(len(cp), max_control_points, replace=False)
+        cp = cp[idx]
 
     # Allow caller to override scatter defaults via kwargs
     scatter_s = kwargs.pop("s", 1)

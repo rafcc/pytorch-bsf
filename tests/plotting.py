@@ -141,6 +141,36 @@ def test_plot_bezier_simplex_pairwise_sampling_cap():
     plt.close(result[0, 0].figure)
 
 
+def test_plot_bezier_simplex_pairwise_max_control_points_default():
+    """Control points exceeding _MAX_CONTROL_POINTS are subsampled by default."""
+    import matplotlib.pyplot as plt
+    import torch_bsf.plotting as plotting_module
+
+    # degree=20, n_params=4 => comb(23,3) = 1771 control points > _MAX_CONTROL_POINTS (500)
+    degree = 20
+    model = tbbs.randn(n_params=4, n_values=2, degree=degree)
+    import math
+
+    n_cp = math.comb(model.n_params + degree - 1, degree)
+    assert (
+        n_cp > plotting_module._MAX_CONTROL_POINTS
+    ), f"precondition: model must have more than {plotting_module._MAX_CONTROL_POINTS} control points; got {n_cp}"
+    result = plot_bezier_simplex(model, num=3)
+    assert result.shape == (2, 2)
+    plt.close(result[0, 0].figure)
+
+
+def test_plot_bezier_simplex_pairwise_max_control_points_custom():
+    """Custom max_control_points value is respected."""
+    import matplotlib.pyplot as plt
+
+    model = tbbs.randn(n_params=4, n_values=2, degree=5)
+    # Set a very small cap so subsampling is always triggered
+    result = plot_bezier_simplex(model, num=3, max_control_points=2)
+    assert result.shape == (2, 2)
+    plt.close(result[0, 0].figure)
+
+
 def test_plot_curve_with_existing_axes(bezier_curve_2d):
     import matplotlib.pyplot as plt
 
