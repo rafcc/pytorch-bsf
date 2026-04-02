@@ -60,10 +60,35 @@ def test_plot_bezier_triangle_3d_returns_axes(bezier_triangle_3d):
     plt.close(ax.figure)
 
 
-def test_plot_bezier_simplex_not_implemented():
+def test_plot_bezier_simplex_high_dim_returns_axes_array():
+    import matplotlib.pyplot as plt
+
     model = tbbs.randn(n_params=4, n_values=2, degree=1)
-    with pytest.raises(NotImplementedError):
-        plot_bezier_simplex(model)
+    result = plot_bezier_simplex(model, num=3)
+    assert result is not None
+    assert hasattr(result, "shape")
+    assert result.shape == (2, 2)
+    plt.close(result[0, 0].figure)
+
+
+def test_plot_bezier_simplex_high_dim_3_values():
+    import matplotlib.pyplot as plt
+
+    model = tbbs.randn(n_params=4, n_values=3, degree=1)
+    result = plot_bezier_simplex(model, num=3)
+    assert result is not None
+    assert result.shape == (3, 3)
+    plt.close(result[0, 0].figure)
+
+
+def test_plot_bezier_simplex_high_dim_no_control_points():
+    import matplotlib.pyplot as plt
+
+    model = tbbs.randn(n_params=5, n_values=2, degree=1)
+    result = plot_bezier_simplex(model, num=3, show_control_points=False)
+    assert result is not None
+    assert result.shape == (2, 2)
+    plt.close(result[0, 0].figure)
 
 
 def test_plot_curve_with_existing_axes(bezier_curve_2d):

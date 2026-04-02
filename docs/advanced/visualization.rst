@@ -44,10 +44,43 @@ For Bézier triangles (surfaces), the tool uses triangulation to render a smooth
 *   **3D Values**: Renders a smooth 3D surface using ``plot_trisurf``.
 *   **Optional**: Control points and the underlying mesh can be displayed.
 
+High-Dimensional Bézier Simplices (:math:`n\_params \geq 4`)
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+For high-dimensional Bézier simplices, the function creates a **pairwise scatter
+plot** (pair plot) of the output values.
+
+*   **Diagonal panels**: Histograms showing the distribution of each output
+    dimension individually.
+*   **Off-diagonal panels**: Scatter plots showing the relationship between
+    every pair of output dimensions.
+*   **Optional**: Control points are overlaid on off-diagonal panels and as
+    vertical lines on diagonal panels when ``show_control_points=True``.
+
+The return value is a 2-D ``numpy.ndarray`` of ``matplotlib.axes.Axes`` with
+shape ``(n_values, n_values)``.
+
+.. code-block:: python
+
+   import torch_bsf
+   from torch_bsf.plotting import plot_bezier_simplex
+   import matplotlib.pyplot as plt
+
+   # Fit a high-dimensional model (n_params=4 means a 3-simplex input)
+   bs = torch_bsf.fit(params=ts, values=xs, degree=2)  # ts has 4 columns
+
+   # Plot returns a grid of axes
+   axes = plot_bezier_simplex(bs, num=30)
+   axes[0, 1].set_xlabel("Objective 2")
+   axes[1, 0].set_ylabel("Objective 1")
+   plt.suptitle("Pairwise Plot of High-Dimensional Bézier Simplex")
+   plt.tight_layout()
+   plt.show()
+
 Customizing the Plot
 --------------------
 
-The ``plot_bezier_simplex()`` function returns a standard Matplotlib axes object (``Axes`` or ``Axes3D``), allowing you to customize labels, titles, and styles using the standard Matplotlib API.
+The ``plot_bezier_simplex()`` function returns a standard Matplotlib axes object (``Axes`` or ``Axes3D``) for low-dimensional models, and a 2-D array of ``Axes`` for high-dimensional models. You can customize labels, titles, and styles using the standard Matplotlib API.
 
 .. code-block:: python
 

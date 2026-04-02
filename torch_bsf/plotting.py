@@ -19,6 +19,8 @@ def plot_bezier_simplex(
         The number of grid points for each edge.
     ax : matplotlib.axes.Axes or None
         The matplotlib axes to plot on. If None, a new figure is created.
+        Ignored when ``model.n_params >= 4`` (a new figure is always created
+        for pairwise plots).
     show_control_points : bool
         Whether to show control points.
     **kwargs
@@ -27,22 +29,21 @@ def plot_bezier_simplex(
         For ``model.n_params == 3`` and ``model.n_values >= 3``, forwarded
         to ``ax.plot_trisurf`` (3D surface).
         For ``model.n_params == 3`` and ``model.n_values == 2``, ignored.
+        For ``model.n_params >= 4``, forwarded to ``ax.scatter`` (pairwise).
 
     Returns
     -------
-    matplotlib.axes.Axes or mpl_toolkits.mplot3d.axes3d.Axes3D
-        The axes containing the plot.
-
-    Raises
-    ------
-    NotImplementedError
-        If ``model.n_params`` is neither 2 nor 3.
+    matplotlib.axes.Axes or mpl_toolkits.mplot3d.axes3d.Axes3D or numpy.ndarray
+        The axes containing the plot.  For ``model.n_params <= 3`` a single
+        ``Axes`` (or ``Axes3D``) is returned.  For ``model.n_params >= 4`` a
+        2-D ``numpy.ndarray`` of ``Axes`` with shape
+        ``(n_values, n_values)`` is returned (pairwise scatter plot).
     """
     if model.n_params == 2:
         return _plot_bezier_curve(model, num, ax, show_control_points, **kwargs)
     if model.n_params == 3:
         return _plot_bezier_triangle(model, num, ax, show_control_points, **kwargs)
-    raise NotImplementedError(f"Plotting for n_params={model.n_params} is not supported.")
+    return _plot_bezier_simplex_pairwise(model, num, show_control_points, **kwargs)
 
 
 def _plot_bezier_curve(model, num, ax, show_control_points, **kwargs):
@@ -202,3 +203,81 @@ def _plot_bezier_triangle(model, num, ax, show_control_points, **kwargs):
             ax.scatter(cp[:, 0], cp[:, 1], cp[:, 2], c="r", marker="o")
 
     return ax
+
+
+def _plot_bezier_simplex_pairwise(model, num, show_control_points, **kwargs):
+    """Plots a high-dimensional Bézier simplex as a pairwise scatter plot.
+
+    For ``model.n_params >= 4``, this function generates sample points from
+    the simplex and creates a pairwise scatter plot (pair plot) of the output
+    values.  Diagonal panels show histograms of individual output dimensions;
+    off-diagonal panels show scatter plots of pairs of output dimensions.
+
+    Parameters
+    ----------
+    model : BezierSimplex
+        The Bézier simplex model to plot.
+    num : int
+        The number of grid points along each edge of the simplex.
+    show_control_points : bool
+        Whether to overlay control points on the off-diagonal scatter panels.
+    **kwargs
+        Additional keyword arguments forwarded to ``ax.scatter``.
+
+    Returns
+    -------
+    numpy.ndarray of matplotlib.axes.Axes
+        A 2-D array of axes with shape ``(n_values, n_values)``.
+
+    Raises
+    ------
+    ImportError
+        If matplotlib is not installed.
+    """
+    try:
+        import matplotlib.pyplot as plt
+    except ImportError as e:
+        raise ImportError(
+            "matplotlib is required for plotting. "
+            "Install it with: pip install matplotlib"
+        ) from e
+
+    ts, xs = model.meshgrid(num=num)
+    xs = xs.detach().cpu().numpy()
+
+    n_v = model.n_values
+    if n_v == 0:
+        fig, single_ax = plt.subplots(1, 1)
+        return np.array([[single_ax]])
+
+    panel_size = min(3, 12 // max(n_v, 1))
+    fig, axes = plt.subplots(
+        n_v, n_v, squeeze=False, figsize=(panel_size * n_v, panel_size * n_v)
+    )
+    cp = (
+        model.control_points.matrix.detach().cpu().numpy()
+        if show_control_points
+        else None
+    )
+
+    # Allow caller to override scatter defaults via kwargs
+    scatter_s = kwargs.pop("s", 1)
+    scatter_alpha = kwargs.pop("alpha", 0.3)
+    # Compute a reasonable bin count (Sturges' rule, minimum 10)
+    n_samples = len(xs)
+    bins = max(10, int(np.ceil(np.log2(n_samples))) + 1) if n_samples > 1 else 10
+
+    for i in range(n_v):
+        for j in range(n_v):
+            a = axes[i, j]
+            if i == j:
+                a.hist(xs[:, i], bins=bins)
+                if cp is not None:
+                    for val in cp[:, i]:
+                        a.axvline(val, color="r", alpha=0.5, linewidth=1)
+            else:
+                a.scatter(xs[:, j], xs[:, i], s=scatter_s, alpha=scatter_alpha, **kwargs)
+                if cp is not None:
+                    a.scatter(cp[:, j], cp[:, i], c="r", s=20, marker="o", zorder=5)
+
+    return axes
