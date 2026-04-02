@@ -26,20 +26,41 @@ This unified framework extends far beyond the standard Elastic Net:
 Elastic Net Formulation
 -----------------------
 
-For the standard Elastic Net, the underlying multi-objective problem involves simultaneously minimizing three objectives over the model weights :math:`\beta \in \mathbb{R}^N`:
+The standard Elastic Net regression problem is formulated as:
 
-.. math:: 
-   
-   f_{data}(\beta) &= \frac{1}{2n}\|y - X\beta\|^2 + \frac{\epsilon}{2}\|\beta\|^2 \\
-   f_{sparse}(\beta) &= \|\beta\|_1 + \frac{\epsilon}{2}\|\beta\|^2 \\
-   f_{smooth}(\beta) &= \frac{1+\epsilon}{2}\|\beta\|_2^2
+.. math::
 
-where :math:`n` is the number of observations and :math:`\epsilon > 0` is a small constant ensuring strong convexity. These correspond to the hyperparameter mapping :math:`w = (w_1, w_2, w_3)` where:
+   \min_{\beta \in \mathbb{R}^N} \frac{1}{2n}\|y - X\beta\|^2
+   + \lambda \Bigl(\alpha \|\beta\|_1 + \frac{1-\alpha}{2}\|\beta\|_2^2\Bigr)
 
-.. math:: 
-   w_1 &= \frac{1}{1 + \lambda} \\
-   w_2 &= \frac{\lambda \alpha}{1 + \lambda} \\
-   w_3 &= \frac{\lambda (1-\alpha)}{1 + \lambda}
+where :math:`\lambda \ge 0` is the overall regularization strength and :math:`\alpha \in [0, 1]` controls the L1/L2 mixing ratio. Setting :math:`\alpha = 1` recovers the Lasso, and :math:`\alpha = 0` gives Ridge regression.
+
+To cast this into the multi-objective framework required by PyTorch-BSF, we identify three objectives over the model weights :math:`\beta \in \mathbb{R}^N`:
+
+.. math::
+
+   f_{\text{data}}(\beta) &= \frac{1}{2n}\|y - X\beta\|^2 + \frac{\epsilon}{2}\|\beta\|_2^2 \\
+   f_{\text{sparse}}(\beta) &= \|\beta\|_1 + \frac{\epsilon}{2}\|\beta\|_2^2 \\
+   f_{\text{smooth}}(\beta) &= \frac{1 + \epsilon}{2}\|\beta\|_2^2
+
+where :math:`\epsilon > 0` is a small constant added to each term to ensure strong convexity (which is required for the solution map to be weakly simplicial). Rewriting the original problem as a convex combination of these three objectives gives:
+
+.. math::
+
+   \min_{\beta \in \mathbb{R}^N} \; w_1 \, f_{\text{data}}(\beta)
+   + w_2 \, f_{\text{sparse}}(\beta)
+   + w_3 \, f_{\text{smooth}}(\beta),
+   \quad (w_1, w_2, w_3) \in \Delta^2.
+
+The conventional elastic-net parameters :math:`\lambda` and :math:`\alpha` relate to the simplex weight vector :math:`w = (w_1, w_2, w_3)` by:
+
+.. math::
+
+   w_1 = \frac{1}{1 + \lambda}, \qquad
+   w_2 = \frac{\lambda\,\alpha}{1 + \lambda}, \qquad
+   w_3 = \frac{\lambda\,(1-\alpha)}{1 + \lambda}.
+
+This maps the semi-infinite rectangle :math:`[0, \infty) \times [0, 1]` in :math:`(\lambda, \alpha)` bijectively onto the interior of the 2-simplex :math:`\Delta^2` (plus its data-fidelity vertex at :math:`(1, 0, 0)`), enabling a single Bézier simplex to represent the entire elastic-net regularization path.
 
 By training the model on a sparse subset of weight vectors :math:`w` and fitting a Bézier simplex, we obtain a continuous **solution map** :math:`(x^*, f \circ x^*): \Delta^{M-1} \to G^*(f)` that maps any weight :math:`w` to the optimal weights :math:`\beta` and the corresponding objective values.
 
