@@ -1,6 +1,7 @@
 import csv
 import json
 import numbers
+import operator
 from ast import literal_eval
 from functools import lru_cache
 from math import factorial
@@ -1284,7 +1285,7 @@ def fit_kfold(
             raise ValueError(
                 f"'batch_size' must be a positive integer or falsy/None for full-batch, got {batch_size!r}."
             )
-        effective_batch_size = int(batch_size)
+        effective_batch_size = operator.index(batch_size)
 
     dl = DataLoader(dataset, batch_size=effective_batch_size)
     # Disable the validation loop inside each fold by default; the
