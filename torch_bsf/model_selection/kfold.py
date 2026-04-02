@@ -40,7 +40,8 @@ parser.add_argument(
     help=(
         "JSON-style list-of-lists of simplex indices of control points to freeze during training; "
         "each simplex index list must have length n_params and its entries must sum to the Bezier simplex degree "
-        "(e.g. '[[1,0],[0,1]]' for n_params=2, degree=1)"
+        "(either specified by --degree or inferred from the model loaded via --init; "
+        "e.g. '[[1,0],[0,1]]' for n_params=2, degree=1)"
     ),
 )
 parser.add_argument(
