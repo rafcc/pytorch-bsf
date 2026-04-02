@@ -3,7 +3,6 @@ from typing import Any
 
 import lightning.pytorch as L
 import torch
-from pl_crossvalidate import KFoldTrainer
 from torch.utils.data import DataLoader, TensorDataset
 
 _logger = logging.getLogger(__name__)
@@ -72,7 +71,7 @@ def select_degree(
     int
         The best degree found.
     """
-    from torch_bsf.bezier_simplex import randn
+    from torch_bsf.bezier_simplex import _KFoldTrainer, randn
 
     # Build the dataset once – it doesn't change across degree iterations.
     # Use full-batch loading (consistent with bezier_simplex.fit()) unless the
@@ -119,7 +118,7 @@ def select_degree(
 
         model = randn(params.shape[1], values.shape[1], d)
 
-        trainer = KFoldTrainer(num_folds=num_folds, **kfold_kwargs)
+        trainer = _KFoldTrainer(num_folds=num_folds, **kfold_kwargs)
 
         # KFoldTrainer splits train_dl into per-fold train/test subsets;
         # test results (test_mse) give the unbiased cross-validation estimate.

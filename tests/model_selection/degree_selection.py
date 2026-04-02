@@ -65,7 +65,7 @@ class TestSelectDegree:
 class TestSelectDegreeKwargForwarding:
     """Verify correct kwargs are forwarded to KFoldTrainer.cross_validate."""
 
-    _PATCH = "torch_bsf.model_selection.degree_selection.KFoldTrainer"
+    _PATCH = "torch_bsf.bezier_simplex._KFoldTrainer"
 
     def test_default_forces_limit_val_batches(self):
         """Without val_dataloaders/datamodule, limit_val_batches=0.0 is set."""
@@ -277,7 +277,7 @@ class TestDegreeSelectionCLI:
 class TestSelectDegreePatience:
     """Tests for the patience-based early-stopping logic in select_degree."""
 
-    _PATCH = "torch_bsf.model_selection.degree_selection.KFoldTrainer"
+    _PATCH = "torch_bsf.bezier_simplex._KFoldTrainer"
 
     def _select_with_mse_sequence(self, mse_sequence, patience=1, min_degree=1):
         """Run select_degree with a predetermined sequence of per-degree MSE values."""
