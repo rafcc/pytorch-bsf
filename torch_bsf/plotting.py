@@ -24,7 +24,13 @@ def plot_bezier_simplex(
     model : BezierSimplex
         The Bézier simplex model to plot.
     num : int
-        The number of grid points for each edge.
+        The number of grid points for each edge.  For ``model.n_params >= 4``
+        this value is used only to decide whether to use a full meshgrid or
+        random sampling: if the combinatorial meshgrid size
+        ``comb(num + n_params - 1, n_params - 1)`` exceeds
+        ``_MAX_PAIRWISE_POINTS``, exactly ``_MAX_PAIRWISE_POINTS`` uniformly
+        random simplex samples are drawn instead and ``num`` no longer
+        controls the sample count.
     ax : matplotlib.axes.Axes or None
         The matplotlib axes to plot on. If None, a new figure is created.
         Ignored when ``model.n_params >= 4``; for pairwise plots a new
@@ -242,7 +248,12 @@ def _plot_bezier_simplex_pairwise(model, num, show_control_points, **kwargs):
     model : BezierSimplex
         The Bézier simplex model to plot.
     num : int
-        The number of grid points along each edge of the simplex.
+        The number of grid points along each edge of the simplex.  Used to
+        estimate the full meshgrid size via
+        ``comb(num + n_params - 1, n_params - 1)``.  If that size exceeds
+        ``_MAX_PAIRWISE_POINTS``, ``num`` is ignored and exactly
+        ``_MAX_PAIRWISE_POINTS`` uniformly random simplex samples are drawn
+        instead; in this case ``num`` no longer controls the sample count.
     show_control_points : bool
         Whether to overlay control points on the off-diagonal scatter panels.
     **kwargs
