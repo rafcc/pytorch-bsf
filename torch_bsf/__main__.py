@@ -8,43 +8,61 @@ import mlflow
 from mlflow import autolog
 
 from torch_bsf import BezierSimplexDataModule
+from torch_bsf._cli_args import add_common_training_args
 from torch_bsf.bezier_simplex import BezierSimplex, load, randn
-from torch_bsf.validator import index_list, int_or_str, validate_simplex_indices
+from torch_bsf.validator import index_list, validate_simplex_indices
 
 parser = ArgumentParser(
     prog="python -m torch_bsf", description="Bezier simplex fitting"
 )
-parser.add_argument("--params", type=Path, required=True)
-parser.add_argument("--values", type=Path, required=True)
-parser.add_argument("--meshgrid", type=Path)
-parser.add_argument("--degree", type=int)
-parser.add_argument("--init", type=Path)
-parser.add_argument("--fix", type=index_list)
-parser.add_argument("--header", type=int, default=0)
 parser.add_argument(
-    "--normalize", type=str, choices=("none", "max", "std", "quantile"), default="none"
+    "--params", type=Path, required=True, metavar="CSV",
+    help="Path to the input parameters CSV file",
 )
-parser.add_argument("--split_ratio", type=float, default=1.0)
-parser.add_argument("--batch_size", type=int)
-parser.add_argument("--max_epochs", type=int, default=2)
-parser.add_argument("--smoothness_weight", type=float, default=0.0)
-parser.add_argument("--accelerator", type=str, default="auto")
-parser.add_argument("--strategy", type=str, default="auto")
-parser.add_argument("--devices", type=int_or_str, default="auto")
-parser.add_argument("--num_nodes", type=int, default=1)
-parser.add_argument("--precision", type=str, default="32-true")
-parser.add_argument("--enable_checkpointing", action="store_true")
-parser.add_argument("--log_every_n_steps", type=int, default=1)
+parser.add_argument(
+    "--values", type=Path, required=True, metavar="CSV",
+    help="Path to the output values CSV file",
+)
+parser.add_argument(
+    "--meshgrid", type=Path, metavar="CSV|DIR",
+    help=(
+        "Path to the meshgrid CSV file used for prediction output; if omitted or if an "
+        "existing directory path is given, the parameters CSV specified by --params is used instead"
+    ),
+)
+mutual_group = parser.add_mutually_exclusive_group(required=True)
+mutual_group.add_argument(
+    "--degree", type=int, metavar="N",
+    help="Degree of the Bezier simplex (required when --init is not given)",
+)
+mutual_group.add_argument(
+    "--init", type=Path, metavar="PT",
+    help="Path to a pretrained model file to initialize from (required when --degree is not given)",
+)
+parser.add_argument(
+    "--fix", type=index_list, metavar="INDICES",
+    help=(
+        "JSON-style list-of-lists of simplex indices of control points to freeze during training; "
+        "each simplex index list must have length n_params and its elements must sum to the Bezier "
+        "simplex degree (or the model's degree when using --init) "
+        "(e.g. '[[2,0],[0,2]]' for n_params=2 and degree=2)"
+    ),
+)
+parser.add_argument(
+    "--header", type=int, default=0, metavar="N",
+    help="Number of header rows to skip in CSV files (default: 0)",
+)
+parser.add_argument(
+    "--normalize", type=str, choices=("none", "max", "std", "quantile"), default="none",
+    metavar="{none,max,std,quantile}",
+    help="Normalization applied to values before training (default: none)",
+)
+add_common_training_args(parser)
 parser.add_argument(
     "--loglevel", type=int, choices=(0, 1, 2), default=2, help="0: nothing, 1: metrics, 2: metrics & models"
 )
 
 args = parser.parse_args()
-
-if args.degree is None and args.init is None:
-    raise ValueError("Either --degree or --init must be specified")
-if args.degree is not None and args.init is not None:
-    raise ValueError("Either --degree or --init must be specified, not both")
 
 meshgrid: Path = args.params if (args.meshgrid is None or args.meshgrid.is_dir()) else args.meshgrid
 
