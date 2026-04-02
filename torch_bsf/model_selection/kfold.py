@@ -114,7 +114,7 @@ freeze: list[list[int]] = args.freeze or []
 validate_simplex_indices(freeze, bs.n_params, bs.degree)
 
 for index in freeze:
-    bs.control_points[index].requires_grad = False
+    bs.freeze_row(index)
 
 trainer = KFoldTrainer(
     num_folds=args.num_folds,
