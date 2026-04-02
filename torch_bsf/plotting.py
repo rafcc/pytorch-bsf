@@ -278,7 +278,8 @@ def _plot_bezier_simplex_pairwise(model, num, show_control_points, **kwargs):
         with torch.no_grad():
             xs = model(ts).detach().cpu().numpy()
     else:
-        _ts, xs_t = model.meshgrid(num=num)
+        with torch.no_grad():
+            _ts, xs_t = model.meshgrid(num=num)
         xs = xs_t.detach().cpu().numpy()
 
     n_v = model.n_values
