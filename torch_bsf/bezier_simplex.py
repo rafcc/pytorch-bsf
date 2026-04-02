@@ -1140,6 +1140,7 @@ def fit_kfold(
     fix: Iterable[Index] | None = None,
     batch_size: int | None = None,
     seed: int | None = None,
+    trainer_kwargs: dict | None = None,
     **kwargs,
 ) -> nn.ModuleList:
     r"""Fits an ensemble of Bezier simplices using k-fold cross-validation.
@@ -1314,6 +1315,8 @@ def fit_kfold(
     # cross-validation estimate comes from KFoldTrainer's per-fold test step.
     # Callers can override these by passing e.g. limit_val_batches=1.0.
     kfold_kwargs: dict = {"num_sanity_val_steps": 0, "limit_val_batches": 0.0}
+    if trainer_kwargs is not None:
+        kfold_kwargs.update(trainer_kwargs)
     kfold_kwargs.update(kwargs)
 
     # Guard against reserved/unsupported keys that would conflict with the
