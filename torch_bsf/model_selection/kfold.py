@@ -24,7 +24,7 @@ parser.add_argument(
 )
 parser.add_argument(
     "--meshgrid", type=Path, metavar="CSV|DIR",
-    help="Path to the meshgrid CSV file used for prediction output; if omitted or set to a directory, defaults to --params",
+    help="Path to the meshgrid CSV file used for prediction output; if omitted or set to an existing directory, defaults to --params",
 )
 degree_init_group = parser.add_mutually_exclusive_group(required=True)
 degree_init_group.add_argument(
