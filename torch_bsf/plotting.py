@@ -77,6 +77,9 @@ def plot_bezier_simplex(
         If SciPy is not installed and ``model.n_params == 3``. SciPy is
         required for the triangulation-based plotting used in the
         Bézier triangle case.
+    ValueError
+        If ``model.n_params < 2``. This function only supports Bézier simplex
+        models with at least two parameters.
     """
     if model.n_params == 2:
         return _plot_bezier_curve(model, num, ax, show_control_points, **kwargs)
