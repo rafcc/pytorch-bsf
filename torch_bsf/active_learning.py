@@ -1,3 +1,4 @@
+import itertools
 from typing import Optional, Sequence
 import torch
 import torch.nn as nn
@@ -8,7 +9,7 @@ def _infer_device(model: nn.Module) -> torch.device:
     """Infer the device of *model* from its parameters, then buffers, then CPU."""
     device = getattr(model, "device", None)
     if device is not None:
-        return device
+        return torch.device(device)
     try:
         return next(model.parameters()).device
     except StopIteration:
@@ -71,7 +72,7 @@ def suggest_next_points(
     device = _infer_device(models[0])
 
     # Validate that all models share the same n_params and device
-    for model in models[1:]:
+    for model in itertools.islice(models, 1, None):
         model_n_params = getattr(model, "n_params", None)
         if model_n_params is not None and model_n_params != n_params:
             raise ValueError("All models in 'models' must have the same 'n_params'.")
