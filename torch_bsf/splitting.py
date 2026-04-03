@@ -100,6 +100,94 @@ def _precompute_shift_rows(
     return torch.tensor(shift_list, dtype=torch.long, device=device)
 
 
+def _split_core(
+    b: torch.Tensor,
+    indices: list[tuple[int, ...]],
+    n: int,
+    alpha_i: torch.Tensor,
+    alpha_j: torch.Tensor,
+    shift_ij: torch.Tensor,
+    shift_ji: torch.Tensor,
+    s: float,
+    smoothness_weight: float,
+) -> tuple[BezierSimplex, BezierSimplex]:
+    """Run the de Casteljau split using pre-computed per-edge tensors.
+
+    Accepts already-computed ``alpha_i/alpha_j`` vectors and shift-row tables
+    so that :func:`max_error_criterion` can reuse them across candidate split
+    parameters ``s`` for the same edge ``(i, j)`` without redundant work.
+
+    Parameters
+    ----------
+    b
+        Control-point matrix of shape ``(n_rows, n_values)``.
+    indices
+        All control-point indices in canonical order.
+    n
+        Degree of the Bézier simplex.
+    alpha_i, alpha_j
+        1-D long tensors of shape ``(n_rows,)`` holding the ``i``- and
+        ``j``-components of each multi-index.
+    shift_ij, shift_ji
+        Shift-row tables returned by :func:`_precompute_shift_rows` for
+        directions ``"ij"`` and ``"ji"`` respectively.
+    s
+        Split parameter in ``(0, 1)``.
+    smoothness_weight
+        Passed through to the :class:`~torch_bsf.bezier_simplex.BezierSimplex`
+        constructor.
+    """
+    result_A = torch.empty_like(b)
+    result_B = torch.empty_like(b)
+
+    # ---- Sub-simplex A: vertex j → new vertex --------------------------------
+    # Recursion:  c^r[alpha] = s * c^{r-1}[alpha]
+    #                         + (1-s) * c^{r-1}[alpha + e_i - e_j]  (alpha_j >= 1)
+    # Result:     b_A[beta] = c^{beta_j}[beta]
+    update_mask_A = shift_ij >= 0  # rows where alpha_j >= 1
+    c = b.clone()
+    result_A[alpha_j == 0] = c[alpha_j == 0]
+    for r in range(1, n + 1):
+        c_new = c.clone()
+        c_new[update_mask_A] = (
+            s * c[update_mask_A] + (1.0 - s) * c[shift_ij[update_mask_A]]
+        )
+        c = c_new
+        result_A[alpha_j == r] = c[alpha_j == r]
+
+    # ---- Sub-simplex B: vertex i → new vertex --------------------------------
+    # Recursion:  c^r[alpha] = (1-s) * c^{r-1}[alpha]
+    #                         + s * c^{r-1}[alpha + e_j - e_i]       (alpha_i >= 1)
+    # Result:     b_B[beta] = c^{beta_i}[beta]
+    update_mask_B = shift_ji >= 0  # rows where alpha_i >= 1
+    c = b.clone()
+    result_B[alpha_i == 0] = c[alpha_i == 0]
+    for r in range(1, n + 1):
+        c_new = c.clone()
+        c_new[update_mask_B] = (
+            (1.0 - s) * c[update_mask_B] + s * c[shift_ji[update_mask_B]]
+        )
+        c = c_new
+        result_B[alpha_i == r] = c[alpha_i == r]
+
+    # Build new BezierSimplex instances from result matrices
+    cp_data_A: dict[tuple[int, ...], torch.Tensor] = {
+        idx: result_A[row] for row, idx in enumerate(indices)
+    }
+    cp_data_B: dict[tuple[int, ...], torch.Tensor] = {
+        idx: result_B[row] for row, idx in enumerate(indices)
+    }
+    bs_A = BezierSimplex(
+        control_points=cp_data_A,
+        smoothness_weight=smoothness_weight,
+    ).to(device=b.device, dtype=b.dtype)
+    bs_B = BezierSimplex(
+        control_points=cp_data_B,
+        smoothness_weight=smoothness_weight,
+    ).to(device=b.device, dtype=b.dtype)
+    return bs_A, bs_B
+
+
 # ---------------------------------------------------------------------------
 # Public API
 # ---------------------------------------------------------------------------
@@ -209,55 +297,9 @@ def split(
     # Precompute shift-row tables on the same device as the control-point matrix.
     shift_ij = _precompute_shift_rows(indices, index_to_row, i, j, "ij", device=b.device)
     shift_ji = _precompute_shift_rows(indices, index_to_row, i, j, "ji", device=b.device)
-    result_A = torch.empty_like(b)
-    result_B = torch.empty_like(b)
-
-    # ---- Sub-simplex A: vertex j → new vertex --------------------------------
-    # Recursion:  c^r[alpha] = s * c^{r-1}[alpha]
-    #                         + (1-s) * c^{r-1}[alpha + e_i - e_j]  (alpha_j >= 1)
-    # Result:     b_A[beta] = c^{beta_j}[beta]
-    c = b.clone()
-    result_A[alpha_j == 0] = c[alpha_j == 0]
-    update_mask_A = shift_ij >= 0  # rows where alpha_j >= 1
-    for r in range(1, n + 1):
-        c_new = c.clone()
-        c_new[update_mask_A] = (
-            s * c[update_mask_A] + (1.0 - s) * c[shift_ij[update_mask_A]]
-        )
-        c = c_new
-        result_A[alpha_j == r] = c[alpha_j == r]
-
-    # ---- Sub-simplex B: vertex i → new vertex --------------------------------
-    # Recursion:  c^r[alpha] = (1-s) * c^{r-1}[alpha]
-    #                         + s * c^{r-1}[alpha + e_j - e_i]       (alpha_i >= 1)
-    # Result:     b_B[beta] = c^{beta_i}[beta]
-    c = b.clone()
-    result_B[alpha_i == 0] = c[alpha_i == 0]
-    update_mask_B = shift_ji >= 0  # rows where alpha_i >= 1
-    for r in range(1, n + 1):
-        c_new = c.clone()
-        c_new[update_mask_B] = (
-            (1.0 - s) * c[update_mask_B] + s * c[shift_ji[update_mask_B]]
-        )
-        c = c_new
-        result_B[alpha_i == r] = c[alpha_i == r]
-
-    # Build new BezierSimplex instances from result matrices
-    cp_data_A: dict[tuple[int, ...], torch.Tensor] = {
-        idx: result_A[row] for row, idx in enumerate(indices)
-    }
-    cp_data_B: dict[tuple[int, ...], torch.Tensor] = {
-        idx: result_B[row] for row, idx in enumerate(indices)
-    }
-    bs_A = BezierSimplex(
-        control_points=cp_data_A,
-        smoothness_weight=bs.smoothness_weight,
-    ).to(device=b.device, dtype=b.dtype)
-    bs_B = BezierSimplex(
-        control_points=cp_data_B,
-        smoothness_weight=bs.smoothness_weight,
-    ).to(device=b.device, dtype=b.dtype)
-    return bs_A, bs_B
+    return _split_core(
+        b, indices, n, alpha_i, alpha_j, shift_ij, shift_ji, s, bs.smoothness_weight
+    )
 
 
 def reparametrize(
@@ -520,11 +562,39 @@ def max_error_criterion(
         # grid_size is odd (e.g. grid_size=1 → [0.5], grid_size=3 → [0.25, 0.5, 0.75]).
         s_candidates = torch.linspace(0.0, 1.0, grid_size + 2)[1:-1].tolist()
 
+        b = bs.control_points.matrix
+        n = bs.degree
+        _indices = bs.control_points._indices
+        _index_to_row = bs.control_points._index_to_row
+
         for vi in range(n_params):
             for vj in range(vi + 1, n_params):
+                # Precompute alpha and shift tables once per (vi, vj); they
+                # are independent of the candidate split position s_cand.
+                alpha_vi = torch.tensor(
+                    [alpha[vi] for alpha in _indices],
+                    dtype=torch.long,
+                    device=model_device,
+                )
+                alpha_vj = torch.tensor(
+                    [alpha[vj] for alpha in _indices],
+                    dtype=torch.long,
+                    device=model_device,
+                )
+                shift_vivj = _precompute_shift_rows(
+                    _indices, _index_to_row, vi, vj, "ij", device=model_device
+                )
+                shift_vjvi = _precompute_shift_rows(
+                    _indices, _index_to_row, vi, vj, "ji", device=model_device
+                )
                 for s_cand in s_candidates:
                     s_cand = float(s_cand)
-                    bs_A, bs_B = split(bs, vi, vj, s_cand)
+                    bs_A, bs_B = _split_core(
+                        b, _indices, n,
+                        alpha_vi, alpha_vj,
+                        shift_vivj, shift_vjvi,
+                        s_cand, bs.smoothness_weight,
+                    )
                     u_A, mask_A = reparametrize(p, vi, vj, s_cand, "A")
                     u_B, mask_B = reparametrize(p, vi, vj, s_cand, "B")
 
