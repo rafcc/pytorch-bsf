@@ -297,7 +297,7 @@ def test_plot_pairwise_no_matplotlib(monkeypatch):
 
     model = tbbs.randn(n_params=4, n_values=2, degree=1)
     with monkeypatch.context() as m:
-        m.setitem(sys.modules, "matplotlib", None)
-        m.setitem(sys.modules, "matplotlib.pyplot", None)
-        with pytest.raises((ImportError, TypeError)):
+        m.delitem(sys.modules, "matplotlib", raising=False)
+        m.delitem(sys.modules, "matplotlib.pyplot", raising=False)
+        with pytest.raises(ImportError):
             _plot_bezier_simplex_pairwise(model, 5, True, 500, 2000)
