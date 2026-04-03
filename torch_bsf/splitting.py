@@ -565,8 +565,8 @@ def max_error_criterion(
 
         b = bs.control_points.matrix
         n = bs.degree
-        _indices = bs.control_points._indices
-        _index_to_row = bs.control_points._index_to_row
+        _indices = list(bs.control_points.indices())
+        _index_to_row = {alpha: row for row, alpha in enumerate(_indices)}
 
         for vi in range(n_params):
             for vj in range(vi + 1, n_params):
