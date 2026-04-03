@@ -1,0 +1,514 @@
+"""Bézier simplex splitting via the de Casteljau algorithm.
+
+This module provides functions to split a Bézier simplex along a single edge
+by inserting a new vertex and applying the de Casteljau algorithm to compute
+the control points of the two resulting sub-simplices.
+
+The split point can be chosen explicitly or determined automatically by
+optimising a :data:`SplitCriterion`.
+
+Examples
+--------
+Split a Bézier curve at its midpoint:
+
+>>> import torch
+>>> from torch_bsf.bezier_simplex import rand
+>>> from torch_bsf.splitting import split
+>>> bs = rand(n_params=2, n_values=3, degree=3)
+>>> bs_A, bs_B = split(bs, i=0, j=1, s=0.5)
+>>> bs_A.n_params == bs.n_params and bs_A.degree == bs.degree
+True
+
+Use the longest-edge criterion to choose the split automatically:
+
+>>> from torch_bsf.splitting import longest_edge_criterion, split_by_criterion
+>>> bs_A, bs_B = split_by_criterion(bs, longest_edge_criterion)
+"""
+
+from __future__ import annotations
+
+from typing import Callable
+
+import torch
+import torch.nn.functional as F
+
+from torch_bsf.bezier_simplex import BezierSimplex
+
+#: Type of a split criterion: a callable that accepts a
+#: :class:`~torch_bsf.bezier_simplex.BezierSimplex` and returns
+#: ``(i, j, s)`` — the edge vertex indices and the split parameter.
+SplitCriterion = Callable[[BezierSimplex], tuple[int, int, float]]
+
+
+# ---------------------------------------------------------------------------
+# Internal helpers
+# ---------------------------------------------------------------------------
+
+
+def _precompute_shift_rows(
+    indices: list[tuple[int, ...]],
+    index_to_row: dict[tuple[int, ...], int],
+    i: int,
+    j: int,
+    direction: str,
+) -> torch.Tensor:
+    """Precompute the row-index shift table for one de Casteljau direction.
+
+    Parameters
+    ----------
+    indices
+        All control-point indices in canonical order.
+    index_to_row
+        Mapping from index tuple to matrix row.
+    i, j
+        Edge vertex indices.
+    direction
+        ``"ij"`` → look up row of ``alpha + e_i - e_j`` (needs ``alpha_j >= 1``);
+        ``"ji"`` → look up row of ``alpha + e_j - e_i`` (needs ``alpha_i >= 1``).
+
+    Returns
+    -------
+    torch.Tensor
+        1-D ``long`` tensor of shape ``(n_rows,)``.
+        ``shift[r] == -1`` when the shifted index is outside the simplex.
+    """
+    n = len(indices)
+    shift = torch.full((n,), -1, dtype=torch.long)
+    for row, alpha in enumerate(indices):
+        if direction == "ij":
+            if alpha[j] >= 1:
+                shifted = list(alpha)
+                shifted[i] += 1
+                shifted[j] -= 1
+                shift[row] = index_to_row[tuple(shifted)]
+        else:  # "ji"
+            if alpha[i] >= 1:
+                shifted = list(alpha)
+                shifted[j] += 1
+                shifted[i] -= 1
+                shift[row] = index_to_row[tuple(shifted)]
+    return shift
+
+
+# ---------------------------------------------------------------------------
+# Public API
+# ---------------------------------------------------------------------------
+
+
+def split(
+    bs: BezierSimplex,
+    i: int,
+    j: int,
+    s: float = 0.5,
+) -> tuple[BezierSimplex, BezierSimplex]:
+    r"""Split a Bézier simplex along edge ``(i, j)`` using the de Casteljau algorithm.
+
+    A new vertex is inserted on the edge between vertex ``i`` and vertex ``j``
+    of the parameter domain at the relative position ``s``.  The original
+    simplex is thereby subdivided into two sub-simplices that together cover
+    the entire original domain.
+
+    Parameters
+    ----------
+    bs
+        The Bézier simplex to split.
+    i, j
+        Indices of the two vertices that define the split edge
+        (0-indexed, ``i ≠ j``).
+    s
+        Split parameter in the open interval ``(0, 1)``.  ``s = 0.5``
+        produces a midpoint split.  The new vertex is located at
+        :math:`(1-s)\,v_i + s\,v_j` in the parameter domain.
+
+    Returns
+    -------
+    (bs_A, bs_B) : tuple[BezierSimplex, BezierSimplex]
+        * **bs_A** — sub-simplex that replaces vertex :math:`j` with the new
+          vertex.  It covers the sub-domain
+          :math:`\{t : t_j / (t_i + t_j) \le s\}`.
+        * **bs_B** — sub-simplex that replaces vertex :math:`i` with the new
+          vertex.  It covers the sub-domain
+          :math:`\{t : t_j / (t_i + t_j) \ge s\}`.
+
+    Notes
+    -----
+    The algorithm runs :math:`n` de Casteljau steps along the chosen edge
+    direction, where :math:`n` is the degree of the Bézier simplex.
+
+    At each step :math:`r = 1, \ldots, n` the control-point matrix is updated
+    as
+
+    .. math::
+
+        c^{(r)}_\alpha =
+        \begin{cases}
+            s \cdot c^{(r-1)}_\alpha
+                + (1-s) \cdot c^{(r-1)}_{\alpha + e_i - e_j}
+            & \text{if } \alpha_j \ge 1 \\
+            c^{(r-1)}_\alpha & \text{otherwise,}
+        \end{cases}
+
+    and rows with :math:`\alpha_j = r` are saved as control points of
+    **bs_A**.  An analogous recursion with the roles of :math:`i` and
+    :math:`j` swapped gives **bs_B**.
+
+    The two sub-simplices share the split point — both evaluate to the
+    same value at the new vertex.
+
+    Examples
+    --------
+    Split the identity Bézier curve at the midpoint:
+
+    >>> import torch
+    >>> from torch_bsf.bezier_simplex import BezierSimplex
+    >>> from torch_bsf.splitting import split
+    >>> bs = BezierSimplex({(1, 0): [0.0], (0, 1): [1.0]})
+    >>> bs_A, bs_B = split(bs, i=0, j=1, s=0.5)
+    >>> float(bs_A.control_points[(0, 1)].item())  # split-point value
+    0.5
+    >>> float(bs_B.control_points[(1, 0)].item())  # same split point from other side
+    0.5
+    """
+    n_params = bs.n_params
+    n = bs.degree
+    if n_params < 2:
+        raise ValueError(
+            f"Splitting requires n_params >= 2, but n_params={n_params}."
+        )
+    if not (0 <= i < n_params and 0 <= j < n_params and i != j):
+        raise ValueError(
+            f"Edge indices must satisfy 0 <= i, j < n_params and i != j, "
+            f"but i={i}, j={j}, n_params={n_params}."
+        )
+    if not (0.0 < s < 1.0):
+        raise ValueError(f"Split parameter s must be in (0, 1), but s={s}.")
+
+    indices = bs.control_points._indices
+    index_to_row = bs.control_points._index_to_row
+
+    # alpha_i / alpha_j vectors for mask-based extraction
+    alpha_i = torch.tensor([alpha[i] for alpha in indices], dtype=torch.long)
+    alpha_j = torch.tensor([alpha[j] for alpha in indices], dtype=torch.long)
+
+    # Precompute shift-row tables
+    shift_ij = _precompute_shift_rows(indices, index_to_row, i, j, "ij")
+    shift_ji = _precompute_shift_rows(indices, index_to_row, i, j, "ji")
+
+    b = bs.control_points.matrix.detach()
+    result_A = torch.empty_like(b)
+    result_B = torch.empty_like(b)
+
+    # ---- Sub-simplex A: vertex j → new vertex --------------------------------
+    # Recursion:  c^r[alpha] = s * c^{r-1}[alpha]
+    #                         + (1-s) * c^{r-1}[alpha + e_i - e_j]  (alpha_j >= 1)
+    # Result:     b_A[beta] = c^{beta_j}[beta]
+    c = b.clone()
+    result_A[alpha_j == 0] = c[alpha_j == 0]
+    update_mask_A = shift_ij >= 0  # rows where alpha_j >= 1
+    for r in range(1, n + 1):
+        c_new = c.clone()
+        c_new[update_mask_A] = (
+            s * c[update_mask_A] + (1.0 - s) * c[shift_ij[update_mask_A]]
+        )
+        c = c_new
+        result_A[alpha_j == r] = c[alpha_j == r]
+
+    # ---- Sub-simplex B: vertex i → new vertex --------------------------------
+    # Recursion:  c^r[alpha] = (1-s) * c^{r-1}[alpha]
+    #                         + s * c^{r-1}[alpha + e_j - e_i]       (alpha_i >= 1)
+    # Result:     b_B[beta] = c^{beta_i}[beta]
+    c = b.clone()
+    result_B[alpha_i == 0] = c[alpha_i == 0]
+    update_mask_B = shift_ji >= 0  # rows where alpha_i >= 1
+    for r in range(1, n + 1):
+        c_new = c.clone()
+        c_new[update_mask_B] = (
+            (1.0 - s) * c[update_mask_B] + s * c[shift_ji[update_mask_B]]
+        )
+        c = c_new
+        result_B[alpha_i == r] = c[alpha_i == r]
+
+    # Build new BezierSimplex instances from result matrices
+    cp_data_A: dict[tuple[int, ...], torch.Tensor] = {
+        idx: result_A[row] for row, idx in enumerate(indices)
+    }
+    cp_data_B: dict[tuple[int, ...], torch.Tensor] = {
+        idx: result_B[row] for row, idx in enumerate(indices)
+    }
+    bs_A = BezierSimplex(
+        control_points=cp_data_A,
+        smoothness_weight=bs.smoothness_weight,
+    )
+    bs_B = BezierSimplex(
+        control_points=cp_data_B,
+        smoothness_weight=bs.smoothness_weight,
+    )
+    return bs_A, bs_B
+
+
+def reparametrize(
+    t: torch.Tensor,
+    i: int,
+    j: int,
+    s: float,
+    subsimplex: str,
+) -> tuple[torch.Tensor, torch.Tensor]:
+    r"""Re-parameterise points from the original simplex to a sub-simplex.
+
+    After splitting edge ``(i, j)`` at ``s``, each data point on the original
+    simplex belongs to one of the two sub-simplices.  This function converts
+    the original barycentric coordinates to the sub-simplex's local
+    barycentric coordinates.
+
+    Parameters
+    ----------
+    t
+        Parameter vectors of shape ``(N, n_params)`` on the original simplex
+        (each row sums to 1).
+    i, j
+        Edge vertex indices used in :func:`split`.
+    s
+        Split parameter.
+    subsimplex
+        ``"A"`` for the sub-simplex covering
+        :math:`\{t : t_j / (t_i + t_j) \le s\}`,
+        or ``"B"`` for the complementary region.
+
+    Returns
+    -------
+    (u, mask) : tuple[torch.Tensor, torch.Tensor]
+        * **u** — local barycentric coordinates on the sub-simplex,
+          shape ``(N, n_params)``.
+        * **mask** — boolean tensor of shape ``(N,)`` indicating which input
+          points belong to the requested sub-simplex.  Points where
+          :math:`t_i = t_j = 0` belong to both sub-simplices and are included
+          in both masks.
+
+    Notes
+    -----
+    Sub-simplex A transformation:
+
+    .. math::
+
+        u_j = \frac{t_j}{s}, \quad
+        u_i = t_i - \frac{1-s}{s}\,t_j, \quad
+        u_k = t_k \; (k \ne i, j).
+
+    Sub-simplex B transformation:
+
+    .. math::
+
+        u_i = \frac{t_i}{1-s}, \quad
+        u_j = t_j - \frac{s}{1-s}\,t_i, \quad
+        u_k = t_k \; (k \ne i, j).
+    """
+    ti = t[:, i]
+    tj = t[:, j]
+    denom = ti + tj
+    safe = denom != 0  # points where t_i + t_j > 0
+
+    u = t.clone()
+    if subsimplex == "A":
+        # belongs to A when t_j / (t_i + t_j) <= s  (or t_i = t_j = 0)
+        mask = (~safe) | (tj <= s * denom)
+        u[safe, j] = tj[safe] / s
+        u[safe, i] = ti[safe] - (1.0 - s) * tj[safe] / s
+    else:  # "B"
+        # belongs to B when t_j / (t_i + t_j) >= s  (or t_i = t_j = 0)
+        mask = (~safe) | (tj >= s * denom)
+        u[safe, i] = ti[safe] / (1.0 - s)
+        u[safe, j] = tj[safe] - s * ti[safe] / (1.0 - s)
+
+    return u, mask
+
+
+def longest_edge_criterion(
+    bs: BezierSimplex,
+    s: float = 0.5,
+) -> tuple[int, int, float]:
+    r"""Select the edge with the greatest value-space length and split it at ``s``.
+
+    The "length" of edge :math:`(i, j)` is the Euclidean distance between
+    the Bézier simplex values at the two vertices of the parameter domain:
+
+    .. math::
+
+        \ell_{ij} = \|B(e_i) - B(e_j)\|_2
+                  = \|b_{n \cdot e_i} - b_{n \cdot e_j}\|_2
+
+    where :math:`n` is the degree and :math:`e_k` is the :math:`k`-th unit
+    vector.
+
+    Parameters
+    ----------
+    bs
+        The Bézier simplex.
+    s
+        Split parameter included verbatim in the returned tuple
+        (defaults to ``0.5``).
+
+    Returns
+    -------
+    (i, j, s)
+        The edge ``(i, j)`` with the greatest value-space length, together
+        with ``s``.
+
+    Examples
+    --------
+    >>> import torch
+    >>> from torch_bsf.bezier_simplex import rand
+    >>> from torch_bsf.splitting import longest_edge_criterion, split_by_criterion
+    >>> bs = rand(n_params=3, n_values=2, degree=2)
+    >>> i, j, s = longest_edge_criterion(bs)
+    >>> 0 <= i < j < bs.n_params
+    True
+    """
+    n = bs.degree
+    n_params = bs.n_params
+    if n_params < 2:
+        raise ValueError(
+            f"Splitting requires n_params >= 2, but n_params={n_params}."
+        )
+    b = bs.control_points.matrix.detach()
+    index_to_row = bs.control_points._index_to_row
+
+    # B(e_k) = b[n * e_k]  (the corner control point at vertex k)
+    vertex_values = [
+        b[index_to_row[tuple(n if m == k else 0 for m in range(n_params))]]
+        for k in range(n_params)
+    ]
+
+    best_i, best_j, best_len = 0, 1, -1.0
+    for vi in range(n_params):
+        for vj in range(vi + 1, n_params):
+            edge_len = float(torch.dist(vertex_values[vi], vertex_values[vj]).item())
+            if edge_len > best_len:
+                best_len = edge_len
+                best_i, best_j = vi, vj
+
+    return best_i, best_j, s
+
+
+def max_error_criterion(
+    params: torch.Tensor,
+    values: torch.Tensor,
+    grid_size: int = 10,
+) -> SplitCriterion:
+    r"""Build a criterion that minimises the combined approximation error.
+
+    For each candidate edge ``(i, j)`` and split parameter ``s`` drawn from a
+    uniform grid over ``(0, 1)``, the combined mean-squared error
+
+    .. math::
+
+        E(i, j, s) = \mathrm{MSE}_A + \mathrm{MSE}_B
+
+    is computed, where :math:`\mathrm{MSE}_A` and :math:`\mathrm{MSE}_B`
+    are evaluated on the portions of the data that fall within each
+    sub-simplex.  The candidate ``(i, j, s)`` minimising ``E`` is returned.
+
+    Parameters
+    ----------
+    params
+        Parameter vectors of shape ``(N, n_params)``.
+    values
+        Target value vectors of shape ``(N, n_values)``.
+    grid_size
+        Number of candidate ``s`` values in the grid search (default ``10``).
+        Larger values give a finer search at higher cost.
+
+    Returns
+    -------
+    SplitCriterion
+        A callable ``criterion(bs) -> (i, j, s)``.
+
+    Examples
+    --------
+    >>> import torch
+    >>> from torch_bsf.bezier_simplex import rand
+    >>> from torch_bsf.splitting import max_error_criterion, split_by_criterion
+    >>> torch.manual_seed(0)
+    torch.Generator(...)
+    >>> params = torch.tensor([[1.0, 0.0], [0.5, 0.5], [0.0, 1.0]])
+    >>> values = torch.tensor([[0.0], [0.5], [1.0]])
+    >>> bs = rand(n_params=2, n_values=1, degree=1)
+    >>> criterion = max_error_criterion(params, values)
+    >>> i, j, s = criterion(bs)
+    >>> i == 0 and j == 1
+    True
+    """
+    params_t = torch.as_tensor(params)
+    values_t = torch.as_tensor(values)
+
+    def criterion(bs: BezierSimplex) -> tuple[int, int, float]:
+        n_params = bs.n_params
+        if n_params < 2:
+            raise ValueError(
+                f"Splitting requires n_params >= 2, but n_params={n_params}."
+            )
+        best_i, best_j, best_s = 0, 1, 0.5
+        best_error = float("inf")
+        s_candidates = torch.linspace(0.1, 0.9, grid_size).tolist()
+
+        for vi in range(n_params):
+            for vj in range(vi + 1, n_params):
+                for s_cand in s_candidates:
+                    s_cand = float(s_cand)
+                    bs_A, bs_B = split(bs, vi, vj, s_cand)
+                    u_A, mask_A = reparametrize(params_t, vi, vj, s_cand, "A")
+                    u_B, mask_B = reparametrize(params_t, vi, vj, s_cand, "B")
+
+                    error = 0.0
+                    with torch.no_grad():
+                        if mask_A.any():
+                            pred_A = bs_A(u_A[mask_A])
+                            error += float(
+                                F.mse_loss(pred_A, values_t[mask_A]).item()
+                            )
+                        if mask_B.any():
+                            pred_B = bs_B(u_B[mask_B])
+                            error += float(
+                                F.mse_loss(pred_B, values_t[mask_B]).item()
+                            )
+
+                    if error < best_error:
+                        best_error = error
+                        best_i, best_j, best_s = vi, vj, s_cand
+
+        return best_i, best_j, best_s
+
+    return criterion
+
+
+def split_by_criterion(
+    bs: BezierSimplex,
+    criterion: SplitCriterion,
+) -> tuple[BezierSimplex, BezierSimplex]:
+    """Split a Bézier simplex using a split criterion.
+
+    Convenience wrapper that calls ``criterion(bs)`` to obtain the edge
+    indices and split parameter, then delegates to :func:`split`.
+
+    Parameters
+    ----------
+    bs
+        The Bézier simplex to split.
+    criterion
+        A :data:`SplitCriterion` callable that returns ``(i, j, s)``.
+
+    Returns
+    -------
+    (bs_A, bs_B) : tuple[BezierSimplex, BezierSimplex]
+        The two sub-Bézier-simplices; see :func:`split` for details.
+
+    Examples
+    --------
+    >>> from torch_bsf.bezier_simplex import rand
+    >>> from torch_bsf.splitting import longest_edge_criterion, split_by_criterion
+    >>> bs = rand(n_params=2, n_values=3, degree=2)
+    >>> bs_A, bs_B = split_by_criterion(bs, longest_edge_criterion)
+    >>> bs_A.degree == bs.degree
+    True
+    """
+    i, j, s = criterion(bs)
+    return split(bs, i, j, s)
