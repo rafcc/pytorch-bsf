@@ -252,6 +252,23 @@ def test_split_reproduces_original_higher_dim(n_params, degree):
 # ---------------------------------------------------------------------------
 
 
+def test_reparametrize_t_not_2d():
+    """reparametrize raises ValueError when t is not a 2-D tensor."""
+    t_1d = torch.tensor([0.5, 0.5])
+    with pytest.raises(ValueError, match="2-D"):
+        reparametrize(t_1d, i=0, j=1, s=0.5, subsimplex="A")
+    t_3d = torch.tensor([[[0.5, 0.5]]])
+    with pytest.raises(ValueError, match="2-D"):
+        reparametrize(t_3d, i=0, j=1, s=0.5, subsimplex="A")
+
+
+def test_reparametrize_t_too_few_columns():
+    """reparametrize raises ValueError when t has fewer than 2 columns."""
+    t = torch.tensor([[0.5]])
+    with pytest.raises(ValueError, match="n_params >= 2"):
+        reparametrize(t, i=0, j=1, s=0.5, subsimplex="A")
+
+
 def test_reparametrize_bad_s():
     """reparametrize raises ValueError when s is not in (0, 1)."""
     t = torch.tensor([[0.5, 0.5]])

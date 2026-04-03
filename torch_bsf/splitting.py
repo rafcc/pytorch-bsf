@@ -359,7 +359,17 @@ def reparametrize(
         u_j = t_j - \frac{s}{1-s}\,t_i, \quad
         u_k = t_k \; (k \ne i, j).
     """
+    if t.ndim != 2:
+        raise ValueError(
+            f"`t` must be a 2-D tensor of shape (N, n_params), "
+            f"but got shape {tuple(t.shape)}."
+        )
     n_params = t.shape[1]
+    if n_params < 2:
+        raise ValueError(
+            f"`t` must have at least 2 columns (n_params >= 2), "
+            f"but got shape {tuple(t.shape)}."
+        )
     if not (0 <= i < n_params and 0 <= j < n_params and i != j):
         raise ValueError(
             f"Edge indices must satisfy 0 <= i, j < n_params and i != j, "
