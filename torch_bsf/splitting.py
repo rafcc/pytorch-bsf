@@ -400,14 +400,20 @@ def longest_edge_criterion(
         b[index_to_row[tuple(n if m == k else 0 for m in range(n_params))]]
         for k in range(n_params)
     ]
+    vertex_matrix = torch.stack(vertex_values, dim=0)
 
-    best_i, best_j, best_len = 0, 1, -1.0
-    for vi in range(n_params):
-        for vj in range(vi + 1, n_params):
-            edge_len = float(torch.dist(vertex_values[vi], vertex_values[vj]).item())
-            if edge_len > best_len:
-                best_len = edge_len
-                best_i, best_j = vi, vj
+    # Compute all pairwise edge lengths in one shot to avoid repeated
+    # scalar extraction and device synchronisation inside nested loops.
+    pairwise_dists = torch.cdist(vertex_matrix, vertex_matrix)
+    upper_mask = torch.triu(
+        torch.ones(
+            (n_params, n_params), dtype=torch.bool, device=pairwise_dists.device
+        ),
+        diagonal=1,
+    )
+    masked_dists = pairwise_dists.masked_fill(~upper_mask, float("-inf"))
+    best_flat = int(torch.argmax(masked_dists).item())
+    best_i, best_j = divmod(best_flat, n_params)
 
     return best_i, best_j, s
 
