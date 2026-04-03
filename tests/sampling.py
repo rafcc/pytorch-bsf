@@ -258,16 +258,26 @@ def test_simplex_sobol_different_seeds_differ():
 
 def test_simplex_sobol_scipy_import_error(monkeypatch):
     """simplex_sobol should raise ImportError when scipy is not available."""
+    import builtins
     import sys
 
-    monkeypatch.setitem(sys.modules, "scipy", None)
-    monkeypatch.setitem(sys.modules, "scipy.stats", None)
-    monkeypatch.setitem(sys.modules, "scipy.stats.qmc", None)
+    monkeypatch.delitem(sys.modules, "scipy", raising=False)
+    monkeypatch.delitem(sys.modules, "scipy.stats", raising=False)
+    monkeypatch.delitem(sys.modules, "scipy.stats.qmc", raising=False)
+
+    real_import = builtins.__import__
+
+    def _import_without_scipy(name, globals=None, locals=None, fromlist=(), level=0):
+        if name == "scipy" or name.startswith("scipy."):
+            raise ImportError("No module named 'scipy'")
+        return real_import(name, globals, locals, fromlist, level)
+
+    monkeypatch.setattr(builtins, "__import__", _import_without_scipy)
 
     # Re-import the function from a fresh copy of the module to bypass the cached import.
     import importlib
     import torch_bsf.sampling as sampling_mod
     importlib.reload(sampling_mod)
 
-    with pytest.raises((ImportError, TypeError)):
+    with pytest.raises(ImportError, match="scipy"):
         sampling_mod.simplex_sobol(3, 4)
