@@ -142,7 +142,7 @@ def main() -> None:
                 mlflow.pytorch.log_model(bs, "model", signature=signature)
 
     # search for filename
-    fn = f"{args.params.name},{args.values.name},meshgrid,d_{args.degree},r_{args.split_ratio}.csv"
+    fn = f"{args.params.name},{args.values.name},meshgrid,d_{bs.degree},r_{args.split_ratio}.csv"
 
     ts = dm.load_data(meshgrid)
     xs = bs.forward(ts)
