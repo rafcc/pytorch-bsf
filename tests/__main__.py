@@ -187,7 +187,6 @@ class TestMainInProcess:
 
     def test_main_basic(self, tmp_path, monkeypatch):
         """main() should run training and save a meshgrid CSV."""
-        import os
         from torch_bsf.__main__ import main
 
         monkeypatch.chdir(tmp_path)
