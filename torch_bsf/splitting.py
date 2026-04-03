@@ -196,7 +196,7 @@ def split(
     indices = bs.control_points._indices
     index_to_row = bs.control_points._index_to_row
 
-    b = bs.control_points.matrix.detach()
+    b = bs.control_points.matrix
 
     # alpha_i / alpha_j vectors for mask-based extraction
     alpha_i = torch.tensor(
