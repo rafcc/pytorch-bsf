@@ -1084,9 +1084,12 @@ def test_load_pt_weights_only_true(tmp_path):
     # Loading with pt_weights_only=True exercises the safe_globals branch.
     try:
         loaded = tbbs.load(str(path), pt_weights_only=True)
-        assert isinstance(loaded, tbbs.BezierSimplex)
-    except Exception:
-        pytest.skip("pt_weights_only=True not supported in this environment")
+    except (TypeError, RuntimeError) as exc:
+        message = str(exc)
+        if "weights_only" in message or "safe_globals" in message:
+            pytest.skip("pt_weights_only=True not supported in this environment")
+        raise
+    assert isinstance(loaded, tbbs.BezierSimplex)
 
 
 def test_fit_with_init_same_weight_and_adjacency():
