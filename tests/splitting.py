@@ -373,12 +373,64 @@ def test_max_error_criterion_returns_valid_edge():
     assert 0.0 < s < 1.0
 
 
+def test_max_error_criterion_bad_grid_size():
+    params = torch.tensor([[1.0, 0.0], [0.0, 1.0]])
+    values = torch.tensor([[0.0], [1.0]])
+    with pytest.raises(ValueError, match="grid_size must be >= 1"):
+        max_error_criterion(params, values, grid_size=0)
+
+
 def test_max_error_criterion_wrong_n_params():
     bs = tbbs.rand(n_params=1, n_values=2, degree=1)
     params = torch.tensor([[1.0]])
     values = torch.tensor([[0.0]])
     criterion = max_error_criterion(params, values, grid_size=2)
     with pytest.raises(ValueError, match="n_params"):
+        criterion(bs)
+
+
+def test_max_error_criterion_params_not_2d():
+    bs = tbbs.rand(n_params=2, n_values=1, degree=1)
+    params = torch.tensor([1.0, 0.0, 0.5])  # 1-D
+    values = torch.tensor([[0.0], [1.0], [0.5]])
+    criterion = max_error_criterion(params, values, grid_size=2)
+    with pytest.raises(ValueError, match=r"`params` must be a 2D tensor"):
+        criterion(bs)
+
+
+def test_max_error_criterion_values_not_2d():
+    bs = tbbs.rand(n_params=2, n_values=1, degree=1)
+    params = torch.tensor([[1.0, 0.0], [0.5, 0.5], [0.0, 1.0]])
+    values = torch.tensor([0.0, 0.5, 1.0])  # 1-D
+    criterion = max_error_criterion(params, values, grid_size=2)
+    with pytest.raises(ValueError, match=r"`values` must be a 2D tensor"):
+        criterion(bs)
+
+
+def test_max_error_criterion_mismatched_n():
+    bs = tbbs.rand(n_params=2, n_values=1, degree=1)
+    params = torch.tensor([[1.0, 0.0], [0.5, 0.5]])  # N=2
+    values = torch.tensor([[0.0], [0.5], [1.0]])  # N=3
+    criterion = max_error_criterion(params, values, grid_size=2)
+    with pytest.raises(ValueError, match="same number of samples"):
+        criterion(bs)
+
+
+def test_max_error_criterion_wrong_params_shape():
+    bs = tbbs.rand(n_params=2, n_values=1, degree=1)
+    params = torch.tensor([[1.0, 0.0, 0.0], [0.5, 0.3, 0.2]])  # wrong n_params=3
+    values = torch.tensor([[0.0], [0.5]])
+    criterion = max_error_criterion(params, values, grid_size=2)
+    with pytest.raises(ValueError, match=r"`params` must have shape"):
+        criterion(bs)
+
+
+def test_max_error_criterion_wrong_values_shape():
+    bs = tbbs.rand(n_params=2, n_values=1, degree=1)
+    params = torch.tensor([[1.0, 0.0], [0.5, 0.5]])
+    values = torch.tensor([[0.0, 1.0], [0.5, 0.6]])  # wrong n_values=2
+    criterion = max_error_criterion(params, values, grid_size=2)
+    with pytest.raises(ValueError, match=r"`values` must have shape"):
         criterion(bs)
 
 
