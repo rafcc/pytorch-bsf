@@ -395,7 +395,9 @@ def longest_edge_criterion(
             f"Splitting requires n_params >= 2, but n_params={n_params}."
         )
     b = bs.control_points.matrix.detach()
-    index_to_row = bs.control_points._index_to_row
+    index_to_row = {
+        idx: row for row, idx in enumerate(bs.control_points.indices())
+    }
 
     # B(e_k) = b[n * e_k]  (the corner control point at vertex k)
     vertex_values = [
