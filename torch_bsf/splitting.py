@@ -321,11 +321,13 @@ def reparametrize(
         mask = (~safe) | (tj <= s * denom)
         u[safe, j] = tj[safe] / s
         u[safe, i] = ti[safe] - (1.0 - s) * tj[safe] / s
-    else:  # "B"
+    elif subsimplex == "B":
         # belongs to B when t_j / (t_i + t_j) >= s  (or t_i = t_j = 0)
         mask = (~safe) | (tj >= s * denom)
         u[safe, i] = ti[safe] / (1.0 - s)
         u[safe, j] = tj[safe] - s * ti[safe] / (1.0 - s)
+    else:
+        raise ValueError("subsimplex must be exactly 'A' or 'B'")
 
     return u, mask
 
