@@ -1,10 +1,15 @@
 import pytest
 
-matplotlib = pytest.importorskip("matplotlib")
-matplotlib.use("Agg")  # Non-interactive backend for tests
-
 import torch_bsf.bezier_simplex as tbbs
 from torch_bsf.plotting import plot_bezier_simplex
+
+
+@pytest.fixture
+def require_matplotlib():
+    """Skip the test if matplotlib is not installed and configure the Agg backend."""
+    mpl = pytest.importorskip("matplotlib")
+    mpl.use("Agg")
+    return mpl
 
 
 @pytest.fixture
@@ -29,7 +34,7 @@ def bezier_triangle_3d():
     return tbbs.randn(n_params=3, n_values=3, degree=2)
 
 
-def test_plot_bezier_curve_2d_returns_axes(bezier_curve_2d):
+def test_plot_bezier_curve_2d_returns_axes(require_matplotlib, bezier_curve_2d):
     import matplotlib.pyplot as plt
 
     ax = plot_bezier_simplex(bezier_curve_2d, num=10)
@@ -37,7 +42,7 @@ def test_plot_bezier_curve_2d_returns_axes(bezier_curve_2d):
     plt.close(ax.figure)
 
 
-def test_plot_bezier_curve_3d_returns_axes(bezier_curve_3d):
+def test_plot_bezier_curve_3d_returns_axes(require_matplotlib, bezier_curve_3d):
     import matplotlib.pyplot as plt
 
     ax = plot_bezier_simplex(bezier_curve_3d, num=10)
@@ -45,7 +50,7 @@ def test_plot_bezier_curve_3d_returns_axes(bezier_curve_3d):
     plt.close(ax.figure)
 
 
-def test_plot_bezier_triangle_2d_returns_axes(bezier_triangle_2d):
+def test_plot_bezier_triangle_2d_returns_axes(require_matplotlib, bezier_triangle_2d):
     import matplotlib.pyplot as plt
 
     ax = plot_bezier_simplex(bezier_triangle_2d, num=5)
@@ -53,7 +58,7 @@ def test_plot_bezier_triangle_2d_returns_axes(bezier_triangle_2d):
     plt.close(ax.figure)
 
 
-def test_plot_bezier_triangle_3d_returns_axes(bezier_triangle_3d):
+def test_plot_bezier_triangle_3d_returns_axes(require_matplotlib, bezier_triangle_3d):
     import matplotlib.pyplot as plt
 
     ax = plot_bezier_simplex(bezier_triangle_3d, num=5)
@@ -61,7 +66,7 @@ def test_plot_bezier_triangle_3d_returns_axes(bezier_triangle_3d):
     plt.close(ax.figure)
 
 
-def test_plot_bezier_simplex_high_dim_returns_axes_array():
+def test_plot_bezier_simplex_high_dim_returns_axes_array(require_matplotlib):
     import matplotlib.pyplot as plt
 
     model = tbbs.randn(n_params=4, n_values=2, degree=1)
@@ -72,7 +77,7 @@ def test_plot_bezier_simplex_high_dim_returns_axes_array():
     plt.close(result[0, 0].figure)
 
 
-def test_plot_bezier_simplex_high_dim_3_values():
+def test_plot_bezier_simplex_high_dim_3_values(require_matplotlib):
     import matplotlib.pyplot as plt
 
     model = tbbs.randn(n_params=4, n_values=3, degree=1)
@@ -82,7 +87,7 @@ def test_plot_bezier_simplex_high_dim_3_values():
     plt.close(result[0, 0].figure)
 
 
-def test_plot_bezier_simplex_high_dim_no_control_points():
+def test_plot_bezier_simplex_high_dim_no_control_points(require_matplotlib):
     import matplotlib.pyplot as plt
 
     model = tbbs.randn(n_params=5, n_values=2, degree=1)
@@ -92,7 +97,7 @@ def test_plot_bezier_simplex_high_dim_no_control_points():
     plt.close(result[0, 0].figure)
 
 
-def test_plot_bezier_simplex_pairwise_zero_n_values():
+def test_plot_bezier_simplex_pairwise_zero_n_values(require_matplotlib):
     """n_values == 0 must return an empty (0, 0) ndarray, not (1, 1)."""
     import numpy as np
 
@@ -102,7 +107,7 @@ def test_plot_bezier_simplex_pairwise_zero_n_values():
     assert result.shape == (0, 0)
 
 
-def test_plot_bezier_simplex_pairwise_large_n_values_bounded_figsize():
+def test_plot_bezier_simplex_pairwise_large_n_values_bounded_figsize(require_matplotlib):
     """Figure size must be capped at 12 inches even for large n_values."""
     import matplotlib.pyplot as plt
 
@@ -122,7 +127,7 @@ def test_plot_bezier_simplex_raises_for_low_n_params():
         plot_bezier_simplex(model, num=3)
 
 
-def test_plot_bezier_simplex_pairwise_sampling_cap():
+def test_plot_bezier_simplex_pairwise_sampling_cap(require_matplotlib):
     """When meshgrid would exceed _MAX_PAIRWISE_POINTS, random sampling is used
     and the result still has the expected (n_values, n_values) shape."""
     import math
@@ -141,7 +146,7 @@ def test_plot_bezier_simplex_pairwise_sampling_cap():
     plt.close(result[0, 0].figure)
 
 
-def test_plot_bezier_simplex_pairwise_max_control_points_default():
+def test_plot_bezier_simplex_pairwise_max_control_points_default(require_matplotlib):
     """Control points exceeding _MAX_CONTROL_POINTS are subsampled by default."""
     import matplotlib.pyplot as plt
     import torch_bsf.plotting as plotting_module
@@ -160,7 +165,7 @@ def test_plot_bezier_simplex_pairwise_max_control_points_default():
     plt.close(result[0, 0].figure)
 
 
-def test_plot_bezier_simplex_pairwise_max_control_points_custom():
+def test_plot_bezier_simplex_pairwise_max_control_points_custom(require_matplotlib):
     """Custom max_control_points value is respected."""
     import matplotlib.pyplot as plt
 
@@ -178,7 +183,7 @@ def test_plot_bezier_simplex_pairwise_max_control_points_invalid():
         plot_bezier_simplex(model, num=3, max_control_points=-1)
 
 
-def test_plot_bezier_simplex_pairwise_max_pairwise_points_custom():
+def test_plot_bezier_simplex_pairwise_max_pairwise_points_custom(require_matplotlib):
     """Custom max_pairwise_points value forces random sampling and returns correct shape."""
     import matplotlib.pyplot as plt
 
@@ -196,7 +201,7 @@ def test_plot_bezier_simplex_pairwise_max_pairwise_points_invalid():
         plot_bezier_simplex(model, num=3, max_pairwise_points=-1)
 
 
-def test_plot_bezier_simplex_pairwise_max_pairwise_points_default():
+def test_plot_bezier_simplex_pairwise_max_pairwise_points_default(require_matplotlib):
     """Default max_pairwise_points matches _MAX_PAIRWISE_POINTS and returns correct shape."""
     import matplotlib.pyplot as plt
     import torch_bsf.plotting as plotting_module
@@ -207,7 +212,7 @@ def test_plot_bezier_simplex_pairwise_max_pairwise_points_default():
     plt.close(result[0, 0].figure)
 
 
-def test_plot_curve_with_existing_axes(bezier_curve_2d):
+def test_plot_curve_with_existing_axes(require_matplotlib, bezier_curve_2d):
     import matplotlib.pyplot as plt
 
     fig, ax = plt.subplots()
@@ -216,7 +221,7 @@ def test_plot_curve_with_existing_axes(bezier_curve_2d):
     plt.close(fig)
 
 
-def test_plot_triangle_with_existing_axes(bezier_triangle_2d):
+def test_plot_triangle_with_existing_axes(require_matplotlib, bezier_triangle_2d):
     import matplotlib.pyplot as plt
 
     fig, ax = plt.subplots()
@@ -225,7 +230,7 @@ def test_plot_triangle_with_existing_axes(bezier_triangle_2d):
     plt.close(fig)
 
 
-def test_plot_curve_without_control_points(bezier_curve_2d):
+def test_plot_curve_without_control_points(require_matplotlib, bezier_curve_2d):
     import matplotlib.pyplot as plt
 
     ax = plot_bezier_simplex(bezier_curve_2d, num=10, show_control_points=False)
@@ -233,7 +238,7 @@ def test_plot_curve_without_control_points(bezier_curve_2d):
     plt.close(ax.figure)
 
 
-def test_plot_triangle_without_control_points(bezier_triangle_2d):
+def test_plot_triangle_without_control_points(require_matplotlib, bezier_triangle_2d):
     import matplotlib.pyplot as plt
 
     ax = plot_bezier_simplex(bezier_triangle_2d, num=5, show_control_points=False)
