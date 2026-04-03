@@ -250,11 +250,11 @@ def split(
     bs_A = BezierSimplex(
         control_points=cp_data_A,
         smoothness_weight=bs.smoothness_weight,
-    )
+    ).to(device=b.device, dtype=b.dtype)
     bs_B = BezierSimplex(
         control_points=cp_data_B,
         smoothness_weight=bs.smoothness_weight,
-    )
+    ).to(device=b.device, dtype=b.dtype)
     return bs_A, bs_B
 
 
