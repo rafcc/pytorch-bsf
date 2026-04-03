@@ -51,6 +51,7 @@ def _precompute_shift_rows(
     i: int,
     j: int,
     direction: str,
+    device: torch.device | None = None,
 ) -> torch.Tensor:
     """Precompute the row-index shift table for one de Casteljau direction.
 
@@ -65,6 +66,9 @@ def _precompute_shift_rows(
     direction
         ``"ij"`` → look up row of ``alpha + e_i - e_j`` (needs ``alpha_j >= 1``);
         ``"ji"`` → look up row of ``alpha + e_j - e_i`` (needs ``alpha_i >= 1``).
+    device
+        The device on which the returned tensor is allocated.  Defaults to the
+        PyTorch default device (CPU) when ``None``.
 
     Returns
     -------
@@ -73,7 +77,7 @@ def _precompute_shift_rows(
         ``shift[r] == -1`` when the shifted index is outside the simplex.
     """
     n = len(indices)
-    shift = torch.full((n,), -1, dtype=torch.long)
+    shift = torch.full((n,), -1, dtype=torch.long, device=device)
     for row, alpha in enumerate(indices):
         if direction == "ij":
             if alpha[j] >= 1:
@@ -196,13 +200,9 @@ def split(
         [alpha[j] for alpha in indices], dtype=torch.long, device=b.device
     )
 
-    # Precompute shift-row tables
-    shift_ij = _precompute_shift_rows(indices, index_to_row, i, j, "ij").to(
-        device=b.device, dtype=torch.long
-    )
-    shift_ji = _precompute_shift_rows(indices, index_to_row, i, j, "ji").to(
-        device=b.device, dtype=torch.long
-    )
+    # Precompute shift-row tables on the same device as the control-point matrix.
+    shift_ij = _precompute_shift_rows(indices, index_to_row, i, j, "ij", device=b.device)
+    shift_ji = _precompute_shift_rows(indices, index_to_row, i, j, "ji", device=b.device)
     result_A = torch.empty_like(b)
     result_B = torch.empty_like(b)
 
@@ -483,6 +483,13 @@ def max_error_criterion(
                 f"`values` must have shape (N, {bs.n_values}) for the given "
                 f"Bézier simplex, but got shape {tuple(values_t.shape)}."
             )
+        # Move data to the same device and dtype as the model so that forward
+        # passes and mse_loss calls don't raise device/dtype mismatch errors.
+        model_device = bs.control_points.matrix.device
+        model_dtype = bs.control_points.matrix.dtype
+        p = params_t.to(device=model_device, dtype=model_dtype)
+        v = values_t.to(device=model_device, dtype=model_dtype)
+
         best_i, best_j, best_s = 0, 1, 0.5
         best_error = float("inf")
         # linspace(0, 1, grid_size+2)[1:-1] gives `grid_size` evenly-spaced
@@ -495,20 +502,20 @@ def max_error_criterion(
                 for s_cand in s_candidates:
                     s_cand = float(s_cand)
                     bs_A, bs_B = split(bs, vi, vj, s_cand)
-                    u_A, mask_A = reparametrize(params_t, vi, vj, s_cand, "A")
-                    u_B, mask_B = reparametrize(params_t, vi, vj, s_cand, "B")
+                    u_A, mask_A = reparametrize(p, vi, vj, s_cand, "A")
+                    u_B, mask_B = reparametrize(p, vi, vj, s_cand, "B")
 
                     error = 0.0
                     with torch.no_grad():
                         if mask_A.any():
                             pred_A = bs_A(u_A[mask_A])
                             error += float(
-                                F.mse_loss(pred_A, values_t[mask_A]).item()
+                                F.mse_loss(pred_A, v[mask_A]).item()
                             )
                         if mask_B.any():
                             pred_B = bs_B(u_B[mask_B])
                             error += float(
-                                F.mse_loss(pred_B, values_t[mask_B]).item()
+                                F.mse_loss(pred_B, v[mask_B]).item()
                             )
 
                     if error < best_error:
