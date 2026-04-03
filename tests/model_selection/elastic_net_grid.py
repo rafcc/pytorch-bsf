@@ -109,4 +109,5 @@ class TestElasticNetGridCliMain:
         for line in lines:
             parts = line.split(",")
             assert len(parts) == 3
-            assert all(float(p) is not None for p in parts)
+            parsed_parts = [float(p) for p in parts]
+            assert np.isfinite(parsed_parts).all()
