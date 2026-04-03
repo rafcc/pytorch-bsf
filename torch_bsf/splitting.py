@@ -77,6 +77,10 @@ def _precompute_shift_rows(
         ``shift[r] == -1`` when the shifted index is outside the simplex.
     """
     n = len(indices)
+    if direction not in ("ij", "ji"):
+        raise ValueError(
+            f"`direction` must be 'ij' or 'ji', but got {direction!r}."
+        )
     shift = torch.full((n,), -1, dtype=torch.long, device=device)
     for row, alpha in enumerate(indices):
         if direction == "ij":
@@ -85,7 +89,7 @@ def _precompute_shift_rows(
                 shifted[i] += 1
                 shifted[j] -= 1
                 shift[row] = index_to_row[tuple(shifted)]
-        else:  # "ji"
+        elif direction == "ji":
             if alpha[i] >= 1:
                 shifted = list(alpha)
                 shifted[j] += 1
