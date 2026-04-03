@@ -460,8 +460,7 @@ def max_error_criterion(
     >>> import torch
     >>> from torch_bsf.bezier_simplex import rand
     >>> from torch_bsf.splitting import max_error_criterion, split_by_criterion
-    >>> torch.manual_seed(0)
-    torch.Generator(...)
+    >>> _ = torch.manual_seed(0)
     >>> params = torch.tensor([[1.0, 0.0], [0.5, 0.5], [0.0, 1.0]])
     >>> values = torch.tensor([[0.0], [0.5], [1.0]])
     >>> bs = rand(n_params=2, n_values=1, degree=1)
