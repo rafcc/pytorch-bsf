@@ -252,6 +252,35 @@ def test_split_reproduces_original_higher_dim(n_params, degree):
 # ---------------------------------------------------------------------------
 
 
+def test_reparametrize_bad_s():
+    """reparametrize raises ValueError when s is not in (0, 1)."""
+    t = torch.tensor([[0.5, 0.5]])
+    with pytest.raises(ValueError, match="s="):
+        reparametrize(t, i=0, j=1, s=0.0, subsimplex="A")
+    with pytest.raises(ValueError, match="s="):
+        reparametrize(t, i=0, j=1, s=1.0, subsimplex="A")
+    with pytest.raises(ValueError, match="s="):
+        reparametrize(t, i=0, j=1, s=-0.1, subsimplex="B")
+
+
+def test_reparametrize_bad_edge_indices():
+    """reparametrize raises ValueError for invalid edge indices."""
+    t = torch.tensor([[0.5, 0.3, 0.2]])
+    with pytest.raises(ValueError, match="i="):
+        reparametrize(t, i=0, j=0, s=0.5, subsimplex="A")
+    with pytest.raises(ValueError, match="i="):
+        reparametrize(t, i=-1, j=1, s=0.5, subsimplex="A")
+    with pytest.raises(ValueError, match="i="):
+        reparametrize(t, i=0, j=5, s=0.5, subsimplex="A")
+
+
+def test_reparametrize_bad_subsimplex():
+    """reparametrize raises ValueError for invalid subsimplex argument."""
+    t = torch.tensor([[0.5, 0.5]])
+    with pytest.raises(ValueError, match="subsimplex"):
+        reparametrize(t, i=0, j=1, s=0.5, subsimplex="C")
+
+
 def test_reparametrize_a_domain():
     """Points in sub-domain A get a valid mask and remapped coordinates."""
     # t = (0.8, 0.2) → t_j/(t_i+t_j) = 0.2 ≤ 0.5  → belongs to A

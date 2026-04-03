@@ -310,6 +310,15 @@ def reparametrize(
         u_j = t_j - \frac{s}{1-s}\,t_i, \quad
         u_k = t_k \; (k \ne i, j).
     """
+    n_params = t.shape[1]
+    if not (0 <= i < n_params and 0 <= j < n_params and i != j):
+        raise ValueError(
+            f"Edge indices must satisfy 0 <= i, j < n_params and i != j, "
+            f"but i={i}, j={j}, n_params={n_params}."
+        )
+    if not (0.0 < s < 1.0):
+        raise ValueError(f"Split parameter s must be in (0, 1), but s={s}.")
+
     ti = t[:, i]
     tj = t[:, j]
     denom = ti + tj
