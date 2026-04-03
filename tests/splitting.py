@@ -291,7 +291,7 @@ def test_reparametrize_coordinates_sum_to_one():
         u, mask = reparametrize(t, i=0, j=1, s=0.5, subsimplex=sub)
         if mask.any():
             row_sums = u[mask].sum(dim=1)
-            assert torch.allclose(row_sums, torch.ones(mask.sum()), atol=1e-5)
+            assert torch.allclose(row_sums, torch.ones_like(row_sums), atol=1e-5)
 
 
 # ---------------------------------------------------------------------------
