@@ -375,6 +375,11 @@ def reparametrize(
             f"Edge indices must satisfy 0 <= i, j < n_params and i != j, "
             f"but i={i}, j={j}, n_params={n_params}."
         )
+    if not t.is_floating_point():
+        raise ValueError(
+            f"`t` must be a floating-point tensor, but got dtype {t.dtype}. "
+            f"Convert `t` to a float dtype (e.g. t.float()) before calling reparametrize."
+        )
     if not (0.0 < s < 1.0):
         raise ValueError(f"Split parameter s must be in (0, 1), but s={s}.")
 

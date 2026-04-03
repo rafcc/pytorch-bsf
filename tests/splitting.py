@@ -269,6 +269,16 @@ def test_reparametrize_t_too_few_columns():
         reparametrize(t, i=0, j=1, s=0.5, subsimplex="A")
 
 
+def test_reparametrize_t_not_floating():
+    """reparametrize raises ValueError when t is not a floating-point tensor."""
+    t_int = torch.tensor([[1, 0], [0, 1]], dtype=torch.int32)
+    with pytest.raises(ValueError, match="floating-point"):
+        reparametrize(t_int, i=0, j=1, s=0.5, subsimplex="A")
+    t_bool = torch.tensor([[True, False]])
+    with pytest.raises(ValueError, match="floating-point"):
+        reparametrize(t_bool, i=0, j=1, s=0.5, subsimplex="A")
+
+
 def test_reparametrize_bad_s():
     """reparametrize raises ValueError when s is not in (0, 1)."""
     t = torch.tensor([[0.5, 0.5]])
