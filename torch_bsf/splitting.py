@@ -137,45 +137,46 @@ def _split_core(
         Passed through to the :class:`~torch_bsf.bezier_simplex.BezierSimplex`
         constructor.
     """
-    result_A = torch.empty_like(b)
-    result_B = torch.empty_like(b)
+    with torch.no_grad():
+        result_A = torch.empty_like(b)
+        result_B = torch.empty_like(b)
 
-    # ---- Sub-simplex A: vertex j → new vertex --------------------------------
-    # Recursion:  c^r[alpha] = s * c^{r-1}[alpha]
-    #                         + (1-s) * c^{r-1}[alpha + e_i - e_j]  (alpha_j >= 1)
-    # Result:     b_A[beta] = c^{beta_j}[beta]
-    update_mask_A = shift_ij >= 0  # rows where alpha_j >= 1
-    c = b.clone()
-    result_A[alpha_j == 0] = c[alpha_j == 0]
-    for r in range(1, n + 1):
-        c_new = c.clone()
-        c_new[update_mask_A] = (
-            s * c[update_mask_A] + (1.0 - s) * c[shift_ij[update_mask_A]]
-        )
-        c = c_new
-        result_A[alpha_j == r] = c[alpha_j == r]
+        # ---- Sub-simplex A: vertex j → new vertex --------------------------------
+        # Recursion:  c^r[alpha] = s * c^{r-1}[alpha]
+        #                         + (1-s) * c^{r-1}[alpha + e_i - e_j]  (alpha_j >= 1)
+        # Result:     b_A[beta] = c^{beta_j}[beta]
+        update_mask_A = shift_ij >= 0  # rows where alpha_j >= 1
+        c = b.detach().clone()
+        result_A[alpha_j == 0] = c[alpha_j == 0]
+        for r in range(1, n + 1):
+            c_new = c.clone()
+            c_new[update_mask_A] = (
+                s * c[update_mask_A] + (1.0 - s) * c[shift_ij[update_mask_A]]
+            )
+            c = c_new
+            result_A[alpha_j == r] = c[alpha_j == r]
 
-    # ---- Sub-simplex B: vertex i → new vertex --------------------------------
-    # Recursion:  c^r[alpha] = (1-s) * c^{r-1}[alpha]
-    #                         + s * c^{r-1}[alpha + e_j - e_i]       (alpha_i >= 1)
-    # Result:     b_B[beta] = c^{beta_i}[beta]
-    update_mask_B = shift_ji >= 0  # rows where alpha_i >= 1
-    c = b.clone()
-    result_B[alpha_i == 0] = c[alpha_i == 0]
-    for r in range(1, n + 1):
-        c_new = c.clone()
-        c_new[update_mask_B] = (
-            (1.0 - s) * c[update_mask_B] + s * c[shift_ji[update_mask_B]]
-        )
-        c = c_new
-        result_B[alpha_i == r] = c[alpha_i == r]
+        # ---- Sub-simplex B: vertex i → new vertex --------------------------------
+        # Recursion:  c^r[alpha] = (1-s) * c^{r-1}[alpha]
+        #                         + s * c^{r-1}[alpha + e_j - e_i]       (alpha_i >= 1)
+        # Result:     b_B[beta] = c^{beta_i}[beta]
+        update_mask_B = shift_ji >= 0  # rows where alpha_i >= 1
+        c = b.detach().clone()
+        result_B[alpha_i == 0] = c[alpha_i == 0]
+        for r in range(1, n + 1):
+            c_new = c.clone()
+            c_new[update_mask_B] = (
+                (1.0 - s) * c[update_mask_B] + s * c[shift_ji[update_mask_B]]
+            )
+            c = c_new
+            result_B[alpha_i == r] = c[alpha_i == r]
 
     # Build new BezierSimplex instances from result matrices
     cp_data_A: dict[tuple[int, ...], torch.Tensor] = {
-        idx: result_A[row] for row, idx in enumerate(indices)
+        idx: result_A[row].detach().clone() for row, idx in enumerate(indices)
     }
     cp_data_B: dict[tuple[int, ...], torch.Tensor] = {
-        idx: result_B[row] for row, idx in enumerate(indices)
+        idx: result_B[row].detach().clone() for row, idx in enumerate(indices)
     }
     bs_A = BezierSimplex(
         control_points=cp_data_A,
