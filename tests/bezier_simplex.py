@@ -1019,3 +1019,116 @@ def test_fit_kfold_seed_reproducibility():
     models2 = tb.fit_kfold(params=_TS, values=_XS, degree=1, n_folds=2, seed=7, **fast)
     for m1, m2 in zip(models1, models2):
         assert torch.equal(m1.control_points.matrix, m2.control_points.matrix)
+
+
+# ---------------------------------------------------------------------------
+# Additional tests for uncovered lines
+# ---------------------------------------------------------------------------
+
+
+def test_data_module_inverse_transform():
+    """BezierSimplexDataModule.inverse_transform should apply the scaler's inverse."""
+    dm = BezierSimplexDataModule(
+        params=_PARAMS_CSV,
+        values=_VALUES_CSV,
+        normalize="max",
+    )
+    # After setup, calling inverse_transform should not raise.
+    values = torch.tensor([[0.5, 0.5], [1.0, 0.0]])
+    result = dm.inverse_transform(values)
+    assert result.shape == values.shape
+
+
+def test_validate_control_points_index_mismatch():
+    """validate_control_points should raise on inconsistent index dimension."""
+    from jsonschema.exceptions import ValidationError
+    from torch_bsf.bezier_simplex import validate_control_points
+
+    with pytest.raises(ValidationError, match="Dimension mismatch"):
+        validate_control_points({
+            "(1, 0)": [0.0, 0.0],
+            "(0, 1)": [1.0, 0.0],
+            "(0, 0, 1)": [0.0, 1.0],
+        })
+
+
+def test_validate_control_points_value_mismatch():
+    """validate_control_points should raise on inconsistent value dimension."""
+    from jsonschema.exceptions import ValidationError
+    from torch_bsf.bezier_simplex import validate_control_points
+
+    with pytest.raises(ValidationError, match="Dimension mismatch"):
+        validate_control_points({
+            "(1, 0)": [0.0, 0.0],
+            "(0, 1)": [1.0],
+        })
+
+
+def test_load_pt_non_bezier_raises(tmp_path):
+    """load() should raise ValueError when a .pt file contains a non-BezierSimplex object."""
+    import torch
+
+    path = tmp_path / "not_a_model.pt"
+    torch.save({"key": "value"}, str(path))
+    with pytest.raises(ValueError, match="Unknown data type"):
+        tbbs.load(str(path))
+
+
+def test_load_pt_weights_only_true(tmp_path):
+    """load() with pt_weights_only=True should succeed for a valid BezierSimplex."""
+    import torch
+
+    bs = tbbs.randn(n_params=2, n_values=2, degree=1)
+    path = tmp_path / "model.pt"
+    tbbs.save(str(path), bs)
+    # Loading with pt_weights_only=True exercises the safe_globals branch.
+    try:
+        loaded = tbbs.load(str(path), pt_weights_only=True)
+    except (TypeError, RuntimeError) as exc:
+        message = str(exc)
+        if "weights_only" in message or "safe_globals" in message:
+            pytest.skip("pt_weights_only=True not supported in this environment")
+        raise
+    assert isinstance(loaded, tbbs.BezierSimplex)
+
+
+def test_fit_with_init_same_weight_and_adjacency():
+    """fit() with an init BezierSimplex that has the same weight and adjacency reuses it."""
+    params = torch.tensor([[1.0, 0.0], [0.5, 0.5], [0.0, 1.0]])
+    values = torch.tensor([[0.0], [0.5], [1.0]])
+    # Create a model with smoothness_weight > 0 to register adjacency_indices_.
+    init_model = tbbs.randn(n_params=2, n_values=1, degree=2, smoothness_weight=0.1)
+    # Verify it has adjacency_indices_.
+    assert hasattr(init_model, "adjacency_indices_")
+
+    # fit() with same smoothness_weight should reuse init_model (bs = init path).
+    result = tbbs.fit(
+        params=params,
+        values=values,
+        init=init_model,
+        smoothness_weight=0.1,
+        max_epochs=1,
+        enable_progress_bar=False,
+        logger=False,
+        enable_checkpointing=False,
+        accelerator="cpu",
+        devices=1,
+    )
+    assert isinstance(result, tbbs.BezierSimplex)
+    assert result is init_model
+
+
+def test_meshgrid_without_coeffs_uses_default_dtype():
+    """meshgrid() should fall back to get_default_dtype() when coeffs_ is absent and cp is None."""
+    import torch
+    from unittest.mock import patch
+
+    bs = tbbs.randn(n_params=2, n_values=2, degree=1)
+    # Remove the coeffs_ buffer to force the else branch in meshgrid().
+    del bs._buffers["coeffs_"]
+    # Mock forward so it doesn't need coeffs_ to run.
+    n_params = bs.n_params
+    n_values = bs.n_values
+    with patch.object(bs, "forward", return_value=torch.zeros(1, n_values)):
+        ts, xs = bs.meshgrid(num=1)
+    assert ts.shape[1] == n_params

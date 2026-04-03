@@ -354,3 +354,84 @@ class TestSelectDegreePatience:
         with pytest.raises(ValueError, match="patience"):
             select_degree(params, values, patience=-1)
 
+
+class TestSelectDegreeEdgeCases:
+    """Tests for edge-case validation in select_degree."""
+
+    def test_empty_dataset_raises(self):
+        """select_degree with zero samples should raise ValueError."""
+        params = torch.empty(0, 3)
+        values = torch.empty(0, 2)
+        with pytest.raises(ValueError, match="non-empty"):
+            select_degree(params, values, min_degree=1, max_degree=2, num_folds=2)
+
+    def test_invalid_batch_size_raises(self):
+        """Passing a non-positive batch_size should raise ValueError."""
+        params, values = _make_simplex_data()
+        with pytest.raises(ValueError, match="batch_size"):
+            select_degree(params, values, min_degree=1, max_degree=1, num_folds=2, batch_size=-1)
+
+
+class TestDegreeSelectionCliMain:
+    """Tests for the _cli_main() entry point of degree_selection."""
+
+    def test_cli_main_basic(self, tmp_path, monkeypatch):
+        """_cli_main() should run successfully with minimal arguments."""
+        from torch_bsf.model_selection.degree_selection import _cli_main
+
+        monkeypatch.chdir(tmp_path)
+        monkeypatch.setattr(
+            "sys.argv",
+            [
+                "degree_selection",
+                f"--params={_PARAMS_CSV}",
+                f"--values={_VALUES_CSV}",
+                "--min_degree=1",
+                "--max_degree=2",
+                "--num_folds=2",
+                "--max_epochs=1",
+                "--loglevel=WARNING",
+            ],
+        )
+        _cli_main()
+
+    def test_cli_main_with_batch_size(self, tmp_path, monkeypatch):
+        """_cli_main() should accept --batch_size."""
+        from torch_bsf.model_selection.degree_selection import _cli_main
+
+        monkeypatch.chdir(tmp_path)
+        monkeypatch.setattr(
+            "sys.argv",
+            [
+                "degree_selection",
+                f"--params={_PARAMS_CSV}",
+                f"--values={_VALUES_CSV}",
+                "--min_degree=1",
+                "--max_degree=1",
+                "--num_folds=2",
+                "--max_epochs=1",
+                "--batch_size=10",
+                "--loglevel=WARNING",
+            ],
+        )
+        _cli_main()
+
+    def test_cli_main_inverted_degrees_exits(self, monkeypatch):
+        """_cli_main() should call parser.error (SystemExit 2) when min > max."""
+        from torch_bsf.model_selection.degree_selection import _cli_main
+
+        monkeypatch.setattr(
+            "sys.argv",
+            [
+                "degree_selection",
+                f"--params={_PARAMS_CSV}",
+                f"--values={_VALUES_CSV}",
+                "--min_degree=5",
+                "--max_degree=1",
+            ],
+        )
+        with pytest.raises(SystemExit) as exc_info:
+            _cli_main()
+        assert exc_info.value.code != 0
+
+

@@ -163,7 +163,8 @@ def select_degree(
     return best_degree
 
 
-if __name__ == "__main__":
+def _cli_main() -> None:
+    """Entry point for ``python -m torch_bsf.model_selection.degree_selection``."""
     from argparse import ArgumentParser
     from pathlib import Path
 
@@ -237,3 +238,7 @@ if __name__ == "__main__":
     )
 
     print(f"Best degree: {best_degree}")
+
+
+if __name__ == "__main__":
+    _cli_main()
