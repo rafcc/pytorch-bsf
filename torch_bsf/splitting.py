@@ -282,8 +282,8 @@ def split(
     if not (0.0 < s < 1.0):
         raise ValueError(f"Split parameter s must be in (0, 1), but s={s}.")
 
-    indices = bs.control_points._indices
-    index_to_row = bs.control_points._index_to_row
+    indices = list(bs.control_points.indices())
+    index_to_row = {alpha: row for row, alpha in enumerate(indices)}
 
     b = bs.control_points.matrix
 
