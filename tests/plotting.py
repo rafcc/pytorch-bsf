@@ -284,9 +284,9 @@ def test_plot_bezier_triangle_no_scipy(monkeypatch):
 
     model = tbbs.randn(n_params=3, n_values=3, degree=1)
     with monkeypatch.context() as m:
-        m.setitem(sys.modules, "scipy", None)
-        m.setitem(sys.modules, "scipy.spatial", None)
-        with pytest.raises((ImportError, TypeError)):
+        m.delitem(sys.modules, "scipy", raising=False)
+        m.delitem(sys.modules, "scipy.spatial", raising=False)
+        with pytest.raises(ImportError, match="scipy"):
             _plot_bezier_triangle(model, 5, None, True)
 
 
