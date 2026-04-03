@@ -146,12 +146,12 @@ def main() -> None:
     for k in range(args.num_folds):
         x = xs[k]
         x = dm.inverse_transform(x).to("cpu").detach().numpy()
-        fn = f"{args.params.name},{args.values.name},{args.num_folds}fold,meshgrid,d_{args.degree},r_{args.split_ratio},{k}.csv"
+        fn = f"{args.params.name},{args.values.name},{args.num_folds}fold,meshgrid,d_{bs.degree},r_{args.split_ratio},{k}.csv"
         np.savetxt(fn, x)
 
     x = xs.mean(dim=0)  # mean over folds
     x = dm.inverse_transform(x).to("cpu").detach().numpy()
-    fn = f"{args.params.name},{args.values.name},{args.num_folds}fold,meshgrid,d_{args.degree},r_{args.split_ratio}.csv"
+    fn = f"{args.params.name},{args.values.name},{args.num_folds}fold,meshgrid,d_{bs.degree},r_{args.split_ratio}.csv"
     np.savetxt(fn, x)
 
     print(f"Meshgrid saved: {fn}")
