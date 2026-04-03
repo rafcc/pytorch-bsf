@@ -458,6 +458,31 @@ def max_error_criterion(
             raise ValueError(
                 f"Splitting requires n_params >= 2, but n_params={n_params}."
             )
+        if params_t.ndim != 2:
+            raise ValueError(
+                f"`params` must be a 2D tensor of shape (N, {n_params}), "
+                f"but got shape {tuple(params_t.shape)}."
+            )
+        if values_t.ndim != 2:
+            raise ValueError(
+                f"`values` must be a 2D tensor of shape (N, {bs.n_values}), "
+                f"but got shape {tuple(values_t.shape)}."
+            )
+        if params_t.shape[0] != values_t.shape[0]:
+            raise ValueError(
+                f"`params` and `values` must have the same number of samples N, "
+                f"but got {params_t.shape[0]} and {values_t.shape[0]}."
+            )
+        if params_t.shape[1] != n_params:
+            raise ValueError(
+                f"`params` must have shape (N, {n_params}) for the given "
+                f"Bézier simplex, but got shape {tuple(params_t.shape)}."
+            )
+        if values_t.shape[1] != bs.n_values:
+            raise ValueError(
+                f"`values` must have shape (N, {bs.n_values}) for the given "
+                f"Bézier simplex, but got shape {tuple(values_t.shape)}."
+            )
         best_i, best_j, best_s = 0, 1, 0.5
         best_error = float("inf")
         # linspace(0, 1, grid_size+2)[1:-1] gives `grid_size` evenly-spaced
