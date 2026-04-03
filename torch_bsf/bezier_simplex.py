@@ -503,6 +503,34 @@ class BezierSimplex(L.LightningModule):
         optimizer = torch.optim.LBFGS(self.parameters())
         return optimizer
 
+    def __getstate__(self) -> dict:
+        state = super().__getstate__()
+        # Convert AttributeDict to plain dict so that torch.load(weights_only=True)
+        # can deserialize this object without hitting the SETITEMS restriction
+        # (PyTorch's weights-only unpickler only allows dict/OrderedDict/Counter).
+        try:
+            from lightning.fabric.utilities.data import AttributeDict
+
+            for key in ("_hparams", "_hparams_initial"):
+                if key in state and isinstance(state[key], AttributeDict):
+                    state[key] = dict(state[key])
+        except ImportError:
+            pass
+        return state
+
+    def __setstate__(self, state: dict) -> None:
+        # Restore AttributeDict from plain dict for Lightning compatibility
+        # when loading models saved with the weights_only-compatible __getstate__.
+        try:
+            from lightning.fabric.utilities.data import AttributeDict
+
+            for key in ("_hparams", "_hparams_initial"):
+                if key in state and type(state[key]) is dict:
+                    state[key] = AttributeDict(state[key])
+        except ImportError:
+            pass
+        super().__setstate__(state)
+
     def meshgrid(self, num: int = 100) -> tuple[torch.Tensor, torch.Tensor]:
         r"""Computes a meshgrid of the Bézier simplex.
 
@@ -878,12 +906,6 @@ def load(
     ValidationError
         If the control points are invalid.
 
-    Notes
-    -----
-    Setting ``pt_weights_only=True`` will fail if the model contains
-    classes not allowed by PyTorch's ``WeightsUnpickler`` (like lightning's
-    ``AttributeDict``), even if they are in the safe globals list.
-
     Examples
     --------
     >>> from torch_bsf import bezier_simplex
@@ -907,11 +929,9 @@ def load(
         has_weights_only = "weights_only" in inspect.signature(torch.load).parameters
         assert not (has_safe_globals and not has_weights_only)
 
-        # PyTorch 2.6 defaults to True, but our models contain Lightning's AttributeDict
-        # which fails under weights_only=True due to PyTorch's SETITEM restrictions.
-        # Therefore, we currently default to False to maintain usability.
-        # The safe_globals implementation below is retained as a forward-compatible
-        # foundation for when upstream support improves.
+        # Default to False for backward compatibility with .pt files saved before
+        # BezierSimplex.__getstate__ was added (those may still contain AttributeDict).
+        # Newly saved files use plain dict and can be loaded with weights_only=True.
         if pt_weights_only is None:
             pt_weights_only = False
 
