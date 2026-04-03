@@ -1115,6 +1115,7 @@ def test_fit_with_init_same_weight_and_adjacency():
         devices=1,
     )
     assert isinstance(result, tbbs.BezierSimplex)
+    assert result is init_model
 
 
 def test_meshgrid_without_coeffs_uses_default_dtype():
