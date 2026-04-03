@@ -134,7 +134,7 @@ def main() -> None:
         callbacks=[EarlyStopping(monitor="val_mse")],
     )
 
-    # Returns a dict of stats over the different splits
+    # Returns a list of per-fold/per-split stats dictionaries
     cross_val_stats: list[list[dict[str, float]]] = trainer.cross_validate(bs, datamodule=dm)
     print(f"{cross_val_stats=}")
 
