@@ -404,6 +404,8 @@ def max_error_criterion(
     values: torch.Tensor,
     grid_size: int = 10,
 ) -> SplitCriterion:
+    if grid_size < 1:
+        raise ValueError("grid_size must be >= 1")
     r"""Build a criterion that minimises the combined approximation error.
 
     For each candidate edge ``(i, j)`` and split parameter ``s`` drawn from a
