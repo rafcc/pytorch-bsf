@@ -62,6 +62,9 @@ autodoc_mock_imports = ["matplotlib", "sklearn", "scipy"]
 
 # -- doctest -----------------------------------------------------------------
 # https://www.sphinx-doc.org/ja/master/usage/extensions/doctest.html#confval-doctest_global_setup
+import doctest
+
+doctest_default_flags = doctest.ELLIPSIS
 doctest_global_setup = """
 import torch
 import torch_bsf
