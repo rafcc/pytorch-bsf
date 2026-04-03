@@ -448,7 +448,10 @@ def max_error_criterion(
             )
         best_i, best_j, best_s = 0, 1, 0.5
         best_error = float("inf")
-        s_candidates = torch.linspace(0.1, 0.9, grid_size).tolist()
+        # linspace(0, 1, grid_size+2)[1:-1] gives `grid_size` evenly-spaced
+        # values strictly inside (0, 1), with the midpoint 0.5 included when
+        # grid_size is odd (e.g. grid_size=1 → [0.5], grid_size=3 → [0.25, 0.5, 0.75]).
+        s_candidates = torch.linspace(0.0, 1.0, grid_size + 2)[1:-1].tolist()
 
         for vi in range(n_params):
             for vj in range(vi + 1, n_params):
