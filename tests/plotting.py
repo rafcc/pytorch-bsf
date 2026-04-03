@@ -253,51 +253,71 @@ def test_plot_triangle_without_control_points(require_matplotlib, bezier_triangl
 
 def test_plot_bezier_curve_no_matplotlib(monkeypatch):
     """plot_bezier_simplex should raise ImportError when matplotlib is unavailable (curve)."""
-    import sys
+    import builtins
     from torch_bsf.plotting import _plot_bezier_curve
 
     model = tbbs.randn(n_params=2, n_values=2, degree=1)
-    with monkeypatch.context() as m:
-        m.setitem(sys.modules, "matplotlib", None)
-        m.setitem(sys.modules, "matplotlib.pyplot", None)
-        with pytest.raises((ImportError, TypeError)):
-            _plot_bezier_curve(model, 10, None, True)
+    real_import = builtins.__import__
+
+    def _import_no_matplotlib(name, globals=None, locals=None, fromlist=(), level=0):
+        if name == "matplotlib" or name.startswith("matplotlib."):
+            raise ImportError(f"No module named '{name}'")
+        return real_import(name, globals, locals, fromlist, level)
+
+    monkeypatch.setattr(builtins, "__import__", _import_no_matplotlib)
+    with pytest.raises(ImportError):
+        _plot_bezier_curve(model, 10, None, True)
 
 
 def test_plot_bezier_triangle_no_matplotlib(monkeypatch):
     """plot_bezier_simplex should raise ImportError when matplotlib is unavailable (triangle)."""
-    import sys
+    import builtins
     from torch_bsf.plotting import _plot_bezier_triangle
 
     model = tbbs.randn(n_params=3, n_values=3, degree=1)
-    with monkeypatch.context() as m:
-        m.delitem(sys.modules, "matplotlib", raising=False)
-        m.delitem(sys.modules, "matplotlib.pyplot", raising=False)
-        with pytest.raises(ImportError):
-            _plot_bezier_triangle(model, 5, None, True)
+    real_import = builtins.__import__
+
+    def _import_no_matplotlib(name, globals=None, locals=None, fromlist=(), level=0):
+        if name == "matplotlib" or name.startswith("matplotlib."):
+            raise ImportError(f"No module named '{name}'")
+        return real_import(name, globals, locals, fromlist, level)
+
+    monkeypatch.setattr(builtins, "__import__", _import_no_matplotlib)
+    with pytest.raises(ImportError):
+        _plot_bezier_triangle(model, 5, None, True)
 
 
 def test_plot_bezier_triangle_no_scipy(monkeypatch):
     """_plot_bezier_triangle should raise ImportError when scipy is unavailable."""
-    import sys
+    import builtins
     from torch_bsf.plotting import _plot_bezier_triangle
 
     model = tbbs.randn(n_params=3, n_values=3, degree=1)
-    with monkeypatch.context() as m:
-        m.delitem(sys.modules, "scipy", raising=False)
-        m.delitem(sys.modules, "scipy.spatial", raising=False)
-        with pytest.raises(ImportError, match="scipy"):
-            _plot_bezier_triangle(model, 5, None, True)
+    real_import = builtins.__import__
+
+    def _import_no_scipy(name, globals=None, locals=None, fromlist=(), level=0):
+        if name == "scipy" or name.startswith("scipy."):
+            raise ImportError(f"No module named '{name}'")
+        return real_import(name, globals, locals, fromlist, level)
+
+    monkeypatch.setattr(builtins, "__import__", _import_no_scipy)
+    with pytest.raises(ImportError, match="scipy"):
+        _plot_bezier_triangle(model, 5, None, True)
 
 
 def test_plot_pairwise_no_matplotlib(monkeypatch):
     """_plot_bezier_simplex_pairwise should raise ImportError when matplotlib is unavailable."""
-    import sys
+    import builtins
     from torch_bsf.plotting import _plot_bezier_simplex_pairwise
 
     model = tbbs.randn(n_params=4, n_values=2, degree=1)
-    with monkeypatch.context() as m:
-        m.delitem(sys.modules, "matplotlib", raising=False)
-        m.delitem(sys.modules, "matplotlib.pyplot", raising=False)
-        with pytest.raises(ImportError):
-            _plot_bezier_simplex_pairwise(model, 5, True, 500, 2000)
+    real_import = builtins.__import__
+
+    def _import_no_matplotlib(name, globals=None, locals=None, fromlist=(), level=0):
+        if name == "matplotlib" or name.startswith("matplotlib."):
+            raise ImportError(f"No module named '{name}'")
+        return real_import(name, globals, locals, fromlist, level)
+
+    monkeypatch.setattr(builtins, "__import__", _import_no_matplotlib)
+    with pytest.raises(ImportError):
+        _plot_bezier_simplex_pairwise(model, 5, True, 500, 2000)
