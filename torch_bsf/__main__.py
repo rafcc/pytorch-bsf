@@ -150,7 +150,7 @@ def main() -> None:
 
     # save meshgrid
     x = xs.to("cpu").detach().numpy()
-    np.savetxt(fn, x)
+    np.savetxt(fn, x, delimiter=",")
     print(f"Meshgrid saved: {fn}")
 
 
