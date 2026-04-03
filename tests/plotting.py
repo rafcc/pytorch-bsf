@@ -271,9 +271,9 @@ def test_plot_bezier_triangle_no_matplotlib(monkeypatch):
 
     model = tbbs.randn(n_params=3, n_values=3, degree=1)
     with monkeypatch.context() as m:
-        m.setitem(sys.modules, "matplotlib", None)
-        m.setitem(sys.modules, "matplotlib.pyplot", None)
-        with pytest.raises((ImportError, TypeError)):
+        m.delitem(sys.modules, "matplotlib", raising=False)
+        m.delitem(sys.modules, "matplotlib.pyplot", raising=False)
+        with pytest.raises(ImportError):
             _plot_bezier_triangle(model, 5, None, True)
 
 
