@@ -81,21 +81,23 @@ def _precompute_shift_rows(
         raise ValueError(
             f"`direction` must be 'ij' or 'ji', but got {direction!r}."
         )
-    shift = torch.full((n,), -1, dtype=torch.long, device=device)
+    # Build shift values in a plain Python list to avoid per-element kernel
+    # launches on CUDA/MPS; create the tensor in one shot at the end.
+    shift_list: list[int] = [-1] * n
     for row, alpha in enumerate(indices):
         if direction == "ij":
             if alpha[j] >= 1:
                 shifted = list(alpha)
                 shifted[i] += 1
                 shifted[j] -= 1
-                shift[row] = index_to_row[tuple(shifted)]
+                shift_list[row] = index_to_row[tuple(shifted)]
         elif direction == "ji":
             if alpha[i] >= 1:
                 shifted = list(alpha)
                 shifted[j] += 1
                 shifted[i] -= 1
-                shift[row] = index_to_row[tuple(shifted)]
-    return shift
+                shift_list[row] = index_to_row[tuple(shifted)]
+    return torch.tensor(shift_list, dtype=torch.long, device=device)
 
 
 # ---------------------------------------------------------------------------
