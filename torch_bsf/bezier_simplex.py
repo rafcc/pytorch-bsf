@@ -947,13 +947,6 @@ def load(
                 QuantileScaler,
                 NoneScaler,
             ]
-            try:
-                from lightning.fabric.utilities.data import AttributeDict
-
-                safe_classes.append(AttributeDict)
-            except (ImportError, AttributeError):
-                pass
-
             with torch.serialization.safe_globals(safe_classes):
                 data = torch.load(path, **kwargs)
         else:
