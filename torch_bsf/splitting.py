@@ -186,15 +186,23 @@ def split(
     indices = bs.control_points._indices
     index_to_row = bs.control_points._index_to_row
 
+    b = bs.control_points.matrix.detach()
+
     # alpha_i / alpha_j vectors for mask-based extraction
-    alpha_i = torch.tensor([alpha[i] for alpha in indices], dtype=torch.long)
-    alpha_j = torch.tensor([alpha[j] for alpha in indices], dtype=torch.long)
+    alpha_i = torch.tensor(
+        [alpha[i] for alpha in indices], dtype=torch.long, device=b.device
+    )
+    alpha_j = torch.tensor(
+        [alpha[j] for alpha in indices], dtype=torch.long, device=b.device
+    )
 
     # Precompute shift-row tables
-    shift_ij = _precompute_shift_rows(indices, index_to_row, i, j, "ij")
-    shift_ji = _precompute_shift_rows(indices, index_to_row, i, j, "ji")
-
-    b = bs.control_points.matrix.detach()
+    shift_ij = _precompute_shift_rows(indices, index_to_row, i, j, "ij").to(
+        device=b.device, dtype=torch.long
+    )
+    shift_ji = _precompute_shift_rows(indices, index_to_row, i, j, "ji").to(
+        device=b.device, dtype=torch.long
+    )
     result_A = torch.empty_like(b)
     result_B = torch.empty_like(b)
 
