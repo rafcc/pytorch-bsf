@@ -53,7 +53,7 @@ We add a third demand center at :math:`a_3=(0.5,1)`, with :math:`f_3(x) = \lVert
      - Pareto front (3-obj).
 
 **Four Objectives:**
-We add a fourth demand center at :math:`a_4=(1,1)`, with :math:`f_4(x) = \lVert x - a_4\rVert^2`. The weighted objective is :math:`f(x, w) = w_1 f_1(x) + w_2 f_2(x) + w_3 f_3(x) + w_4 f_4(x)`. We sample 10 weight vectors on the 4-simplex and fit a degree-3 Bézier simplex. For visualization, we project to 3D by plotting :math:`f_1, f_2, f_3`.
+We add a fourth demand center at :math:`a_4=(1,1)`, with :math:`f_4(x) = \lVert x - a_4\rVert^2`. The weighted objective is :math:`f(x, w) = w_1 f_1(x) + w_2 f_2(x) + w_3 f_3(x) + w_4 f_4(x)`. We sample 10 weight vectors on the 4-simplex and fit a degree-2 Bézier simplex. For visualization, we project to 3D by plotting :math:`f_1, f_2, f_3`.
 
 .. list-table::
    :widths: 50 50
