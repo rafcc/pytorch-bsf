@@ -119,7 +119,7 @@ The ``s`` parameter controls where the new vertex is placed on the edge:
 * ``s > 0.5`` — the new vertex is closer to :math:`v_j`; **bs_B** covers a
   smaller sub-domain.
 
-Re-parameterising Data Points
+Re-parameterizing Data Points
 ------------------------------
 
 After splitting, existing data points need to be mapped to the local
