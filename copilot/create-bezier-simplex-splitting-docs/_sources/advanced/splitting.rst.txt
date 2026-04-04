@@ -201,7 +201,7 @@ Maximum-Error Criterion
 ^^^^^^^^^^^^^^^^^^^^^^^
 
 :func:`~torch_bsf.splitting.max_error_criterion` finds the edge and split
-position that minimizes the combined mean-squared error over the training data:
+position that minimize the combined mean-squared error over the training data:
 
 .. math::
 
@@ -281,7 +281,7 @@ below demonstrates one round of such refinement:
    from torch_bsf.splitting import (
        max_error_criterion,
        reparametrize,
-       split_by_criterion,
+       split,
    )
 
    # ── 1. Initial data and fit ────────────────────────────────────────────────
@@ -307,8 +307,8 @@ below demonstrates one round of such refinement:
 
    # ── 2. Split using the data-driven criterion ───────────────────────────────
    criterion = max_error_criterion(params, values, grid_size=10)
-   bs_A, bs_B = split_by_criterion(bs, criterion)
-   i, j, s = criterion(bs)  # retrieve the chosen (i, j, s) for reparametrization
+   i, j, s = criterion(bs)  # retrieve the chosen (i, j, s) once
+   bs_A, bs_B = split(bs, i, j, s)
 
    # ── 3. Reparametrize the data and re-fit each sub-simplex ─────────────────
    u_A, mask_A = reparametrize(params, i, j, s, subsimplex="A")
