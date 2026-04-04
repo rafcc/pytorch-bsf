@@ -23,13 +23,13 @@ To demonstrate the scalability of Bézier simplex fitting across different numbe
 **Two Objectives:**
 We consider two demand centers at :math:`a_1=(0,0)` and :math:`a_2=(1,1)`, with objectives :math:`f_1(x) = \lVert x - a_1\rVert^2` and :math:`f_2(x) = \lVert x - a_2\rVert^2`. The weighted objective :math:`f(x, w) = w_1 f_1(x) + w_2 f_2(x)` is strongly convex. We sample 10 weights and fit a degree-3 Bézier simplex.
 
-.. figure:: _static/facility_location_pareto_2obj.png
+.. figure:: ../_static/facility_location_pareto_2obj.png
    :alt: Bézier simplex fitting to two-objective facility location Pareto front
    :align: center
 
    Two-objective facility location Pareto front approximation.
 
-.. figure:: _static/facility_location_pareto_set_2obj.png
+.. figure:: ../_static/facility_location_pareto_set_2obj.png
    :alt: Pareto set for two-objective facility location
    :align: center
 
@@ -38,13 +38,13 @@ We consider two demand centers at :math:`a_1=(0,0)` and :math:`a_2=(1,1)`, with 
 **Three Objectives:**
 We add a third demand center at :math:`a_3=(0.5,1)`, with :math:`f_3(x) = \lVert x - a_3\rVert^2`. The weighted objective becomes :math:`f(x, w) = w_1 f_1(x) + w_2 f_2(x) + w_3 f_3(x)`. We sample 10 weight vectors on the 3-simplex and fit a degree-3 Bézier simplex.
 
-.. figure:: _static/facility_location_pareto_3obj.png
+.. figure:: ../_static/facility_location_pareto_3obj.png
    :alt: Bézier simplex fitting to three-objective facility location Pareto front
    :align: center
 
    Three-objective facility location Pareto front approximation.
 
-.. figure:: _static/facility_location_pareto_set_3obj.png
+.. figure:: ../_static/facility_location_pareto_set_3obj.png
    :alt: Pareto set for three-objective facility location
    :align: center
 
@@ -53,13 +53,13 @@ We add a third demand center at :math:`a_3=(0.5,1)`, with :math:`f_3(x) = \lVert
 **Four Objectives:**
 We add a fourth demand center at :math:`a_4=(1,1)`, with :math:`f_4(x) = \lVert x - a_4\rVert^2`. The weighted objective is :math:`f(x, w) = w_1 f_1(x) + w_2 f_2(x) + w_3 f_3(x) + w_4 f_4(x)`. We sample 10 weight vectors on the 4-simplex and fit a degree-3 Bézier simplex. For visualization, we project to 3D by plotting :math:`f_1, f_2, f_3`.
 
-.. figure:: _static/facility_location_pareto_4obj.png
+.. figure:: ../_static/facility_location_pareto_4obj.png
    :alt: Bézier simplex fitting to four-objective facility location Pareto front (projected)
    :align: center
 
    Four-objective facility location Pareto front approximation (projected to 3D).
 
-.. figure:: _static/facility_location_pareto_set_4obj.png
+.. figure:: ../_static/facility_location_pareto_set_4obj.png
    :alt: Pareto set for four-objective facility location
    :align: center
 
