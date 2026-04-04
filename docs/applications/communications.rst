@@ -43,4 +43,23 @@ where :math:`x = (x_1, x_2)` represents routing allocations. The weighted object
 
 This experiment shows that Bézier simplex fitting can accurately approximate Pareto fronts derived from actual optimization, enabling real-time trade-off evaluation in communication network routing.
 
-The complete code for this numerical experiment is available in :file:`examples/generate_communication_fitting.py`.
+Three-Objective Extension
+-------------------------
+
+To demonstrate multi-objective scalability, we also consider a three-objective routing problem:
+
+- :math:`f_1(x) = x_1^2 + x_2^2`
+- :math:`f_2(x) = (x_1 - 0.5)^2 + (x_2 - 0.5)^2`
+- :math:`f_3(x) = 0.8\left((x_1 - 1.0)^2 + (x_2 - 0.2)^2\right)`
+
+The weighted objective :math:`f(x, w) = w_1 f_1(x) + w_2 f_2(x) + w_3 f_3(x)` is strongly convex. We sampled 10 weight vectors on the 3-simplex, solved each weighted optimization with L-BFGS, and fitted a degree-3 Bézier simplex to the resulting objective triples.
+
+.. figure:: _static/communication_pareto_3obj.png
+   :alt: Bézier simplex fitting to three-objective Pareto front
+   :align: center
+
+   Three-objective Pareto front approximation. Blue points are optimization-derived objective triples, and the red surface shows the Bézier simplex approximation.
+
+The fit achieves nearly zero training error on the sampled Pareto points, demonstrating that Bézier simplex fitting can accurately approximate three-objective trade-offs from actual optimization.
+
+The complete code for the two-objective and three-objective experiments is available in :file:`examples/generate_communication_fitting.py` and :file:`examples/generate_communication_pareto_3obj.py`, respectively.

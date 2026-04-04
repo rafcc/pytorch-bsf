@@ -14,3 +14,37 @@ Likewise, in engineering design optimizing for structural compliance or minimum 
 These properties are explicitly leveraged by Adaptive Weighted Sum (AWS) methods in structural multidisciplinary optimization, where successive boundary-constrained strongly-convex QPs smoothly and uniformly map the Pareto front :cite:p:`deweck2004adaptive`. Even in complex biological systems, such as competitive Lotka-Volterra models, transformations of the quadratic interaction terms yield strongly convex models that exhibit identically stable simplicial Pareto behavior.
 
 Approximating these Pareto fronts with a Bézier simplex yields a completely continuous, analytic structural location map. Planners and decision-makers are empowered to visually and analytically slide trade-off priorities—such as selectively favoring certain demand hubs—to determine the optimal coordinates seamlessly, without needing to re-solve the spatial optimization from scratch.
+
+Numerical Experiments
+---------------------
+
+To demonstrate the scalability of Bézier simplex fitting across different numbers of objectives, we generate Pareto front samples for two, three, and four objectives by solving weighted sums of convex squared-distance objectives.
+
+**Two Objectives:**
+We consider two demand centers at :math:`a_1=(0,0)` and :math:`a_2=(1,1)`, with objectives :math:`f_1(x) = \lVert x - a_1\rVert^2` and :math:`f_2(x) = \lVert x - a_2\rVert^2`. The weighted objective :math:`f(x, w) = w_1 f_1(x) + w_2 f_2(x)` is strongly convex. We sample 10 weights and fit a degree-3 Bézier simplex.
+
+.. figure:: _static/facility_location_pareto_2obj.png
+   :alt: Bézier simplex fitting to two-objective facility location Pareto front
+   :align: center
+
+   Two-objective facility location Pareto front approximation.
+
+**Three Objectives:**
+We add a third demand center at :math:`a_3=(0.5,1)`, with :math:`f_3(x) = \lVert x - a_3\rVert^2`. The weighted objective becomes :math:`f(x, w) = w_1 f_1(x) + w_2 f_2(x) + w_3 f_3(x)`. We sample 10 weight vectors on the 3-simplex and fit a degree-3 Bézier simplex.
+
+.. figure:: _static/facility_location_pareto_3obj.png
+   :alt: Bézier simplex fitting to three-objective facility location Pareto front
+   :align: center
+
+   Three-objective facility location Pareto front approximation.
+
+**Four Objectives:**
+We add a fourth demand center at :math:`a_4=(1,1)`, with :math:`f_4(x) = \lVert x - a_4\rVert^2`. The weighted objective is :math:`f(x, w) = w_1 f_1(x) + w_2 f_2(x) + w_3 f_3(x) + w_4 f_4(x)`. We sample 10 weight vectors on the 4-simplex and fit a degree-3 Bézier simplex. For visualization, we project to 3D by plotting :math:`f_1, f_2, f_3`.
+
+.. figure:: _static/facility_location_pareto_4obj.png
+   :alt: Bézier simplex fitting to four-objective facility location Pareto front (projected)
+   :align: center
+
+   Four-objective facility location Pareto front approximation (projected to 3D).
+
+These examples confirm that Bézier simplex fitting accurately approximates multi-objective facility location trade-offs from actual optimization, scaling effectively to higher dimensions. The complete code for the two-, three-, and four-objective experiments is available in :file:`examples/generate_facility_location_pareto_2obj.py`, :file:`examples/generate_facility_location_pareto.py`, and :file:`examples/generate_facility_location_pareto_4obj.py`, respectively.
