@@ -369,7 +369,7 @@ below demonstrates one round of such refinement:</p>
 <span class="n">u_A</span><span class="p">,</span> <span class="n">mask_A</span> <span class="o">=</span> <span class="n">reparametrize</span><span class="p">(</span><span class="n">params</span><span class="p">,</span> <span class="n">i</span><span class="p">,</span> <span class="n">j</span><span class="p">,</span> <span class="n">s</span><span class="p">,</span> <span class="n">subsimplex</span><span class="o">=</span><span class="s2">&quot;A&quot;</span><span class="p">)</span>
 <span class="n">u_B</span><span class="p">,</span> <span class="n">mask_B</span> <span class="o">=</span> <span class="n">reparametrize</span><span class="p">(</span><span class="n">params</span><span class="p">,</span> <span class="n">i</span><span class="p">,</span> <span class="n">j</span><span class="p">,</span> <span class="n">s</span><span class="p">,</span> <span class="n">subsimplex</span><span class="o">=</span><span class="s2">&quot;B&quot;</span><span class="p">)</span>
 
-<span class="k">if</span> <span class="n">mask_A</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+<span class="k">if</span> <span class="n">mask_A</span><span class="o">.</span><span class="n">any</span><span class="p">():</span>
     <span class="n">bs_A_refined</span> <span class="o">=</span> <span class="n">torch_bsf</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span>
         <span class="n">params</span><span class="o">=</span><span class="n">u_A</span><span class="p">[</span><span class="n">mask_A</span><span class="p">],</span>
         <span class="n">values</span><span class="o">=</span><span class="n">values</span><span class="p">[</span><span class="n">mask_A</span><span class="p">],</span>
@@ -379,7 +379,7 @@ below demonstrates one round of such refinement:</p>
         <span class="n">logger</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
         <span class="n">enable_checkpointing</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
     <span class="p">)</span>
-<span class="k">if</span> <span class="n">mask_B</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+<span class="k">if</span> <span class="n">mask_B</span><span class="o">.</span><span class="n">any</span><span class="p">():</span>
     <span class="n">bs_B_refined</span> <span class="o">=</span> <span class="n">torch_bsf</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span>
         <span class="n">params</span><span class="o">=</span><span class="n">u_B</span><span class="p">[</span><span class="n">mask_B</span><span class="p">],</span>
         <span class="n">values</span><span class="o">=</span><span class="n">values</span><span class="p">[</span><span class="n">mask_B</span><span class="p">],</span>

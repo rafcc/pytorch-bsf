@@ -290,7 +290,7 @@ below demonstrates one round of such refinement:
    u_A, mask_A = reparametrize(params, i, j, s, subsimplex="A")
    u_B, mask_B = reparametrize(params, i, j, s, subsimplex="B")
 
-   if mask_A.sum() > 0:
+   if mask_A.any():
        bs_A_refined = torch_bsf.fit(
            params=u_A[mask_A],
            values=values[mask_A],
@@ -300,7 +300,7 @@ below demonstrates one round of such refinement:
            logger=False,
            enable_checkpointing=False,
        )
-   if mask_B.sum() > 0:
+   if mask_B.any():
        bs_B_refined = torch_bsf.fit(
            params=u_B[mask_B],
            values=values[mask_B],
