@@ -81,6 +81,17 @@ Rows with :math:`\alpha_j = r` are saved as control points of **bs_A**.  An
 analogous recursion with the roles of :math:`i` and :math:`j` swapped gives
 the control points of **bs_B**.
 
+.. figure:: ../_static/splitting_triangle_before_after.png
+   :width: 100%
+
+   **Left** – A degree-2 Bézier triangle (n_params=3) with its six control
+   points (circles) and control net.  **Right** – After splitting edge
+   :math:`(0,1)` at :math:`s=0.5`: sub-simplex :math:`B_A` (orange, replaces
+   :math:`v_1` with :math:`v_\mathrm{new}`) and :math:`B_B` (green, replaces
+   :math:`v_0` with :math:`v_\mathrm{new}`).  Diamond markers highlight control
+   points that are newly computed by the de Casteljau algorithm; the star marks
+   the shared split point :math:`v_\mathrm{new}`.
+
 Splitting a Specific Edge
 --------------------------
 
@@ -225,6 +236,18 @@ forward passes through the model.
    **Right** – ``max_error_criterion`` finds the edge and position that
    minimise the combined MSE on the training data, here choosing a split
    position closer to where the fitted curve deviates most from the data.
+
+.. figure:: ../_static/splitting_triangle_criteria.png
+   :width: 100%
+
+   Comparison of the two built-in split criteria on a degree-2 Bézier
+   **triangle** (:math:`n_\mathrm{params}=3`) with training data (purple dots).
+   **Left** – ``longest_edge_criterion`` selects the longest value-space edge
+   and splits at :math:`s=0.5`.  **Right** – ``max_error_criterion`` selects
+   the edge and split position that minimise the combined MSE on the training
+   data; the chosen edge and :math:`s` value may differ from the geometric
+   midpoint.  The dashed line shows the split and the star marks
+   :math:`v_\mathrm{new}` in both panels.
 
 Custom Criteria
 ^^^^^^^^^^^^^^^
