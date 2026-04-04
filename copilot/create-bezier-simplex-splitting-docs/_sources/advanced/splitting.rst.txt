@@ -201,7 +201,7 @@ Maximum-Error Criterion
 ^^^^^^^^^^^^^^^^^^^^^^^
 
 :func:`~torch_bsf.splitting.max_error_criterion` finds the edge and split
-position that minimise the combined mean-squared error over the training data:
+position that minimizes the combined mean-squared error over the training data:
 
 .. math::
 
