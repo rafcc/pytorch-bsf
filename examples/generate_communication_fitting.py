@@ -71,5 +71,5 @@ max_error = np.max(errors)
 print(f'Max approximation error: {max_error:.4f}')
 
 plt.tight_layout()
-plt.savefig('docs/_static/communication_pareto_optimization.png', dpi=150, bbox_inches='tight')
+plt.savefig('docs/_static/communication_fitting.png', dpi=150, bbox_inches='tight')
 plt.show()
