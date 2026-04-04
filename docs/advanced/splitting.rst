@@ -308,7 +308,7 @@ below demonstrates one round of such refinement:
    # ── 2. Split using the data-driven criterion ───────────────────────────────
    criterion = max_error_criterion(params, values, grid_size=10)
    bs_A, bs_B = split_by_criterion(bs, criterion)
-   i, j, s = criterion(bs)  # retrieve the chosen (i, j, s) for reparametrisation
+   i, j, s = criterion(bs)  # retrieve the chosen (i, j, s) for reparametrization
 
    # ── 3. Reparametrize the data and re-fit each sub-simplex ─────────────────
    u_A, mask_A = reparametrize(params, i, j, s, subsimplex="A")
