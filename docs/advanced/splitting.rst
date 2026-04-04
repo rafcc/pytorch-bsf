@@ -234,7 +234,7 @@ forward passes through the model.
    ``longest_edge_criterion`` splits at the geometric midpoint of the longest
    value-space edge (:math:`s=0.5`), ignoring the data distribution.
    **Right** – ``max_error_criterion`` finds the edge and position that
-   minimise the combined MSE on the training data, here choosing a split
+   minimize the combined MSE on the training data, here choosing a split
    position closer to where the fitted curve deviates most from the data.
 
 .. figure:: ../_static/splitting_triangle_criteria.png
