@@ -94,11 +94,11 @@ where:
    # Split edge (0, 1) of a Bézier curve at the midpoint
    bs_A, bs_B = split(bs, i=0, j=1, s=0.5)
 
-   # Evaluate each sub-simplex on a fine grid
+   # Evaluate each sub-simplex on a fine grid in its local coordinates
    from torch_bsf.sampling import simplex_grid
-   t_fine = simplex_grid(n_params=2, degree=20).float()
-   pred_A = bs_A(t_fine)
-   pred_B = bs_B(t_fine)
+   u_fine = simplex_grid(n_params=2, degree=20).float()
+   pred_A = bs_A(u_fine)
+   pred_B = bs_B(u_fine)
 
 The ``s`` parameter controls where the new vertex is placed on the edge:
 
