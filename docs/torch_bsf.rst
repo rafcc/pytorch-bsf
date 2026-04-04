@@ -60,6 +60,14 @@ torch\_bsf.sklearn module
    :undoc-members:
    :show-inheritance:
 
+torch\_bsf.splitting module
+---------------------------
+
+.. automodule:: torch_bsf.splitting
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
 torch\_bsf.validator module
 ---------------------------
 
