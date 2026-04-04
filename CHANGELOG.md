@@ -1,5 +1,17 @@
 # Changelog
 
+## [0.18.0](https://github.com/opthub-org/pytorch-bsf/compare/v0.17.0...v0.18.0) (2026-04-04)
+
+
+### Features
+
+* Bézier simplex splitting via de Casteljau algorithm ([#324](https://github.com/opthub-org/pytorch-bsf/issues/324)) ([cdc5750](https://github.com/opthub-org/pytorch-bsf/commit/cdc5750675586cbab67cab0a8fa982deab9016a7))
+
+
+### Documentation
+
+* add Bézier simplex splitting guide ([#327](https://github.com/opthub-org/pytorch-bsf/issues/327)) ([e8177cf](https://github.com/opthub-org/pytorch-bsf/commit/e8177cff74b3f8c2329e1ecf8031e65d69cb85a8))
+
 ## [0.17.0](https://github.com/opthub-org/pytorch-bsf/compare/v0.16.1...v0.17.0) (2026-04-02)
 
 
