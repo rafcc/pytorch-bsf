@@ -36,8 +36,7 @@ for t in weights:
 # Prepare training data for Bézier simplex fitting
 w1 = np.array([p[0][0] for p in optimals])
 w2 = np.array([p[0][1] for p in optimals])
-w3 = np.zeros_like(w1)
-X = np.column_stack([w1, w2, w3])
+X = np.column_stack([w1, w2])
 y = np.column_stack([np.array([p[2] for p in optimals]), np.array([p[3] for p in optimals])])
 
 # Fit a degree-3 Bézier simplex to the Pareto front
@@ -48,8 +47,7 @@ regressor.fit(X, y)
 t_smooth = np.linspace(0.0, 1.0, 200)
 w1_smooth = 1.0 - t_smooth
 w2_smooth = t_smooth
-w3_smooth = np.zeros_like(t_smooth)
-X_smooth = np.column_stack([w1_smooth, w2_smooth, w3_smooth])
+X_smooth = np.column_stack([w1_smooth, w2_smooth])
 y_smooth = regressor.predict(X_smooth)
 
 # Compute approximation error on training points
