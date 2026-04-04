@@ -208,9 +208,9 @@
 <p><strong>How it works:</strong></p>
 <ol class="arabic simple">
 <li><p>A Bézier simplex maps a standard parameter simplex to a family of objective values.</p></li>
-<li><p>Splitting divides the parameter simplex into smaller sub-simplices (typically by cutting it along a plane through the center).</p></li>
-<li><p>Each sub-simplex inherits control points from the parent, ensuring continuity and smoothness across subdivisions.</p></li>
-<li><p>This creates a hierarchical decomposition, where different regions can be approximated with different levels of detail.</p></li>
+<li><p>Splitting subdivides the parameter simplex by choosing an edge and inserting a new vertex on that edge (by default at the midpoint, <code class="docutils literal notranslate"><span class="pre">s=0.5</span></code>), which forms smaller sub-simplices.</p></li>
+<li><p>Each resulting sub-simplex inherits control points from the parent in a way that preserves continuity and smoothness across the subdivision.</p></li>
+<li><p>Repeating this process creates a hierarchical decomposition, where different regions can be approximated with different levels of detail.</p></li>
 </ol>
 <p><strong>Why use splitting?</strong></p>
 <ul class="simple">
