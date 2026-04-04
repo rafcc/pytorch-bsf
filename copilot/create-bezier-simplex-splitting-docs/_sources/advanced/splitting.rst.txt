@@ -44,9 +44,9 @@ domain with vertices :math:`v_0, \ldots, v_{m-1}`, splitting along edge
 and produces two sub-simplices:
 
 * **bs_A** — replaces vertex :math:`j` with :math:`v_\mathrm{new}`.  It covers the
-  sub-domain :math:`\{t : t_j / (t_i + t_j) \le s\}`.
+  sub-domain :math:`\{t : t_j \le s\,(t_i + t_j)\}`.
 * **bs_B** — replaces vertex :math:`i` with :math:`v_\mathrm{new}`.  It covers the
-  sub-domain :math:`\{t : t_j / (t_i + t_j) \ge s\}`.
+  sub-domain :math:`\{t : t_j \ge s\,(t_i + t_j)\}`.
 
 Both sub-simplices have the **same degree and number of parameters** as the
 original and together reproduce it exactly: for any point :math:`t` in the
