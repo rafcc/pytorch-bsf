@@ -1,4 +1,6 @@
 import numpy as np
+import matplotlib
+matplotlib.use('Agg')
 import matplotlib.pyplot as plt
 from scipy.optimize import minimize
 from torch_bsf.sklearn import BezierSimplexRegressor
@@ -72,4 +74,3 @@ print(f'Max approximation error: {max_error:.4f}')
 
 plt.tight_layout()
 plt.savefig('docs/_static/communication_fitting.png', dpi=150, bbox_inches='tight')
-plt.show()
