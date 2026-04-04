@@ -343,6 +343,7 @@ midpoint.  The dashed line shows the split and the star marks
 signature <code class="docutils literal notranslate"><span class="pre">(bs:</span> <span class="pre">BezierSimplex)</span> <span class="pre">-&gt;</span> <span class="pre">tuple[int,</span> <span class="pre">int,</span> <span class="pre">float]</span></code>.  You can write
 your own criterion and pass it to <code class="xref py py-func docutils literal notranslate"><span class="pre">split_by_criterion()</span></code>:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">torch_bsf</span><span class="w"> </span><span class="kn">import</span> <span class="n">BezierSimplex</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">torch_bsf.splitting</span><span class="w"> </span><span class="kn">import</span> <span class="n">split_by_criterion</span>
 
 <span class="k">def</span><span class="w"> </span><span class="nf">my_criterion</span><span class="p">(</span><span class="n">bs</span><span class="p">:</span> <span class="n">BezierSimplex</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">tuple</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">int</span><span class="p">,</span> <span class="nb">float</span><span class="p">]:</span>
     <span class="c1"># Always split the first edge at the one-third point</span>

@@ -259,6 +259,7 @@ your own criterion and pass it to :func:`~torch_bsf.splitting.split_by_criterion
 .. code-block:: python
 
    from torch_bsf import BezierSimplex
+   from torch_bsf.splitting import split_by_criterion
 
    def my_criterion(bs: BezierSimplex) -> tuple[int, int, float]:
        # Always split the first edge at the one-third point
