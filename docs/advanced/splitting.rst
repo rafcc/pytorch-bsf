@@ -338,7 +338,7 @@ below demonstrates one round of such refinement:
 API Reference
 -------------
 
-See the following public `torch_bsf` entries in the `API Documentation <../modules.html>`_
+See the following public `torch_bsf.splitting` entries in the `API Documentation <../modules.html>`_
 for the full parameter reference:
 
 * :func:`torch_bsf.splitting.split`

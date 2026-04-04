@@ -109,17 +109,17 @@ The ``freeze`` argument allows you to hold specific control points constant duri
 *   **Incremental refinement:** Fit a low-degree model first, then use its control points as initialization for a higher-degree model, freezing the well-estimated parts to stabilize training.
 *   **Encoding prior knowledge:** If theoretical or physical constraints dictate the value at certain parameter combinations, you can pin those points to ensure the model respects them.
 
-What is Bezier simplex splitting (subdivision)?
+What is Bézier simplex splitting (subdivision)?
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Bezier simplex **splitting** (or **subdivision**) is a technique for refining a fitted Bézier simplex model by recursively dividing the parameter domain (the simplex) into smaller sub-simplices.
+Bézier simplex **splitting** (or **subdivision**) is a technique for refining a fitted Bézier simplex model by recursively dividing the parameter domain (the simplex) into smaller sub-simplices.
 
 **How it works:**
 
 1.  A Bézier simplex maps a standard parameter simplex to a family of objective values.
-2.  Splitting divides the parameter simplex into smaller sub-simplices (typically by cutting it along a plane through the center).
-3.  Each sub-simplex inherits control points from the parent, ensuring continuity and smoothness across subdivisions.
-4.  This creates a hierarchical decomposition, where different regions can be approximated with different levels of detail.
+2.  Splitting subdivides the parameter simplex by choosing an edge and inserting a new vertex on that edge (by default at the midpoint, ``s=0.5``), which forms smaller sub-simplices.
+3.  Each resulting sub-simplex inherits control points from the parent in a way that preserves continuity and smoothness across the subdivision.
+4.  Repeating this process creates a hierarchical decomposition, where different regions can be approximated with different levels of detail.
 
 **Why use splitting?**
 
