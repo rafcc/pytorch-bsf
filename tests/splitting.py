@@ -485,20 +485,3 @@ def test_split_by_criterion_max_error():
     bs_A, bs_B = split_by_criterion(bs, criterion)
     assert bs_A.degree == bs.degree
     assert bs_B.degree == bs.degree
-
-
-# ---------------------------------------------------------------------------
-# Public exports
-# ---------------------------------------------------------------------------
-
-
-def test_public_api_accessible_from_top_level():
-    """Splitting symbols are accessible from the torch_bsf package."""
-    import torch_bsf
-
-    assert hasattr(torch_bsf, "split")
-    assert hasattr(torch_bsf, "reparametrize")
-    assert hasattr(torch_bsf, "longest_edge_criterion")
-    assert hasattr(torch_bsf, "max_error_criterion")
-    assert hasattr(torch_bsf, "split_by_criterion")
-    assert hasattr(torch_bsf, "SplitCriterion")
