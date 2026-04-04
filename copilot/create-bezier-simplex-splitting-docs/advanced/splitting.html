@@ -157,6 +157,18 @@ sub-domain <span class="math notranslate nohighlight">\(\{t : t_j / (t_i + t_j) 
 original and together reproduce it exactly: for any point <span class="math notranslate nohighlight">\(t\)</span> in the
 original domain, evaluating the appropriate sub-simplex at its local
 coordinates gives the same value as evaluating the original.</p>
+<figure class="align-default" id="id1">
+<a class="reference internal image-reference" href="../_images/splitting_before_after.png"><img alt="../_images/splitting_before_after.png" src="../_images/splitting_before_after.png" style="width: 100%;" />
+</a>
+<figcaption>
+<p><span class="caption-number">Fig. 8 </span><span class="caption-text"><strong>Left</strong> – A degree-3 Bézier curve (n_params=2) with its four control
+points (circles) and control polygon (dashed).  <strong>Right</strong> – After splitting
+at <span class="math notranslate nohighlight">\(s=0.5\)</span>: sub-simplex <span class="math notranslate nohighlight">\(B_A\)</span> (red) covers the first half and
+sub-simplex <span class="math notranslate nohighlight">\(B_B\)</span> (green) covers the second half.  Diamond markers
+highlight the control points that are newly computed by the de Casteljau
+algorithm; the star marks the shared split point <span class="math notranslate nohighlight">\(v_\mathrm{new}\)</span>.</span><a class="headerlink" href="#id1" title="Link to this image"></a></p>
+</figcaption>
+</figure>
 <p>The control points of the two sub-simplices are computed using the <strong>de
 Casteljau algorithm</strong> applied along the chosen edge direction.  At each step
 <span class="math notranslate nohighlight">\(r = 1, \ldots, n\)</span>:</p>
@@ -178,7 +190,7 @@ the control points of <strong>bs_B</strong>.</p>
 where:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">torch_bsf.splitting</span><span class="w"> </span><span class="kn">import</span> <span class="n">split</span>
 
-<span class="c1"># Split edge (0, 1) of a Bézier triangle at the midpoint</span>
+<span class="c1"># Split edge (0, 1) of a Bézier curve at the midpoint</span>
 <span class="n">bs_A</span><span class="p">,</span> <span class="n">bs_B</span> <span class="o">=</span> <span class="n">split</span><span class="p">(</span><span class="n">bs</span><span class="p">,</span> <span class="n">i</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">j</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">s</span><span class="o">=</span><span class="mf">0.5</span><span class="p">)</span>
 
 <span class="c1"># Evaluate each sub-simplex on a fine grid</span>
@@ -236,14 +248,24 @@ triple.</p>
 <section id="longest-edge-criterion">
 <h3>Longest-Edge Criterion<a class="headerlink" href="#longest-edge-criterion" title="Link to this heading"></a></h3>
 <p><code class="xref py py-func docutils literal notranslate"><span class="pre">longest_edge_criterion()</span></code> selects the edge with the
-greatest distance in <strong>value space</strong> and always splits at the midpoint:</p>
+greatest distance in <strong>value space</strong> and splits at the given parameter <code class="docutils literal notranslate"><span class="pre">s</span></code>
+(default <code class="docutils literal notranslate"><span class="pre">s</span> <span class="pre">=</span> <span class="pre">0.5</span></code>, the midpoint).  When used directly as a
+<code class="xref py py-data docutils literal notranslate"><span class="pre">SplitCriterion</span></code> it applies the default midpoint
+split; to use a different <code class="docutils literal notranslate"><span class="pre">s</span></code> value, wrap it with
+<a class="reference external" href="https://docs.python.org/3/library/functools.html#functools.partial" title="(in Python v3.14)"><code class="xref py py-func docutils literal notranslate"><span class="pre">functools.partial()</span></code></a>:</p>
 <div class="math notranslate nohighlight">
 \[\ell_{ij} = \|B(e_i) - B(e_j)\|_2\]</div>
 <p>This criterion requires <strong>only the fitted model</strong> and is very fast.  It works
 well when the manifold is elongated along a single direction.</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">torch_bsf.splitting</span><span class="w"> </span><span class="kn">import</span> <span class="n">longest_edge_criterion</span><span class="p">,</span> <span class="n">split_by_criterion</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">functools</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">torch_bsf.splitting</span><span class="w"> </span><span class="kn">import</span> <span class="n">longest_edge_criterion</span><span class="p">,</span> <span class="n">split_by_criterion</span>
 
+<span class="c1"># Default: split the longest edge at its midpoint (s=0.5)</span>
 <span class="n">bs_A</span><span class="p">,</span> <span class="n">bs_B</span> <span class="o">=</span> <span class="n">split_by_criterion</span><span class="p">(</span><span class="n">bs</span><span class="p">,</span> <span class="n">longest_edge_criterion</span><span class="p">)</span>
+
+<span class="c1"># Custom split position: split the longest edge at the one-third mark</span>
+<span class="n">criterion_third</span> <span class="o">=</span> <span class="n">functools</span><span class="o">.</span><span class="n">partial</span><span class="p">(</span><span class="n">longest_edge_criterion</span><span class="p">,</span> <span class="n">s</span><span class="o">=</span><span class="mf">1.0</span> <span class="o">/</span> <span class="mf">3.0</span><span class="p">)</span>
+<span class="n">bs_A</span><span class="p">,</span> <span class="n">bs_B</span> <span class="o">=</span> <span class="n">split_by_criterion</span><span class="p">(</span><span class="n">bs</span><span class="p">,</span> <span class="n">criterion_third</span><span class="p">)</span>
 </pre></div>
 </div>
 <p>You can also call the criterion directly to inspect which edge it selects:</p>
@@ -274,6 +296,19 @@ computation.</p>
 <p>The <code class="docutils literal notranslate"><span class="pre">grid_size</span></code> parameter controls how many candidate <code class="docutils literal notranslate"><span class="pre">s</span></code> values are
 evaluated per edge.  Larger values give a finer search at the cost of more
 forward passes through the model.</p>
+<figure class="align-default" id="id2">
+<a class="reference internal image-reference" href="../_images/splitting_criteria.png"><img alt="../_images/splitting_criteria.png" src="../_images/splitting_criteria.png" style="width: 100%;" />
+</a>
+<figcaption>
+<p><span class="caption-number">Fig. 9 </span><span class="caption-text">Comparison of the two built-in split criteria on the same degree-2 Bézier
+curve (dotted) fitted to training data (grey dots).  <strong>Left</strong> –
+<code class="docutils literal notranslate"><span class="pre">longest_edge_criterion</span></code> splits at the geometric midpoint of the longest
+value-space edge (<span class="math notranslate nohighlight">\(s=0.5\)</span>), ignoring the data distribution.
+<strong>Right</strong> – <code class="docutils literal notranslate"><span class="pre">max_error_criterion</span></code> finds the edge and position that
+minimise the combined MSE on the training data, here choosing a split
+position closer to where the fitted curve deviates most from the data.</span><a class="headerlink" href="#id2" title="Link to this image"></a></p>
+</figcaption>
+</figure>
 </section>
 <section id="custom-criteria">
 <h3>Custom Criteria<a class="headerlink" href="#custom-criteria" title="Link to this heading"></a></h3>
