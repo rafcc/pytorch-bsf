@@ -1,4 +1,6 @@
 import numpy as np
+import matplotlib
+matplotlib.use('Agg')
 import matplotlib.pyplot as plt
 from scipy.optimize import minimize
 from torch_bsf.sklearn import BezierSimplexRegressor
@@ -86,4 +88,3 @@ ax.legend()
 
 plt.tight_layout()
 plt.savefig("docs/_static/communication_pareto_3obj.png", dpi=150, bbox_inches="tight")
-plt.show()

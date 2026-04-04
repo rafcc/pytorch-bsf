@@ -58,7 +58,7 @@ for w in w_list:
 X = np.array([p[0] for p in optimals])
 y = np.array([[p[2], p[3], p[4], p[5]] for p in optimals])
 
-# Fit a degree-3 Bézier simplex to the Pareto front
+# Fit a degree-2 Bézier simplex to the Pareto front
 regressor = BezierSimplexRegressor(degree=2, max_epochs=3)
 regressor.fit(X, y)
 
