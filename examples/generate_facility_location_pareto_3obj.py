@@ -97,3 +97,24 @@ try:
 except Exception as e:
     print(f"Plotting error: {e}")
 # plt.show()
+
+# Visualize the Pareto set (x locations)
+x_targets = np.array([p[1] for p in optimals])  # x_opt for each w
+regressor_x = BezierSimplexRegressor(degree=3)
+regressor_x.fit(X, x_targets)
+
+# Predict smooth x locations
+x_smooth = regressor_x.predict(weights_smooth)
+
+fig2, ax2 = plt.subplots(figsize=(8, 6))
+ax2.scatter(x_targets[:, 0], x_targets[:, 1], color="green", label="Pareto set locations (samples)", s=50)
+ax2.scatter(x_smooth[:, 0], x_smooth[:, 1], color="orange", alpha=0.15, s=10, label="Bézier simplex approximation")
+ax2.scatter([a1[0], a2[0], a3[0]], [a1[1], a2[1], a3[1]], color="red", marker="x", s=100, label="Demand centers")
+ax2.set_xlabel("x₁")
+ax2.set_ylabel("x₂")
+ax2.set_title("Pareto Set: Facility Locations with Bézier Approximation (3 Objectives)")
+ax2.legend()
+ax2.grid(alpha=0.3)
+plt.tight_layout()
+plt.savefig("docs/_static/facility_location_pareto_set_3obj.png", dpi=150, bbox_inches="tight")
+print("Pareto set plot saved.")
