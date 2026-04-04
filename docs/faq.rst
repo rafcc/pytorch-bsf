@@ -117,9 +117,9 @@ Bézier simplex **splitting** (or **subdivision**) is a technique for refining a
 **How it works:**
 
 1.  A Bézier simplex maps a standard parameter simplex to a family of objective values.
-2.  Splitting divides the parameter simplex into smaller sub-simplices (typically by cutting it along a plane through the center).
-3.  Each sub-simplex inherits control points from the parent, ensuring continuity and smoothness across subdivisions.
-4.  This creates a hierarchical decomposition, where different regions can be approximated with different levels of detail.
+2.  Splitting subdivides the parameter simplex by choosing an edge and inserting a new vertex on that edge (by default at the midpoint, ``s=0.5``), which forms smaller sub-simplices.
+3.  Each resulting sub-simplex inherits control points from the parent in a way that preserves continuity and smoothness across the subdivision.
+4.  Repeating this process creates a hierarchical decomposition, where different regions can be approximated with different levels of detail.
 
 **Why use splitting?**
 
