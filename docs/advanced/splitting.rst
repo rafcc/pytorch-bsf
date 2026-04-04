@@ -244,7 +244,7 @@ forward passes through the model.
    **triangle** (:math:`n_\mathrm{params}=3`) with training data (purple dots).
    **Left** – ``longest_edge_criterion`` selects the longest value-space edge
    and splits at :math:`s=0.5`.  **Right** – ``max_error_criterion`` selects
-   the edge and split position that minimise the combined MSE on the training
+   the edge and split position that minimize the combined MSE on the training
    data; the chosen edge and :math:`s` value may differ from the geometric
    midpoint.  The dashed line shows the split and the star marks
    :math:`v_\mathrm{new}` in both panels.
