@@ -53,6 +53,16 @@ original and together reproduce it exactly: for any point :math:`t` in the
 original domain, evaluating the appropriate sub-simplex at its local
 coordinates gives the same value as evaluating the original.
 
+.. figure:: ../_static/splitting_before_after.png
+   :width: 100%
+
+   **Left** – A degree-3 Bézier curve (n_params=2) with its four control
+   points (circles) and control polygon (dashed).  **Right** – After splitting
+   at :math:`s=0.5`: sub-simplex :math:`B_A` (red) covers the first half and
+   sub-simplex :math:`B_B` (green) covers the second half.  Diamond markers
+   highlight the control points that are newly computed by the de Casteljau
+   algorithm; the star marks the shared split point :math:`v_\mathrm{new}`.
+
 The control points of the two sub-simplices are computed using the **de
 Casteljau algorithm** applied along the chosen edge direction.  At each step
 :math:`r = 1, \ldots, n`:
@@ -81,7 +91,7 @@ where:
 
    from torch_bsf.splitting import split
 
-   # Split edge (0, 1) of a Bézier triangle at the midpoint
+   # Split edge (0, 1) of a Bézier curve at the midpoint
    bs_A, bs_B = split(bs, i=0, j=1, s=0.5)
 
    # Evaluate each sub-simplex on a fine grid
@@ -144,7 +154,11 @@ Longest-Edge Criterion
 ^^^^^^^^^^^^^^^^^^^^^^
 
 :func:`~torch_bsf.splitting.longest_edge_criterion` selects the edge with the
-greatest distance in **value space** and always splits at the midpoint:
+greatest distance in **value space** and splits at the given parameter ``s``
+(default ``s = 0.5``, the midpoint).  When used directly as a
+:data:`~torch_bsf.splitting.SplitCriterion` it applies the default midpoint
+split; to use a different ``s`` value, wrap it with
+:func:`functools.partial`:
 
 .. math::
 
@@ -155,9 +169,15 @@ well when the manifold is elongated along a single direction.
 
 .. code-block:: python
 
+   import functools
    from torch_bsf.splitting import longest_edge_criterion, split_by_criterion
 
+   # Default: split the longest edge at its midpoint (s=0.5)
    bs_A, bs_B = split_by_criterion(bs, longest_edge_criterion)
+
+   # Custom split position: split the longest edge at the one-third mark
+   criterion_third = functools.partial(longest_edge_criterion, s=1.0 / 3.0)
+   bs_A, bs_B = split_by_criterion(bs, criterion_third)
 
 You can also call the criterion directly to inspect which edge it selects:
 
@@ -194,6 +214,17 @@ computation.
 The ``grid_size`` parameter controls how many candidate ``s`` values are
 evaluated per edge.  Larger values give a finer search at the cost of more
 forward passes through the model.
+
+.. figure:: ../_static/splitting_criteria.png
+   :width: 100%
+
+   Comparison of the two built-in split criteria on the same degree-2 Bézier
+   curve (dotted) fitted to training data (grey dots).  **Left** –
+   ``longest_edge_criterion`` splits at the geometric midpoint of the longest
+   value-space edge (:math:`s=0.5`), ignoring the data distribution.
+   **Right** – ``max_error_criterion`` finds the edge and position that
+   minimise the combined MSE on the training data, here choosing a split
+   position closer to where the fitted curve deviates most from the data.
 
 Custom Criteria
 ^^^^^^^^^^^^^^^
