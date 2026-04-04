@@ -112,46 +112,64 @@
 <p>To demonstrate the scalability of Bézier simplex fitting across different numbers of objectives, we generate Pareto front samples for two, three, and four objectives by solving weighted sums of convex squared-distance objectives.</p>
 <p><strong>Two Objectives:</strong>
 We consider two demand centers at <span class="math notranslate nohighlight">\(a_1=(0,0)\)</span> and <span class="math notranslate nohighlight">\(a_2=(1,1)\)</span>, with objectives <span class="math notranslate nohighlight">\(f_1(x) = \lVert x - a_1\rVert^2\)</span> and <span class="math notranslate nohighlight">\(f_2(x) = \lVert x - a_2\rVert^2\)</span>. The weighted objective <span class="math notranslate nohighlight">\(f(x, w) = w_1 f_1(x) + w_2 f_2(x)\)</span> is strongly convex. We sample 10 weights and fit a degree-3 Bézier simplex.</p>
-<figure class="align-center" id="id4">
-<img alt="Bézier simplex fitting to two-objective facility location Pareto front" src="../_images/facility_location_pareto_2obj.png" />
-<figcaption>
-<p><span class="caption-number">Fig. 25 </span><span class="caption-text">Two-objective facility location Pareto front approximation.</span><a class="headerlink" href="#id4" title="Link to this image"></a></p>
-</figcaption>
-</figure>
-<figure class="align-center" id="id5">
-<img alt="Pareto set for two-objective facility location" src="../_images/facility_location_pareto_set_2obj.png" />
-<figcaption>
-<p><span class="caption-number">Fig. 26 </span><span class="caption-text">Pareto set: optimal facility locations in decision space for two objectives.</span><a class="headerlink" href="#id5" title="Link to this image"></a></p>
-</figcaption>
-</figure>
+<table class="docutils align-center">
+<colgroup>
+<col style="width: 50.0%" />
+<col style="width: 50.0%" />
+</colgroup>
+<tbody>
+<tr class="row-odd"><td><a class="reference internal image-reference" href="../_images/facility_location_pareto_set_2obj.png"><img alt="Pareto set for two-objective facility location" src="../_images/facility_location_pareto_set_2obj.png" style="width: 100%;" />
+</a>
+</td>
+<td><a class="reference internal image-reference" href="../_images/facility_location_pareto_2obj.png"><img alt="Bézier simplex fitting to two-objective facility location Pareto front" src="../_images/facility_location_pareto_2obj.png" style="width: 100%;" />
+</a>
+</td>
+</tr>
+<tr class="row-even"><td><p>Pareto set (2-obj).</p></td>
+<td><p>Pareto front (2-obj).</p></td>
+</tr>
+</tbody>
+</table>
 <p><strong>Three Objectives:</strong>
 We add a third demand center at <span class="math notranslate nohighlight">\(a_3=(0.5,1)\)</span>, with <span class="math notranslate nohighlight">\(f_3(x) = \lVert x - a_3\rVert^2\)</span>. The weighted objective becomes <span class="math notranslate nohighlight">\(f(x, w) = w_1 f_1(x) + w_2 f_2(x) + w_3 f_3(x)\)</span>. We sample 10 weight vectors on the 3-simplex and fit a degree-3 Bézier simplex.</p>
-<figure class="align-center" id="id6">
-<img alt="Bézier simplex fitting to three-objective facility location Pareto front" src="../_images/facility_location_pareto_3obj.png" />
-<figcaption>
-<p><span class="caption-number">Fig. 27 </span><span class="caption-text">Three-objective facility location Pareto front approximation.</span><a class="headerlink" href="#id6" title="Link to this image"></a></p>
-</figcaption>
-</figure>
-<figure class="align-center" id="id7">
-<img alt="Pareto set for three-objective facility location" src="../_images/facility_location_pareto_set_3obj.png" />
-<figcaption>
-<p><span class="caption-number">Fig. 28 </span><span class="caption-text">Pareto set: optimal facility locations in decision space for three objectives.</span><a class="headerlink" href="#id7" title="Link to this image"></a></p>
-</figcaption>
-</figure>
+<table class="docutils align-center">
+<colgroup>
+<col style="width: 50.0%" />
+<col style="width: 50.0%" />
+</colgroup>
+<tbody>
+<tr class="row-odd"><td><a class="reference internal image-reference" href="../_images/facility_location_pareto_set_3obj.png"><img alt="Pareto set for three-objective facility location" src="../_images/facility_location_pareto_set_3obj.png" style="width: 100%;" />
+</a>
+</td>
+<td><a class="reference internal image-reference" href="../_images/facility_location_pareto_3obj.png"><img alt="Bézier simplex fitting to three-objective facility location Pareto front" src="../_images/facility_location_pareto_3obj.png" style="width: 100%;" />
+</a>
+</td>
+</tr>
+<tr class="row-even"><td><p>Pareto set (3-obj).</p></td>
+<td><p>Pareto front (3-obj).</p></td>
+</tr>
+</tbody>
+</table>
 <p><strong>Four Objectives:</strong>
 We add a fourth demand center at <span class="math notranslate nohighlight">\(a_4=(1,1)\)</span>, with <span class="math notranslate nohighlight">\(f_4(x) = \lVert x - a_4\rVert^2\)</span>. The weighted objective is <span class="math notranslate nohighlight">\(f(x, w) = w_1 f_1(x) + w_2 f_2(x) + w_3 f_3(x) + w_4 f_4(x)\)</span>. We sample 10 weight vectors on the 4-simplex and fit a degree-3 Bézier simplex. For visualization, we project to 3D by plotting <span class="math notranslate nohighlight">\(f_1, f_2, f_3\)</span>.</p>
-<figure class="align-center" id="id8">
-<img alt="Bézier simplex fitting to four-objective facility location Pareto front (projected)" src="../_images/facility_location_pareto_4obj.png" />
-<figcaption>
-<p><span class="caption-number">Fig. 29 </span><span class="caption-text">Four-objective facility location Pareto front approximation (projected to 3D).</span><a class="headerlink" href="#id8" title="Link to this image"></a></p>
-</figcaption>
-</figure>
-<figure class="align-center" id="id9">
-<img alt="Pareto set for four-objective facility location" src="../_images/facility_location_pareto_set_4obj.png" />
-<figcaption>
-<p><span class="caption-number">Fig. 30 </span><span class="caption-text">Pareto set: optimal facility locations in decision space for four objectives.</span><a class="headerlink" href="#id9" title="Link to this image"></a></p>
-</figcaption>
-</figure>
+<table class="docutils align-center">
+<colgroup>
+<col style="width: 50.0%" />
+<col style="width: 50.0%" />
+</colgroup>
+<tbody>
+<tr class="row-odd"><td><a class="reference internal image-reference" href="../_images/facility_location_pareto_set_4obj.png"><img alt="Pareto set for four-objective facility location" src="../_images/facility_location_pareto_set_4obj.png" style="width: 100%;" />
+</a>
+</td>
+<td><a class="reference internal image-reference" href="../_images/facility_location_pareto_4obj.png"><img alt="Bézier simplex fitting to four-objective facility location Pareto front (projected)" src="../_images/facility_location_pareto_4obj.png" style="width: 100%;" />
+</a>
+</td>
+</tr>
+<tr class="row-even"><td><p>Pareto set (4-obj).</p></td>
+<td><p>Pareto front (4-obj).</p></td>
+</tr>
+</tbody>
+</table>
 <p>These examples confirm that Bézier simplex fitting accurately approximates multi-objective facility location trade-offs from actual optimization, scaling effectively to higher dimensions. The complete code for the two-, three-, and four-objective experiments is available in <code class="file docutils literal notranslate"><span class="pre">examples/generate_facility_location_pareto_2obj.py</span></code>, <code class="file docutils literal notranslate"><span class="pre">examples/generate_facility_location_pareto_3obj.py</span></code>, and <code class="file docutils literal notranslate"><span class="pre">examples/generate_facility_location_pareto_4obj.py</span></code>, respectively.</p>
 </section>
 </section>
