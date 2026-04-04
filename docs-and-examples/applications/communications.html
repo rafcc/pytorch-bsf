@@ -57,6 +57,7 @@
 <li class="toctree-l2"><a class="reference internal" href="model_predictive_control.html">Multi-Objective Model Predictive Control</a></li>
 <li class="toctree-l2 current"><a class="current reference internal" href="#">Communication Systems and Routing</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="#numerical-experiments">Numerical Experiments</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#three-objective-extension">Three-Objective Extension</a></li>
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="supply_chain.html">Supply Chain and Logistics Optimization</a></li>
@@ -128,7 +129,24 @@ We define a simplified routing optimization problem with two objectives:
 </figcaption>
 </figure>
 <p>This experiment shows that Bézier simplex fitting can accurately approximate Pareto fronts derived from actual optimization, enabling real-time trade-off evaluation in communication network routing.</p>
-<p>The complete code for this numerical experiment is available in <code class="file docutils literal notranslate"><span class="pre">examples/generate_communication_fitting.py</span></code>.</p>
+</section>
+<section id="three-objective-extension">
+<h2>Three-Objective Extension<a class="headerlink" href="#three-objective-extension" title="Link to this heading"></a></h2>
+<p>To demonstrate multi-objective scalability, we also consider a three-objective routing problem:</p>
+<ul class="simple">
+<li><p><span class="math notranslate nohighlight">\(f_1(x) = x_1^2 + x_2^2\)</span></p></li>
+<li><p><span class="math notranslate nohighlight">\(f_2(x) = (x_1 - 0.5)^2 + (x_2 - 0.5)^2\)</span></p></li>
+<li><p><span class="math notranslate nohighlight">\(f_3(x) = 0.8\left((x_1 - 1.0)^2 + (x_2 - 0.2)^2\right)\)</span></p></li>
+</ul>
+<p>The weighted objective <span class="math notranslate nohighlight">\(f(x, w) = w_1 f_1(x) + w_2 f_2(x) + w_3 f_3(x)\)</span> is strongly convex. We sampled 10 weight vectors on the 3-simplex, solved each weighted optimization with L-BFGS, and fitted a degree-3 Bézier simplex to the resulting objective triples.</p>
+<figure class="align-center" id="id2">
+<img alt="Bézier simplex fitting to three-objective Pareto front" src="applications/_static/communication_pareto_3obj.png" />
+<figcaption>
+<p><span class="caption-number">Fig. 24 </span><span class="caption-text">Three-objective Pareto front approximation. Blue points are optimization-derived objective triples, and the red surface shows the Bézier simplex approximation.</span><a class="headerlink" href="#id2" title="Link to this image"></a></p>
+</figcaption>
+</figure>
+<p>The fit achieves nearly zero training error on the sampled Pareto points, demonstrating that Bézier simplex fitting can accurately approximate three-objective trade-offs from actual optimization.</p>
+<p>The complete code for the two-objective and three-objective experiments is available in <code class="file docutils literal notranslate"><span class="pre">examples/generate_communication_fitting.py</span></code> and <code class="file docutils literal notranslate"><span class="pre">examples/generate_communication_pareto_3obj.py</span></code>, respectively.</p>
 </section>
 </section>
 
