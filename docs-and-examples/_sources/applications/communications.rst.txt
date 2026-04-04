@@ -62,4 +62,4 @@ The weighted objective :math:`f(x, w) = w_1 f_1(x) + w_2 f_2(x) + w_3 f_3(x)` is
 
 The fit achieves nearly zero training error on the sampled Pareto points, demonstrating that Bézier simplex fitting can accurately approximate three-objective trade-offs from actual optimization.
 
-The complete code for the two-objective and three-objective experiments is available in :file:`examples/generate_communication_fitting.py` and :file:`examples/generate_communication_pareto_3obj.py`, respectively.
+The complete code for the two-objective and three-objective experiments is available in :file:`examples/generate_communication_pareto.py` and :file:`examples/generate_communication_pareto_3obj.py`, respectively.
