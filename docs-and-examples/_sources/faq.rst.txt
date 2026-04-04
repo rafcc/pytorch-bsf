@@ -109,10 +109,10 @@ The ``freeze`` argument allows you to hold specific control points constant duri
 *   **Incremental refinement:** Fit a low-degree model first, then use its control points as initialization for a higher-degree model, freezing the well-estimated parts to stabilize training.
 *   **Encoding prior knowledge:** If theoretical or physical constraints dictate the value at certain parameter combinations, you can pin those points to ensure the model respects them.
 
-What is Bezier simplex splitting (subdivision)?
+What is Bézier simplex splitting (subdivision)?
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Bezier simplex **splitting** (or **subdivision**) is a technique for refining a fitted Bézier simplex model by recursively dividing the parameter domain (the simplex) into smaller sub-simplices.
+Bézier simplex **splitting** (or **subdivision**) is a technique for refining a fitted Bézier simplex model by recursively dividing the parameter domain (the simplex) into smaller sub-simplices.
 
 **How it works:**
 
