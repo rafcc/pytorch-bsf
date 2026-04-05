@@ -45,6 +45,7 @@ We demonstrate Bézier simplex fitting on a two-task federated learning problem 
 .. list-table::
    :widths: 50 50
    :align: center
+   :class: longtable
 
    * - .. image:: ../_static/federated_learning_pareto_set.png
          :alt: Pareto set for two-task federated learning (model parameter space)
