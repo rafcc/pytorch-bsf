@@ -39,7 +39,7 @@ where :math:`x = (x_1, x_2)` represents routing allocations. The weighted object
    :alt: Bézier simplex fitting to optimization-derived Pareto front
    :align: center
 
-   Comparison of optimization-derived Pareto front points (blue dots) and Bézier simplex approximation (red curve). The maximum approximation error is 0.0022, demonstrating high accuracy.
+   Comparison of optimization-derived Pareto front points (blue dots) and Bézier simplex approximation (red curve). The fitted curve closely matches the optimization-derived Pareto front, demonstrating high accuracy.
 
 This experiment shows that Bézier simplex fitting can accurately approximate Pareto fronts derived from actual optimization, enabling real-time trade-off evaluation in communication network routing.
 
