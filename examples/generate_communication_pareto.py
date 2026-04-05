@@ -68,9 +68,10 @@ ax.set_title('Pareto Front: Optimization vs Bézier Simplex Fitting')
 ax.legend()
 ax.grid(True, alpha=0.3)
 
-# Calculate approximation error
-errors = np.sqrt((y_smooth[:, 0] - np.interp(t_smooth, weights, f1_targets))**2 +
-                 (y_smooth[:, 1] - np.interp(t_smooth, weights, f2_targets))**2)
+# Calculate approximation error on the training points
+y_pred = regressor.predict(X)
+errors = np.sqrt((y_pred[:, 0] - y[:, 0])**2 +
+                 (y_pred[:, 1] - y[:, 1])**2)
 max_error = np.max(errors)
 print(f'Max approximation error: {max_error:.4f}')
 
