@@ -57,7 +57,10 @@
 <li class="toctree-l2"><a class="reference internal" href="model_predictive_control.html">Multi-Objective Model Predictive Control</a></li>
 <li class="toctree-l2"><a class="reference internal" href="communications.html">Communication Systems and Routing</a></li>
 <li class="toctree-l2"><a class="reference internal" href="supply_chain.html">Supply Chain and Logistics Optimization</a></li>
-<li class="toctree-l2 current"><a class="current reference internal" href="#">Medical Imaging and Radiation Therapy</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">Medical Imaging and Radiation Therapy</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#numerical-experiments">Numerical Experiments</a></li>
+</ul>
+</li>
 <li class="toctree-l2"><a class="reference internal" href="facility_location.html">Facility Location and Continuous Approximations</a></li>
 </ul>
 </li>
@@ -107,6 +110,36 @@ f_2(x) &amp;= \|Lx\|_2^2     \quad \text{(Regularization)}\end{split}\]</div>
 <p>where the first component penalizes dose errors via beamlet fluence <span class="math notranslate nohighlight">\(f\)</span>, and the second component applies spatial smoothing.</p>
 <p>In both clinical environments, strong convexity critically anchors the computation. For CT reconstructions, the explicit <span class="math notranslate nohighlight">\(L_2\)</span> regularizations (via the parameter <span class="math notranslate nohighlight">\(\lambda^2 \|Lx\|^2_2\)</span>) stabilize singular projection matrices, resulting in a definitively positive-definite system matrix <span class="math notranslate nohighlight">\(\nabla^2 f \succeq \lambda I\)</span>. Correspondingly, in IMRT, smoothing parameters (like <span class="math notranslate nohighlight">\(\kappa\)</span>) combined with dense beamlet mappings force the objective Hessian <span class="math notranslate nohighlight">\(2(H^T \tilde{\eta} H + \kappa M^T M)\)</span> to remain strictly positive definite.</p>
 <p>In traditional practices, resolving the exact trade-offs requires hours of discrete algorithmic recalculations, delaying urgent therapies. However, by substituting the Pareto front mapping with a Bézier simplex, radiation oncologists and radiologists are granted an interactive, fully continuous digital slider. They can instantaneously sweep through the entire geometric space—trading off tumor destruction versus organ preservation precisely—in real-time without recalculating a single QP iteration.</p>
+<section id="numerical-experiments">
+<h2>Numerical Experiments<a class="headerlink" href="#numerical-experiments" title="Link to this heading"></a></h2>
+<p>We illustrate Bézier simplex fitting on a small CT reconstruction problem, tracing the L-curve between data fidelity and spatial smoothness.</p>
+<p><strong>Problem Setup:</strong></p>
+<ul class="simple">
+<li><p>Image: <span class="math notranslate nohighlight">\(x \in \mathbb{R}^8\)</span> (piecewise-constant signal <span class="math notranslate nohighlight">\(x^* = [0,1,1,2,2,1,1,0]\)</span>)</p></li>
+<li><p>Forward operator: <span class="math notranslate nohighlight">\(K \in \mathbb{R}^{6 \times 8}\)</span> (random projection, seed 42)</p></li>
+<li><p>Finite-difference operator: <span class="math notranslate nohighlight">\(L \in \mathbb{R}^{7 \times 8}\)</span></p></li>
+<li><p>Noisy measurement: <span class="math notranslate nohighlight">\(y = Kx^* + \epsilon\)</span> (<span class="math notranslate nohighlight">\(\epsilon \sim \mathcal{N}(0, 0.05^2)\)</span>)</p></li>
+<li><p>Regularized objectives:</p></li>
+</ul>
+<div class="math notranslate nohighlight">
+\[\begin{split}f_1(x) &amp;= \|Kx - y\|^2 + 0.01\|x\|^2 \quad \text{(fidelity)} \\
+f_2(x) &amp;= \|Lx\|^2 + 0.01\|x\|^2 \quad \text{(smoothness)}\end{split}\]</div>
+<p><strong>Experiment Procedure:</strong></p>
+<ol class="arabic simple">
+<li><p>Sample 10 weight vectors <span class="math notranslate nohighlight">\(w = (w_1, w_2)\)</span> on the 1-simplex from <span class="math notranslate nohighlight">\((1,0)\)</span> to <span class="math notranslate nohighlight">\((0,1)\)</span>.</p></li>
+<li><p>For each <span class="math notranslate nohighlight">\(w\)</span>, solve <span class="math notranslate nohighlight">\(x^*(w) = \arg\min_x [w_1 f_1(x) + w_2 f_2(x)]\)</span> using L-BFGS-B.</p></li>
+<li><p>Collect the Pareto front points <span class="math notranslate nohighlight">\((f_1(x^*(w)), f_2(x^*(w)))\)</span>.</p></li>
+<li><p>Fit a degree-3 Bézier simplex to the weight–objective pairs.</p></li>
+<li><p>Visualize the fitted Bézier curve against the L-curve sampled by optimization.</p></li>
+</ol>
+<figure class="align-center" id="id3">
+<img alt="Bézier simplex fitting to CT reconstruction L-curve" src="../_images/medical_imaging_pareto.png" />
+<figcaption>
+<p><span class="caption-number">Fig. 30 </span><span class="caption-text">Optimization-derived L-curve (blue dots) and fitted Bézier simplex (red curve) for the CT reconstruction problem. Clinicians can use the fitted curve to interactively select the fidelity–smoothness trade-off without re-running the solver.</span><a class="headerlink" href="#id3" title="Link to this image"></a></p>
+</figcaption>
+</figure>
+<p>The complete example script is available at <code class="file docutils literal notranslate"><span class="pre">examples/generate_medical_imaging_pareto.py</span></code>.</p>
+</section>
 </section>
 
 

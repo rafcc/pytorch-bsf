@@ -52,7 +52,10 @@
 <li class="toctree-l1 current"><a class="reference internal" href="../applications.html">Applications</a><ul class="current">
 <li class="toctree-l2"><a class="reference internal" href="elastic_net.html">Elastic Net Model Selection</a></li>
 <li class="toctree-l2"><a class="reference internal" href="portfolio.html">Robust Portfolio Management</a></li>
-<li class="toctree-l2 current"><a class="current reference internal" href="#">Distributed Smart Grids and Energy Operations</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">Distributed Smart Grids and Energy Operations</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#numerical-experiments">Numerical Experiments</a></li>
+</ul>
+</li>
 <li class="toctree-l2"><a class="reference internal" href="federated_learning.html">Multi-Task and Federated Learning</a></li>
 <li class="toctree-l2"><a class="reference internal" href="model_predictive_control.html">Multi-Objective Model Predictive Control</a></li>
 <li class="toctree-l2"><a class="reference internal" href="communications.html">Communication Systems and Routing</a></li>
@@ -106,6 +109,37 @@
 <p>From a mathematical perspective, modifying the power allocations to maximize the utility <span class="math notranslate nohighlight">\(u_l\)</span> is mathematically identical to minimizing the positive-definite squared deviation between allocated and requested charge. Because the error metrics natively employ bounded quadratic structures (with the positive coefficient <span class="math notranslate nohighlight">\(a_i &gt; 0\)</span>), the resulting system cost matrix is structurally strongly convex across the sub-groups.</p>
 <p>These strongly convex definitions enable massive decentralized networking algorithms—like accelerated Alternating Direction Method of Multipliers (ADMM)—to secure linear convergence uniformly across geographically vast nodes.</p>
 <p>Additionally, as weather profiles and market electricity pricing constantly fluctuate, network operators must instantaneously reroute their balance policies. Equipping a distributed smart grid operator with a pre-computed Bézier simplex mapping allows the grid to frictionlessly evaluate these high-dimensional, competitive variables in real-time, executing continuous equilibrium adjustments across millions of endpoints securely.</p>
+<section id="numerical-experiments">
+<h2>Numerical Experiments<a class="headerlink" href="#numerical-experiments" title="Link to this heading"></a></h2>
+<p>We illustrate Bézier simplex fitting on a two-generator optimal power flow problem balancing generation cost against emissions.</p>
+<p><strong>Problem Setup:</strong></p>
+<ul class="simple">
+<li><p>Power outputs: <span class="math notranslate nohighlight">\(P = [P_1, P_2] \in \mathbb{R}^2\)</span></p></li>
+<li><p>Generation cost (strongly convex):</p></li>
+</ul>
+<div class="math notranslate nohighlight">
+\[f_1(P) = 0.5 P_1^2 + 0.3 P_2^2 + 0.05(P_1 + P_2)^2\]</div>
+<ul class="simple">
+<li><p>Emissions (strongly convex):</p></li>
+</ul>
+<div class="math notranslate nohighlight">
+\[f_2(P) = 0.2 P_1^2 + 0.6 P_2^2 + 0.05(P_1 + P_2)^2\]</div>
+<p><strong>Experiment Procedure:</strong></p>
+<ol class="arabic simple">
+<li><p>Sample 10 weight vectors <span class="math notranslate nohighlight">\(w = (w_1, w_2)\)</span> on the 1-simplex from <span class="math notranslate nohighlight">\((1,0)\)</span> to <span class="math notranslate nohighlight">\((0,1)\)</span>.</p></li>
+<li><p>For each <span class="math notranslate nohighlight">\(w\)</span>, solve <span class="math notranslate nohighlight">\(P^*(w) = \arg\min_P [w_1 f_1(P) + w_2 f_2(P)]\)</span> using L-BFGS-B.</p></li>
+<li><p>Collect the Pareto front points <span class="math notranslate nohighlight">\((f_1(P^*(w)), f_2(P^*(w)))\)</span>.</p></li>
+<li><p>Fit a degree-3 Bézier simplex to the weight–objective pairs.</p></li>
+<li><p>Visualize the fitted Bézier curve against the optimization-derived Pareto front.</p></li>
+</ol>
+<figure class="align-center" id="id2">
+<img alt="Bézier simplex fitting to smart grid Pareto front" src="../_images/smart_grids_pareto.png" />
+<figcaption>
+<p><span class="caption-number">Fig. 24 </span><span class="caption-text">Optimization-derived Pareto front (blue dots) and fitted Bézier simplex (red curve) for the two-generator cost–emissions trade-off. Grid operators can navigate the fitted curve in real-time to balance economic and environmental objectives without re-running the power flow solver.</span><a class="headerlink" href="#id2" title="Link to this image"></a></p>
+</figcaption>
+</figure>
+<p>The complete example script is available at <code class="file docutils literal notranslate"><span class="pre">examples/generate_smart_grids_pareto.py</span></code>.</p>
+</section>
 </section>
 
 

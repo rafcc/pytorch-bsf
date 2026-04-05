@@ -54,7 +54,10 @@
 <li class="toctree-l2"><a class="reference internal" href="portfolio.html">Robust Portfolio Management</a></li>
 <li class="toctree-l2"><a class="reference internal" href="smart_grids.html">Distributed Smart Grids and Energy Operations</a></li>
 <li class="toctree-l2"><a class="reference internal" href="federated_learning.html">Multi-Task and Federated Learning</a></li>
-<li class="toctree-l2 current"><a class="current reference internal" href="#">Multi-Objective Model Predictive Control</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">Multi-Objective Model Predictive Control</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#numerical-experiments">Numerical Experiments</a></li>
+</ul>
+</li>
 <li class="toctree-l2"><a class="reference internal" href="communications.html">Communication Systems and Routing</a></li>
 <li class="toctree-l2"><a class="reference internal" href="supply_chain.html">Supply Chain and Logistics Optimization</a></li>
 <li class="toctree-l2"><a class="reference internal" href="medical_imaging.html">Medical Imaging and Radiation Therapy</a></li>
@@ -105,6 +108,34 @@ f_{energy}(U) &amp;= \sum_{k=0}^{H-1} \|u_k\|_S^2\end{split}\]</div>
 <p>where <span class="math notranslate nohighlight">\(y_k\)</span> denotes system states/outputs, <span class="math notranslate nohighlight">\(r_k\)</span> the target setpoints, <span class="math notranslate nohighlight">\(u_k\)</span> the operational inputs, and <span class="math notranslate nohighlight">\(\Delta u_k\)</span> the input change rates.</p>
 <p>Crucially, as long as the weighting matrices (e.g., <span class="math notranslate nohighlight">\(R\)</span>) acting on the independent control inputs are uniformly positive definite (<span class="math notranslate nohighlight">\(R \succ 0\)</span>), the resulting multi-objective performance stage cost is strongly convex with respect to the continuous input decisions <span class="math notranslate nohighlight">\(U\)</span>. Even in complex scenarios where discrete mode switching (like robot friction statuses) transforms the formulation into a Mixed-Integer Quadratic Program (MIQP), the continuous sub-component remains undeniably strongly convex, stabilizing bounded-node optimization searches.</p>
 <p>In practice, resolving these multi-objective QP or MIQP problems during an active millisecond control loop requires prohibitive amounts of computational power. Since the strong convexity naturally spans a continuous simplicial Pareto front, controllers equipped with a Bézier simplex representation can bypass the online QP solver entirely. The polynomial evaluation provides an analytic, instantaneous multi-objective control response, enabling ultra-fast, high-frequency continuous re-optimization in highly unstable physical environments.</p>
+<section id="numerical-experiments">
+<h2>Numerical Experiments<a class="headerlink" href="#numerical-experiments" title="Link to this heading"></a></h2>
+<p>We demonstrate Bézier simplex fitting on a simple two-objective MPC problem over a horizon of <span class="math notranslate nohighlight">\(H = 5\)</span> steps.</p>
+<p><strong>Problem Setup:</strong></p>
+<ul class="simple">
+<li><p>1D system: <span class="math notranslate nohighlight">\(x(k+1) = x(k) + u(k)\)</span>, initial state <span class="math notranslate nohighlight">\(x(0) = 0\)</span>, target <span class="math notranslate nohighlight">\(r = 1\)</span></p></li>
+<li><p>Control sequence: <span class="math notranslate nohighlight">\(U = [u_0, u_1, u_2, u_3, u_4] \in \mathbb{R}^5\)</span></p></li>
+<li><p>Competing objectives:</p></li>
+</ul>
+<div class="math notranslate nohighlight">
+\[\begin{split}f_1(U) &amp;= \sum_{k=0}^{4} (x(k+1) - r)^2 \quad \text{(tracking error)} \\
+f_2(U) &amp;= \sum_{k=0}^{3} (u_{k+1} - u_k)^2 \quad \text{(control smoothness)}\end{split}\]</div>
+<p><strong>Experiment Procedure:</strong></p>
+<ol class="arabic simple">
+<li><p>Sample 10 weight vectors <span class="math notranslate nohighlight">\(w = (w_1, w_2)\)</span> on the 1-simplex from <span class="math notranslate nohighlight">\((1,0)\)</span> to <span class="math notranslate nohighlight">\((0,1)\)</span>.</p></li>
+<li><p>For each <span class="math notranslate nohighlight">\(w\)</span>, solve <span class="math notranslate nohighlight">\(U^*(w) = \arg\min_U [w_1 f_1(U) + w_2 f_2(U)]\)</span> using L-BFGS-B.</p></li>
+<li><p>Collect the Pareto front points <span class="math notranslate nohighlight">\((f_1(U^*(w)), f_2(U^*(w)))\)</span>.</p></li>
+<li><p>Fit a degree-3 Bézier simplex to the weight–objective pairs.</p></li>
+<li><p>Visualize the fitted Bézier curve against the optimization-derived Pareto front.</p></li>
+</ol>
+<figure class="align-center" id="id1">
+<img alt="Bézier simplex fitting to MPC Pareto front" src="../_images/mpc_pareto.png" />
+<figcaption>
+<p><span class="caption-number">Fig. 26 </span><span class="caption-text">Optimization-derived Pareto front (blue dots) and fitted Bézier simplex (red curve) for the two-objective MPC problem. Online controllers can evaluate the polynomial map in microseconds to select the tracking–smoothness trade-off without re-solving the QP.</span><a class="headerlink" href="#id1" title="Link to this image"></a></p>
+</figcaption>
+</figure>
+<p>The complete example script is available at <code class="file docutils literal notranslate"><span class="pre">examples/generate_mpc_pareto.py</span></code>.</p>
+</section>
 </section>
 
 
