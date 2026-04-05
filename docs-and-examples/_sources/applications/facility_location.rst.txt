@@ -37,7 +37,7 @@ We consider two demand centers at :math:`a_1=(0,0)` and :math:`a_2=(1,1)`, with 
      - Pareto front (2-obj).
 
 **Three Objectives:**
-We add a third demand center at :math:`a_3=(0.5,1)`, with :math:`f_3(x) = \lVert x - a_3\rVert^2`. The weighted objective becomes :math:`f(x, w) = w_1 f_1(x) + w_2 f_2(x) + w_3 f_3(x)`. We sample 10 weight vectors on the 3-simplex and fit a degree-3 Bézier simplex.
+We consider three demand centers at :math:`a_1=(0,0)`, :math:`a_2=(1,0)`, and :math:`a_3=(0.5,1)`, with :math:`f_k(x) = \lVert x - a_k\rVert^2` for each :math:`k`. The weighted objective is :math:`f(x, w) = w_1 f_1(x) + w_2 f_2(x) + w_3 f_3(x)`. We sample 10 weight vectors on the 3-simplex and fit a degree-3 Bézier simplex.
 
 .. list-table::
    :widths: 50 50
