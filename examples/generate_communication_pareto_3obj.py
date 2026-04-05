@@ -44,14 +44,14 @@ w_list = np.array(
 )
 
 # Solve the convex weighted optimization problem for each weight
-optimal_values = []
+optimals = []
 for w in w_list:
     x0 = np.array([0.5, 0.5])
     result = minimize(lambda x: f(x, w), x0, method="L-BFGS-B")
     x_opt = result.x
-    optimal_values.append([f1(x_opt), f2(x_opt), f3(x_opt)])
+    optimals.append((w, x_opt, f1(x_opt), f2(x_opt), f3(x_opt)))
 
-optimal_values = np.array(optimal_values)
+optimal_values = np.array([[p[2], p[3], p[4]] for p in optimals])
 
 # Fit a Bézier simplex to the weight-objective mapping
 X = w_list
@@ -91,3 +91,21 @@ ax.legend()
 plt.tight_layout()
 pathlib.Path("docs/_static").mkdir(parents=True, exist_ok=True)
 plt.savefig("docs/_static/communication_pareto_3obj.png", dpi=150, bbox_inches="tight")
+
+# Fit Bézier simplex to Pareto set (routing allocation space)
+x_targets = np.array([p[1] for p in optimals])
+regressor_set = BezierSimplexRegressor(degree=3)
+regressor_set.fit(X, x_targets)
+x_smooth = regressor_set.predict(weights_smooth)
+
+fig2, ax2 = plt.subplots(figsize=(8, 6))
+ax2.scatter(x_targets[:, 0], x_targets[:, 1], color="green", label="Optimal routing allocations (samples)", s=50)
+ax2.scatter(x_smooth[:, 0], x_smooth[:, 1], color="orange", alpha=0.15, s=10, label="Bézier simplex approximation")
+ax2.set_xlabel("x₁ (Routing Allocation 1)")
+ax2.set_ylabel("x₂ (Routing Allocation 2)")
+ax2.set_title("Pareto Set: Routing Allocations with Bézier Approximation (3 Objectives)")
+ax2.legend()
+ax2.grid(True, alpha=0.3)
+plt.tight_layout()
+plt.savefig("docs/_static/communication_pareto_set_3obj.png", dpi=150, bbox_inches="tight")
+print("Pareto set plot saved.")

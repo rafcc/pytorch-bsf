@@ -41,10 +41,17 @@ We demonstrate Bézier simplex fitting on a simple two-objective MPC problem ove
 4. Fit a degree-3 Bézier simplex to the weight–objective pairs.
 5. Visualize the fitted Bézier curve against the optimization-derived Pareto front.
 
-.. figure:: ../_static/mpc_pareto.png
-   :alt: Bézier simplex fitting to MPC Pareto front
+.. list-table::
+   :widths: 50 50
    :align: center
 
-   Optimization-derived Pareto front (blue dots) and fitted Bézier simplex (red curve) for the two-objective MPC problem. Online controllers can evaluate the polynomial map in microseconds to select the tracking–smoothness trade-off without re-solving the QP.
+   * - .. image:: ../_static/mpc_pareto_set.png
+         :alt: Pareto set for MPC (control input space)
+         :width: 100%
+     - .. image:: ../_static/mpc_pareto.png
+         :alt: Bézier simplex fitting to MPC Pareto front
+         :width: 100%
+   * - Pareto set: optimal control inputs :math:`U^*(w)` in decision space, traced as the weight :math:`w` moves from tracking-only to smoothness-only.
+     - Pareto front: optimization-derived points (blue) and Bézier simplex approximation (red curve) in objective space.
 
 The complete example script is available at :file:`examples/generate_mpc_pareto.py`.

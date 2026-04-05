@@ -45,10 +45,17 @@ To illustrate Bézier simplex fitting on a portfolio Pareto front, we conducted 
 4. Fit a degree-3 Bézier simplex to the weight–objective pairs.
 5. Visualize the fitted Bézier curve against the optimization-derived Pareto front.
 
-.. figure:: ../_static/portfolio_pareto.png
-   :alt: Bézier simplex fitting to 3-asset portfolio Pareto front
+.. list-table::
+   :widths: 50 50
    :align: center
 
-   Optimization-derived Pareto front (blue dots) and fitted Bézier simplex (red curve) for the 3-asset mean-variance portfolio. The Bézier simplex accurately reproduces the efficient frontier, enabling real-time trade-off evaluation without re-running the QP solver.
+   * - .. image:: ../_static/portfolio_pareto_set.png
+         :alt: Pareto set for 3-asset portfolio (asset allocation space)
+         :width: 100%
+     - .. image:: ../_static/portfolio_pareto.png
+         :alt: Bézier simplex fitting to 3-asset portfolio Pareto front
+         :width: 100%
+   * - Pareto set: optimal asset allocations :math:`x^*(w)` traced in decision space as the weight :math:`w` moves from :math:`(1,0)` to :math:`(0,1)`.
+     - Pareto front: optimization-derived points (blue) and Bézier simplex approximation (red curve) in objective space.
 
 The complete example script is available at :file:`examples/generate_portfolio_pareto.py`.
