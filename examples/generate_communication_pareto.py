@@ -61,10 +61,10 @@ y_smooth = regressor.predict(X_smooth)
 # Plot
 fig, ax = plt.subplots(figsize=(8, 6))
 ax.scatter(f1_targets, f2_targets, color='blue', label='Optimal points from optimization')
-ax.plot(y_smooth[:, 0], y_smooth[:, 1], 'r-', label='Fitted Bezier simplex')
+ax.plot(y_smooth[:, 0], y_smooth[:, 1], 'r-', label='Fitted Bézier simplex')
 ax.set_xlabel('Congestion Excess (f₁)')
 ax.set_ylabel('Route Volatility (f₂)')
-ax.set_title('Pareto Front: Optimization vs Bezier Simplex Fitting')
+ax.set_title('Pareto Front: Optimization vs Bézier Simplex Fitting')
 ax.legend()
 ax.grid(True, alpha=0.3)
 
