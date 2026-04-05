@@ -138,7 +138,7 @@ We define a simplified routing optimization problem with two objectives:
 <li><p><span class="math notranslate nohighlight">\(f_2(x) = (x_1 - 0.5)^2 + (x_2 - 0.5)^2\)</span></p></li>
 <li><p><span class="math notranslate nohighlight">\(f_3(x) = 0.8\left((x_1 - 1.0)^2 + (x_2 - 0.2)^2\right)\)</span></p></li>
 </ul>
-<p>The weighted objective <span class="math notranslate nohighlight">\(f(x, w) = w_1 f_1(x) + w_2 f_2(x) + w_3 f_3(x)\)</span> is strongly convex. We sampled 10 weight vectors on the 3-simplex, solved each weighted optimization with L-BFGS, and fitted a degree-3 Bézier simplex to the resulting objective triples.</p>
+<p>The weighted objective <span class="math notranslate nohighlight">\(f(x, w) = w_1 f_1(x) + w_2 f_2(x) + w_3 f_3(x)\)</span> is strongly convex. We sampled 10 weight vectors on the 2-simplex, solved each weighted optimization with L-BFGS, and fitted a degree-3 Bézier simplex to the resulting objective triples.</p>
 <figure class="align-center" id="id2">
 <img alt="Bézier simplex fitting to three-objective Pareto front" src="../_images/communication_pareto_3obj.png" />
 <figcaption>

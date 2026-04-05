@@ -52,7 +52,7 @@ To demonstrate multi-objective scalability, we also consider a three-objective r
 - :math:`f_2(x) = (x_1 - 0.5)^2 + (x_2 - 0.5)^2`
 - :math:`f_3(x) = 0.8\left((x_1 - 1.0)^2 + (x_2 - 0.2)^2\right)`
 
-The weighted objective :math:`f(x, w) = w_1 f_1(x) + w_2 f_2(x) + w_3 f_3(x)` is strongly convex. We sampled 10 weight vectors on the 3-simplex, solved each weighted optimization with L-BFGS, and fitted a degree-3 Bézier simplex to the resulting objective triples.
+The weighted objective :math:`f(x, w) = w_1 f_1(x) + w_2 f_2(x) + w_3 f_3(x)` is strongly convex. We sampled 10 weight vectors on the 2-simplex, solved each weighted optimization with L-BFGS, and fitted a degree-3 Bézier simplex to the resulting objective triples.
 
 .. figure:: ../_static/communication_pareto_3obj.png
    :alt: Bézier simplex fitting to three-objective Pareto front
