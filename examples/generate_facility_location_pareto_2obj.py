@@ -42,7 +42,7 @@ X = np.column_stack([w1, w2])
 y = np.column_stack([np.array([p[2] for p in optimals]), np.array([p[3] for p in optimals])])
 
 # Fit a degree-3 Bézier simplex to the Pareto front
-regressor = BezierSimplexRegressor(degree=3)
+regressor = BezierSimplexRegressor(degree=3, normalize="max")
 regressor.fit(X, y)
 
 # Visualize the optimization-derived Pareto points and the fitted Bézier curve
@@ -70,7 +70,7 @@ fig.savefig("docs/_static/facility_location_pareto_2obj.png", dpi=150, bbox_inch
 print("Pareto front plot saved.")
 # Visualize the Pareto set (x locations)
 x_targets = np.array([p[1] for p in optimals])  # x_opt for each w
-regressor_x = BezierSimplexRegressor(degree=3)
+regressor_x = BezierSimplexRegressor(degree=3, normalize="max")
 regressor_x.fit(X, x_targets)
 
 # Predict smooth x locations

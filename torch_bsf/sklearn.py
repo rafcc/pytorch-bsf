@@ -12,6 +12,7 @@ except ImportError:
     _sklearn_available = False
 
 from torch_bsf.bezier_simplex import BezierSimplex, ControlPointsData, Index, fit
+from torch_bsf.preprocessing import MinMaxScaler, NoneScaler, QuantileScaler, Scaler, StdScaler
 
 
 def _check_sklearn() -> None:
@@ -48,6 +49,11 @@ class BezierSimplexRegressor(BaseEstimator, RegressorMixin):
         Floating point precision.
     trainer_kwargs : dict | None, default=None
         Additional keyword arguments for lightning.pytorch.Trainer.
+    normalize : str, default="none"
+        The normalization method for target values.
+        One of ``"none"``, ``"max"``, ``"std"``, or ``"quantile"``.
+        Use ``"max"`` (min-max scaling) to align feature scales and stabilize fitting
+        when the output dimensions have very different magnitudes.
     """
 
     def __init__(
@@ -62,8 +68,13 @@ class BezierSimplexRegressor(BaseEstimator, RegressorMixin):
         devices: int | str = "auto",
         precision: str = "32-true",
         trainer_kwargs: dict[str, Any] | None = None,
+        normalize: str = "none",
     ):
         _check_sklearn()
+        if normalize not in ("none", "max", "std", "quantile"):
+            raise ValueError(
+                f"{normalize=}. Must be one of ['none', 'max', 'std', 'quantile']."
+            )
         self.degree = degree
         self.smoothness_weight = smoothness_weight
         self.init = init
@@ -74,6 +85,7 @@ class BezierSimplexRegressor(BaseEstimator, RegressorMixin):
         self.devices = devices
         self.precision = precision
         self.trainer_kwargs = trainer_kwargs
+        self.normalize = normalize
 
     def fit(self, X: Any, y: Any):
         """Fit the Bézier simplex model.
@@ -99,10 +111,23 @@ class BezierSimplexRegressor(BaseEstimator, RegressorMixin):
         ts = torch.from_numpy(X).float()
         ys = torch.from_numpy(y).float()
 
+        # Build and apply scaler for target normalization
+        scaler: Scaler
+        if self.normalize == "max":
+            scaler = MinMaxScaler()
+        elif self.normalize == "std":
+            scaler = StdScaler()
+        elif self.normalize == "quantile":
+            scaler = QuantileScaler()
+        else:
+            scaler = NoneScaler()
+        self.scaler_ = scaler
+        ys_norm = self.scaler_.fit_transform(ys)
+
         # Fit using the core library's fit function
         self.model_ = fit(
             params=ts,
-            values=ys,
+            values=ys_norm,
             degree=self.degree,
             init=self.init,
             smoothness_weight=self.smoothness_weight,
@@ -141,9 +166,11 @@ class BezierSimplexRegressor(BaseEstimator, RegressorMixin):
         ts = torch.from_numpy(X).float().to(self.model_.device)
         self.model_.eval()
         with torch.no_grad():
-            ys = self.model_(ts)
+            ys_norm = self.model_(ts)
 
-        return cast(np.ndarray, ys.cpu().numpy())
+        ys = self.scaler_.inverse_transform(ys_norm.cpu())
+
+        return cast(np.ndarray, ys.numpy())
 
     def score(self, X: Any, y: Any, sample_weight: Any = None) -> float:
         """Return the coefficient of determination R^2 of the prediction.

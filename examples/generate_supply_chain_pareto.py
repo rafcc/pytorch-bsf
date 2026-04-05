@@ -64,7 +64,7 @@ y = np.column_stack([
 ])
 
 # Fit a degree-3 Bezier simplex to the Pareto front
-regressor = BezierSimplexRegressor(degree=3)
+regressor = BezierSimplexRegressor(degree=3, normalize="max")
 regressor.fit(X, y)
 
 # Generate smooth curve for visualization
@@ -92,7 +92,7 @@ print("Pareto front plot saved.")
 
 # Fit Bézier simplex to Pareto set (ordering decision space, showing first two periods)
 U_targets = np.array([p[1] for p in optimals])
-regressor_set = BezierSimplexRegressor(degree=3)
+regressor_set = BezierSimplexRegressor(degree=3, normalize="max")
 regressor_set.fit(X, U_targets)
 U_smooth = regressor_set.predict(X_smooth)
 

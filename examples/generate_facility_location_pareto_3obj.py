@@ -56,7 +56,7 @@ X = np.array([p[0] for p in optimals])
 y = np.array([[p[2], p[3], p[4]] for p in optimals])
 
 # Fit a degree-3 Bézier simplex to the Pareto front
-regressor = BezierSimplexRegressor(degree=3)
+regressor = BezierSimplexRegressor(degree=3, normalize="max")
 regressor.fit(X, y)
 
 # Generate smooth weights for visualization
@@ -100,7 +100,7 @@ print("Plot saved.")
 
 # Visualize the Pareto set (x locations)
 x_targets = np.array([p[1] for p in optimals])  # x_opt for each w
-regressor_x = BezierSimplexRegressor(degree=3)
+regressor_x = BezierSimplexRegressor(degree=3, normalize="max")
 regressor_x.fit(X, x_targets)
 
 # Predict smooth x locations

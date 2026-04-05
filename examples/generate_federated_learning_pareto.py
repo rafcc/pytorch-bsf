@@ -52,7 +52,7 @@ y = np.column_stack([
 ])
 
 # Fit a degree-3 Bezier simplex to the Pareto front
-regressor = BezierSimplexRegressor(degree=3)
+regressor = BezierSimplexRegressor(degree=3, normalize="max")
 regressor.fit(X, y)
 
 # Generate smooth curve for visualization
@@ -80,7 +80,7 @@ print("Pareto front plot saved.")
 
 # Fit Bézier simplex to Pareto set (model parameter space)
 theta_targets = np.array([p[1] for p in optimals])
-regressor_set = BezierSimplexRegressor(degree=3)
+regressor_set = BezierSimplexRegressor(degree=3, normalize="max")
 regressor_set.fit(X, theta_targets)
 theta_smooth = regressor_set.predict(X_smooth)
 
