@@ -37,7 +37,7 @@ It appears as :math:`\frac{\epsilon}{2}\|\beta\|_2^2` in :math:`f_{\text{data}}`
 :math:`f_{\text{sparse}}` to make those terms strongly convex, and it is absorbed into
 :math:`f_{\text{smooth}}` via the coefficient :math:`\frac{1+\epsilon}{2}`.
 This ensures all three objectives are strongly convex, which is required for the solution
-map to be weakly simplicial; see :doc:`advanced/elastic_net` for a detailed discussion.
+map to be weakly simplicial; see :doc:`../whatis` for a detailed discussion.
 
 Equivalently, elastic-net optimization can be written as a convex combination of the
 same three objectives:
