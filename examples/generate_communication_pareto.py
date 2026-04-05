@@ -1,3 +1,5 @@
+import pathlib
+
 import numpy as np
 import matplotlib
 matplotlib.use('Agg')
@@ -73,4 +75,5 @@ max_error = np.max(errors)
 print(f'Max approximation error: {max_error:.4f}')
 
 plt.tight_layout()
+pathlib.Path("docs/_static").mkdir(parents=True, exist_ok=True)
 plt.savefig('docs/_static/communication_fitting.png', dpi=150, bbox_inches='tight')

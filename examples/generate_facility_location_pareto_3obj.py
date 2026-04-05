@@ -1,3 +1,5 @@
+import pathlib
+
 import numpy as np
 import matplotlib
 matplotlib.use('Agg')  # Use non-interactive backend
@@ -92,6 +94,7 @@ try:
     ax.legend()
 
     plt.tight_layout()
+    pathlib.Path("docs/_static").mkdir(parents=True, exist_ok=True)
     plt.savefig("docs/_static/facility_location_pareto_3obj.png", dpi=150, bbox_inches="tight")
     print("Plot saved.")
 except Exception as e:

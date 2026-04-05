@@ -1,3 +1,5 @@
+import pathlib
+
 import numpy as np
 import matplotlib
 matplotlib.use('Agg')
@@ -87,4 +89,5 @@ ax.set_title("Three-objective Pareto Front: Optimization vs Bézier Simplex")
 ax.legend()
 
 plt.tight_layout()
+pathlib.Path("docs/_static").mkdir(parents=True, exist_ok=True)
 plt.savefig("docs/_static/communication_pareto_3obj.png", dpi=150, bbox_inches="tight")

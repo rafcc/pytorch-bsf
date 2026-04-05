@@ -1,3 +1,5 @@
+import pathlib
+
 import numpy as np
 import matplotlib
 matplotlib.use('Agg')
@@ -63,6 +65,7 @@ ax.set_ylabel("Distance to demand center B (f₂)")
 ax.set_title("Two-Objective Facility Location Pareto Front: Optimization vs Bézier Simplex")
 ax.legend()
 ax.grid(alpha=0.3)
+pathlib.Path("docs/_static").mkdir(parents=True, exist_ok=True)
 fig.savefig("docs/_static/facility_location_pareto_2obj.png", dpi=150, bbox_inches="tight")
 print("Pareto front plot saved.")
 # Visualize the Pareto set (x locations)
