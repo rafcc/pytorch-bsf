@@ -63,6 +63,8 @@ ax.set_ylabel("Distance to demand center B (f₂)")
 ax.set_title("Two-Objective Facility Location Pareto Front: Optimization vs Bézier Simplex")
 ax.legend()
 ax.grid(alpha=0.3)
+fig.savefig("docs/_static/facility_location_pareto_2obj.png", dpi=150, bbox_inches="tight")
+print("Pareto front plot saved.")
 # Visualize the Pareto set (x locations)
 x_targets = np.array([p[1] for p in optimals])  # x_opt for each w
 regressor_x = BezierSimplexRegressor(degree=3)
