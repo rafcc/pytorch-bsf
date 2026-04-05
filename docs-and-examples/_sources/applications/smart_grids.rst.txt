@@ -45,10 +45,17 @@ We illustrate Bézier simplex fitting on a two-generator optimal power flow prob
 4. Fit a degree-3 Bézier simplex to the weight–objective pairs.
 5. Visualize the fitted Bézier curve against the optimization-derived Pareto front.
 
-.. figure:: ../_static/smart_grids_pareto.png
-   :alt: Bézier simplex fitting to smart grid Pareto front
+.. list-table::
+   :widths: 50 50
    :align: center
 
-   Optimization-derived Pareto front (blue dots) and fitted Bézier simplex (red curve) for the two-generator cost–emissions trade-off. Grid operators can navigate the fitted curve in real-time to balance economic and environmental objectives without re-running the power flow solver.
+   * - .. image:: ../_static/smart_grids_pareto_set.png
+         :alt: Pareto set for smart grid (power output space)
+         :width: 100%
+     - .. image:: ../_static/smart_grids_pareto.png
+         :alt: Bézier simplex fitting to smart grid Pareto front
+         :width: 100%
+   * - Pareto set: optimal generator power outputs :math:`P^*(w)` in decision space, traced from cost-minimizing to emission-minimizing solutions.
+     - Pareto front: optimization-derived points (blue) and Bézier simplex approximation (red curve) in objective space.
 
 The complete example script is available at :file:`examples/generate_smart_grids_pareto.py`.

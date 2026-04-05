@@ -122,12 +122,24 @@ We define a simplified routing optimization problem with two objectives:
 3. Collect the Pareto front points <span class="math notranslate nohighlight">\((f_1(x^*(w)), f_2(x^*(w)))\)</span>.
 4. Fit a degree-3 Bézier simplex to the weight-objective value pairs.
 5. Visualize the fitted Bézier approximation against the optimization-derived Pareto front.</p>
-<figure class="align-center" id="id1">
-<img alt="Bézier simplex fitting to optimization-derived Pareto front" src="../_images/communication_fitting.png" />
-<figcaption>
-<p><span class="caption-number">Fig. 27 </span><span class="caption-text">Comparison of optimization-derived Pareto front points (blue dots) and Bézier simplex approximation (red curve). The fitted curve closely matches the optimization-derived Pareto front, demonstrating high accuracy.</span><a class="headerlink" href="#id1" title="Link to this image"></a></p>
-</figcaption>
-</figure>
+<table class="docutils align-center">
+<colgroup>
+<col style="width: 50.0%" />
+<col style="width: 50.0%" />
+</colgroup>
+<tbody>
+<tr class="row-odd"><td><a class="reference internal image-reference" href="../_images/communication_pareto_set.png"><img alt="Pareto set for 2-objective routing (routing allocation space)" src="../_images/communication_pareto_set.png" style="width: 100%;" />
+</a>
+</td>
+<td><a class="reference internal image-reference" href="../_images/communication_fitting.png"><img alt="Bézier simplex fitting to optimization-derived Pareto front" src="../_images/communication_fitting.png" style="width: 100%;" />
+</a>
+</td>
+</tr>
+<tr class="row-even"><td><p>Pareto set: optimal routing allocations <span class="math notranslate nohighlight">\(x^*(w)\)</span> in decision space, traced as the weight <span class="math notranslate nohighlight">\(w\)</span> moves from <span class="math notranslate nohighlight">\((1,0)\)</span> to <span class="math notranslate nohighlight">\((0,1)\)</span>.</p></td>
+<td><p>Pareto front: optimization-derived points (blue) and Bézier simplex approximation (red curve) in objective space.</p></td>
+</tr>
+</tbody>
+</table>
 <p>This experiment shows that Bézier simplex fitting can accurately approximate Pareto fronts derived from actual optimization, enabling real-time trade-off evaluation in communication network routing.</p>
 </section>
 <section id="three-objective-extension">
@@ -139,12 +151,24 @@ We define a simplified routing optimization problem with two objectives:
 <li><p><span class="math notranslate nohighlight">\(f_3(x) = 0.8\left((x_1 - 1.0)^2 + (x_2 - 0.2)^2\right)\)</span></p></li>
 </ul>
 <p>The weighted objective <span class="math notranslate nohighlight">\(f(x, w) = w_1 f_1(x) + w_2 f_2(x) + w_3 f_3(x)\)</span> is strongly convex. We sampled 10 weight vectors on the 2-simplex, solved each weighted optimization with L-BFGS, and fitted a degree-3 Bézier simplex to the resulting objective triples.</p>
-<figure class="align-center" id="id2">
-<img alt="Bézier simplex fitting to three-objective Pareto front" src="../_images/communication_pareto_3obj.png" />
-<figcaption>
-<p><span class="caption-number">Fig. 28 </span><span class="caption-text">Three-objective Pareto front approximation. Blue points are optimization-derived objective triples, and the red surface shows the Bézier simplex approximation.</span><a class="headerlink" href="#id2" title="Link to this image"></a></p>
-</figcaption>
-</figure>
+<table class="docutils align-center">
+<colgroup>
+<col style="width: 50.0%" />
+<col style="width: 50.0%" />
+</colgroup>
+<tbody>
+<tr class="row-odd"><td><a class="reference internal image-reference" href="../_images/communication_pareto_set_3obj.png"><img alt="Pareto set for 3-objective routing (routing allocation space)" src="../_images/communication_pareto_set_3obj.png" style="width: 100%;" />
+</a>
+</td>
+<td><a class="reference internal image-reference" href="../_images/communication_pareto_3obj.png"><img alt="Bézier simplex fitting to three-objective Pareto front" src="../_images/communication_pareto_3obj.png" style="width: 100%;" />
+</a>
+</td>
+</tr>
+<tr class="row-even"><td><p>Pareto set: optimal routing allocations <span class="math notranslate nohighlight">\(x^*(w)\)</span> in decision space as the weight <span class="math notranslate nohighlight">\(w\)</span> sweeps across the 2-simplex.</p></td>
+<td><p>Pareto front: optimization-derived points (blue) and Bézier simplex approximation (red surface) in objective space.</p></td>
+</tr>
+</tbody>
+</table>
 <p>The fit achieves nearly zero training error on the sampled Pareto points, demonstrating that Bézier simplex fitting can accurately approximate three-objective trade-offs from actual optimization.</p>
 <p>The complete code for the two-objective and three-objective experiments is available in <code class="file docutils literal notranslate"><span class="pre">examples/generate_communication_pareto.py</span></code> and <code class="file docutils literal notranslate"><span class="pre">examples/generate_communication_pareto_3obj.py</span></code>, respectively.</p>
 </section>

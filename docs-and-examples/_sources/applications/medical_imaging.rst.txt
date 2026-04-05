@@ -48,10 +48,17 @@ We illustrate Bézier simplex fitting on a small CT reconstruction problem, trac
 4. Fit a degree-3 Bézier simplex to the weight–objective pairs.
 5. Visualize the fitted Bézier curve against the L-curve sampled by optimization.
 
-.. figure:: ../_static/medical_imaging_pareto.png
-   :alt: Bézier simplex fitting to CT reconstruction L-curve
+.. list-table::
+   :widths: 50 50
    :align: center
 
-   Optimization-derived L-curve (blue dots) and fitted Bézier simplex (red curve) for the CT reconstruction problem. Clinicians can use the fitted curve to interactively select the fidelity–smoothness trade-off without re-running the solver.
+   * - .. image:: ../_static/medical_imaging_pareto_set.png
+         :alt: Pareto set for CT reconstruction (pixel space)
+         :width: 100%
+     - .. image:: ../_static/medical_imaging_pareto.png
+         :alt: Bézier simplex fitting to CT reconstruction L-curve
+         :width: 100%
+   * - Pareto set: optimal reconstruction parameters :math:`x^*(w)` in pixel space, traced as the weight :math:`w` moves from fidelity-only to smoothness-only.
+     - Pareto front: optimization-derived L-curve (blue dots) and Bézier simplex approximation (red curve) in objective space.
 
 The complete example script is available at :file:`examples/generate_medical_imaging_pareto.py`.

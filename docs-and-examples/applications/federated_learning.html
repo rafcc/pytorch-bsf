@@ -129,12 +129,24 @@ f_2(\theta) &amp;= \|\theta - \theta_2^*\|^2 + 0.1\|\theta\|^2\end{split}\]</div
 <li><p>Fit a degree-3 Bézier simplex to the weight–loss pairs.</p></li>
 <li><p>Visualize the fitted Bézier curve against the optimization-derived Pareto front.</p></li>
 </ol>
-<figure class="align-center" id="id2">
-<img alt="Bézier simplex fitting to two-task federated learning Pareto front" src="../_images/federated_learning_pareto.png" />
-<figcaption>
-<p><span class="caption-number">Fig. 25 </span><span class="caption-text">Optimization-derived Pareto front (blue dots) and fitted Bézier simplex (red curve) for two-task federated learning. Edge devices can navigate the fitted curve to instantly select the task-loss trade-off that suits their local constraints.</span><a class="headerlink" href="#id2" title="Link to this image"></a></p>
-</figcaption>
-</figure>
+<table class="docutils align-center">
+<colgroup>
+<col style="width: 50.0%" />
+<col style="width: 50.0%" />
+</colgroup>
+<tbody>
+<tr class="row-odd"><td><a class="reference internal image-reference" href="../_images/federated_learning_pareto_set.png"><img alt="Pareto set for two-task federated learning (model parameter space)" src="../_images/federated_learning_pareto_set.png" style="width: 100%;" />
+</a>
+</td>
+<td><a class="reference internal image-reference" href="../_images/federated_learning_pareto.png"><img alt="Bézier simplex fitting to two-task federated learning Pareto front" src="../_images/federated_learning_pareto.png" style="width: 100%;" />
+</a>
+</td>
+</tr>
+<tr class="row-even"><td><p>Pareto set: optimal model parameters <span class="math notranslate nohighlight">\(\theta^*(w)\)</span> in parameter space, with task targets <span class="math notranslate nohighlight">\(\theta_1^*\)</span> and <span class="math notranslate nohighlight">\(\theta_2^*\)</span> shown as stars.</p></td>
+<td><p>Pareto front: optimization-derived points (blue) and Bézier simplex approximation (red curve) in objective space.</p></td>
+</tr>
+</tbody>
+</table>
 <p>The complete example script is available at <code class="file docutils literal notranslate"><span class="pre">examples/generate_federated_learning_pareto.py</span></code>.</p>
 </section>
 </section>

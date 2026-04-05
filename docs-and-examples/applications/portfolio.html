@@ -131,12 +131,24 @@ f_2(x) &amp;= x^T \mathrm{diag}(\Sigma) x + 0.05\|x\|^2 \quad \text{(variance + 
 <li><p>Fit a degree-3 Bézier simplex to the weight–objective pairs.</p></li>
 <li><p>Visualize the fitted Bézier curve against the optimization-derived Pareto front.</p></li>
 </ol>
-<figure class="align-center" id="id5">
-<img alt="Bézier simplex fitting to 3-asset portfolio Pareto front" src="../_images/portfolio_pareto.png" />
-<figcaption>
-<p><span class="caption-number">Fig. 23 </span><span class="caption-text">Optimization-derived Pareto front (blue dots) and fitted Bézier simplex (red curve) for the 3-asset mean-variance portfolio. The Bézier simplex accurately reproduces the efficient frontier, enabling real-time trade-off evaluation without re-running the QP solver.</span><a class="headerlink" href="#id5" title="Link to this image"></a></p>
-</figcaption>
-</figure>
+<table class="docutils align-center">
+<colgroup>
+<col style="width: 50.0%" />
+<col style="width: 50.0%" />
+</colgroup>
+<tbody>
+<tr class="row-odd"><td><a class="reference internal image-reference" href="../_images/portfolio_pareto_set.png"><img alt="Pareto set for 3-asset portfolio (asset allocation space)" src="../_images/portfolio_pareto_set.png" style="width: 100%;" />
+</a>
+</td>
+<td><a class="reference internal image-reference" href="../_images/portfolio_pareto.png"><img alt="Bézier simplex fitting to 3-asset portfolio Pareto front" src="../_images/portfolio_pareto.png" style="width: 100%;" />
+</a>
+</td>
+</tr>
+<tr class="row-even"><td><p>Pareto set: optimal asset allocations <span class="math notranslate nohighlight">\(x^*(w)\)</span> traced in decision space as the weight <span class="math notranslate nohighlight">\(w\)</span> moves from <span class="math notranslate nohighlight">\((1,0)\)</span> to <span class="math notranslate nohighlight">\((0,1)\)</span>.</p></td>
+<td><p>Pareto front: optimization-derived points (blue) and Bézier simplex approximation (red curve) in objective space.</p></td>
+</tr>
+</tbody>
+</table>
 <p>The complete example script is available at <code class="file docutils literal notranslate"><span class="pre">examples/generate_portfolio_pareto.py</span></code>.</p>
 </section>
 </section>

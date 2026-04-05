@@ -132,12 +132,24 @@
 <li><p>Fit a degree-3 Bézier simplex to the weight–objective pairs.</p></li>
 <li><p>Visualize the fitted Bézier curve against the optimization-derived Pareto front.</p></li>
 </ol>
-<figure class="align-center" id="id2">
-<img alt="Bézier simplex fitting to smart grid Pareto front" src="../_images/smart_grids_pareto.png" />
-<figcaption>
-<p><span class="caption-number">Fig. 24 </span><span class="caption-text">Optimization-derived Pareto front (blue dots) and fitted Bézier simplex (red curve) for the two-generator cost–emissions trade-off. Grid operators can navigate the fitted curve in real-time to balance economic and environmental objectives without re-running the power flow solver.</span><a class="headerlink" href="#id2" title="Link to this image"></a></p>
-</figcaption>
-</figure>
+<table class="docutils align-center">
+<colgroup>
+<col style="width: 50.0%" />
+<col style="width: 50.0%" />
+</colgroup>
+<tbody>
+<tr class="row-odd"><td><a class="reference internal image-reference" href="../_images/smart_grids_pareto_set.png"><img alt="Pareto set for smart grid (power output space)" src="../_images/smart_grids_pareto_set.png" style="width: 100%;" />
+</a>
+</td>
+<td><a class="reference internal image-reference" href="../_images/smart_grids_pareto.png"><img alt="Bézier simplex fitting to smart grid Pareto front" src="../_images/smart_grids_pareto.png" style="width: 100%;" />
+</a>
+</td>
+</tr>
+<tr class="row-even"><td><p>Pareto set: optimal generator power outputs <span class="math notranslate nohighlight">\(P^*(w)\)</span> in decision space, traced from cost-minimizing to emission-minimizing solutions.</p></td>
+<td><p>Pareto front: optimization-derived points (blue) and Bézier simplex approximation (red curve) in objective space.</p></td>
+</tr>
+</tbody>
+</table>
 <p>The complete example script is available at <code class="file docutils literal notranslate"><span class="pre">examples/generate_smart_grids_pareto.py</span></code>.</p>
 </section>
 </section>

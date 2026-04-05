@@ -130,12 +130,24 @@ f_2(U) &amp;= \sum_{k=1}^{4} (u_k - u_{k-1})^2 + 0.01\|U\|^2 \quad \text{(policy
 <li><p>Fit a degree-3 Bézier simplex to the weight–objective pairs.</p></li>
 <li><p>Visualize the fitted Bézier curve against the optimization-derived Pareto front.</p></li>
 </ol>
-<figure class="align-center" id="id1">
-<img alt="Bézier simplex fitting to supply chain LQR Pareto front" src="../_images/supply_chain_pareto.png" />
-<figcaption>
-<p><span class="caption-number">Fig. 29 </span><span class="caption-text">Optimization-derived Pareto front (blue dots) and fitted Bézier simplex (red curve) for the inventory LQR problem. Corporate planners can continuously navigate the state-deviation–policy-volatility trade-off without re-running the solver for each scenario.</span><a class="headerlink" href="#id1" title="Link to this image"></a></p>
-</figcaption>
-</figure>
+<table class="docutils align-center">
+<colgroup>
+<col style="width: 50.0%" />
+<col style="width: 50.0%" />
+</colgroup>
+<tbody>
+<tr class="row-odd"><td><a class="reference internal image-reference" href="../_images/supply_chain_pareto_set.png"><img alt="Pareto set for supply chain LQR (ordering decision space)" src="../_images/supply_chain_pareto_set.png" style="width: 100%;" />
+</a>
+</td>
+<td><a class="reference internal image-reference" href="../_images/supply_chain_pareto.png"><img alt="Bézier simplex fitting to supply chain LQR Pareto front" src="../_images/supply_chain_pareto.png" style="width: 100%;" />
+</a>
+</td>
+</tr>
+<tr class="row-even"><td><p>Pareto set: optimal order quantities <span class="math notranslate nohighlight">\(U^*(w)\)</span> in decision space, traced as the weight <span class="math notranslate nohighlight">\(w\)</span> moves from state-deviation-only to policy-volatility-only.</p></td>
+<td><p>Pareto front: optimization-derived points (blue) and Bézier simplex approximation (red curve) in objective space.</p></td>
+</tr>
+</tbody>
+</table>
 <p>The complete example script is available at <code class="file docutils literal notranslate"><span class="pre">examples/generate_supply_chain_pareto.py</span></code>.</p>
 </section>
 </section>

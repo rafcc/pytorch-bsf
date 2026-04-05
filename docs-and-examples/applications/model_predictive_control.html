@@ -128,12 +128,24 @@ f_2(U) &amp;= \sum_{k=0}^{3} (u_{k+1} - u_k)^2 \quad \text{(control smoothness)}
 <li><p>Fit a degree-3 Bézier simplex to the weight–objective pairs.</p></li>
 <li><p>Visualize the fitted Bézier curve against the optimization-derived Pareto front.</p></li>
 </ol>
-<figure class="align-center" id="id1">
-<img alt="Bézier simplex fitting to MPC Pareto front" src="../_images/mpc_pareto.png" />
-<figcaption>
-<p><span class="caption-number">Fig. 26 </span><span class="caption-text">Optimization-derived Pareto front (blue dots) and fitted Bézier simplex (red curve) for the two-objective MPC problem. Online controllers can evaluate the polynomial map in microseconds to select the tracking–smoothness trade-off without re-solving the QP.</span><a class="headerlink" href="#id1" title="Link to this image"></a></p>
-</figcaption>
-</figure>
+<table class="docutils align-center">
+<colgroup>
+<col style="width: 50.0%" />
+<col style="width: 50.0%" />
+</colgroup>
+<tbody>
+<tr class="row-odd"><td><a class="reference internal image-reference" href="../_images/mpc_pareto_set.png"><img alt="Pareto set for MPC (control input space)" src="../_images/mpc_pareto_set.png" style="width: 100%;" />
+</a>
+</td>
+<td><a class="reference internal image-reference" href="../_images/mpc_pareto.png"><img alt="Bézier simplex fitting to MPC Pareto front" src="../_images/mpc_pareto.png" style="width: 100%;" />
+</a>
+</td>
+</tr>
+<tr class="row-even"><td><p>Pareto set: optimal control inputs <span class="math notranslate nohighlight">\(U^*(w)\)</span> in decision space, traced as the weight <span class="math notranslate nohighlight">\(w\)</span> moves from tracking-only to smoothness-only.</p></td>
+<td><p>Pareto front: optimization-derived points (blue) and Bézier simplex approximation (red curve) in objective space.</p></td>
+</tr>
+</tbody>
+</table>
 <p>The complete example script is available at <code class="file docutils literal notranslate"><span class="pre">examples/generate_mpc_pareto.py</span></code>.</p>
 </section>
 </section>
