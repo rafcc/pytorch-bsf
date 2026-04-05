@@ -31,7 +31,7 @@ def f3(x):
 def f(x, w):
     return w[0] * f1(x) + w[1] * f2(x) + w[2] * f3(x)
 
-# Sample 10 weight vectors on the 3-simplex
+# Sample 10 weight vectors on the 2-simplex
 w_list = np.array([
     [1.0, 0.0, 0.0],
     [0.0, 1.0, 0.0],
