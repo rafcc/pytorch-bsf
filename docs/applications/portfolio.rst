@@ -55,7 +55,7 @@ To illustrate Bézier simplex fitting on a portfolio Pareto front, we conducted 
      - .. image:: ../_static/portfolio_pareto.png
          :alt: Bézier simplex fitting to 3-asset portfolio Pareto front
          :width: 100%
-   * - Pareto set: optimal asset allocations :math:`x^*(w)` traced in decision space as the weight :math:`w` moves from :math:`(1,0)` to :math:`(0,1)`.
-     - Pareto front: optimization-derived points (blue) and Bézier simplex approximation (red curve) in objective space.
+   * - Pareto set.
+     - Pareto front.
 
 The complete example script is available at :file:`examples/generate_portfolio_pareto.py`.

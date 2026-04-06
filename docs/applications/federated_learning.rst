@@ -43,9 +43,9 @@ We demonstrate Bézier simplex fitting on a two-task federated learning problem 
 5. Visualize the fitted Bézier curve against the optimization-derived Pareto front.
 
 .. list-table::
+   :width: 100%
    :widths: 50 50
    :align: center
-   :class: longtable
 
    * - .. image:: ../_static/federated_learning_pareto_set.png
          :alt: Pareto set for two-task federated learning (model parameter space)
@@ -53,7 +53,7 @@ We demonstrate Bézier simplex fitting on a two-task federated learning problem 
      - .. image:: ../_static/federated_learning_pareto.png
          :alt: Bézier simplex fitting to two-task federated learning Pareto front
          :width: 100%
-   * - Pareto set: optimal model parameters :math:`\theta^*(w)` in parameter space, with task targets :math:`\theta_1^*` and :math:`\theta_2^*` shown as stars.
-     - Pareto front: optimization-derived points (blue) and Bézier simplex approximation (red curve) in objective space.
+   * - Pareto set.
+     - Pareto front.
 
 The complete example script is available at :file:`examples/generate_federated_learning_pareto.py`.

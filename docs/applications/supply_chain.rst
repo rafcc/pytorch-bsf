@@ -55,7 +55,7 @@ We demonstrate Bézier simplex fitting on a two-objective inventory LQR problem 
      - .. image:: ../_static/supply_chain_pareto.png
          :alt: Bézier simplex fitting to supply chain LQR Pareto front
          :width: 100%
-   * - Pareto set: optimal order quantities :math:`U^*(w)` in decision space, traced as the weight :math:`w` moves from state-deviation-only to policy-volatility-only.
-     - Pareto front: optimization-derived points (blue) and Bézier simplex approximation (red curve) in objective space.
+   * - Pareto set.
+     - Pareto front.
 
 The complete example script is available at :file:`examples/generate_supply_chain_pareto.py`.

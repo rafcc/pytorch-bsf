@@ -45,8 +45,8 @@ where :math:`x = (x_1, x_2)` represents routing allocations. The weighted object
      - .. image:: ../_static/communication_fitting.png
          :alt: Bézier simplex fitting to optimization-derived Pareto front
          :width: 100%
-   * - Pareto set: optimal routing allocations :math:`x^*(w)` in decision space, traced as the weight :math:`w` moves from :math:`(1,0)` to :math:`(0,1)`.
-     - Pareto front: optimization-derived points (blue) and Bézier simplex approximation (red curve) in objective space.
+   * - Pareto set.
+     - Pareto front.
 
 This experiment shows that Bézier simplex fitting can accurately approximate Pareto fronts derived from actual optimization, enabling real-time trade-off evaluation in communication network routing.
 
@@ -71,8 +71,8 @@ The weighted objective :math:`f(x, w) = w_1 f_1(x) + w_2 f_2(x) + w_3 f_3(x)` is
      - .. image:: ../_static/communication_pareto_3obj.png
          :alt: Bézier simplex fitting to three-objective Pareto front
          :width: 100%
-   * - Pareto set: optimal routing allocations :math:`x^*(w)` in decision space as the weight :math:`w` sweeps across the 2-simplex.
-     - Pareto front: optimization-derived points (blue) and Bézier simplex approximation (red surface) in objective space.
+   * - Pareto set.
+     - Pareto front.
 
 The fit achieves nearly zero training error on the sampled Pareto points, demonstrating that Bézier simplex fitting can accurately approximate three-objective trade-offs from actual optimization.
 

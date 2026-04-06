@@ -55,7 +55,7 @@ We illustrate Bézier simplex fitting on a two-generator optimal power flow prob
      - .. image:: ../_static/smart_grids_pareto.png
          :alt: Bézier simplex fitting to smart grid Pareto front
          :width: 100%
-   * - Pareto set: optimal generator power outputs :math:`P^*(w)` in decision space, traced from cost-minimizing to emission-minimizing solutions.
-     - Pareto front: optimization-derived points (blue) and Bézier simplex approximation (red curve) in objective space.
+   * - Pareto set.
+     - Pareto front.
 
 The complete example script is available at :file:`examples/generate_smart_grids_pareto.py`.

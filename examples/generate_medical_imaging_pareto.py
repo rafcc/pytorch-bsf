@@ -5,7 +5,9 @@ import matplotlib
 matplotlib.use('Agg')
 import matplotlib.pyplot as plt
 from scipy.optimize import minimize
+from torch_bsf.bezier_simplex import randn
 from torch_bsf.sklearn import BezierSimplexRegressor
+from torch_bsf.preprocessing import MinMaxScaler, NoneScaler
 
 # CT reconstruction: fidelity vs. regularization (L-curve experiment)
 # n=8 pixels
@@ -41,7 +43,7 @@ def f(x, w):
 
 
 # Sample 10 weights on the 1-simplex from w=(1,0) to w=(0,1)
-n_samples = 10
+n_samples = 1000
 weights = np.linspace(0.0, 1.0, n_samples)
 optimals = []
 for t in weights:
@@ -64,13 +66,24 @@ y = np.column_stack([
 ])
 
 # Fit a degree-3 Bezier simplex to the Pareto front
-regressor = BezierSimplexRegressor(degree=3)
-regressor.fit(X, y)
+init = {(i,3-i): [42 - 42 * i / 3, 3.2 * i / 3] for i in range(4)}
+init[(3,0)] = y[0].tolist()  # fidelity-only solution
+init[(0,3)] = y[-1].tolist()  # smoothness-only solution
+print(init)
+regressor = BezierSimplexRegressor(
+    degree=None,
+    init=init,
+    freeze=[[0,3], [3,0]],
+    smoothness_weight=1e-4, max_epochs=10)
+scaler = NoneScaler()#MinMaxScaler()
+y_scaled = scaler.fit_transform(y)
+regressor.fit(X, y_scaled)
 
 # Generate smooth curve for visualization
 t_smooth = np.linspace(0.0, 1.0, 200)
 X_smooth = np.column_stack([1.0 - t_smooth, t_smooth])
 y_smooth = regressor.predict(X_smooth)
+y_smooth = scaler.inverse_transform(y_smooth)
 
 # Compute approximation error on training points
 pred_train = regressor.predict(X)
@@ -92,7 +105,7 @@ print("Pareto front plot saved.")
 
 # Fit Bézier simplex to Pareto set (reconstruction space, showing first two pixels)
 z_targets = np.array([p[1] for p in optimals])
-regressor_set = BezierSimplexRegressor(degree=3)
+regressor_set = BezierSimplexRegressor(degree=3, max_epochs=3)
 regressor_set.fit(X, z_targets)
 z_smooth = regressor_set.predict(X_smooth)
 
