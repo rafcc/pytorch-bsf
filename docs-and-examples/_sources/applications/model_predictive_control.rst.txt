@@ -51,7 +51,7 @@ We demonstrate Bézier simplex fitting on a simple two-objective MPC problem ove
      - .. image:: ../_static/mpc_pareto.png
          :alt: Bézier simplex fitting to MPC Pareto front
          :width: 100%
-   * - Pareto set: optimal control inputs :math:`U^*(w)` in decision space, traced as the weight :math:`w` moves from tracking-only to smoothness-only.
-     - Pareto front: optimization-derived points (blue) and Bézier simplex approximation (red curve) in objective space.
+   * - Pareto set.
+     - Pareto front.
 
 The complete example script is available at :file:`examples/generate_mpc_pareto.py`.

@@ -58,7 +58,7 @@ We illustrate Bézier simplex fitting on a small CT reconstruction problem, trac
      - .. image:: ../_static/medical_imaging_pareto.png
          :alt: Bézier simplex fitting to CT reconstruction L-curve
          :width: 100%
-   * - Pareto set: optimal reconstruction parameters :math:`x^*(w)` in pixel space, traced as the weight :math:`w` moves from fidelity-only to smoothness-only.
-     - Pareto front: optimization-derived L-curve (blue dots) and Bézier simplex approximation (red curve) in objective space.
+   * - Pareto set.
+     - Pareto front.
 
 The complete example script is available at :file:`examples/generate_medical_imaging_pareto.py`.
