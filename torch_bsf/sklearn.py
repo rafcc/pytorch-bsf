@@ -52,12 +52,12 @@ class BezierSimplexRegressor(BaseEstimator, RegressorMixin):
 
     def __init__(
         self,
-        degree: int = 3,
+        degree: int | None = None,
         smoothness_weight: float = 0.0,
         init: BezierSimplex | ControlPointsData | None = None,
         freeze: Iterable[Index] | None = None,
         batch_size: int | None = None,
-        max_epochs: int = 1000,
+        max_epochs: int = 3,
         accelerator: str = "auto",
         devices: int | str = "auto",
         precision: str = "32-true",

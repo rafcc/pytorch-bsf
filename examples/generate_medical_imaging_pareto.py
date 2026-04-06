@@ -2,179 +2,197 @@ import pathlib
 
 import numpy as np
 import matplotlib
-matplotlib.use("Agg")
+matplotlib.use('Agg')
 import matplotlib.pyplot as plt
 from matplotlib.collections import LineCollection
 from scipy.optimize import minimize
 from torch_bsf.sklearn import BezierSimplexRegressor
-from torch_bsf.preprocessing import NoneScaler
+
+# CT reconstruction: fidelity vs. regularization (L-curve experiment)
+# 2D image: 16x16 pixels for realistic 2D reconstruction
+height, width = 16, 16
+n_pixels = height * width
+rng = np.random.default_rng(42)
+
+# Number of projection angles and rays per angle
+n_angles = 8
+n_rays = 16
+
+# Generate projection matrix K (shape n_angles*n_rays x n_pixels)
+# Simplified 2D Radon transform simulation
+K = np.zeros((n_angles * n_rays, n_pixels))
+angle_step = np.pi / n_angles
+for a in range(n_angles):
+    theta = a * angle_step
+    cos_theta, sin_theta = np.cos(theta), np.sin(theta)
+    for r in range(n_rays):
+        # Ray position
+        t = (r - n_rays // 2) * 0.1
+        for i in range(height):
+            for j in range(width):
+                x = (i - height//2) * 0.1
+                y = (j - width//2) * 0.1
+                dist = abs(x * cos_theta + y * sin_theta - t)
+                if dist < 0.05:  # Simple line integral approximation
+                    K[a * n_rays + r, i * width + j] = 1.0
+
+# finite-difference matrix L for 2D total variation (anisotropic)
+L = np.zeros((2 * n_pixels, n_pixels))
+idx = 0
+for i in range(height):
+    for j in range(width):
+        p = i * width + j
+        if j < width - 1:  # horizontal difference
+            L[idx, p] = -1
+            L[idx, p + 1] = 1
+            idx += 1
+        if i < height - 1:  # vertical difference
+            L[idx, p] = -1
+            L[idx, p + width] = 1
+            idx += 1
+L = L[:idx]  # Trim to actual size
+
+# True image: simple 2D phantom (circle)
+x_true = np.zeros((height, width))
+center = (height//2, width//2)
+radius = min(height, width) // 4
+for i in range(height):
+    for j in range(width):
+        if (i - center[0])**2 + (j - center[1])**2 <= radius**2:
+            x_true[i, j] = 1.0
+x_true = x_true.flatten()
+
+# Noisy measurement
+y_obs = K @ x_true + 0.05 * rng.standard_normal(K.shape[0])
 
 
-def build_problem(n=8, seed=42):
-    rng = np.random.default_rng(seed)
-    K = rng.standard_normal((6, n))
-    L = np.zeros((n - 1, n))
-    for i in range(n - 1):
-        L[i, i] = -1.0
-        L[i, i + 1] = 1.0
-
-    x_true = np.array([0.0, 1.0, 1.0, 2.0, 2.0, 1.0, 1.0, 0.0])
-    y_obs = K @ x_true + 0.05 * rng.standard_normal(6)
-    return K, L, x_true, y_obs
-
-
-def fidelity(x, K, y_obs):
+def f1(x):
+    # Data fidelity + small L2 regularization
     return np.sum((K @ x - y_obs) ** 2) + 0.01 * np.sum(x ** 2)
 
 
-def smoothness(x, L):
+def f2(x):
+    # Smoothness (total variation via finite differences) + small L2
     return np.sum((L @ x) ** 2) + 0.01 * np.sum(x ** 2)
 
 
-def weighted_objective(x, w, K, L, y_obs):
-    return w[0] * fidelity(x, K, y_obs) + w[1] * smoothness(x, L)
+def f(x, w):
+    # Weighted combination of fidelity and smoothness
+    return w[0] * f1(x) + w[1] * f2(x)
 
 
-def compute_pareto_points(K, L, y_obs, n_samples=1000):
-    n = K.shape[1]
-    weights = np.linspace(0.0, 1.0, n_samples)
-    optimals = []
-
-    for t in weights:
-        w = np.array([1.0 - t, t])
-        result = minimize(
-            lambda x: weighted_objective(x, w, K, L, y_obs),
-            x0=np.zeros(n),
-            method="L-BFGS-B",
-        )
-        x_opt = result.x
-        optimals.append((w, x_opt, fidelity(x_opt, K, y_obs), smoothness(x_opt, L)))
-
-    return np.array(weights), optimals
-
-
-def prepare_training_data(optimals):
-    w1 = np.array([p[0][0] for p in optimals])
-    w2 = np.array([p[0][1] for p in optimals])
-    X = np.column_stack([w1, w2])
-    y = np.column_stack([
-        np.array([p[2] for p in optimals]),
-        np.array([p[3] for p in optimals]),
-    ])
-    return X, y
-
-
-def init_bezier_endpoints(y, degree):
-    init = {(i, degree - i): ((i / degree) * y[0] + (1 - i / degree) * y[-1]).tolist()
-            for i in range(degree + 1)}
-    init[(degree, 0)] = y[0].tolist()
-    init[(0, degree)] = y[-1].tolist()
-    return init
-
-
-def fit_bezier_simplex(X, y, degree, freeze, smoothness_weight, max_epochs):
-    init = init_bezier_endpoints(y, degree)
-    regressor = BezierSimplexRegressor(
-        degree=None,
-        init=init,
-        freeze=freeze,
-        smoothness_weight=smoothness_weight,
-        max_epochs=max_epochs,
+# Sample weights on the 1-simplex from w=(1,0) to w=(0,1)
+n_samples = 200
+weights = np.linspace(0.0, 1.0, n_samples)
+optimals = []
+for idx, t in enumerate(weights):
+    print(f"Computing Pareto front... {idx}/{n_samples} weights optimized", end="\r", flush=True)
+    w = np.array([1.0 - t, t])
+    result = minimize(
+        lambda x: f(x, w),
+        x0=np.zeros(n_pixels),
+        method="L-BFGS-B",
     )
-    scaler = NoneScaler()
-    y_scaled = scaler.fit_transform(y)
-    regressor.fit(X, y_scaled)
-    return regressor, scaler
+    x_opt = result.x
+    optimals.append((w, x_opt, f1(x_opt), f2(x_opt)))
+print(f"Computing Pareto front... {n_samples}/{n_samples} weights optimized", end="\r", flush=True)
 
+pareto_colors = [(w[0], w[1], 0) for w, _, _, _ in optimals]
 
-def weighted_colors(weights):
-    return [(1.0 - t, t, 0.0) for t in weights]
+# Prepare training data for Bezier simplex fitting
+w1 = np.array([p[0][0] for p in optimals])
+w2 = np.array([p[0][1] for p in optimals])
+X = np.column_stack([w1, w2])
+y = np.column_stack([
+    np.array([p[2] for p in optimals]),
+    np.array([p[3] for p in optimals]),
+])
 
+# Initialize control points along the line between the two extreme Pareto points
+degree = 100
+init = {
+    (i, degree - i): ((i / degree) * y[0] + (1 - i / degree) * y[-1]).tolist()
+    for i in range(degree + 1)
+}
 
-def plot_colored_line(ax, points, weights, label):
-    colors = weighted_colors(weights)
-    segments = np.array([points[:-1], points[1:]]).transpose(1, 0, 2)
-    lc = LineCollection(segments, colors=colors, linewidth=2, label=label)
-    ax.add_collection(lc)
+# Fit Bézier simplex to Pareto front (objective space)
+pf_bezier = BezierSimplexRegressor(
+    init=init,  # initialize control points along the line between the two extreme Pareto points
+    freeze=[[0, degree], [degree, 0]],  # freeze endpoints to match true extremes
+    smoothness_weight=1e-4  # small smoothness to stabilize fitting
+)
+pf_bezier.fit(X, y)
 
+# Generate smooth curve for visualization
+t_smooth = np.linspace(0.0, 1.0, 200)
+line_colors = [(1 - t, t, 0) for t in t_smooth[:-1]]
+X_smooth = np.column_stack([1.0 - t_smooth, t_smooth])
+y_smooth = pf_bezier.predict(X_smooth)
 
-def plot_pareto_front(y, y_smooth, optimals, t_smooth, output_path):
-    point_colors = [(p[0][0], p[0][1], 0.0) for p in optimals]
-    fig, ax = plt.subplots(figsize=(6, 6))
-    ax.scatter(y[:, 0], y[:, 1], color=point_colors, label="Optimization-derived Pareto points")
-    plot_colored_line(ax, y_smooth, t_smooth, "Fitted Bézier simplex")
-    ax.set_xlabel("Data Fidelity (f₁)")
-    ax.set_ylabel("Smoothness Regularization (f₂)")
-    ax.set_title("CT Reconstruction L-Curve: Optimization vs Bézier Simplex")
-    ax.legend()
-    ax.grid(alpha=0.3)
-    plt.tight_layout()
-    plt.savefig(output_path, dpi=150, bbox_inches="tight")
+# Compute approximation error on training points
+pred_train = pf_bezier.predict(X)
+max_error = np.max(np.linalg.norm(pred_train - y, axis=1))
+print(f"Max training approximation error: {max_error:.4f}")
 
+fig, ax = plt.subplots(figsize=(8, 6))
+ax.scatter(y[:, 0], y[:, 1], color=pareto_colors, label="Optimization-derived Pareto points")
+segments = np.array([y_smooth[:-1], y_smooth[1:]]).transpose(1, 0, 2)
+lc = LineCollection(segments, colors=line_colors, linewidth=2, label="Fitted Bézier simplex")
+ax.add_collection(lc)
+ax.set_xlabel("Data Fidelity (f₁)")
+ax.set_ylabel("Smoothness Regularization (f₂)")
+ax.set_title("CT Reconstruction L-Curve: Optimization vs Bézier Simplex")
+ax.legend()
+ax.grid(alpha=0.3)
+plt.tight_layout()
+pathlib.Path("docs/_static").mkdir(parents=True, exist_ok=True)
+plt.savefig("docs/_static/medical_imaging_pareto.png", dpi=150, bbox_inches="tight")
+print("Pareto front plot saved.")
 
-def plot_pareto_set(z_targets, z_smooth, optimals, x_true, t_smooth, output_path):
-    point_colors = [(p[0][0], p[0][1], 0.0) for p in optimals]
-    fig, ax = plt.subplots(figsize=(6, 6))
-    ax.scatter(z_targets[:, 0], z_targets[:, 1], color=point_colors,
-               label="Optimal reconstructions (samples)", s=50)
+# Fit Bézier simplex to Pareto set (reconstruction space, 2D images)
+z_targets = np.array([p[1] for p in optimals])
+degree = 128
+init = {
+    (i, degree - i): ((i / degree) * z_targets[0] + (1 - i / degree) * z_targets[-1]).tolist()
+    for i in range(degree + 1)
+}
 
-    plot_colored_line(ax, z_smooth[:, :2], t_smooth, "Bézier simplex approximation")
-    ax.axhline(x_true[1], color="gray", linestyle="--", alpha=0.5,
-               label=f"True pixel 2 = {x_true[1]:.1f}")
-    ax.axvline(x_true[0], color="gray", linestyle=":", alpha=0.5,
-               label=f"True pixel 1 = {x_true[0]:.1f}")
-    ax.set_xlabel("Pixel 1 (x₁)")
-    ax.set_ylabel("Pixel 2 (x₂)")
-    ax.set_title("Pareto Set: CT Reconstruction Parameters with Bézier Approximation")
-    ax.legend()
-    ax.grid(alpha=0.3)
-    plt.tight_layout()
-    plt.savefig(output_path, dpi=150, bbox_inches="tight")
+ps_bezier = BezierSimplexRegressor(
+    init=init,
+    freeze=[[0, degree], [degree, 0]],
+    smoothness_weight=1e-6
+)
+ps_bezier.fit(X, z_targets)
+z_smooth = ps_bezier.predict(X_smooth)
 
+fig, ax = plt.subplots(figsize=(6, 6))
+ax.scatter(z_targets[:, 0], z_targets[:, 1], color=pareto_colors,
+            label="Optimal reconstructions (samples)", s=50)
+segments = np.array([z_smooth[:-1, 0:2], z_smooth[1:, 0:2]]).transpose(1, 0, 2)
+lc = LineCollection(segments, colors=line_colors, linewidth=2, label="Fitted Bézier simplex")
+ax.add_collection(lc)
+ax.axhline(x_true[1], color="gray", linestyle="--", alpha=0.5,
+            label=f"True pixel 2 = {x_true[1]:.1f}")
+ax.axvline(x_true[0], color="gray", linestyle=":", alpha=0.5,
+            label=f"True pixel 1 = {x_true[0]:.1f}")
+ax.set_xlabel("Pixel 1 (x₁)")
+ax.set_ylabel("Pixel 2 (x₂)")
+ax.set_title("CT Reconstruction Parameters with Bézier Approximation")
+ax.legend()
+ax.grid(alpha=0.3)
+plt.tight_layout()
+pathlib.Path("docs/_static").mkdir(parents=True, exist_ok=True)
+plt.savefig("docs/_static/medical_imaging_pareto_set.png", dpi=150, bbox_inches="tight")
+print("Pareto set plot saved.")
 
-def main():
-    K, L, x_true, y_obs = build_problem()
-    _, optimals = compute_pareto_points(K, L, y_obs, n_samples=1000)
-    X, y = prepare_training_data(optimals)
-
-    regressor, scaler = fit_bezier_simplex(
-        X,
-        y,
-        degree=100,
-        freeze=[[0, 100], [100, 0]],
-        smoothness_weight=1e-4,
-        max_epochs=3,
-    )
-
-    t_smooth = np.linspace(0.0, 1.0, 200)
-    X_smooth = np.column_stack([1.0 - t_smooth, t_smooth])
-    y_smooth = regressor.predict(X_smooth)
-    y_smooth = scaler.inverse_transform(y_smooth)
-
-    pred_train = regressor.predict(X)
-    max_error = np.max(np.linalg.norm(pred_train - y, axis=1))
-    print(f"Max training approximation error: {max_error:.4f}")
-
-    pathlib.Path("docs/_static").mkdir(parents=True, exist_ok=True)
-    plot_pareto_front(y, y_smooth, optimals, t_smooth,
-                      "docs/_static/medical_imaging_pareto.png")
-    print("Pareto front plot saved.")
-
-    z_targets = np.array([p[1] for p in optimals])
-    regressor_set, _ = fit_bezier_simplex(
-        X,
-        z_targets,
-        degree=128,
-        freeze=[[0, 128], [128, 0]],
-        smoothness_weight=1e-6,
-        max_epochs=3,
-    )
-    z_smooth = regressor_set.predict(X_smooth)
-
-    plot_pareto_set(z_targets, z_smooth, optimals, x_true, t_smooth,
-                    "docs/_static/medical_imaging_pareto_set.png")
-    print("Pareto set plot saved.")
-
-
-if __name__ == "__main__":
-    main()
+# Plot selected 2D reconstructions along the Pareto set
+fig2, axes = plt.subplots(1, 5, figsize=(15, 3))
+selected_indices = [0, 49, 99, 149, 199]  # Select 5 points along the curve
+for idx, ax_idx in enumerate(selected_indices):
+    img = z_smooth[ax_idx].reshape(height, width)
+    axes[idx].imshow(img, cmap='gray', vmin=0, vmax=1)
+    axes[idx].set_title(f"w=({1 - t_smooth[ax_idx]:.2f}, {t_smooth[ax_idx]:.2f})")
+    axes[idx].axis('off')
+plt.tight_layout()
+plt.savefig("docs/_static/medical_imaging_pareto_samples.png", dpi=150, bbox_inches="tight")
+print("Pareto set plot saved.")
