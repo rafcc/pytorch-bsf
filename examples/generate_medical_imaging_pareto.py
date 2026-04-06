@@ -66,15 +66,18 @@ y = np.column_stack([
 ])
 
 # Fit a degree-3 Bezier simplex to the Pareto front
-init = {(i,3-i): [42 - 42 * i / 3, 3.2 * i / 3] for i in range(4)}
-init[(3,0)] = y[0].tolist()  # fidelity-only solution
-init[(0,3)] = y[-1].tolist()  # smoothness-only solution
+degree = 100
+init = {(i, degree-i): ((i / degree)*y[0] + (1 - i / degree) * y[-1]).tolist() for i in range(degree + 1)}
+init[(degree,0)] = y[0].tolist()  # fidelity-only solution
+init[(0,degree)] = y[-1].tolist() # smoothness-only solution
 print(init)
 regressor = BezierSimplexRegressor(
     degree=None,
     init=init,
-    freeze=[[0,3], [3,0]],
-    smoothness_weight=1e-4, max_epochs=10)
+    freeze=[[0,degree], [degree,0]],
+    smoothness_weight=1e-4,
+    max_epochs=3
+)
 scaler = NoneScaler()#MinMaxScaler()
 y_scaled = scaler.fit_transform(y)
 regressor.fit(X, y_scaled)
@@ -105,13 +108,35 @@ print("Pareto front plot saved.")
 
 # Fit Bézier simplex to Pareto set (reconstruction space, showing first two pixels)
 z_targets = np.array([p[1] for p in optimals])
-regressor_set = BezierSimplexRegressor(degree=3, max_epochs=3)
+degree = 128
+init = {(i, degree-i): ((i / degree)*z_targets[0] + (1 - i / degree) * z_targets[-1]).tolist() for i in range(degree + 1)}
+init[(degree,0)] = z_targets[0].tolist()  # fidelity-only solution
+init[(0,degree)] = z_targets[-1].tolist() # smoothness-only solution
+print(init)
+regressor_set = BezierSimplexRegressor(
+    degree=None,
+    init=init,
+    freeze=[[0,degree], [degree,0]],
+    smoothness_weight=1e-6,
+    max_epochs=3
+)
 regressor_set.fit(X, z_targets)
 z_smooth = regressor_set.predict(X_smooth)
 
+from matplotlib.collections import LineCollection
+
 fig2, ax2 = plt.subplots(figsize=(8, 6))
-ax2.scatter(z_targets[:, 0], z_targets[:, 1], color="green", label="Optimal reconstructions (samples)", s=50)
-ax2.plot(z_smooth[:, 0], z_smooth[:, 1], color="orange", label="Bézier simplex approximation", linewidth=2)
+colors = [(p[0][0], p[0][1], 0) for p in optimals]  # (w1, w2, 0) for each optimal
+ax2.scatter(z_targets[:, 0], z_targets[:, 1], color=colors, label="Optimal reconstructions (samples)", s=50)
+
+# Color the Bézier simplex line based on weights using the first two pixels
+line_colors = [(1 - t, t, 0) for t in t_smooth]
+z_smooth_2d = z_smooth[:, :2]
+segments = np.array([z_smooth_2d[:-1], z_smooth_2d[1:]]).transpose(1, 0, 2)
+lc = LineCollection(segments, colors=line_colors, linewidth=2, label="Bézier simplex approximation")
+ax2.add_collection(lc)
+ax2.set_xlim(z_smooth_2d[:, 0].min(), z_smooth_2d[:, 0].max())
+ax2.set_ylim(z_smooth_2d[:, 1].min(), z_smooth_2d[:, 1].max())
 ax2.axhline(x_true[1], color="gray", linestyle="--", alpha=0.5, label=f"True pixel 2 = {x_true[1]:.1f}")
 ax2.axvline(x_true[0], color="gray", linestyle=":", alpha=0.5, label=f"True pixel 1 = {x_true[0]:.1f}")
 ax2.set_xlabel("Pixel 1 (x₁)")
