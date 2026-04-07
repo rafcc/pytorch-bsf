@@ -54,7 +54,7 @@ for t in weights:
     U_opt = result.x
     optimals.append((w, U_opt, f1(U_opt), f2(U_opt)))
 
-# Prepare training data for Bezier simplex fitting
+# Prepare training data for Bézier simplex fitting
 w1 = np.array([p[0][0] for p in optimals])
 w2 = np.array([p[0][1] for p in optimals])
 X = np.column_stack([w1, w2])
@@ -63,7 +63,7 @@ y = np.column_stack([
     np.array([p[3] for p in optimals]),
 ])
 
-# Fit a degree-3 Bezier simplex to the Pareto front
+# Fit a degree-3 Bézier simplex to the Pareto front
 regressor = BezierSimplexRegressor(degree=3)
 regressor.fit(X, y)
 

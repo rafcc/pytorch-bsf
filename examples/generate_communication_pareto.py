@@ -45,7 +45,7 @@ w2_vals = np.array([p[0][1] for p in optimal_points])
 f1_targets = np.array([p[2] for p in optimal_points])
 f2_targets = np.array([p[3] for p in optimal_points])
 
-# Fit Bezier simplex (multi-output: predict f1 and f2)
+# Fit Bézier simplex (multi-output: predict f1 and f2)
 X = np.column_stack([w1_vals, w2_vals])
 y = np.column_stack([f1_targets, f2_targets])
 regressor = BezierSimplexRegressor(degree=3)

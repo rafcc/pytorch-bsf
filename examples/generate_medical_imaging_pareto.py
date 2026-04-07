@@ -99,7 +99,7 @@ print(f"Computing Pareto front... {n_samples}/{n_samples} weights optimized", en
 
 pareto_colors = [(w[0], w[1], 0) for w, _, _, _ in optimals]
 
-# Prepare training data for Bezier simplex fitting
+# Prepare training data for Bézier simplex fitting
 w1 = np.array([p[0][0] for p in optimals])
 w2 = np.array([p[0][1] for p in optimals])
 X = np.column_stack([w1, w2])
