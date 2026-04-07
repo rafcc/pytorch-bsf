@@ -115,9 +115,9 @@ f_2(x) &amp;= \|Lx\|_2^2     \quad \text{(Regularization)}\end{split}\]</div>
 <p>We illustrate Bézier simplex fitting on a small CT reconstruction problem, tracing the L-curve between data fidelity and spatial smoothness.</p>
 <p><strong>Problem Setup:</strong></p>
 <ul class="simple">
-<li><p>Image: <span class="math notranslate nohighlight">\(x \in \mathbb{R}^8\)</span> (piecewise-constant signal <span class="math notranslate nohighlight">\(x^* = [0,1,1,2,2,1,1,0]\)</span>)</p></li>
-<li><p>Forward operator: <span class="math notranslate nohighlight">\(K \in \mathbb{R}^{6 \times 8}\)</span> (random projection, seed 42)</p></li>
-<li><p>Finite-difference operator: <span class="math notranslate nohighlight">\(L \in \mathbb{R}^{7 \times 8}\)</span></p></li>
+<li><p>Image: <span class="math notranslate nohighlight">\(x \in \mathbb{R}^{256}\)</span> (flattened 16×16 circular phantom)</p></li>
+<li><p>Forward operator: <span class="math notranslate nohighlight">\(K \in \mathbb{R}^{128 \times 256}\)</span> (simplified 2D Radon transform, 8 angles × 16 rays per angle)</p></li>
+<li><p>Finite-difference operator: <span class="math notranslate nohighlight">\(L\)</span> (2D anisotropic total variation, horizontal and vertical differences)</p></li>
 <li><p>Noisy measurement: <span class="math notranslate nohighlight">\(y = Kx^* + \epsilon\)</span> (<span class="math notranslate nohighlight">\(\epsilon \sim \mathcal{N}(0, 0.05^2)\)</span>)</p></li>
 <li><p>Regularized objectives:</p></li>
 </ul>
@@ -126,10 +126,10 @@ f_2(x) &amp;= \|Lx\|_2^2     \quad \text{(Regularization)}\end{split}\]</div>
 f_2(x) &amp;= \|Lx\|^2 + 0.01\|x\|^2 \quad \text{(smoothness)}\end{split}\]</div>
 <p><strong>Experiment Procedure:</strong></p>
 <ol class="arabic simple">
-<li><p>Sample 10 weight vectors <span class="math notranslate nohighlight">\(w = (w_1, w_2)\)</span> on the 1-simplex from <span class="math notranslate nohighlight">\((1,0)\)</span> to <span class="math notranslate nohighlight">\((0,1)\)</span>.</p></li>
+<li><p>Sample 200 weight vectors <span class="math notranslate nohighlight">\(w = (w_1, w_2)\)</span> on the 1-simplex from <span class="math notranslate nohighlight">\((1,0)\)</span> to <span class="math notranslate nohighlight">\((0,1)\)</span>.</p></li>
 <li><p>For each <span class="math notranslate nohighlight">\(w\)</span>, solve <span class="math notranslate nohighlight">\(x^*(w) = \arg\min_x [w_1 f_1(x) + w_2 f_2(x)]\)</span> using L-BFGS-B.</p></li>
 <li><p>Collect the Pareto front points <span class="math notranslate nohighlight">\((f_1(x^*(w)), f_2(x^*(w)))\)</span>.</p></li>
-<li><p>Fit a degree-3 Bézier simplex to the weight–objective pairs.</p></li>
+<li><p>Fit a degree-100 Bézier simplex to the weight–objective pairs.</p></li>
 <li><p>Visualize the fitted Bézier curve against the L-curve sampled by optimization.</p></li>
 </ol>
 <table class="docutils align-center">
