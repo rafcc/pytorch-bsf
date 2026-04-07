@@ -29,9 +29,9 @@ We illustrate Bézier simplex fitting on a small CT reconstruction problem, trac
 
 **Problem Setup:**
 
-- Image: :math:`x \in \mathbb{R}^8` (piecewise-constant signal :math:`x^* = [0,1,1,2,2,1,1,0]`)
-- Forward operator: :math:`K \in \mathbb{R}^{6 \times 8}` (random projection, seed 42)
-- Finite-difference operator: :math:`L \in \mathbb{R}^{7 \times 8}`
+- Image: :math:`x \in \mathbb{R}^{256}` (flattened 16×16 circular phantom)
+- Forward operator: :math:`K \in \mathbb{R}^{128 \times 256}` (simplified 2D Radon transform, 8 angles × 16 rays per angle)
+- Finite-difference operator: :math:`L` (2D anisotropic total variation, horizontal and vertical differences)
 - Noisy measurement: :math:`y = Kx^* + \epsilon` (:math:`\epsilon \sim \mathcal{N}(0, 0.05^2)`)
 - Regularized objectives:
 
@@ -42,10 +42,10 @@ We illustrate Bézier simplex fitting on a small CT reconstruction problem, trac
 
 **Experiment Procedure:**
 
-1. Sample 10 weight vectors :math:`w = (w_1, w_2)` on the 1-simplex from :math:`(1,0)` to :math:`(0,1)`.
+1. Sample 200 weight vectors :math:`w = (w_1, w_2)` on the 1-simplex from :math:`(1,0)` to :math:`(0,1)`.
 2. For each :math:`w`, solve :math:`x^*(w) = \arg\min_x [w_1 f_1(x) + w_2 f_2(x)]` using L-BFGS-B.
 3. Collect the Pareto front points :math:`(f_1(x^*(w)), f_2(x^*(w)))`.
-4. Fit a degree-3 Bézier simplex to the weight–objective pairs.
+4. Fit a degree-100 Bézier simplex to the weight–objective pairs.
 5. Visualize the fitted Bézier curve against the L-curve sampled by optimization.
 
 .. list-table::
