@@ -43,7 +43,6 @@ We demonstrate Bézier simplex fitting on a two-task federated learning problem 
 5. Visualize the fitted Bézier curve against the optimization-derived Pareto front.
 
 .. list-table::
-   :width: 100%
    :widths: 50 50
    :align: center
 
